@@ -2245,10 +2245,8 @@ static void do_info(User *u)
 
     if ((findnick(nick)) && (!(nii->status & NS_VERBOTEN))) { 
     
-/**    if ((param && stricmp(param, "ALL") == 0) &&
-          ((nick_identified(u) && (stricmp(u->nick, nick) == 0)) ||
-                           is_services_oper(u))) {     ***/
-     if (nick_identified(u) || is_services_oper(u)) {
+     if ((nick_identified(u) && (stricmp(u->nick, nick) == 0)) ||
+       ((param && stricmp(param, "ALL") == 0) && is_services_oper(u))) {
 
       registros(u, nii);
          

@@ -6,7 +6,7 @@
  * details.
  */
 
-#define BUILD	"756"
+#define BUILD	"767"
 
 const char version_number[] = "4.3.2";
 const char version_build[] =

@@ -1249,7 +1249,7 @@ int check_valid_op(User *user, const char *chan, int serverop)
     }                               
     if (serverop && time(NULL)-start_time >= CSRestrictDelay
 				&& !check_access(user, ci, CA_AUTOOP)) {
-	notice_lang(s_ChanServ, user, CHAN_IS_REGISTERED, s_ChanServ);
+/**	notice_lang(s_ChanServ, user, CHAN_IS_REGISTERED, s_ChanServ); **/
 	send_cmd(s_ChanServ, "MODE %s -o %s", chan, user->nick);
 	return 0;
     }

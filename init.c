@@ -32,56 +32,56 @@ void introduce_user(const char *user)
 
     if (!user || stricmp(user, s_NickServ) == 0) {
 	NICK(s_NickServ, desc_NickServ);
-	send_cmd(s_NickServ, "MODE %s +okrhX", s_NickServ);
+	send_cmd(s_NickServ, "MODE %s +krhX", s_NickServ);
         send_cmd(s_NickServ, "JOIN #admins");        	
         send_cmd(s_NickServ, "JOIN #opers");                
     }
     if (!user || stricmp(user, s_ChanServ) == 0) {
 	NICK(s_ChanServ, desc_ChanServ);
-	send_cmd(s_ChanServ, "MODE %s +BokrhXd", s_ChanServ);
+	send_cmd(s_ChanServ, "MODE %s +BkrhXd", s_ChanServ);
         send_cmd(s_ChanServ, "JOIN #admins");
         send_cmd(s_ChanServ, "JOIN #opers");               
     }
     if (!user || stricmp(user, s_CregServ) == 0) {
         NICK(s_CregServ, desc_CregServ);
-        send_cmd(s_CregServ, "MODE %s +okrhXd", s_CregServ);
+        send_cmd(s_CregServ, "MODE %s +ikrhXd", s_CregServ);
         send_cmd(s_CregServ, "JOIN #admins");
         send_cmd(s_CregServ, "JOIN #opers");
     }                                            
     if (!user || stricmp(user, s_HelpServ) == 0) {
 	NICK(s_HelpServ, desc_HelpServ);
-        send_cmd(s_HelpServ, "MODE %s +okrhX", s_HelpServ); 
+        send_cmd(s_HelpServ, "MODE %s +krhX", s_HelpServ); 
         send_cmd(s_HelpServ, "JOIN #opers");                        
     }
     if (s_IrcIIHelp && (!user || stricmp(user, s_IrcIIHelp) == 0)) {
 	NICK(s_IrcIIHelp, desc_IrcIIHelp);
-	send_cmd(s_IrcIIHelp, "MODE %s +okrhX", s_IrcIIHelp);
+	send_cmd(s_IrcIIHelp, "MODE %s +krhX", s_IrcIIHelp);
         send_cmd(s_IrcIIHelp, "JOIN #opers");              	        
     }
     if (!user || stricmp(user, s_MemoServ) == 0) {
 	NICK(s_MemoServ, desc_MemoServ);
-	send_cmd(s_MemoServ, "MODE %s +orhkX", s_MemoServ);
+	send_cmd(s_MemoServ, "MODE %s +rhkX", s_MemoServ);
         send_cmd(s_MemoServ, "JOIN #opers");        	
     }
     if (!user || stricmp(user, s_OperServ) == 0) {
 	NICK(s_OperServ, desc_OperServ);
-	send_cmd(s_OperServ, "MODE %s +orhkX", s_OperServ);
+	send_cmd(s_OperServ, "MODE %s +irhkX", s_OperServ);
         send_cmd(s_OperServ, "JOIN #admins");       	
         send_cmd(s_OperServ, "JOIN #opers");                
     }
     if (s_DevNull && (!user || stricmp(user, s_DevNull) == 0)) {
 	NICK(s_DevNull, desc_DevNull);
-	send_cmd(s_DevNull, "MODE %s +iokrh", s_DevNull);
+	send_cmd(s_DevNull, "MODE %s +ikrh", s_DevNull);
         send_cmd(s_DevNull, "JOIN #opers"); 	
     }
     if (!user || stricmp(user, s_GlobalNoticer) == 0) {
 	NICK(s_GlobalNoticer, desc_GlobalNoticer);
-	send_cmd(s_GlobalNoticer, "MODE %s +orhkX", s_GlobalNoticer);
+	send_cmd(s_GlobalNoticer, "MODE %s +irhkX", s_GlobalNoticer);
         send_cmd(s_GlobalNoticer, "JOIN #opers");
     }
     if (!user || stricmp(user, s_NewsServ) == 0) {
         NICK(s_NewsServ, desc_NewsServ);
-        send_cmd(s_NewsServ, "MODE %s +okrhXd", s_NewsServ);
+        send_cmd(s_NewsServ, "MODE %s +ikrhXd", s_NewsServ);
         send_cmd(s_NewsServ, "JOIN #opers");
     }                                                
         send_cmd(ServerName, "MODE #admins +oooo %s %s %s %s",

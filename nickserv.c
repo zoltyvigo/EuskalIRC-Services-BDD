@@ -696,6 +696,12 @@ int validate_user(User *u)
         return 0;
     }                                                   
 
+    if (u->mode & UMODE_R) {
+        privmsg(s_NickServ, u->nick, "DEBUG SI tienes el modo +r");
+    } else {
+        privmsg(s_NickServ, u->nick, "DEBUG NO tienes el modo +r");
+    }              
+                  
     if (!NoSplitRecovery) {
 	/* XXX: This code should be checked to ensure it can't be fooled */
 	if (ni->id_timestamp != 0 && u->signon == ni->id_timestamp) {
@@ -2187,7 +2193,9 @@ static void do_info(User *u)
 	    notice_lang(s_NickServ, u, NICK_INFO_LAST_QUIT, ni->last_quit);
 	if (ni->url)
 	    notice_lang(s_NickServ, u, NICK_INFO_URL, ni->url);
-	if (ni->email && (show_hidden || !(real->flags & NI_HIDE_EMAIL)))
+/**	if (ni->email && (show_hidden || !(real->flags & NI_HIDE_EMAIL))) ***/
+
+        if (show_hidden) 
 	    notice_lang(s_NickServ, u, NICK_INFO_EMAIL, ni->email);
 	*buf = 0;
 	end = buf;

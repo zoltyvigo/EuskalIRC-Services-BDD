@@ -80,8 +80,8 @@ static void do_help(User *u)
     if (!cmd) {
         notice_help(s_CregServ, u, CREG_HELP);
         
-        if (is_services_admin(u))
-            notice_help(s_CregServ, u, CREG_SERVADMIN_HELP);                                   
+/***        if (is_services_admin(u))
+            notice_help(s_CregServ, u, CREG_SERVADMIN_HELP);   ****/
     } else {
         help_cmd(s_CregServ, u, cmds, cmd);
     }
@@ -115,6 +115,7 @@ static void do_registra(User *u)
     } else {
         privmsg(s_CregServ, u->nick, "Canal 12%s aceptado para el proceso de registro", chan);
         privmsg(s_CregServ, u->nick, "DEBUG pass: %s descripcion: %s", pass, desc);
+        wallops(s_CregServ, "12%s ha solicitado el registro del canal 12%s", u->nick, chan);
     }
 }                                                                        
                                                         

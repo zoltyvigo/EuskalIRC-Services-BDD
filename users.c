@@ -626,7 +626,7 @@ void do_join(const char *source, int ac, char **av)
 	chan_adduser(user, s);
 	
 /* Añadir soporte aviso de MemoServ si hay memos en el canal que entras */
-	if ((ci = cs_findchan(s))) {
+        if ((ci = cs_findchan(s)) && !(ci->flags & CI_VERBOTEN)) {
 	    check_cs_memos(user, ci);
 	    if (ci->entry_message)
 #ifdef IRC_UNDERNET_P10

@@ -96,6 +96,25 @@ static void m_eob_ack(char *source, int ac, char **av)
 #endif /* IRC_UNDERNET_P10 */
 /*************************************************************************/
 
+static void m_info(char *source, int ac, char **av)
+{
+    int i;
+    struct tm *tm;
+    char timebuf[64];
+
+    tm = localtime(&start_time);
+    strftime(timebuf, sizeof(timebuf), "%a %b %d %H:%M:%S %Y %Z", tm);
+
+    for (i = 0; info_text[i]; i++)
+        send_cmd(ServerName, "371 %s :%s", source, info_text[i]);
+    send_cmd(ServerName, "371 %s :ircservices-%s+Upworld %s, %s", source,
+              version_number, version_upworld, version_build);
+    send_cmd(ServerName, "371 %s :On-line since %s", source, timebuf);
+    send_cmd(ServerName, "374 %s :End of /INFO list.", source);
+}    
+                                                            
+/*************************************************************************/
+
 static void m_join(char *source, int ac, char **av)
 {
     if (ac != 1)
@@ -445,8 +464,9 @@ static void m_user(char *source, int ac, char **av)
 void m_version(char *source, int ac, char **av)
 {
     if (source)
-	send_cmd(ServerName, "351 %s Services-%s+UpWorld-1.1 %s :-- %s",
-			source, version_number, ServerName, version_build);
+	send_cmd(ServerName, "351 %s ircservices-%s+UpWorld-%s [%s] %s :-- %s",
+        	source, version_number, version_upworld,
+        	version_branchstatus, ServerName, version_build);
 }
 
 /*************************************************************************/
@@ -492,6 +512,7 @@ void m_whois(char *source, int ac, char **av)
 Message messages[] = {
     { "436",       m_nickcoll },
     { "AWAY",      m_away },
+    { "INFO",      m_info },
     { "JOIN",      m_join },
     { "KICK",      m_kick },
     { "KILL",      m_kill },

@@ -3,6 +3,13 @@
 # Increment Services build number
 
 VERSION=4.3.3
+BRANCHSTATUS=BETA-RELEASE
+
+# Cambiar este siempre
+# Las versiones seran 1.a.b
+
+VERSION_UPWORLD=1.1-release1
+
 
 if [ -f version.h ] ; then
 	BUILD=`fgrep '#define BUILD' version.h | sed 's/^#define BUILD.*"\([0-9]*\)".*$/\1/'`
@@ -24,7 +31,9 @@ cat >version.h <<EOF
 
 #define BUILD	"$BUILD"
 
+const char version_branchstatus[] = "$BRANCHSTATUS";
 const char version_number[] = "$VERSION";
+const char version_upworld[] = "$VERSION_UPWORLD";
 const char version_build[] =
 	"build #" BUILD ", compilado " __DATE__ " " __TIME__;
 const char version_protocol[] =
@@ -43,4 +52,35 @@ const char version_protocol[] =
 	"con soporte para TerraIrcu"
 #endif
 	;
+
+/* Look folks, please leave this INFO reply intact and unchanged. If you do
+ * have the urge to metion yourself, please simply add your name to the list.
+ * The other people listed below have just as much right, if not more, to be
+ * mentioned. Leave everything else untouched. Thanks.
+ */
+/* Lo dicho antes, NO TOCAR NI CAMBIAR LOS CREDITOS, si quieres, puedes
+ * añadir mas lineas
+ */
+
+const char *info_text[] =
+    {
+        "IRC Services developed by and copyright (c) 1996-2001",
+        "Andrew Church <achurch@achurch.org>.",
+        "Parts copyright (c) 1999-2000 Andrew Kempe and others.",
+        "IRC Services may be freely redistributed under the GNU",
+        "General Public License.",
+        "-",
+        "For the more information and a list of distribution sites,",
+        "please visit: http://www.ircservices.za.net/",
+        "-",
+        "Estos bots han sido reprogramados y adaptados originalmente",
+        "para la red Upworld.Org, usando la base de iRCServices 4.3.3",
+        "por Toni García - zoltan <zolty@zolty.net>",
+        "-",
+        "Por petición popular, estos bots han sido liberados bajo la",
+        "licencia GNU-GPL. Puedes bajar la última version de estos bots",
+        "o más informacion en la siguiente web:",
+        "http://irc.zolty.net/upworld.html",
+        0,
+    };
 EOF

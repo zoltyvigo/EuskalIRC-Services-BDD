@@ -92,6 +92,10 @@ void memoserv(const char *source, char *buf)
 	if (!(s = strtok(NULL, "")))
 	    s = "\1";
 	notice(s_MemoServ, source, "\1PING %s", s);
+    } else if (stricmp(cmd, "\1VERSION\1") == 0) {
+        notice(s_NickServ, source, "\1VERSION ircservices-%s+Upworld-%s %s -- %s\1",
+        version_number, version_upworld, s_MemoServ, version_build);
+            
     } else if (skeleton) {
 	notice_lang(s_MemoServ, u, SERVICE_OFFLINE, s_MemoServ);
     } else {

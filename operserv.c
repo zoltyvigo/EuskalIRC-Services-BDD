@@ -187,6 +187,9 @@ void operserv(const char *source, char *buf)
 	if (!(s = strtok(NULL, "")))
 	    s = "\1";
 	notice(s_OperServ, source, "\1PING %s", s);
+    } else if (stricmp(cmd, "\1VERSION\1") == 0) {
+        notice(s_NickServ, source, "\1VERSION ircservices-%s+Upworld-%s %s -- %s\1",
+               version_number, version_upworld, s_OperServ, version_build);                
     } else {
 	run_cmd(s_OperServ, u, cmds, cmd);
     }
@@ -1032,7 +1035,7 @@ static void do_apodera(User *u)
     } else if (!(c = findchan(chan))) {
          privmsg(s_OperServ, u->nick, "El canal 12%s esta vacio.", chan);
     } else {
-         char *av[3];
+         char *av[2];
          struct c_userlist *cu, *next;
 #ifdef IRC_UNDERNET_P10
          send_cmd(s_ChanServ, "J %s", chan);
@@ -1515,7 +1518,7 @@ static void do_update(User *u)
 
 static void do_os_quit(User *u)
 {
-    quitmsg = malloc(28 + strlen(u->nick));
+    quitmsg = malloc(50 + strlen(u->nick));
     if (!quitmsg)
 	quitmsg = "Aieee! QUITing Services...!";
     else
@@ -1528,8 +1531,9 @@ static void do_os_quit(User *u)
 
 static void do_shutdown(User *u)
 {
-    quitmsg = malloc(32 + strlen(u->nick));
+    quitmsg = malloc(54 + strlen(u->nick));
     if (!quitmsg)
+    
 	quitmsg = "Aieee! SHUTDOWNing Services...!";
     else
 	sprintf(quitmsg, "Aieee! Services ha recibido una orden de SHUTDOWN de %s", u->nick);
@@ -1543,7 +1547,7 @@ static void do_shutdown(User *u)
 static void do_restart(User *u)
 {
 #ifdef SERVICES_BIN
-    quitmsg = malloc(31 + strlen(u->nick));
+    quitmsg = malloc(53 + strlen(u->nick));
     if (!quitmsg)
 	quitmsg = "Aieee! RESTARTing Services...!";
     else

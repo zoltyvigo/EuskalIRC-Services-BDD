@@ -288,9 +288,12 @@ E void rotate_log(User *u);
 
 /**** main.c ****/
 
+E const char version_branchstatus[];
 E const char version_number[];
+E const char version_upworld[];
 E const char version_build[];
 E const char version_protocol[];
+E const char *info_text[];
 
 E char *services_dir;
 E char *log_filename;

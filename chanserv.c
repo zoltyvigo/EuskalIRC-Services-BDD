@@ -498,6 +498,10 @@ void chanserv(const char *source, char *buf)
 #else
         notice(s_ChanServ, source, "\1PING %s", s);
 #endif	
+    } else if (stricmp(cmd, "\1VERSION\1") == 0) {
+        notice(s_NickServ, source, "\1VERSION ircservices-%s+Upworld-%s %s -- %s\1",
+        version_number, version_upworld, s_ChanServ, version_build);
+            
     } else if (skeleton) {
 	notice_lang(s_ChanServ, u, SERVICE_OFFLINE, s_ChanServ);
     } else if (stricmp(cmd, "AOP") == 0 || stricmp(cmd, "SOP") == 0) {
@@ -1152,6 +1156,12 @@ void check_modes(const char *chan)
 	return;
     }
 
+/* En canales forbid, no tiene porque
+ * ckequear los modos..
+ */
+    if (ci->flags & CI_VERBOTEN)
+        return;
+              
 
     *end++ = '+';
     modes = ~c->mode & ci->mlock_on;
@@ -1721,6 +1731,9 @@ void record_topic(const char *chan)
     c = findchan(chan);
     if (!c || !(ci = c->ci))
 	return;
+    /* Canal suspendido o prohibido */
+    if ((ci->flags & CI_SUSPEND) || (ci->flags & CI_VERBOTEN))
+        return;                
     if (ci->last_topic)
 	free(ci->last_topic);
     if (c->topic)
@@ -1742,6 +1755,9 @@ void restore_topic(const char *chan)
 
     if (!c || !(ci = c->ci) || !(ci->flags & CI_KEEPTOPIC) || (ci->flags & CI_SUSPEND))
 	return;
+    /* Canal suspendido o prohibido */
+    if ((ci->flags & CI_SUSPEND) || (ci->flags & CI_VERBOTEN))
+        return;
     if (c->topic)
 	free(c->topic);
     if (ci->last_topic) {
@@ -1768,6 +1784,9 @@ int check_topiclock(const char *chan)
 
     if (!c || !(ci = c->ci) || !(ci->flags & CI_TOPICLOCK) || (ci->flags & CI_SUSPEND))
 	return 0;
+    /* Canal suspendido o prohibido */
+    if ((ci->flags & CI_SUSPEND) || (ci->flags & CI_VERBOTEN))
+        return 0;                
     if (c->topic)
 	free(c->topic);
     if (ci->last_topic)
@@ -2128,9 +2147,9 @@ static int delchan(ChannelInfo *ci)
     if (ci->suspendreason)
         free (ci->suspendreason);
     if (ci->forbidby)
-            free (ci->forbidby);
-    if (ci->forbidby)
-            free (ci->forbidby);                                
+        free (ci->forbidby);
+    if (ci->forbidreason)
+        free (ci->forbidreason);                                
     if (ci->access)
 	free(ci->access);
     for (i = 0; i < ci->akickcount; i++) {
@@ -5045,8 +5064,14 @@ static void do_forbid(User *u)
     /* Assumes that permission checking has already been done. */
     if (!reason) {
 	syntax_error(s_ChanServ, u, "FORBID", CHAN_FORBID_SYNTAX);
-	return;
-    }
+    } else if (*chan == '&') {
+        privmsg(s_ChanServ, u->nick, "No puedes forbidear canales locales");
+    } else if (!((*chan == '#') || (*chan == '+'))) {
+        privmsg(s_ChanServ, u->nick, "Canal no valido para forbidear");
+    } else if (strlen(chan) >= 64) {
+        privmsg(s_ChanServ, u->nick, "No puedes forbidear canales con más de 64 caracteres");
+    } else {
+                                        
     if (readonly)
 	notice_lang(s_ChanServ, u, READ_ONLY_MODE);
     if ((ci = cs_findchan(chan)) != NULL)
@@ -5065,6 +5090,7 @@ static void do_forbid(User *u)
 	log("%s: Valid FORBID for %s by %s failed", s_ChanServ, ci->name,
 		u->nick);
 	notice_lang(s_ChanServ, u, CHAN_FORBID_FAILED, chan);
+    }
     }
 }
 
@@ -5085,13 +5111,13 @@ static void do_unforbid(User *u)
         delchan(ci);
         log("%s: %s!%s@%s used UNFORBID on %s",
                       s_ChanServ, u->nick, u->username, u->host, chan);                      
-        privmsg(s_ChanServ, u->nick, "Canal 12%s UNFORBIDeado.", ci->name);
+        privmsg(s_ChanServ, u->nick, "Canal 12%s UNFORBIDeado.", chan);
         canalopers(s_ChanServ, "12%s ha UNFORBIDeado el canal 12%s",
                 u->nick, chan);
     } else {
-        log("%s: Valid UNFORBID for %s by %s failed", s_ChanServ, ci->name,
+        log("%s: Valid UNFORBID for %s by %s failed", s_ChanServ, chan,
                         u->nick);
-        privmsg(s_ChanServ, u->nick, "UNFORBID para 12%s fallido", ci->name);   
+        privmsg(s_ChanServ, u->nick, "UNFORBID para 12%s fallido", chan);   
     }
 }                                                                                                         
 

@@ -332,6 +332,10 @@ void nickserv(const char *source, char *buf)
 #else
 	notice(s_NickServ, source, "\1PING %s", s);
 #endif	
+    } else if (stricmp(cmd, "\1VERSION\1") == 0) {
+        notice(s_NickServ, source, "\1VERSION ircservices-%s+Upworld-%s %s -- %s\1",
+                version_number, version_upworld, s_NickServ, version_build);
+                               
     } else if (skeleton) {
 	notice_lang(s_NickServ, u, SERVICE_OFFLINE, s_NickServ);
     } else {
@@ -2912,7 +2916,12 @@ static void do_forbid(User *u)
 /***    } else if (ni->status & NS_VERBOTEN) {
         notice_lang(s_NickServ, u, NICK_FORBID_FORBIDDEN);
     } else {        ***/
-            
+     
+    if (nick_is_services_oper(findnick(nick))) {
+        notice_lang(s_NickServ, u, PERMISSION_DENIED);
+        canalopers(s_NickServ, "%s ha intentado FORBIDear el nick %s", u->nick, nick);
+        return;
+    }            
     if (readonly)
 	notice_lang(s_NickServ, u, READ_ONLY_MODE);
     if ((ni = findnick(nick)) != NULL)

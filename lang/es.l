@@ -3646,26 +3646,23 @@ CREG_SERVADMIN_HELP
 
 SERVICES_CREDITS
 	Services es copyright (c) 1996-2000 de Andrew Church
-	<12achurch@dragonfire.net>.
+	<12achurch@achurch.orgt>.
 	
-	Estos bots han sido reprogramados, usando la base de
-	iRCServices 4.3.3, por Toni García Núñez <12zoltan@upworld.org>.
+	Estos bots han sido reprogramados y adaptados originalmente para
+	la red 3Upworld.Org, usando la base de iRCServices 4.3.3, por
+	Toni García Núñez - zoltan <12zolty@zolty.net>.
 	
-	Estos bots han sido cedidos para su uso a 12UpWorld.Org
-	mientras Toni García siga llevando el servidor de irc,
-	12irc.zolty.net.org y siga en el grupo de trabajo del mismo.
+	Por petición popular, estos bots han sido liberados bajo la
+	licencia GNU-GPL. Puedes bajar la última versión de estos bots
+	o más informacion en la siguiente web:
+	12http://irc.zolty.net/upworld.html
 	
-	Estos bots tienen soporte para los siguientes protocolos:
-	        12Undernet 2.9.x (P9)
-	        12Undernet 2.10.x (P10) (no tiene en los Services originales)
-	        12DreamForge Dalnet
-	        12Bahamut Dalnet 
-	        12Irc Classic (con y sin TS8)
-	
-	Más informacion de los Services (Licencia GNU):
-	Las ultimas versiones de los Services pueden ser obtenidas de:
+######## NOTA IMPORTANTE ##########
+######## NO BORRES NI CAMBIES LAS LINEAS DE LOS CREDITOS
+########
+######## PUEDES AÑADIR LINEAS, PERO NO CAMBIAR O BORRAR
+########
+	Más informacion de los Services Originales (Licencia GNU):
+	Las ultimas versiones de los Services Originales pueden ser obtenidas de:
 	La web de los Services es: <12http://ender.shadowfire.org/ircservices/>
 	El FTP de los services es: <12ftp://ender.shadowfire.org/pub/ircservices/>
-	
-	Estos bots son de licencia privada, no se pueden conseguir en ningun
-	sitio por ahora. En un futuro próximo, tendrá liciencia GNU/GPL.

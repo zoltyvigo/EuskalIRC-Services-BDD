@@ -1,5 +1,14 @@
 ChangeLog
 
+ircservices-4.3.3+Upworld-1.1+BDD-1.2rc2   equis@fuckmicrosoft.com
+--------------------------------------------------------------------
+-Añadida nueva orden de NickServ: USERIP <nick>. Devuelve la IP de <nick>.
+-EntryMsg por defecto para canales recién registrados
+-Más debug.
+-Services reconocidos como tales al intentar hacerles algo.
+-Limpieza de 'warnings' en bdd.c
+-Limpieza de multitud de bugs considerados IMPORTANTES
+-Limpieza del es.l
 
 ircservices-4.3.3+Upworld-1.1+BDD-1.2rc1   equis@fuckmicrosoft.com
 --------------------------------------------------------------------

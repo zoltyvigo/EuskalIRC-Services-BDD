@@ -321,7 +321,7 @@ void listchans(int count_only, const char *chan)
 	    }
 	    printf("Candado de modos: ");
 	    if (ci->mlock_on || ci->mlock_key || ci->mlock_limit) {
-		printf("+%s%s%s%s%s%s%s%s%s%s%s%s",
+		printf("+%s%s%s%s%s%s%s%s%s%s",
 			(ci->mlock_on & CMODE_I) ? "i" : "",
 			(ci->mlock_key         ) ? "k" : "",
 			(ci->mlock_limit       ) ? "l" : "",
@@ -331,22 +331,22 @@ void listchans(int count_only, const char *chan)
 			(ci->mlock_on & CMODE_s) ? "s" : "",
 			(ci->mlock_on & CMODE_T) ? "t" : "",
 #if defined (IRC_HISPANO) || defined (IRC_TERRA)
-			(ci->mlock_on & CMODE_R) ? "R" : "",		
+			(ci->mlock_on & CMODE_R) ? "R" : "",
 			(ci->mlock_on & CMODE_m) ? "M" : ""
-#else		
+#else
 			""
 #endif
-#ifdef IRC_HISPANO
+/* #ifdef IRC_HISPANO
                        ,(ci->mlock_on & CMODE_A) ? "A" : "",
-                        (ci->mlock_on & CMODE_S) ? "S" : ""                        
+                        (ci->mlock_on & CMODE_S) ? "S" : ""
 #else
                         ,"",
                         ""
-#endif
+#endif */
                         );
 	    }
 	    if (ci->mlock_off)
-		printf("-%s%s%s%s%s%s%s%s%s%s%s%s",
+		printf("-%s%s%s%s%s%s%s%s%s%s",
 			(ci->mlock_off & CMODE_I) ? "i" : "",
 			(ci->mlock_off & CMODE_K) ? "k" : "",
 			(ci->mlock_off & CMODE_L) ? "l" : "",
@@ -361,7 +361,7 @@ void listchans(int count_only, const char *chan)
 #else
                         ""
 #endif
-#ifdef IRC_HISPANO
+/* #ifdef IRC_HISPANO
                         ,
                         (ci->mlock_off & CMODE_A) ? "A" : "",
                         (ci->mlock_off & CMODE_S) ? "S" : ""
@@ -369,7 +369,7 @@ void listchans(int count_only, const char *chan)
                         ,
                         "",
                         ""
-#endif
+#endif */
                         );
 
 	    if (ci->mlock_key)
@@ -2426,6 +2426,7 @@ static void do_register(User *u)
 		ni->channelcount++;
 	    ni = ni->link;
 	}
+	ci->entry_message =  DEntryMsg;
 	canalopers(s_ChanServ, "Canal 12%s registrado por 12%s", chan, u->nick);
 	log("%s: Canal %s registrado por %s!%s@%s", s_ChanServ, chan,
 		u->nick, u->username, u->host);
@@ -2967,8 +2968,8 @@ static void do_set_mlock(User *u, ChannelInfo *ci, char *param)
 	        newlock_on |= CMODE_m;
 		newlock_off &= ~CMODE_m;
 	    } else {
-	        newlock_on |= CMODE_m;
-		newlock_off &= ~CMODE_m;
+	        newlock_off |= CMODE_m;
+		newlock_on &= ~CMODE_m;
 	    }
 	    break;
 /* #endif */
@@ -3023,6 +3024,7 @@ static void do_set_mlock(User *u, ChannelInfo *ci, char *param)
 				(ci->mlock_on & CMODE_s) ? "s" : "",
 				(ci->mlock_on & CMODE_T) ? "t" : "",
 /* #if defined (IRC_HISPANO_NOCHUTA) || defined (IRC_TERRA) */
+				(ci->mlock_on & CMODE_m) ? "M" : "",
 				(ci->mlock_on & CMODE_R) ? "R" : ""
 /* #else
 				""
@@ -3047,6 +3049,7 @@ static void do_set_mlock(User *u, ChannelInfo *ci, char *param)
 				(ci->mlock_off & CMODE_s) ? "s" : "",
 				(ci->mlock_off & CMODE_T) ? "t" : "",
 /* #if defined (IRC_HISPANO_NOCHUTA) || defined (IRC_TERRA) */                   
+				(ci->mlock_off & CMODE_m) ? "M" : "",
 				(ci->mlock_off & CMODE_R) ? "R" : ""
 /* #else
 				""
@@ -3411,13 +3414,16 @@ static void do_access(User *u)
 	    return;
 	}
 	ni = findnick(nick);
-	if (!ni) {
+	if (is_a_service(nick)) {
+            notice_lang(s_ChanServ, u, NICK_IS_A_SERVICE, nick);
+	    return;
+	} else if (!ni) {
 	    notice_lang(s_ChanServ, u, CHAN_ACCESS_NICKS_ONLY);
 	    return;
 	} else if (ni->status & NS_VERBOTEN) {
 	    notice_lang(s_ChanServ, u, NICK_X_FORBIDDEN, ni->nick);
 	    return;
-	}    
+	}
 	for (access = ci->access, i = 0; i < ci->accesscount; access++, i++) {
 	    if (access->ni == ni) {
 		/* Don't allow lowering from a level >= ulev */

@@ -377,6 +377,8 @@ NICK_SET_BDD_ON
 NICK_SET_BDD_OFF
 	El nick 12%s ha salido de la BDD
 
+NICK_BDD_NEW_REG
+	Su clave es 12%s, recuérdela por si no le llega confirmación al correo. Utilice 12/nick %s:%s para identificarse.
 
 # SET NOEXPIRE responses
 NICK_SET_NOEXPIRE_SYNTAX
@@ -489,10 +491,10 @@ NICK_INFO_OPT_NONE
 	12Ninguna
 
 NICK_INFO_OPT_BDD
-	Migrado a BDD
+	Nick migrado a BDD
 
 NICK_INFO_NO_EXPIRE
-	Expiración del nick: no expirará
+	Expiración del nick: 12no expirará
 NICK_INFO_LINKS
 	Linkado por 12%s (12%s)
 
@@ -530,6 +532,13 @@ NICK_RELEASE_NOT_HELD
 	Nick 12%s no esta siendo protegido en este momento.
 NICK_RELEASED
 	La protección de Services en su nick ha sido liberada.
+# USERIP
+NICK_USERIP_SYNTAX
+	12USERIP <nick>
+NICK_USERIP_CHECK_OK
+	El nick 12%s está conectando desde: 12%s
+NICK_USERIP_CHECK_NO
+	El nick 12%s no está conectado en este momento.
 
 # GHOST responses
 NICK_GHOST_SYNTAX
@@ -553,6 +562,9 @@ NICK_STATUS_IDENTIFIED
 NICK_STATUS_SUSPENDED
 	STATUS %s 4 (Suspendido)
 
+NICK_STATUS_ID_BDD
+	Identificado por BDD
+
 # SENDPASS responses
 NICK_SENDPASS_SYNTAX
 	12SENDPASS <nick>
@@ -567,6 +579,9 @@ NICK_GETPASS_UNAVAILABLE
 	Comando 12GETPASS no disponible cuando encripción esta en uso.
 NICK_GETPASS_PASSWORD_IS
 	La contraseña de 12%s es 12%s.
+
+NICK_IS_A_SERVICE
+	12%s es un 12SERVICE de la red
 
 # SUSPEND responses
 NICK_SUSPEND_SYNTAX
@@ -969,29 +984,29 @@ CHAN_INFO_SYNTAX
 CHAN_INFO_HEADER
 	Información de canal 12%s:
 CHAN_INFO_ACTIVED
-	Estado: 12ACTIVO
+	Estado: ACTIVO
 CHAN_INFO_SUSPENDED
-	Estado: 12SUSPENDIDO
+	Estado: SUSPENDIDO
 CHAN_INFO_FOUNDER
-	Fundador: 12%s (12%s)
+	Fundador: %s (%s)
 CHAN_INFO_NO_FOUNDER
-	Fundador: 12%s
+	Fundador: %s
 CHAN_INFO_SUCCESSOR
-	Sucesor: 12%s (12%s)
+	Sucesor: %s (%s)
 CHAN_INFO_NO_SUCCESSOR
-	Sucesor: 12%s
+	Sucesor: %s
 CHAN_INFO_DESCRIPTION
-	Descripción: 12%s
+	Descripción: %s
 CHAN_INFO_ENTRYMSG
-	Mensaje de entrada: 12%s
+	Mensaje de entrada: %s
 CHAN_INFO_TIME_REGGED
-	Registrado: 12%s
+	Registrado: %s
 CHAN_INFO_LAST_USED
-	Ultimo uso: 12%s
+	Ultimo uso: %s
 CHAN_INFO_LAST_TOPIC
-	Ultimo tópico: 12%s
+	Ultimo tópico: %s
 CHAN_INFO_TOPIC_SET_BY
-	Tópico ajustado por: 12%s
+	Tópico ajustado por: %s
 CHAN_INFO_URL
 	URL: 12%s
 CHAN_INFO_EMAIL
@@ -999,25 +1014,25 @@ CHAN_INFO_EMAIL
 CHAN_INFO_OPTIONS
 	Opciones: %s
 CHAN_INFO_OPT_PRIVATE
-	12Privado
+	Privado
 CHAN_INFO_OPT_KEEPTOPIC
-	12Retención de tópico
+	Retención de tópico
 CHAN_INFO_OPT_TOPICLOCK
-	12Candado de tópico
+	Candado de tópico
 CHAN_INFO_OPT_SECUREOPS
-	12Secure Ops
+	Secure Ops
 CHAN_INFO_OPT_LEAVEOPS
-	12Leave Ops
+	Leave Ops
 CHAN_INFO_OPT_RESTRICTED
-	12Acceso restringido
+	Acceso restringido
 CHAN_INFO_OPT_SECURE
-	12Seguro
+	Seguro
 CHAN_INFO_OPT_NONE
-	12Ninguna
+	Ninguna
 CHAN_INFO_MODE_LOCK
-	Candado de modo: 12%s
+	Candado de modo: %s
 CHAN_INFO_NO_EXPIRE
-	Expiración del canal: 4NO12 expirará.
+	Expiración del canal:12 no expirará.
 
 # LIST responses
 CHAN_LIST_SYNTAX
@@ -2141,11 +2156,16 @@ NICK_SERVADMIN_HELP
 	    12FORBID     Evita que un nick sea utilizado
 	    12UNFORBID   Libera un nick prohibido
 	    12RENAME     Cambia un nick por otro generado aleatoriamente.
+	    12USERIP     Obtiene la dirección IP/Host del usuario.
 	
 	4Administradores de Services pueden cancelar cualquier nick
 	sin necesidad de identificarse por el mismo, y pueden ver la
 	lista de acceso de cualquier nick (12/msg %S ACCESS LIST <nick>).
 
+NICK_SERVADMIN_HELP_USERIP
+	Sintaxis: 12USERIP <nick>
+	
+	Muestra la dirección IP/Hostname del nick introducido.
 
 NICK_SERVADMIN_HELP_RENAME
 	Sintaxis: 12RENAME <nick>
@@ -2158,7 +2178,7 @@ NICK_SERVADMIN_HELP_DROP
 	
 	Sin parámetros, cancela el registro de tu nick de la base de
 	datos de 12%S.
-
+	
 	Con un parámetro, cancela el registro de ese nick en la base
 	de datos.
 	 

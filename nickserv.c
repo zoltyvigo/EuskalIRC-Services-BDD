@@ -70,7 +70,7 @@ static void do_link(User *u);
 static void do_unlink(User *u);
 static void do_listlinks(User *u);
 static void do_info(User *u);
-/* static void do_userip(User *u, NickInfo *ni); */
+static void do_userip(User *u);
 static void do_list(User *u);
 static void do_recover(User *u);
 static void do_release(User *u);
@@ -99,7 +99,8 @@ static Command cmds[] = {
     { "REGISTER", do_register, NULL,  NICK_HELP_REGISTER,     -1,-1,-1,-1 },
     { "IDENTIFY", do_identify, NULL,  NICK_HELP_IDENTIFY,     -1,-1,-1,-1 },
     { "AUTH",     do_identify, NULL,  NICK_HELP_IDENTIFY,     -1,-1,-1,-1 },    
-/*    { "USERIP"	  do_userip,   is_services_oper,  -1,         -1,-1,-1,-1 }, */
+    { "USERIP",	  do_userip,   is_services_oper,  NICK_SERVADMIN_HELP_USERIP,         -1,-1,-1,-1 }, 
+    
     { "DROP",     do_drop,     is_services_oper,  -1,
 		NICK_HELP_DROP, NICK_SERVADMIN_HELP_DROP,
 		NICK_SERVADMIN_HELP_DROP, NICK_SERVADMIN_HELP_DROP },
@@ -966,18 +967,18 @@ NickInfo *findnick(const char *nick)
  * Copiado codigo common.c y common.h del ircu de Undernet
  *
  * zoltan 1/11/2000
- */    
+ */
     for (ni = nicklists[toLower(*nick)]; ni; ni = ni->next) {
         if (strCasecmp(ni->nick, nick) == 0)
             return ni;
     }
-                            
+
     for (ni = nicklists[toUpper(*nick)]; ni; ni = ni->next) {
         if (strCasecmp(ni->nick, nick) == 0)
             return ni;
-    } 
+    }
 #else
- 
+
     for (ni = nicklists[tolower(*nick)]; ni; ni = ni->next) {
 	if (stricmp(ni->nick, nick) == 0)
 	    return ni;
@@ -1097,6 +1098,8 @@ static int delnick(NickInfo *ni)
 {
     int i;
 
+
+
     cs_remove_nick(ni);
     os_remove_nick(ni);
     if (ni->linkcount)
@@ -1139,8 +1142,12 @@ static int delnick(NickInfo *ni)
 	}
 	free(ni->memos.memos);
     }
-    if (ni->status & NI_ON_BDD)
+    if (ni->status & NI_ON_BDD) {
 	do_write_bdd(ni->nick, 15, "");
+	do_write_bdd(ni->nick, 2, "");
+	do_write_bdd(ni->nick, 3, "");
+	do_write_bdd(ni->nick, 4, "");
+    }
 
     free(ni);
     return 1;
@@ -1581,7 +1588,7 @@ static void do_register(User *u)
                buf = smalloc(sizeof(char *) * 1024);
                sprintf(buf,"\n    NiCK: %s\n"
                              "Password: %s\n\n"
-                             "Para identificarte   -> /msg %s IDENTIFY %s\n"
+                             "Para identificarte   -> /nick %s:%s\n"
                              "Para cambio de clave -> /msg %s SET PASSWORD nueva_password\n\n"
                              "Página de Información %s\n",
                        ni->nick, ni->pass, s_NickServ, ni->pass, s_NickServ, WebNetwork);
@@ -1591,7 +1598,7 @@ static void do_register(User *u)
                enviar_correo(ni->email, subject, buf);
 	       do_write_bdd(ni->nick, 1, ni->pass);
 	       ni->status |= NI_ON_BDD;
-	       privmsg(s_NickServ, ni->nick, "Su clave es %s. Recuerdela por si no le llega notificacion al correo. Use /nick %s:%s para identificarse.",ni->pass, ni->nick, ni->pass);
+	       notice_lang(s_NickServ, u, NICK_BDD_NEW_REG,ni->pass, ni->nick, ni->pass);
 	       send_cmd(NULL, "RENAME %s", ni->nick);
                exit(0);
             }
@@ -2134,11 +2141,17 @@ static void do_set_bdd(User *u, NickInfo *ni, char *param)
           notice_lang(s_NickServ, u, PERMISSION_DENIED);
 	  return;
      }
-     
+
      if (!param) {
          syntax_error(s_NickServ, u, "SET BDD", NICK_SET_BDD_SYNTAX);
 	 return;
      }
+     
+     if (nick_is_services_oper(ni)) {
+     	 notice_lang(s_NickServ, u, ACCESS_DENIED);
+	 return;
+     }
+
      if (stricmp(param, "ON") == 0) {
          ni->status |= NI_ON_BDD;
 	 notice_lang(s_NickServ, u, NICK_SET_BDD_ON, ni->nick);
@@ -2147,24 +2160,28 @@ static void do_set_bdd(User *u, NickInfo *ni, char *param)
          ni->status &= ~NI_ON_BDD;
 	 notice_lang(s_NickServ, u, NICK_SET_BDD_OFF, ni->nick);
 	 do_write_bdd(ni->nick, 15, "");
-	/* notice(s_NickServ, u, "Nick %s fuera de BDD", ni->nick); */
+	 do_write_bdd(ni->nick, 2, "");
+	 do_write_bdd(ni->nick, 3, "");
+	 do_write_bdd(ni->nick, 4, "");
      } else {
          syntax_error(s_NickServ, u, "SET BDD", NICK_SET_BDD_SYNTAX);
      }
 }
-/*static void do_userip(User *u, NickInfo *ni)
+static void do_userip(User *u)
 {
-     if (!is_services_oper(u)) {
-          notice_lang(s_NickServ, u, PERMISSION_DENIED);
-	  return;
-     }
-     if (!nick_online(ni->nick)) {
-     	  privmsg(s_NickServ, u->nick, "El nick %s no esta online en este momento", ni->nick);
+    char *nick = strtok(NULL, " ");
+    User *u2;
+
+     if (!nick) {
+     	syntax_error(s_NickServ,u, "USERIP", NICK_USERIP_SYNTAX);
+     } else if (!(u2 = finduser(nick))) {
+     	  notice_lang(s_NickServ, u, NICK_USERIP_CHECK_NO, nick);
      } else {
-     	  privmsg(s_NickServ, u->nick, "El nick %s esta conectando desde %s", ni->nick, ni-last_usermask);
+     	  notice_lang(s_NickServ, u, NICK_USERIP_CHECK_OK, nick, u2->host);
+	  canaladmins(s_NickServ, "12%s usó USERIP sobre 12%s.",u->nick, nick);
      }
 }
-*/
+
      
 /**************************************************************************/ 
       
@@ -2489,12 +2506,13 @@ static void do_info(User *u)
     char *nick = strtok(NULL, " ");
     char *param = strtok(NULL, " ");
     NickInfo *ni, *ni2, *real;
-    int is_servoper = is_services_oper(u); 
-    int i;  
+    int is_servoper = is_services_oper(u);
+    int i;
 
     if (!nick) {
     	syntax_error(s_NickServ, u, "INFO", NICK_INFO_SYNTAX);
-
+    } else if (is_a_service(nick)) {
+    	notice_lang(s_NickServ, u, NICK_IS_A_SERVICE, nick);
     } else if (!(ni = findnick(nick))) {
 	notice_lang(s_NickServ, u, NICK_X_NOT_REGISTERED, nick);
     } else if (ni->status & NS_VERBOTEN) {
@@ -2502,7 +2520,7 @@ static void do_info(User *u)
         privmsg(s_NickServ, u->nick, "Motivo: 12%s", ni->forbidreason);
         if (is_services_oper(u))
             privmsg(s_NickServ, u->nick, "Forbideado por: 12%s", ni->forbidby);
-                            
+
     } else {
 	struct tm *tm;
 	char buf[BUFSIZE], *end;
@@ -2517,7 +2535,7 @@ static void do_info(User *u)
 
         /* Only show hidden fields to owner and sadmins and only when the ALL
 	 * parameter is used. -TheShadow */
-        if (param && stricmp(param, "ALL") == 0 && 
+        if (param && stricmp(param, "ALL") == 0 &&
 			((nick_online && (stricmp(u->nick, nick) == 0)) ||
                         	is_services_oper(u)))
             show_hidden = 1;
@@ -2525,10 +2543,10 @@ static void do_info(User *u)
 	real = getlink(ni);
 
         if(stricmp(ni->nick,real->nick)!=0)
-            notice_lang(s_NickServ, u, NICK_INFO_LINKED, real->nick); 
-            
+            notice_lang(s_NickServ, u, NICK_INFO_LINKED, real->nick);
+
         if (ni->status & NS_SUSPENDED) {
-            notice_lang(s_NickServ, u, NICK_INFO_SUSPENDED, ni->suspendreason);                                 	                          
+            notice_lang(s_NickServ, u, NICK_INFO_SUSPENDED, ni->suspendreason);
             if (show_hidden) {
                 char timebuf[32], expirebuf[256];
 //                time_t now = time(NULL);            
@@ -2610,7 +2628,7 @@ static void do_info(User *u)
 	 
 	if (stricmp(nick, ServicesRoot) ==0)
 	    notice_lang(s_NickServ, u, NICK_INFO_SERV_ROOT);
-	    
+
 	*buf = 0;
 	end = buf;
 	if (real->flags & NI_KILLPROTECT) {
@@ -2876,15 +2894,17 @@ static void do_ghost(User *u)
 static void do_status(User *u)
 {
     NickInfo *ni;
-    
+
     char *nick;
     User *u2;
     int i = 0;
     /* NickInfo *u2; */
-    
-    
+
+
     while ((nick = strtok(NULL, " ")) && (i++ < 16)) {
-       if (!(u2 = finduser(nick)))
+       if (is_a_service(nick))
+           notice_lang(s_NickServ, u, NICK_IS_A_SERVICE, nick);
+       else if (!(u2 = finduser(nick)))
            notice_lang(s_NickServ, u, NICK_STATUS_OFFLINE, nick);
        else if (!(findnick(nick)))
            notice_lang(s_NickServ, u, NICK_STATUS_NOT_REGISTRED, nick);
@@ -2900,15 +2920,9 @@ static void do_status(User *u)
        
        if ((ni = findnick(nick)) && (u2 = finduser(nick))) {
        if ((ni->status & NI_ON_BDD) && nick_identified(u2)) {
-      	  privmsg(s_NickServ, u->nick, "Identificado por BDD");
-       } 
+      	  notice_lang(s_NickServ, u, NICK_STATUS_ID_BDD);
+       }
       }
-   
-       
-       
-      /* else   
-          privmsg(s_NickServ, u->nick, "Esto nunca deberia pasar");
-	*/  
    }
 }
 
@@ -3106,7 +3120,8 @@ static void do_unsuspend(User *u)
           if (finduser(nick)) {
               privmsg (s_NickServ, ni->nick, "Tu nick 12%s ha sido reactivado.", ni->nick);
               privmsg (s_NickServ, ni->nick, "Vuelve a identificarte con tu nick.");
-          }
+//            send_cmd(NULL, "RENAME %s", ni->nick);
+	  }
     }
 }
 

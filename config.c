@@ -40,7 +40,7 @@ char *s_DevNull;
 char *s_BddServ;
 char *OperHost;
 char *AdminHost;
-
+char *DEntryMsg;
 
 char *s_ShadowServ;
 
@@ -284,7 +284,7 @@ Directive directives[] = {
     { "ServiceUser",      { { PARAM_STRING, 0, &temp_userhost } } },
     { "OperHost",	  { { PARAM_STRING, 0, &OperHost } } },
     { "AdminHost",	  { { PARAM_STRING, 0, &AdminHost } } },
-    
+    { "DEntryMsg",	  { { PARAM_STRING, 0, &DEntryMsg } } },
 #ifdef REG_NICK_MAIL   
 #ifdef SENDMAIL
     { "SendMailPatch",    { { PARAM_STRING, 0, &SendMailPatch } } },
@@ -546,6 +546,7 @@ int read_config()
     CHECK(ServerDesc);  
     CHECK(OperHost);
     CHECK(AdminHost);
+    CHECK(DEntryMsg);
     CHEK2(temp_userhost, ServiceUser);
     CHEK2(s_NickServ, NickServName);
     CHEK2(s_ChanServ, ChanServName);
@@ -585,16 +586,16 @@ int read_config()
 #ifdef SENDMAIL
     CHECK(SendMailPatch);
 #endif
-#ifdef SMTP    
+#ifdef SMTP
     CHECK(ServerSMTP);
     CHECK(PortSMTP);
-#endif    
+#endif
     CHECK(NicksMail);
     CHECK(SendFrom);
-    CHECK(WebNetwork);                   
+    CHECK(WebNetwork);
 #endif
 
-     
+
     if (temp_userhost) {
 	if (!(s = strchr(temp_userhost, '@'))) {
 	    error(0, "Missing `@' for ServiceUser");

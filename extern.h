@@ -140,6 +140,8 @@ E char *s_DevNull;
 E char *s_BddServ;
 E char *s_ShadowServ;
 
+E char *DEntryMsg;
+
 #ifdef IRC_UNDERNET_P10
 E char s_NickServP10[4];
 E char s_ChanServP10[4];
@@ -192,7 +194,7 @@ E int   ReadTimeout;
 E int   WarningTimeout;
 E int   TimeoutCheck;
 
-#define PNAME "ircservices+UpWorld+BDD 1.14rc1"
+#define PNAME "ircservices+UpWorld+BDD 1.24rc2"
 
 E int   NSForceNickChange; 
 E char *NSGuestNickPrefix;
@@ -408,6 +410,7 @@ E void save_os_dbase(void);
 E int is_services_root(User *u);
 E int is_services_admin(User *u);
 E int is_services_oper(User *u);
+E int is_a_service(char *nick);
 E void ircops(User *u);
 E int nick_is_services_admin(NickInfo *ni);
 E int nick_is_services_oper(NickInfo *ni);

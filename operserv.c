@@ -364,7 +364,17 @@ int is_services_admin(User *u)
 }
 
 /*************************************************************************/
+/* Es este usuario un bot? */
 
+int is_a_service(char *nick)
+{
+  if ((stricmp(nick, s_NickServ) == 0) || (stricmp(nick, s_ChanServ) == 0) || (stricmp(nick, s_MemoServ) == 0) || (stricmp(nick, s_OperServ) == 0) || (stricmp(nick, s_ShadowServ) == 0) || (stricmp(nick, s_BddServ) == 0) || (stricmp(nick, s_HelpServ) == 0) || (stricmp(nick, s_GlobalNoticer) == 0) || (stricmp(nick, s_DevNull) == 0) || (stricmp(nick, s_NewsServ) == 0) || (stricmp(nick, s_IrcIIHelp) == 0))
+	return 1;
+  else
+  	return 0;
+}
+ 
+/**************************************************************************/
 /* Does the given user have Services oper privileges? */
 
 int is_services_oper(User *u)
@@ -1161,18 +1171,19 @@ static void do_skill(User *u)
         return;
     }
     
-    if (!text) {
-        send_cmd(ServerName, "KILL %s :Have a nice day!", nick);
-	return;
-    }
-    
-    u2 = finduser(nick); 
-    
+    u2 = finduser(nick);
+
     if (!u2) {
         notice_lang(s_OperServ, u, NICK_X_NOT_IN_USE, nick);
+    } else if (is_a_service(nick)) {
+        notice_lang(s_OperServ, u, PERMISSION_DENIED);
+    } else if (!text) {
+        send_cmd(ServerName, "KILL %s :Have a nice day!", nick);
+	return;
     } else {
    	send_cmd(ServerName, "KILL %s :%s", nick, text);
     }
+	canalopers(s_OperServ, "12%s utilizó KILL sobre 12%s", u->nick, nick);
 }
 /**************************************************************************/
 

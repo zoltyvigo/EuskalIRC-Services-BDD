@@ -113,8 +113,8 @@ void tea(unsigned int v[], unsigned int k[], unsigned int x[])
   while (n-- > 0)
   {
     sum += delta;
-    y += (z << 4) + a ^ z + sum ^ (z >> 5) + b;
-    z += (y << 4) + c ^ y + sum ^ (y >> 5) + d;
+    y += ((z << 4) + a) ^ ((z + sum) ^ ((z >> 5) + b));
+    z += ((y << 4) + c) ^ ((y + sum) ^ ((y >> 5) + d));
   }
 
   x[0] = y;
@@ -131,7 +131,7 @@ static unsigned int tabla_w;
 static unsigned int tabla_i;
 static void compactar_tablas(User *u);
 static void regenerar_clave(User *u);
-static void tocar_tablas(User *u);	
+static void tocar_tablas(User *u);
 static void actualizar_contadores(User *u);
 static void do_help(User *u);
 
@@ -146,20 +146,20 @@ void do_write_bdd(char *entrada, int tabla, const char *valor, ...)
 
     char nicks[NICKLEN + 1];    /* Nick normalizado */
     char clave[12 + 1];                /* Clave encriptada */
-    int i = 0;
+    int ir = 0;
 
 
-	
-		
+
+
     strcpy(nicks, entrada);
     nicks[NICKLEN] = '\0';
-    
-    while (nicks[i] != 0)
+
+    while (nicks[ir] != 0)
     {
-       nicks[i] = stoLower(nicks[i]);
-       i++;
-    } 
-    
+       nicks[ir] = stoLower(nicks[ir]);
+       ir++;
+    }
+
     memset(tmpnick, 0, sizeof(tmpnick));
     strncpy(tmpnick, nicks ,sizeof(tmpnick) - 1);
 
@@ -170,11 +170,11 @@ void do_write_bdd(char *entrada, int tabla, const char *valor, ...)
     strncat(tmppass, "AAAAAAAAAAAA", sizeof(tmppass) - strlen(tmppass) -1);
 
     x[0] = x[1] = 0;
-    
+
     k[1] = base64toint(tmppass + 6);
     tmppass[6] = '\0';
     k[0] = base64toint(tmppass);
-    
+
     memset(tmpnick, 0, sizeof(tmpnick));
     strncpy(tmpnick, nicks ,sizeof(tmpnick) - 1);
 
@@ -185,11 +185,11 @@ void do_write_bdd(char *entrada, int tabla, const char *valor, ...)
     strncat(tmppass, "AAAAAAAAAAAA", sizeof(tmppass) - strlen(tmppass) -1);
 
     x[0] = x[1] = 0;
-    
+
     k[1] = base64toint(tmppass + 6);
     tmppass[6] = '\0';
     k[0] = base64toint(tmppass);
-	
+
     while(conts--)
     {
       v[0] = ntohl(*ps++);      /* 32 bits */
@@ -198,9 +198,9 @@ void do_write_bdd(char *entrada, int tabla, const char *valor, ...)
     }
 
     inttobase64(clave, x[0], 6);
-    inttobase64(clave + 6, x[1], 6); 	
+    inttobase64(clave + 6, x[1], 6);
 
-	 
+
 	 if (tabla == 1) {
 		send_cmd(NULL, "DB * %d n %s :%s", tabla_n, nicks, clave);
 	 	tabla_n++;

@@ -1,10 +1,21 @@
-ChangeLog
+ChangeLog 
+
+ircservices-4.3.3+Upworld-1.1+BDD-1.2.1		  tasio@tasio.net
+--------------------------------------------------------------------
+-Fix en el correo.c
+-Fix en la función is_a_service que mataba a los servicios si se utilizaba
+esta función con los bots "optativos" deshabilitados*
+-Optimizaciones en tiempo de compilación para un mayor rendimiento y
+velocidad.
+
+(*) Estos fixes han sido notificados por DesMan <desman@esirc.com>
 
 
 ircservices-4.3.3+Upworld-1.1+BDD-1.2rc5p1 equis@fuckmicrosoft.com
 --------------------------------------------------------------------
 -Pequeño parche de la versión 5 para "ajustar" modos de los services
-
+-Solucionado bug en nickserv que enviaba el debug de USERIP al canal de admins
+sin estar dentro. Ahora lo envía al de opers.
 
 
 ircservices-4.3.3+Upworld-1.1+BDD-1.2rc5   equis@fuckmicrosoft.com

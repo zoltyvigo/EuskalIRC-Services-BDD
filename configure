@@ -642,7 +642,7 @@ elif [ "$CC" ] ; then
 elif run gcc --version ; then
 	echo "great, encontrado gcc!"
 	CC=gcc
-	DEF_CC_FLAGS=-O2
+	DEF_CC_FLAGS=-O9 -fomit-frame-pointer -ffast-math -fexpensive-optimizations
 	log using \`gcc\'
 else
 	echo "gcc no encontrado."
@@ -674,7 +674,7 @@ EOT
 		log \`"$CC' not ANSI-compliant"
 		exit 2
 	fi
-	DEF_CC_FLAGS=-O
+	DEF_CC_FLAGS=-O9 -fomit-frame-pointer -ffast-math -fexpensive-optimizations
 fi
 
 
@@ -682,14 +682,14 @@ fi
 
 MODE="find_ccopts     "
 if [ "$USER_CC_FLAGS" != bonkle ] ; then
-	CC_FLAGS="$USER_CC_FLAGS"
+	CC_FLAGS="-O9 -fomit-frame-pointer -ffast-math -fexpensive-optimizations"
 	echo "Compiler flags supplied: $CC_FLAGS"
 	log user supplied flags: \`"$CC_FLAGS'"
 elif [ "$CC_FLAGS" != bonkle ] ; then
 	echo "Compiler flags: (cached) $CC_FLAGS"
 	log cache supplied flags: \`"$CC_FLAGS'"
 else
-	CC_FLAGS=$DEF_CC_FLAGS
+	CC_FLAGS="-O9 -fomit-frame-pointer -ffast-math -fexpensive-optimizations"
 	echo2 "Testing default compiler flags ($CC_FLAGS)... "
 	cat >tmp/test.c <<EOT
 	int main(int argc, char **argv) {

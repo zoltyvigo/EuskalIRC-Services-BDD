@@ -40,7 +40,7 @@ int enviar_correo(const char * destino, const char *subject, const char *body)
 			"Subject: %s\n"
 			"%s\n"
 			".\n"
-			"QUIT", SendFrom, destino, SendFrom, destino, subject, body);
+			"QUIT\n", SendFrom, destino, SendFrom, destino, subject, body);
 	if (send(sockmail, buf, sizeof(buf),0) == -1)
 		return 0;
 

@@ -368,7 +368,7 @@ int is_services_admin(User *u)
 
 int is_a_service(char *nick)
 {
-  if ((stricmp(nick, s_NickServ) == 0) || (stricmp(nick, s_ChanServ) == 0) || (stricmp(nick, s_MemoServ) == 0) || (stricmp(nick, s_OperServ) == 0) || (stricmp(nick, s_ShadowServ) == 0) || (stricmp(nick, s_BddServ) == 0) || (stricmp(nick, s_HelpServ) == 0) || (stricmp(nick, s_GlobalNoticer) == 0) || (stricmp(nick, s_DevNull) == 0) || (stricmp(nick, s_NewsServ) == 0) || (stricmp(nick, s_IrcIIHelp) == 0))
+  if ((stricmp(nick, s_NickServ) == 0) || (stricmp(nick, s_ChanServ) == 0) || (stricmp(nick, s_MemoServ) == 0) || (stricmp(nick, s_OperServ) == 0) || (stricmp(nick, s_ShadowServ) == 0) || (stricmp(nick, s_BddServ) == 0) || (stricmp(nick, s_HelpServ) == 0) || (stricmp(nick, s_GlobalNoticer) == 0) || (s_DevNull && (stricmp(nick, s_DevNull)) == 0) || (stricmp(nick, s_NewsServ) == 0) || (s_IrcIIHelp && (stricmp(nick, s_IrcIIHelp)) == 0))
 	return 1;
   else
   	return 0;

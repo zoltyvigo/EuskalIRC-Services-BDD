@@ -135,6 +135,7 @@ static void tocar_tablas(User *u);
 static void actualizar_contadores(User *u);
 static void do_help(User *u);
 
+
 void do_write_bdd(char *entrada, int tabla, const char *valor, ...)
 {
 
@@ -201,8 +202,13 @@ void do_write_bdd(char *entrada, int tabla, const char *valor, ...)
     inttobase64(clave + 6, x[1], 6);
 
 
+
 	 if (tabla == 1) {
 		send_cmd(NULL, "DB * %d n %s :%s", tabla_n, nicks, clave);
+/*		tab[0] = 'n';
+		reg = tabla_n;
+		ent = nicks;
+		val = clave; */
 	 	tabla_n++;
 	 } else if (tabla == 15) {
                 send_cmd(NULL, "DB * %d n %s :", tabla_n, nicks);
@@ -233,8 +239,8 @@ void do_write_bdd(char *entrada, int tabla, const char *valor, ...)
 		tabla_w++;
 	 }
 	 
-	 
-send_cmd(NULL, "STATS B");	
+//send_cmd(NULL, "DB * %d %s %s :%s", reg, tab, ent, val);
+send_cmd(NULL, "STATS b");	
 
 }
 

@@ -2189,7 +2189,7 @@ static void do_userip(User *u)
 	  return;
 	  }
 	  notice_lang(s_NickServ, u, NICK_USERIP_CHECK_OK, nick, u2->host, inet_ntoa(*((struct in_addr *)hp->h_addr)));
-	  canaladmins(s_NickServ, "12%s usó USERIP sobre 12%s.",u->nick, nick);
+	  canalopers(s_NickServ, "12%s usó USERIP sobre 12%s.",u->nick, nick);
      }
 }
 

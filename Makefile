@@ -20,13 +20,13 @@ include Makefile.inc
 #			    this may reduce performance)
 #	-DSTREAMLINED    Leave out "fancy" options to enhance performance
 
-CDEFS =
+CDEFS = -DCLEAN_COMPILE -DSTREAMLINED
 
 # Add any extra flags you want here.  The default line enables warnings and
 # debugging symbols on GCC.  If you have a non-GCC compiler, you may want
 # to comment it out or change it.
 
-MORE_CFLAGS = -Wall -g
+# MORE_CFLAGS = -Wall -g
 
 
 ######################## End configuration section ########################
@@ -34,7 +34,6 @@ MORE_CFLAGS = -Wall -g
 
 
 CFLAGS = $(CDEFS) $(BASE_CFLAGS) $(MORE_CFLAGS)
-
 
 OBJS =	actions.o akill.o channels.o chanserv.o commands.o compat.o \
 	config.o datafiles.o encrypt.o helpserv.o init.o language.o \

@@ -232,12 +232,14 @@ int check_akill(const char *nick, const char *username, const char *host)
 	     * created.
 	     */
 #ifdef IRC_UNDERNET_P10
-            send_cmd(s_OperServ,
-                        "K %s :%s (Estas baneado de esta RED)",
-                        nick, s_OperServ);
+            User *u = finduserP10(nick);
+            if (u)
+                send_cmd(s_OperServ,
+                        "D %s :%s (Estas Baneado de esta RED)",
+                        u->numerico, s_OperServ); 
 #else
 	    send_cmd(s_OperServ,
-			"KILL %s :%s (Estas baneado de esta RED)",
+			"KILL %s :%s (Estas Baneado de esta RED)",
 			nick, s_OperServ);
 #endif
 	    username2 = sstrdup(akills[i].mask);
@@ -252,15 +254,16 @@ int check_akill(const char *nick, const char *username, const char *host)
 	    *host2++ = 0;
 #ifdef IRC_DALNET
 	    send_cmd(ServerName,
-		    "AKILL %s %s :You are banned from this network",
+		    "AKILL %s %s :Estas Baneado de esta RED",
 		    host2, username2);
-#elif IRC_UNDERNET_P10
-            send_cmd(ServerName,
-                    "G * +%s@%s %ld :Estas baneado de esta RED",
-                    username2, host2,
-                    akills[i].expires && akills[i].expires>now                                                                                         
+		    
+#elif defined (IRC_UNDERNET_P10)
+            send_cmd(NULL, 
+                    "%c GL * +%s@%s %ld :Estas Baneado de esta RED",
+                    convert2y[ServerNumerico], username2, host2,
+                    akills[i].expires && akills[i].expires>now                
                                 ? akills[i].expires-time(NULL)
-                                : 999999999);
+                                : 999999999); 
 #else
 	    send_cmd(ServerName,
 		    "GLINE * +%s@%s %ld :Estas baneado de esta RED",
@@ -302,7 +305,9 @@ void expire_akills(void)
 #endif
 	free(akills[i].mask);
 	free(akills[i].reason);
+#ifdef IRC_UNDERNET
         send_cmd(ServerName, "GLINE * -%s", akills[i].mask);        	
+#endif        
 	nakill--;
 	if (i < nakill)
 	    memmove(akills+i, akills+i+1, sizeof(*akills) * (nakill-i));
@@ -432,23 +437,25 @@ void do_akill(User *u)
                  return;
 	    }
              if (stricmp("*@*", mask) == 0) {
-                 privmsg(s_OperServ, u->nick, "4ACCESO DENEGADO!");
-                 canalopers(s_OperServ, "El Lamer 12%s intenta meter un GLINE Global (*@*)", u->nick);
+                 notice_lang(s_OperServ, u, ACCESS_DENIED);
+                 canalopers(s_OperServ, "El LAMER 12%s intenta meter un GLINE Global (*@*)", u->nick);
                  return;
             }     	    
-/*	    add_akill(mask, reason, u->nick, expires);
+	    add_akill(mask, reason, u->nick, expires);
+#ifdef IRC_UNDERNET
             send_cmd(ServerName, "GLINE * +%s %lu :%s", mask, expires-time(NULL), reason);	    
-*/	    notice_lang(s_OperServ, u, OPER_AKILL_ADDED, mask);
+#endif            
+	    notice_lang(s_OperServ, u, OPER_AKILL_ADDED, mask);
 /*
             char buf[128], *s = NULL;
-	    int amount = AutokillExpiry;
+	    int amount = AutokillExpiry; 
 	    if (expiry) {
 	        amount = strtol(expiry, (char **)&expiry, 10);
 	        if (amount) {
 	            switch (*expiry) {
-		        case 'd': s = "day";    break;
-			case 'h': s = "hour";   break;
-			case 'm': s = "minute"; break;
+		        case 'd': s = "dias";    break;
+			case 'h': s = "horas";   break;
+			case 'm': s = "minutos"; break;
 			default : amount = 0;
 		    }
 		}
@@ -461,12 +468,17 @@ void do_akill(User *u)
 		canalopers(s_OperServ, "%s ha añadido un AKILL para %s (%s)",
 			u->nick, mask, buf);
 	    } */
+	    
 	    if (readonly)
 		notice_lang(s_OperServ, u, READ_ONLY_MODE);
 	} else {
 	    syntax_error(s_OperServ, u, "AKILL", OPER_AKILL_ADD_SYNTAX);
 	}
 
+ canalopers(s_OperServ, "%s ha añadido un AKILL para %s",
+                        u->nick, mask);
+ /* quitarlo cuando se arregle la funcion de arriba :) */
+                        
     } else if (stricmp(cmd, "DEL") == 0) {
 	mask = strtok(NULL, " ");
 	if (mask) {
@@ -476,7 +488,9 @@ void do_akill(User *u)
 		strlower(s);
 #endif
 	    if (del_akill(mask)) {
+#ifdef IRC_UNDERNET	    
                 send_cmd(ServerName, "GLINE * -%s", mask);                	    
+#endif                
 		notice_lang(s_OperServ, u, OPER_AKILL_REMOVED, mask);
 #ifdef IRC_DALNET
 		if (s) {

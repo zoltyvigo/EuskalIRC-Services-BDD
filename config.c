@@ -20,6 +20,10 @@ int   LocalPort;
 
 char *ServerName;
 char *ServerDesc;
+#ifdef IRC_UNDERNET_P10
+int  ServerNumerico;
+#endif
+char *ServerHUB;
 char *ServiceUser;
 char *ServiceHost;
 static char *temp_userhost;
@@ -35,6 +39,19 @@ char *s_GlobalNoticer;
 char *s_NewsServ;
 char *s_IrcIIHelp;
 char *s_DevNull;
+#ifdef IRC_UNDERNET_P10
+char s_NickServP10[4];
+char s_ChanServP10[4];
+char s_CregServP10[4];
+char s_CyberServP10[4];
+char s_MemoServP10[4];
+char s_HelpServP10[4];
+char s_OperServP10[4];
+char s_GlobalNoticerP10[4];
+char s_NewsServP10[4];
+char s_IrcIIHelpP10[4];
+char s_DevNullP10[4];
+#endif
 char *desc_NickServ;
 char *desc_ChanServ;
 char *desc_CregServ;
@@ -76,6 +93,7 @@ char *SendMailPatch;
 char *ServerSMTP;
 int  *PortSMTP;
 #endif
+int  *NicksMail;
 char *SendFrom;
 char *WebNetwork;
 #endif
@@ -114,30 +132,29 @@ int   CSInhabit;
 int   CSRestrictDelay;
 int   CSListOpersOnly;
 int   CSListMax;
+int   ShadowServ;
+char *NickShadow;
 
 int   MSMaxMemos;
 int   MSSendDelay;
 int   MSNotifyAll;
 
+char *CanalAdmins;
 char *CanalOpers;                 
+char *CanalCybers;
 char *ServicesRoot;
 int   LogMaxUsers;
 int   AutokillExpiry;
-int   CheckClones;
-int   CloneMinUsers;
-int   CloneMaxDelay;
-int   CloneWarningDelay;
-int   KillClones;
 
 int   KillClonesAkillExpire;
 
-int   LimitSessions;
-int   DefSessionLimit;
-int   ExceptionExpiry;
-int   MaxSessionLimit;
-char *ExceptionDBName;
-char *SessionLimitExceeded;
-char *SessionLimitDetailsLoc;
+int   ControlClones;
+int   LimiteClones;
+int   ExpIlineDefault;
+int   MaximoClones;
+char *IlineDBName;
+char *MensajeClones;
+char *WebClones;
 
 /*************************************************************************/
 
@@ -187,10 +204,6 @@ Directive directives[] = {
     { "ChanServDB",       { { PARAM_STRING, 0, &ChanDBName } } },
     { "ChanServName",     { { PARAM_STRING, 0, &s_ChanServ },
                             { PARAM_STRING, 0, &desc_ChanServ } } },
-    { "CheckClones",      { { PARAM_SET, PARAM_FULLONLY, &CheckClones },
-                            { PARAM_POSINT, 0, &CloneMinUsers },
-                            { PARAM_TIME, 0, &CloneMaxDelay },
-                            { PARAM_TIME, 0, &CloneWarningDelay } } },
     { "CregServDB",       { { PARAM_STRING, 0, &CregDBName } } },    
     { "CregServName",     { { PARAM_STRING, 0, &s_CregServ },
                             { PARAM_STRING, 0, &desc_CregServ } } },                                
@@ -205,11 +218,11 @@ Directive directives[] = {
     { "CSRestrictDelay",  { { PARAM_TIME, 0, &CSRestrictDelay } } },
     { "CyberServName",    { { PARAM_STRING, 0, &s_CyberServ },
                             { PARAM_STRING, 0, &desc_CyberServ } } },
-    { "DefSessionLimit",  { { PARAM_POSINT, 0, &DefSessionLimit } } },
+    { "LimiteClones",     { { PARAM_POSINT, 0, &LimiteClones } } },
     { "DevNullName",      { { PARAM_STRING, 0, &s_DevNull },
                             { PARAM_STRING, 0, &desc_DevNull } } },
-    { "ExceptionDB",	  { { PARAM_STRING, 0, &ExceptionDBName } } },
-    { "ExceptionExpiry",  { { PARAM_TIME, 0, &ExceptionExpiry } } },
+    { "IlineDB",	  { { PARAM_STRING, 0, &IlineDBName } } },
+    { "ExpIlineDefault",  { { PARAM_TIME, 0, &ExpIlineDefault } } },
     { "ExpireTimeout",    { { PARAM_TIME, 0, &ExpireTimeout } } },
     { "GlobalName",       { { PARAM_STRING, 0, &s_GlobalNoticer },
                             { PARAM_STRING, 0, &desc_GlobalNoticer } } },
@@ -218,14 +231,13 @@ Directive directives[] = {
                             { PARAM_STRING, 0, &desc_HelpServ } } },
     { "IrcIIHelpName",    { { PARAM_STRING, 0, &s_IrcIIHelp },
                             { PARAM_STRING, 0, &desc_IrcIIHelp } } },
-    { "KillClones",       { { PARAM_SET, PARAM_FULLONLY, &KillClones } } },
     { "KillClonesAkillExpire",{{PARAM_TIME, 0, &KillClonesAkillExpire } } },
-    { "LimitSessions",    { { PARAM_SET, PARAM_FULLONLY, &LimitSessions } } },
+    { "ControlClones",    { { PARAM_SET, PARAM_FULLONLY, &ControlClones } } },
     { "ListOpersOnly",    { { PARAM_DEPRECATED, 0, dep_ListOpersOnly } } },
     { "LocalAddress",     { { PARAM_STRING, 0, &LocalHost },
                             { PARAM_PORT, PARAM_OPTIONAL, &LocalPort } } },
     { "LogMaxUsers",      { { PARAM_SET, 0, &LogMaxUsers } } },
-    { "MaxSessionLimit",  { { PARAM_POSINT, 0, &MaxSessionLimit } } },
+    { "MaximoClones",     { { PARAM_POSINT, 0, &MaximoClones } } },
     { "MemoServName",     { { PARAM_STRING, 0, &s_MemoServ },
                             { PARAM_STRING, 0, &desc_MemoServ } } },
     { "MOTDFile",         { { PARAM_STRING, 0, &MOTDFilename } } },
@@ -272,12 +284,15 @@ Directive directives[] = {
                             { PARAM_STRING, 0, &RemotePassword } } },
     { "ServerDesc",       { { PARAM_STRING, 0, &ServerDesc } } },
     { "ServerName",       { { PARAM_STRING, 0, &ServerName } } },
+#ifdef IRC_UNDERNET_P10
+    { "ServerNumerico",   { { PARAM_INT, 0, &ServerNumerico } } },
+#endif        
+    { "ServerHUB",        { { PARAM_STRING, 0, &ServerHUB } } },
     { "ServicesRoot",     { { PARAM_STRING, 0, &ServicesRoot } } },
     { "ServiceUser",      { { PARAM_STRING, 0, &temp_userhost } } },
-    { "SessionLimitDetailsLoc",{{PARAM_STRING, 0, &SessionLimitDetailsLoc}}},
-    { "SessionLimitExceeded",{{PARAM_STRING, 0, &SessionLimitExceeded}}},
-#ifdef REG_NICK_MAIL
-/**    { "NicksMail",        { { PARAM_POSINT, 0, &NicksMail } } },    **/
+    { "WebClones",        { { PARAM_STRING, 0, &WebClones } } },
+    { "MensajeClones",    { { PARAM_STRING, 0, &MensajeClones } } },
+#ifdef REG_NICK_MAIL   
 #ifdef SENDMAIL
     { "SendMailPatch",    { { PARAM_STRING, 0, &SendMailPatch } } },
 #endif
@@ -285,10 +300,15 @@ Directive directives[] = {
     { "ServerSMTP",       { { PARAM_STRING, 0, &ServerSMTP } } },
     { "PortSMTP",         { { PARAM_PORT, 0, &PortSMTP } } },         
 #endif
+    { "NicksMail",        { { PARAM_POSINT, 0, &NicksMail } } },
     { "SendFrom",         { { PARAM_STRING, 0, &SendFrom } } },
     { "WebNetwork",       { { PARAM_STRING, 0, &WebNetwork } } },
 #endif
+    { "ShadowServ",       { { PARAM_SET, PARAM_FULLONLY, &ShadowServ } } },
+    { "NickShadow",       { { PARAM_STRING, 0, &NickShadow } } },    
+    { "CanalAdmins",      { { PARAM_STRING, 0, &CanalAdmins } } },
     { "CanalOpers",       { { PARAM_STRING, 0, &CanalOpers } } },            
+    { "CanalCybers",      { { PARAM_STRING, 0, &CanalCybers } } },
     { "StrictPasswords",  { { PARAM_SET, 0, &StrictPasswords } } },
     { "TimeoutCheck",     { { PARAM_TIME, 0, &TimeoutCheck } } },
     { "UpdateTimeout",    { { PARAM_TIME, 0, &UpdateTimeout } } },
@@ -528,7 +548,11 @@ int read_config()
 
     CHECK(RemoteServer);
     CHECK(ServerName);
+#ifdef IRC_UNDERNET_P10
+    CHECK(ServerNumerico);
+#endif    
     CHECK(ServerDesc);
+    CHECK(ServerHUB);    
     CHEK2(temp_userhost, ServiceUser);
     CHEK2(s_NickServ, NickServName);
     CHEK2(s_ChanServ, ChanServName);
@@ -548,7 +572,7 @@ int read_config()
     CHEK2(OperDBName, OperServDB);
     CHEK2(AutokillDBName, AutokillDB);
     CHEK2(NewsDBName, NewsDB);
-    CHEK2(ExceptionDBName, ExceptionDB);
+    CHEK2(IlineDBName, IlineDB);
     CHECK(UpdateTimeout);
     CHECK(ExpireTimeout);
     CHECK(ReadTimeout);
@@ -563,11 +587,12 @@ int read_config()
     CHECK(CSAutokickReason);
     CHECK(CSInhabit);
     CHECK(CSListMax);
+    CHECK(CanalAdmins);
     CHECK(CanalOpers);
+    CHECK(CanalCybers);        
     CHECK(ServicesRoot);
     CHECK(AutokillExpiry);
 #ifdef REG_NICK_MAIL
-/**    CHECK(NicksMail); **/
 #ifdef SENDMAIL
     CHECK(SendMailPatch);
 #endif
@@ -575,6 +600,7 @@ int read_config()
     CHECK(ServerSMTP);
     CHECK(PortSMTP);
 #endif    
+    CHECK(NicksMail);
     CHECK(SendFrom);
     CHECK(WebNetwork);                   
 #endif
@@ -617,23 +643,15 @@ int read_config()
 	NSDefMemoReceive = 1;
     }
     
-    if (LimitSessions) {
-	CHECK(DefSessionLimit);
-	CHECK(MaxSessionLimit);
-	CHECK(ExceptionExpiry);
-
-	if (CheckClones) {
-	    printf("Warning: You have enabled both session limiting (config "
-	    	"option: LimitSessions)\nand clone detection (config option: "
-		"CheckClones). These two features do not\nfunction correctly "
-		"when running together. Session limiting is preferred.\n\n");
-#ifndef NOT_MAIN
-	    log("*** Warning: Both LimitSessions and CheckClones are enabled "
-	    		"- this is bad! Check your config.");
-#endif
-	}
+    if (ControlClones) {
+	CHECK(LimiteClones);
+	CHECK(MaximoClones);
+	CHECK(ExpIlineDefault);
     }
-
+    
+    if (ShadowServ) 
+        CHECK(NickShadow);
+     
     return retval;
 }
 

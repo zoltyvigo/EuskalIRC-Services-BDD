@@ -1,0 +1,23 @@
+En esta red tiene en servicio varios bots cuya finalidad es la siguiente:
+
+    4CHaN        Servicio de mantenimiento de canales.
+    4CReG        Servicio de registro de canales.
+    4NiCK        Servicio de registro y mantenimento de Nicks.
+    4MeMO        Servicio de mensajería entre usuarios.
+    4HeLP        Servicio de ayuda on-line.
+    4GLoBaL      Servicio de mensajería global.
+    4NeWs        Servicio de noticias de la red.
+    4STaT        Servicio de estadísticas.
+    4SHaDoW      Servicio de guardían de modos.
+    4SmS         Servicio de envío de mensajes a moviles.
+    4NoTiCiaS    Servicio de recepcion de titulares.
+ 
+
+Bots de acceso restringido:
+
+    4CyBeR       Servicio sólo para admins de cybers.
+    4ToDo        Servicio sólo para developers.
+    4OPeR        Servicio sólo para OPERS/IRCOPS.
+
+
+Para ver la ayuda de cada bot, escriba 12/msg BOT HELP.

@@ -156,7 +156,7 @@ NETWORK_DOMAIN=
 IRCTYPE="no default"
 IRCTYPE_DEF=
 IRCTYPE_DEF2=
-IRCTYPE_DEF3=
+NETWORK=
 ENCRYPTION=
 REG_NICK_MAIL=
 SENDMAIL=
@@ -272,8 +272,8 @@ echo ""
 
 if [ -f config.cache -a -r config.cache -a ! "$IGNORE_CACHE" ] ; then
 	cat <<EOT
-Using defaults from config.cache.  To ignore, either remove config.cache or
-give the command-line option "-ignore-cache".
+Usando valores por defecto desde config.cache. Para ignorarlos,
+o bien borra el config.cache o usa la opcion en la consola "-ignore-cache".
 
 EOT
 	. config.cache
@@ -319,7 +319,7 @@ while [ $ok -eq 0 ] ; do
 			fi
 		fi
 	elif exists "$INPUT/services.h" ; then
-		echo "No puedes usar el directorio donde estan los fuentes de los SErvicios como directorio elegido para instalar."
+		echo "No puedes usar el directorio donde estan los fuentes de los Services como directorio elegido para instalar."
 	else
 		ok=1
 	fi
@@ -339,9 +339,9 @@ while [ $ok -eq 0 ] ; do
 	fi
 	if [ ! -d "$INPUT" ] ; then
 		if exists "$INPUT" ; then
-			echo "$INPUT exists, but is not a directory!"
+			echo "$INPUT existe, pero no es un directorio!"
 		else
-			echo "$INPUT does not exist.  Create it?"
+			echo "$INPUT no existe. Quieres crearlo?"
 			echo2 "[y] "
 			read YN
 			if [ "$YN" != "n" ] ; then
@@ -394,7 +394,8 @@ fi
 
 ok=0
 echo "What should the default umask for data files be (in octal)?"
-echo "(077 = Sólo accesible para el propietario; 007 = Accesible para propietario y su grupo)"
+echo "(077 = Sólo accesible para el propietario"
+echo " 007 = Accesible para propietario y su grupo)"
 while [ $ok -eq 0 ] ; do
 	echo2 "[$UMASK] "
 	if read INPUT ; then : ; else echo "" ; exit 1 ; fi
@@ -415,9 +416,11 @@ echo ""
 
 ####
 
-echo "Si todos tus servidores corren bajo un nombre de dominio comun, cual es su nombre de dominio?"
-echo "(Por ejemplo:  Todos los servidores de GlobalChat.Org tienen sus nombres acabados en"
-echo \`.globalchat.org\', en este caso, debes introducir \`globalchat.org\' ".) Si tus servidores"
+echo "Si todos tus servidores corren bajo un nombre de dominio comun,"
+echo "cual es su nombre de dominio?"
+echo "(Por ejemplo:  Todos los servidores de UpWorld.Org tienen sus"
+echo "nombres acabados en \`.globalchat.org\', en este caso,"
+echo "debes introducir \`globalchat.org\'.) Si tus servidores"
 echo "no comparten un nombre de dominio comun, presiona Enter."
 echo2 "[$NETWORK_DOMAIN] "
 if read INPUT ; then : ; else echo "" ; exit 1 ; fi
@@ -437,8 +440,9 @@ echo "     2) irc2 con protocolo TS8"
 echo "    11) Undernet (ircu) 2.9.32 o inferior"
 echo "    12) Undernet (ircu) 2.10.01 - 2.10.07 (requiere soporte P9)"
 echo "    13) Undernet (ircu) 2.10.x (Soporte P10 COMPLETO)  EXPERIMENTAL!!"
-echo "    21) DALnet (ircd.dal) anterior a 4.4.15"
-echo "    22) DALnet (ircd.dal) 4.4.15 o superior"
+echo "    21) DALnet (ircd.dal) DreamForge anterior a 4.4.15"
+echo "    22) DALnet (ircd.dal) DreamForge 4.4.15 o superior"
+echo "    23) DALnet (ircd.dal) Bahamut 1.2.1 to 1.4.0"
 while [ $ok -eq 0 ] ; do
 	echo2 "[$IRCTYPE] "
 	if read INPUT ; then : ; else echo "" ; exit 1 ; fi
@@ -448,7 +452,7 @@ while [ $ok -eq 0 ] ; do
 	case $INPUT in
 		no\ default)
 			echo "Debes especificar el tipo de tu servidor IRC"
-			echo "funcionen correctamente los Servicios."
+			echo "funcionen correctamente los Servicies."
 			;;
 		1)
 			IRCTYPE_DEF="IRC_CLASSIC"
@@ -465,14 +469,11 @@ while [ $ok -eq 0 ] ; do
 		12)
 			IRCTYPE_DEF="IRC_UNDERNET"
 			IRCTYPE_DEF2="IRC_UNDERNET_P09"
-                        IRCTYPE_DEF3="IRC_UNDERNET_NEW"
-#                        IRCTYPE_DEF3="ESNET_HISPANO"
 			ok=1
 			;;
                 13)
                         IRCTYPE_DEF="IRC_UNDERNET"
                         IRCTYPE_DEF2="IRC_UNDERNET_P10"
-#                        IRCTYPE_DEF3="ESNET_HISPANO"
                         ok=1
                         ;;
 
@@ -485,6 +486,11 @@ while [ $ok -eq 0 ] ; do
 			IRCTYPE_DEF2="IRC_DAL4_4_15"
 			ok=1
 			;;
+                23)
+                        IRCTYPE_DEF="IRC_DALNET"
+                        IRCTYPE_DEF2="IRC_BAHAMUT"
+                        ok=1
+                        ;;
 		*)
 			echo "Por favor, escoja un numero de opcion valida."
 			;;
@@ -492,6 +498,41 @@ while [ $ok -eq 0 ] ; do
 done
 IRCTYPE=$INPUT
 echo ""
+
+####
+if [ "$IRCTYPE_DEF2" = "IRC_UNDERNET_P10" ]; then
+   if [ "$NETWORK" = "DB_NETWORKS" ] ; then
+        DEF=y
+   else
+        DEF=n
+   fi
+   ok=0
+   echo "Quieres activar el soporte de Bases de Datos Distribuidas"
+   echo "originario de ESNET_HISPANO?"
+   echo " "
+   echo "Yes para activarlo y No para deshabilitar"
+   while [ $ok -eq 0 ] ; do
+        echo2 "[$DEF] "
+        if read INPUT ; then : ; else echo "" ; exit 1 ; fi
+        if [ ! "$INPUT" ] ; then
+                INPUT=$DEF
+        fi
+        case $INPUT in
+                n*|N*)
+                        NETWORK=
+                        ok=1
+                        ;;
+                y*|Y*)
+                        NETWORK=DB_NETWORKS
+                        ok=1
+                        ;;
+                *)
+                        echo "Por favor, presione 'y' o 'n'."
+                        ;;
+        esac
+done
+echo ""
+fi
 
 ####
 
@@ -567,7 +608,7 @@ done
 echo ""
 
 ####
-# if [ "$REG_NICK_MAIL" = "ACTIVADO" ] ; then
+if [ "$REG_NICK_MAIL" = "REG_NICK_MAIL" ] ; then
      if [ "$SENDMAIL" = "SENDMAIL" ] ; then
            DEF=y
      else
@@ -601,7 +642,7 @@ echo ""
 
 done
 echo ""
-
+fi
 ######
 
 
@@ -624,21 +665,21 @@ export MODE TEST
 # Search for a compiler.
 
 MODE="find_cc         "
-echo2 "Searching for a suitable compiler... "
+echo2 "Buscando compilador... "
 if [ "$USER_CC" ] ; then
 	CC="$USER_CC"
-	echo "(supplied) using $CC."
+	echo "(supplied) usando $CC."
 	log user supplied \`"$USER_CC'"
 elif [ "$CC" ] ; then
-	echo "(cached) using $CC."
+	echo "(cached) usando $CC."
 	log cache supplied \`"$CC'"
 elif run gcc --version ; then
-	echo "great, found gcc!"
+	echo "great, encontrado gcc!"
 	CC=gcc
 	DEF_CC_FLAGS=-O2
 	log using \`gcc\'
 else
-	echo "gcc not found."
+	echo "gcc no encontrado."
 	echo2 "    Looking for alternatives... "
 	echo >tmp/test.c "int main(){return 1;}"
 	if run cc tmp/test.c -o tmp/test ; then
@@ -646,7 +687,7 @@ else
 	elif run c89 tmp/test.c -o tmp/test ; then
 		CC=c89
 	else
-		echo "no C compiler found!"
+		echo "no encontrado compilador de C!"
 		echo "    Use the -cc command line option to specify your C compiler."
 		log "automatic tests failed"
 		exit 2
@@ -1254,8 +1295,9 @@ EOT
 if [ "$IRCTYPE_DEF2" ] ; then cat >>sysconf.h <<EOT ; fi
 #define $IRCTYPE_DEF2
 EOT
-if [ "$IRCTYPE_DEF3" ] ; then cat >>sysconf.h <<EOT ; fi
-#define $IRCTYPE_DEF3
+if [ "$NETWORK" ] ; then cat >>sysconf.h <<EOT ; fi
+#define $NETWORK
+#define DB_UPWORLD
 EOT
 
 if [ "$REG_NICK_MAIL" ] ; then cat >>sysconf.h <<EOT ; fi

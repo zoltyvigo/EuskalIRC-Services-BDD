@@ -20,6 +20,15 @@
 	send_cmd(NULL, "NICK %s 1 %ld %s %s %s 0 :%s", (nick), time(NULL), \
 		ServiceUser, ServiceHost, ServerName, (name)); \
     } while (0)
+# elif defined (IRC_BAHAMUT)
+/*
+ * NICK <nick> <hops> <TS> <umode> <user> <host> <server> <svsid> :<ircname>
+ */
+#  define NICK(nick,name) \
+    do { \
+         send_cmd(NULL, "NICK %s 1 %ld + %s %s %s 0 :%s", (nick), time(NULL), \
+                 ServiceUser, ServiceHost, ServerName, (name)); \
+    } while (0) 
 # else
 #  define NICK(nick,name) \
     do { \
@@ -29,10 +38,10 @@
 # endif
 #elif defined(IRC_UNDERNET)
 #ifdef IRC_UNDERNET_P10
-#  define NICK(nick,name) \
+#  define NICK(nick,modos,numerico,name) \
     do { \
-	send_cmd(NULL, %c "NICK %s 1 %lu %s %s AAAAAA %s :%s", NumericoServer, (nick), time(NULL),\
-		ServiceUser, ServiceHost, ServerName, (name)); \
+	send_cmd(NULL, "%c N %s 1 %lu %s %s %s AAAAAA %s :%s", convert2y[ServerNumerico], (nick), time(NULL),\
+		ServiceUser, ServiceHost, (modos), (numerico), (name)); \
     } while (0)
 # else
 #  define NICK(nick,name) \
@@ -59,6 +68,10 @@
 
 void introduce_user(const char *user)
 {
+#ifdef IRC_UNDERNET_P10
+    char *modos=NULL;
+#endif    
+    
     /* Watch out for infinite loops... */
 #define LTSIZE 20
     static int lasttimes[LTSIZE];
@@ -68,58 +81,158 @@ void introduce_user(const char *user)
     lasttimes[LTSIZE-1] = time(NULL);
 #undef LTSIZE
 
-    if (!user || stricmp(user, s_NickServ) == 0) {
+    
 #ifdef IRC_UNDERNET_P10
-
+    if (!user || stricmp(user, s_NickServ) == 0 || stricmp(user, s_NickServP10) == 0) {
+        s_NickServP10[0]=convert2y[ServerNumerico];
+        s_NickServP10[1]='\0';
+        strcat(s_NickServP10, "AA");
+        modos="+okdrh";
+        NICK(s_NickServ, modos, s_NickServP10, desc_NickServ);
+        send_cmd(s_NickServ, "J #%s", CanalOpers);
+        send_cmd(ServerName, "M #%s +o %s", CanalOpers, s_NickServP10);
+    }    
+    if (!user || stricmp(user, s_ChanServ) == 0 || stricmp(user, s_ChanServP10) == 0) {
+        s_ChanServP10[0]=convert2y[ServerNumerico];
+        s_ChanServP10[1]='\0';
+        strcat(s_ChanServP10, "AB");
+        modos="+Bkrhd";
+        NICK(s_ChanServ, modos, s_ChanServP10, desc_ChanServ);
+        send_cmd(s_ChanServ, "J #%s", CanalOpers);
+        send_cmd(ServerName, "M #%s +o %s", CanalOpers, s_ChanServP10);
+    }    
+#ifdef CREGSERV
+    if (!user || stricmp(user, s_CregServ) == 0 || stricmp(user, s_CregServP10) == 0) {    
+        s_CregServP10[0]=convert2y[ServerNumerico];
+        s_CregServP10[1]='\0';
+        strcat(s_CregServP10, "AC");
+        modos="+krhd";
+        NICK(s_CregServ, modos, s_CregServP10, desc_CregServ);
+        send_cmd(s_CregServ, "J #%s", CanalOpers);
+        send_cmd(ServerName, "M #%s +o %s", CanalOpers, s_CregServP10);
+    }
+#endif    
+    if (!user || stricmp(user, s_CyberServ) == 0 || stricmp(user, s_CyberServP10) == 0) {  
+        s_CyberServP10[0]=convert2y[ServerNumerico];
+        s_CyberServP10[1]='\0';
+        strcat(s_CyberServP10, "AD");
+        modos="+krhd";
+        NICK(s_CyberServ, modos, s_CyberServP10, desc_CyberServ);
+        send_cmd(s_CyberServ, "J #%s", CanalOpers);
+        send_cmd(ServerName, "M #%s +o %s", CanalOpers, s_CyberServP10);
+        send_cmd(s_CyberServ, "J #%s", CanalCybers);
+        send_cmd(ServerName, "M #%s +o %s", CanalCybers, s_CyberServP10);
+    }                                                            
+    if (!user || stricmp(user, s_MemoServ) == 0 || stricmp(user, s_MemoServP10) == 0) {    
+        s_MemoServP10[0]=convert2y[ServerNumerico];
+        s_MemoServP10[1]='\0';
+        strcat(s_MemoServP10, "AE");
+        modos="+krhd";
+        NICK(s_MemoServ, modos, s_MemoServP10, desc_MemoServ);
+        send_cmd(s_MemoServ, "J #%s", CanalOpers);
+        send_cmd(ServerName, "M #%s +o %s", CanalOpers, s_MemoServP10);
+    }                                                                                                                                                                                                                                                                                                                
+    if (!user || stricmp(user, s_OperServ) == 0 || stricmp(user, s_OperServP10) == 0) {    
+        s_OperServP10[0]=convert2y[ServerNumerico];
+        s_OperServP10[1]='\0';
+        strcat(s_OperServP10, "AF");
+        modos="+Bkorhdi";
+        NICK(s_OperServ, modos, s_OperServP10, desc_OperServ);
+        send_cmd(s_OperServ, "J #%s", CanalAdmins);
+        send_cmd(ServerName, "M #%s +o %s", CanalAdmins, s_OperServP10);
+        send_cmd(s_OperServ, "J #%s", CanalOpers);
+        send_cmd(ServerName, "M #%s +o %s", CanalOpers, s_OperServP10);
+    }
+    if (!user || stricmp(user, s_NewsServ) == 0 || stricmp(user, s_NewsServP10) == 0) {
+        s_NewsServP10[0]=convert2y[ServerNumerico];
+        s_NewsServP10[1]='\0';
+        strcat(s_NewsServP10, "AG");
+        modos="+krd";
+        NICK(s_NewsServ, modos, s_NewsServP10, desc_NewsServ);
+        send_cmd(s_NewsServ, "J #%s", CanalOpers);
+        send_cmd(ServerName, "M #%s +o %s", CanalOpers, s_NewsServP10);
+    }    
+    if (!user || stricmp(user, s_GlobalNoticer) == 0 || stricmp(user, s_GlobalNoticerP10) == 0) {
+        s_GlobalNoticerP10[0]=convert2y[ServerNumerico];
+        s_GlobalNoticerP10[1]='\0';
+        strcat(s_GlobalNoticerP10, "AH");
+        modos="+krhod";
+        NICK(s_GlobalNoticer, modos, s_GlobalNoticerP10, desc_GlobalNoticer);
+        send_cmd(s_GlobalNoticer, "J #%s", CanalOpers);
+        send_cmd(ServerName, "M #%s +o %s", CanalOpers, s_GlobalNoticerP10);
+    }    
+    if (!user || stricmp(user, s_HelpServ) == 0 || stricmp(user, s_HelpServP10) == 0) {
+        s_HelpServP10[0]=convert2y[ServerNumerico];
+        s_HelpServP10[1]='\0';
+        strcat(s_HelpServP10, "AI");
+        modos="+krd";
+        NICK(s_HelpServ, modos, s_HelpServP10, desc_HelpServ);
+        send_cmd(s_HelpServ, "J #%s", CanalOpers);
+        send_cmd(ServerName, "M #%s +o %s", CanalOpers, s_HelpServP10);
+    }
+    if (s_IrcIIHelp && (!user || stricmp(user, s_IrcIIHelp) == 0 || stricmp(user, s_IrcIIHelpP10) == 0)) {
+        s_IrcIIHelpP10[0]=convert2y[ServerNumerico];
+        s_IrcIIHelpP10[1]='\0';
+        strcat(s_IrcIIHelpP10, "AJ");
+        modos="+krd";
+        NICK(s_IrcIIHelp, modos, s_IrcIIHelpP10, desc_IrcIIHelp);
+        send_cmd(s_IrcIIHelp, "J #%s", CanalOpers);
+        send_cmd(ServerName, "M #%s +o %s", CanalOpers, s_IrcIIHelpP10);
+    }    
+    if (s_DevNull && (!user || stricmp(user, s_DevNull) == 0 || stricmp(user, s_DevNullP10) == 0)) {
+        s_DevNullP10[0]=convert2y[ServerNumerico];
+        s_DevNullP10[1]='\0';
+        strcat(s_DevNullP10, "AK");
+        modos="+krdi";
+        NICK(s_DevNull, modos, s_DevNullP10, desc_DevNull);
+        send_cmd(s_DevNull, "J #%s", CanalOpers);
+        send_cmd(ServerName, "M #%s +o %s", CanalOpers, s_DevNullP10);
+    }    
 #else
+    if (!user || stricmp(user, s_NickServ) == 0) {
 	NICK(s_NickServ, desc_NickServ);
-//        NICK("NickServ", "Servicio de Compatibilidad");
-//        NICK("Service", "Servicio de Compatibilidad");                
 	send_cmd(s_NickServ, "MODE %s +krhd", s_NickServ);
         send_cmd(s_NickServ, "JOIN #%s", CanalOpers);
         send_cmd(ServerName, "MODE #%s +o %s", CanalOpers, s_NickServ);                
-#endif
-    }
+    }    
     if (!user || stricmp(user, s_ChanServ) == 0) {
-	NICK(s_ChanServ, desc_ChanServ);
-//        NICK("ChanServ", "Servicio de compatibilidad");
-//        NICK("Scytale", "Servicio de compatibilidad");
-//        NICK("KaOs", "Servicio de compatibilidad");                        	
-	send_cmd(s_ChanServ, "MODE %s +Bkrdh", s_ChanServ);
+	NICK(s_ChanServ, desc_ChanServ);                       	
+        send_cmd(s_ChanServ, "MODE %s +Bikrdho", s_ChanServ);
         send_cmd(s_ChanServ, "JOIN #%s", CanalOpers);
         send_cmd(ServerName, "MODE #%s +o %s", CanalOpers, s_ChanServ);                	
     }
+#ifdef CREGSERV    
     if (!user || stricmp(user, s_CregServ) == 0) {
         NICK(s_CregServ, desc_CregServ);
         send_cmd(s_CregServ, "MODE %s +ikrhd", s_CregServ);
         send_cmd(s_CregServ, "JOIN #%s", CanalOpers);
         send_cmd(ServerName, "MODE #%s +o %s", CanalOpers, s_CregServ);
     }                                        
+#endif
     if (!user || stricmp(user, s_CyberServ) == 0) {
         NICK(s_CyberServ, desc_CyberServ);
         send_cmd(s_CyberServ, "MODE %s +ikrhd", s_CyberServ);
         send_cmd(s_CyberServ, "JOIN #%s", CanalOpers);
         send_cmd(ServerName, "MODE #%s +o %s", CanalOpers, s_CyberServ);
+        send_cmd(s_CyberServ, "JOIN #%s", CanalCybers);
+        send_cmd(ServerName, "MODE #%s +o %s", CanalCybers, s_CyberServ);        
     }    
-  
+
     if (!user || stricmp(user, s_HelpServ) == 0) {
-//        NICK("HelpServ", "Servicio de compatibilidad");       
 	NICK(s_HelpServ, desc_HelpServ);
     }
     if (s_IrcIIHelp && (!user || stricmp(user, s_IrcIIHelp) == 0)) {
 	NICK(s_IrcIIHelp, desc_IrcIIHelp);
     }
     if (!user || stricmp(user, s_MemoServ) == 0) {
-//        NICK("MemoServ", "Servicio de compatibilidad");        
 	NICK(s_MemoServ, desc_MemoServ);
 	send_cmd(s_MemoServ, "MODE %s +krh", s_MemoServ);
     }
-    if (!user || stricmp(user, s_OperServ) == 0) {
-//        NICK("OperServ", "Servicio de compatibilidad");        
+    if (!user || stricmp(user, s_OperServ) == 0) {      
 	NICK(s_OperServ, desc_OperServ);
-        send_cmd(s_OperServ, "MODE %s +ikBrdho", s_OperServ);        
-        send_cmd(ServerName, "SETTIME %lu", time(NULL));
-//        send_cmd(s_OperServ, "NOTICE $*.%s :Sincronizacion automatica de la RED..." ,NETWORK_DOMAIN);        
+        send_cmd(s_OperServ, "MODE %s +Bikrdho", s_OperServ);             
+        send_cmd(s_OperServ, "JOIN #%s", CanalAdmins);
+        send_cmd(ServerName, "MODE #%s +o %s", CanalAdmins, s_OperServ);
         send_cmd(s_OperServ, "JOIN #%s", CanalOpers);
         send_cmd(ServerName, "MODE #%s +o %s", CanalOpers, s_OperServ);
     }
@@ -135,6 +248,7 @@ void introduce_user(const char *user)
         NICK(s_NewsServ, desc_NewsServ);
         send_cmd(s_NewsServ, "MODE %s +krho", s_NewsServ);
     }                                  
+#endif    
 }
 
 #undef NICK
@@ -160,7 +274,7 @@ static int set_group(void)
 	setgid(gr->gr_gid);
 	return 0;
     } else {
-	log("Unknown group `%s'\n", RUNGROUP);
+	log("Grupo desconocido `%s'\n", RUNGROUP);
 	return -1;
     }
 #else
@@ -187,7 +301,7 @@ static int parse_dir_options(int ac, char **av)
 	    s++;
 	    if (strcmp(s, "dir") == 0) {
 		if (++i >= ac) {
-		    fprintf(stderr, "-dir requires a parameter\n");
+		    fprintf(stderr, "-dir requiere un parametro\n");
 		    return -1;
 		}
 		services_dir = av[i];
@@ -214,7 +328,7 @@ static int parse_options(int ac, char **av)
 	    s++;
 	    if (strcmp(s, "remote") == 0) {
 		if (++i >= ac) {
-		    fprintf(stderr, "-remote requires hostname[:port]\n");
+		    fprintf(stderr, "-remote requiere hostname[:puerto]\n");
 		    return -1;
 		}
 		s = av[i];
@@ -224,14 +338,14 @@ static int parse_options(int ac, char **av)
 		    if (atoi(t) > 0)
 			RemotePort = atoi(t);
 		    else {
-			fprintf(stderr, "-remote: port number must be a positive integer.  Using default.");
+			fprintf(stderr, "-remote: el numero de puerto debe ser positivo. Usando el puerto de por defecto.");
 			return -1;
 		    }
 		}
 		RemoteServer = s;
 	    } else if (strcmp(s, "local") == 0) {
 		if (++i >= ac) {
-		    fprintf(stderr, "-local requires hostname or [hostname]:[port]\n");
+		    fprintf(stderr, "-local requiere hostname o [hostname]:[puerto]\n");
 		    return -1;
 		}
 		s = av[i];
@@ -241,32 +355,32 @@ static int parse_options(int ac, char **av)
 		    if (atoi(t) >= 0)
 			LocalPort = atoi(t);
 		    else {
-			fprintf(stderr, "-local: port number must be a positive integer or 0.  Using default.");
+			fprintf(stderr, "-local: el numero de puerto debe ser positivo o 0. Usando el puerto de por defecto.");
 			return -1;
 		    }
 		}
 		LocalHost = s;
 	    } else if (strcmp(s, "name") == 0) {
 		if (++i >= ac) {
-		    fprintf(stderr, "-name requires a parameter\n");
+		    fprintf(stderr, "-name requiere un parametro\n");
 		    return -1;
 		}
 		ServerName = av[i];
 	    } else if (strcmp(s, "desc") == 0) {
 		if (++i >= ac) {
-		    fprintf(stderr, "-desc requires a parameter\n");
+		    fprintf(stderr, "-desc requiere un parametro\n");
 		    return -1;
 		}
 		ServerDesc = av[i];
 	    } else if (strcmp(s, "user") == 0) {
 		if (++i >= ac) {
-		    fprintf(stderr, "-user requires a parameter\n");
+		    fprintf(stderr, "-user requiere a parametro\n");
 		    return -1;
 		}
 		ServiceUser = av[i];
 	    } else if (strcmp(s, "host") == 0) {
 		if (++i >= ac) {
-		    fprintf(stderr, "-host requires a parameter\n");
+		    fprintf(stderr, "-host requiere a parametro\n");
 		    return -1;
 		}
 		ServiceHost = av[i];
@@ -275,29 +389,29 @@ static int parse_options(int ac, char **av)
 		i++;  /* Skip parameter */
 	    } else if (strcmp(s, "log") == 0) {
 		if (++i >= ac) {
-		    fprintf(stderr, "-log requires a parameter\n");
+		    fprintf(stderr, "-log requiere un parametro\n");
 		    return -1;
 		}
 		log_filename = av[i];
 	    } else if (strcmp(s, "update") == 0) {
 		if (++i >= ac) {
-		    fprintf(stderr, "-update requires a parameter\n");
+		    fprintf(stderr, "-update requiere un parametro\n");
 		    return -1;
 		}
 		s = av[i];
 		if (atoi(s) <= 0) {
-		    fprintf(stderr, "-update: number of seconds must be positive");
+		    fprintf(stderr, "-update: el numero de segundos debe ser positivo");
 		    return -1;
 		} else
 		    UpdateTimeout = atol(s);
 	    } else if (strcmp(s, "expire") == 0) {
 		if (++i >= ac) {
-		    fprintf(stderr, "-expire requires a parameter\n");
+		    fprintf(stderr, "-expire requiere un parametro\n");
 		    return -1;
 		}
 		s = av[i];
 		if (atoi(s) <= 0) {
-		    fprintf(stderr, "-expire: number of seconds must be positive");
+		    fprintf(stderr, "-expire: el numero de segundos debe ser positivo");
 		    return -1;
 		} else
 		    ExpireTimeout = atol(s);
@@ -314,11 +428,11 @@ static int parse_options(int ac, char **av)
 	    } else if (strcmp(s, "forceload") == 0) {
 		forceload = 1;
 	    } else {
-		fprintf(stderr, "Unknown option -%s\n", s);
+		fprintf(stderr, "Opcion desconocida -%s\n", s);
 		return -1;
 	    }
 	} else {
-	    fprintf(stderr, "Non-option arguments not allowed\n");
+	    fprintf(stderr, "Argumentos de opcion no permitidos\n");
 	    return -1;
 	}
     }
@@ -348,7 +462,7 @@ static void write_pidfile(void)
 	fclose(pidfile);
 	atexit(remove_pidfile);
     } else {
-	log_perror("Warning: cannot write to PID file %s", PIDFilename);
+	log_perror("ATENCION: No puedo abrir el fichero PID %s", PIDFilename);
     }
 }
 
@@ -386,7 +500,7 @@ int init(int ac, char **av)
     if (open_log() < 0) {
 	openlog_errno = errno;
 	if (started_from_term) {
-	    fprintf(stderr, "Warning: unable to open log file %s: %s\n",
+	    fprintf(stderr, "ATENCION: No puedo abrir el archivo de log %s: %s\n",
 			log_filename, strerror(errno));
 	} else {
 	    openlog_failed = 1;
@@ -424,12 +538,12 @@ int init(int ac, char **av)
 
     /* Announce ourselves to the logfile. */
     if (debug || readonly || skeleton) {
-	log("Services %s (compiled for %s) starting up (options:%s%s%s)",
+	log("Services %s (compilados para %s) iniciados (opciones:%s%s%s)",
 		version_number, version_protocol,
 		debug ? " debug" : "", readonly ? " readonly" : "",
 		skeleton ? " skeleton" : "");
     } else {
-	log("Services %s (compiled for %s) starting up",
+	log("Services %s (compilados para %s) iniciados.",
 		version_number, version_protocol);
     }
     start_time = time(NULL);
@@ -467,12 +581,14 @@ int init(int ac, char **av)
     /* Initialize multi-language support */
     lang_init();
     if (debug)
-	log("debug: Loaded languages");
+	log("debug: Cargando lenguajes");
 
     /* Initialiize subservices */
     ns_init();
     cs_init();
+#ifdef CREGSERV
     cr_init();
+#endif    
     ms_init();
     os_init();
 
@@ -480,36 +596,45 @@ int init(int ac, char **av)
     if (!skeleton) {
 	load_ns_dbase();
 	if (debug)
-	    log("debug: Loaded %s database (1/7)", s_NickServ);
+	    log("debug: Cargando la DB de %s (1/7)", s_NickServ);
 	load_cs_dbase();
 	if (debug)
-	    log("debug: Loaded %s database (2/7)", s_ChanServ);
+	    log("debug: Cargando la DB de %s (2/7)", s_ChanServ);
+#ifdef CREGSERV
         load_cr_dbase();
         if (debug)
-            log("debug: Loaded %s database (3/7)", s_CregServ);                            	    
+            log("debug: Cargando la DB de %s (3/7)", s_CregServ);
+#endif            
     }
     load_os_dbase();
     if (debug)
-	log("debug: Loaded %s database (4/7)", s_OperServ);
+	log("debug: Cargando la DB de %s (4/7)", s_OperServ);
     load_akill();
     if (debug)
-	log("debug: Loaded AKILL database (5/7)");
+	log("debug: Cargando la DB de GLINES (5/7)");
     load_news();
     if (debug)
-	log("debug: Loaded news database (6/7)");
-    load_exceptions();
+	log("debug: Cargando la DB de NOTICIAS (6/7)");
+//    load_iline_dbase();	
     if (debug)
-        log("debug: Loaded exception database (7/7)");
-    log("Databases loaded");
+        log("debug: Cargando la DB de CLONES (7/7)");
+    log("Cargadas las bases de datos");
 
     /* Connect to the remote server */
     servsock = conn(RemoteServer, RemotePort, LocalHost, LocalPort);
     if (servsock < 0)
-	fatal_perror("Can't connect to server");
+	fatal_perror("No puedo conectar al servidor");
+#ifdef IRC_BAHAMUT
+    send_cmd(NULL, "PASS %s :TS", RemotePassword);
+#else
     send_cmd(NULL, "PASS :%s", RemotePassword);
-#ifdef IRC_UNDERNET_NEW
+#endif    
+#ifdef IRC_UNDERNET_P09
     send_cmd(NULL, "SERVER %s 1 %lu %lu P09 :%s",
-		ServerName, start_time, start_time, ServerDesc);
+             ServerName, start_time, start_time, ServerDesc);
+#elif defined (IRC_UNDERNET_P10)
+    send_cmd(NULL, "SERVER %s %d 0 %ld J10 %cD] :%s",
+             ServerName, 2, start_time, convert2y[ServerNumerico], ServerDesc); 
 #else
     send_cmd(NULL, "SERVER %s 1 :%s", ServerName, ServerDesc);
 #endif
@@ -519,19 +644,28 @@ int init(int ac, char **av)
 	 * server doesn't want to listen to us anyway */
 	disconn(servsock);
 	servsock = -1;
-	fatal("Remote server returned: %s", inbuf);
+	fatal("El servidor ha devuelto: %s", inbuf);
     }
+
+#ifdef IRC_BAHAMUT
+    send_cmd(NULL, "SVINFO 3 3 0 :%ld", time(NULL));
+    send_cmd(NULL, "CAPAB: TS3");
+#endif
 
     /* Announce a logfile error if there was one */
     if (openlog_failed) {
-	canalopers(NULL, "Warning: couldn't open logfile: %s",
+	canalopers(NULL, "4ATENCION: No puedo abrir el fichero de log: 12%s",
 		strerror(openlog_errno));
     }
 
     /* Bring in our pseudo-clients */
     introduce_user(NULL);
 
+    send_cmd(ServerName, "SETTIME %lu", time(NULL));
+    send_cmd(s_OperServ, "NOTICE $*.%s :Establecidos los servicios de la RED.", NETWORK_DOMAIN);
+        
     join_chanserv();
+
     
 #ifdef DB_HISPANO    
     send_cmd(ServerName, "DB * 0 J 999999999 2");

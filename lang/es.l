@@ -239,7 +239,7 @@ NICK_MAIL_ANONYMOUS
 	Dominio de correo inaceptable.
 	No utilice servicios anonimos.
 NICK_MAIL_ABUSE
-	No puedes registrar mas de %s nicks por email.	
+	No puedes registrar mas de %d nicks por email.	
 NICK_REGISTERED
 	Nick 12%s esta registrado bajo tu cuenta: 12%s
 NICK_PASSWORD_IS
@@ -3019,6 +3019,7 @@ OPER_HELP
 	    12GLOBAL      Envía un mensaje a TODOS los usuarios por privmsg
 	    12GLOBALN     Envía un mensaje a TODOS los usuarios por notice
 	    12STATS       Muestra el estado de los servicios y de la red
+	    12SERVERS     Muestra los servidores de la red
 	    12OPER LIST   Lista todos los Operadores de los Servicios
 	    12ADMIN LIST  Lista todos los Administradores de Servicios
 	
@@ -3629,3 +3630,26 @@ CREG_SERVADMIN_HELP
 	Operadores de services pueden también listar los apoyos que ha
 	recibido un canal sin ser el fundador del mismo y los apoyos y
 	registros de cualquier usuario.
+
+SERVICES_CREDITS
+	Services es copyright (c) 1996-1999 de Andrew Church
+	<12achurch@dragonfire.net>.
+	
+	Estos bots han sido reprogramados, usando la base de
+	iRCServices 4.3.3, por Toni García Núñez <12zoltan@univers.org>.
+	
+	Estos bots han sido cedidos para su uso a 12iRC-Networks.Org
+	mientras Toni García siga llevando el servidor de irc,
+	12irc.interec.org y siga en el grupo de trabajo del mismo.
+	
+	Estos bots tienen soporte para los siguientes protocolos:
+	        12Undernet 2.9.x (P9)
+	        12Undernet 2.10.x (P10) (no tiene en los Services originales)
+	        12DreamForge Dalnet
+	        12Bahamut Dalnet 
+	        12Irc Classic (con y sin TS8)
+	
+	Más informacion de los Services (Licencia GNU):
+	Las ultimas versiones de los Services pueden ser obtenidas de:
+	La web de los Services es: <12http://ender.shadowfire.org/ircservices/>
+	El FTP de los services es: <12ftp://ender.shadowfire.org/pub/ircservices/>

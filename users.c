@@ -12,8 +12,9 @@
 #define HASH(nick)	(((nick)[0]&31)<<5 | ((nick)[1]&31))
 static User *userlist[1024];
 
-int32 usercnt = 0, opcnt = 0, maxusercnt = 0;
+// int32 usercnt = 0, opcnt = 0, maxusercnt = 0;
 time_t maxusertime;
+int  servercnt = 0, usercnt = 0, opcnt = 0, maxusercnt = 0;
 
 /*************************************************************************/
 /*************************************************************************/
@@ -96,6 +97,8 @@ static void delete_user(User *user)
     cancel_user(user);
     if (debug >= 2)
 	log("debug: delete_user(): free user data");
+//    free(user->signon);
+//    free(user->numerico);
     free(user->username);
     free(user->host);
     free(user->realname);
@@ -131,6 +134,59 @@ static void delete_user(User *user)
     if (debug >= 2)
 	log("debug: delete_user() done");
 }
+/*************************************************************************/
+void del_users_server(Server *server)
+{
+    int i;
+    User *user, *u2;
+    struct u_chanlist *c, *c2;
+    struct u_chaninfolist *ci, *ci2;
+    
+    for (i = 0;i < 1024;i++) {
+        user=userlist[i];
+        while(user) {
+            if (stricmp(user->server, server->name) != 0) {
+                user=user->next;
+                continue;
+            }
+            usercnt--;
+               
+            if (user->mode & UMODE_O)
+                opcnt--;
+                                          
+            cancel_user(user);
+            free(user->username);
+            free(user->host);
+            free(user->realname);
+            c = user->chans;
+                     
+            while (c) {
+                c2 = c->next;
+                chan_deluser(user, c->chan);
+                free(c);
+                c = c2;
+            }                                                  
+            ci = user->founder_chans;
+     
+            while (ci) {
+                ci2 = ci->next;
+                free(ci);
+                ci = ci2;
+            } 
+            u2 = user->next;
+                  
+            if (user->prev)
+                user->prev->next = user->next;
+            else
+                userlist[i] = user->next;
+            if (user->next)
+                user->next->prev = user->prev;
+                                                                                                                                                                                    
+            free (user);            
+            user = u2; /* Usuario siguiente */
+        } // while...
+    }  // fin del for de users.
+}            
 
 /*************************************************************************/
 /*************************************************************************/
@@ -176,31 +232,36 @@ void get_user_stats(long *nusers, long *memuse)
 void send_user_list(User *user)
 {
     User *u;
+#ifdef IRC_UNDERNET_P10
+    const char *source = user->numerico;
+#else    
     const char *source = user->nick;
+#endif
 
     for (u = firstuser(); u; u = nextuser()) {
 	char buf[BUFSIZE], *s;
 	struct u_chanlist *c;
 	struct u_chaninfolist *ci;
 
-	notice(s_OperServ, source, "%s!%s@%s +%s%s%s%s%s%s%s%s%s%s %ld %s :%s",
+	privmsg(s_OperServ, source, "%s!%s@%s +%s%s%s%s%s%s%s%s%s%s %ld %s :%s",
 		u->nick, u->username, u->host,
 		(u->mode&UMODE_G)?"g":"", (u->mode&UMODE_I)?"i":"",
 		(u->mode&UMODE_O)?"o":"", (u->mode&UMODE_S)?"s":"",
                 (u->mode&UMODE_R)?"r":"", (u->mode&UMODE_X)?"x":"",
                 (u->mode&UMODE_H)?"h":"", (u->mode&UMODE_Z)?"X":"",
                 (u->mode&UMODE_W)?"w":"", (u->mode&UMODE_K)?"k":"",
-                  u->signon, u->server, u->realname);                                                                 		
+//                  u->signon, u->server, u->realname);                                                                 		
+                    u->signon, servers[u->server].name, u->realname);
 	buf[0] = 0;
 	s = buf;
 	for (c = u->chans; c; c = c->next)
 	    s += snprintf(s, sizeof(buf)-(s-buf), " %s", c->chan->name);
-	notice(s_OperServ, source, "%s%s", u->nick, buf);
+	privmsg(s_OperServ, source, "%s esta en canales:%s", u->nick, buf);
 	buf[0] = 0;
 	s = buf;
 	for (ci = u->founder_chans; ci; ci = ci->next)
 	    s += snprintf(s, sizeof(buf)-(s-buf), " %s", ci->chan->name);
-	notice(s_OperServ, source, "%s%s", u->nick, buf);
+	privmsg(s_OperServ, source, "%s es founder en%s", u->nick, buf);
     }
 }
 
@@ -215,14 +276,18 @@ void send_user_info(User *user)
     char buf[BUFSIZE], *s;
     struct u_chanlist *c;
     struct u_chaninfolist *ci;
+#ifdef IRC_UNDERNET_P10
+    const char *source = user->numerico;
+#else    
     const char *source = user->nick;
+#endif
 
     if (!u) {
-	notice(s_OperServ, source, "User %s not found!",
+	privmsg(s_OperServ, source, "Usuario %s no encontrado!",
 		nick ? nick : "(null)");
 	return;
     }
-    notice(s_OperServ, source, "%s!%s@%s +%s%s%s%s%s %ld %s :%s",
+    privmsg(s_OperServ, source, "%s!%s@%s +%s%s%s%s%s%s%s%s%s%s %ld %s :%s",
 		u->nick, u->username, u->host,
 		(u->mode&UMODE_G)?"g":"", (u->mode&UMODE_I)?"i":"",
 		(u->mode&UMODE_O)?"o":"", (u->mode&UMODE_S)?"s":"",
@@ -235,12 +300,12 @@ void send_user_info(User *user)
     s = buf;
     for (c = u->chans; c; c = c->next)
 	s += snprintf(s, sizeof(buf)-(s-buf), " %s", c->chan->name);
-    notice(s_OperServ, source, "%s%s", u->nick, buf);
+    privmsg(s_OperServ, source, "%s esta en canales:%s", u->nick, buf);
     buf[0] = 0;
     s = buf;
     for (ci = u->founder_chans; ci; ci = ci->next)
 	s += snprintf(s, sizeof(buf)-(s-buf), " %s", ci->chan->name);
-    notice(s_OperServ, source, "%s%s", u->nick, buf);
+    privmsg(s_OperServ, source, "%s es founder en%s", u->nick, buf);
 }
 
 #endif	/* DEBUG_COMMANDS */
@@ -260,9 +325,39 @@ User *finduser(const char *nick)
 	user = user->next;
     if (debug >= 3)
 	log("debug: finduser(%s) -> %p", nick, user);
+#ifdef IRC_UNDERNET_P10
+    if (user)
+        return user;
+    else
+        return finduserP10(sstrdup(nick));
+#else	
     return user;
+#endif
 }
-
+/*************************************************************************/
+#ifdef IRC_UNDERNET_P10
+/* Buscar nicks por el numerico :) P10
+ * zoltan 24-09-2000
+ */
+User *finduserP10(const char *numerico)
+{
+    User *user;
+    int n; 
+    
+    if (debug)
+        log("debug: Buscando numerico: (%s)", numerico);
+          
+    for (n=0 ; n<1024; n++) {
+        for (user = userlist[n]; user; user = user->next) {
+            if (strcmp(user->numerico, numerico) == 0)
+                return user;
+        }
+    }    
+    if (debug)
+        log("debug: YaW>> Estoy frustrado, no encontre el numerico(%s) :'(",numerico);
+    return NULL;
+}
+#endif
 /*************************************************************************/
 
 /* Iterate over all users in the user list.  Return NULL at end of list. */
@@ -299,8 +394,41 @@ User *nextuser(void)
 /*************************************************************************/
 
 /* Handle a server NICK command.
+ *
+ *  En Undernet P10
+ *     Si  source = Numerico servidor , es un usuario nuevo
+ *              av[0] = nick 
+ *              av[1] = distancia
+ *              av[2] = hora entrada
+ *              av[3] = User name
+ *              av[4] = Host
+ *              av[5] = Modos (Puede no llevar!)
+ *              av[6|5] = IP en base 64
+ *              av[7|6] = Numerico
+ *              av[8|7] = Realname 
+ *
+ *     Si source = Trio de nick, esta cambiando el nick 
+ *              av[0] = nick
+ *              av[1] = hora cambio
+ *
+ *  En BAHAMUT
+ *      Si es un usuario nuevo (tiene *source):    
+ *              av[0] = nick
+ *              av[1] = distancia
+ *              av[2] = hora entrada o cambio nick (casos de split)
+ *              av[3] = Modos usuario o + si no tiene modos
+ *              av[4] = User name
+ *              av[5] = Host
+ *              av[6] = Servidor del usuario
+ *              av[7] = Services stamp (con modo +d)
+ *              av[8] = Realname
+ *      Else (no tiene *source):
+ *              av[0] = nick  
+ *              av[1] = hora cambio  
+ *         
+ *  En otras redes
  *	av[0] = nick
- *	If a new user:
+ *	Si es un usuario nuevo:
  *		av[1] = hop count
  *		av[2] = signon time
  *		av[3] = username
@@ -314,11 +442,23 @@ User *nextuser(void)
 void do_nick(const char *source, int ac, char **av)
 {
     User *user;
+    Server *server;    
+#ifdef IRC_UNDERNET_P10
+    char *s;
+    int add=0;
+#endif        
+#if defined (IRC_BAHAMUT) || defined (IRC_UNDERNET_P10)
+    char **av_umode;
+#endif    
 
     NickInfo *new_ni;	/* New master nick */
     int ni_changed = 1;	/* Did master nick change? */
 
+#ifdef IRC_UNDERNET_P10
+    if (ac != 2) {
+#else
     if (!*source) {
+#endif
 	/* This is a new user; create a User structure for it. */
 
 	if (debug)
@@ -332,28 +472,155 @@ void do_nick(const char *source, int ac, char **av)
 	 */
 
 	/* First check for AKILLs. */
+#ifdef IRC_BAHAMUT
+        if (check_akill(av[0], av[4], av[5]))
+#else	
 	if (check_akill(av[0], av[3], av[4]))
+#endif	
 	    return;
 
 #ifndef STREAMLINED
         /* Now check for session limits */
-        if (LimitSessions && !add_session(av[0], av[4]))
+#ifndef IRC_UNDERNET_P10
+#ifdef IRC_BAHAMUT
+        if (ControlClones && !add_clones(av[0], av[5]))
+#else
+        if (ControlClones && !add_clones(av[0], av[4]))
+#endif /* IRC_BAHAMUT */        
             return;
-#endif
+#endif /* !IRC_UNDERNET_P10 */            
+#endif /* STREAMLINED */
 
 	/* Allocate User structure and fill it in. */
-	user = new_user(av[0]);
-	user->signon = atol(av[2]);
-	user->username = sstrdup(av[3]);
-	user->host = sstrdup(av[4]);
-	user->server = sstrdup(av[5]);
-	user->realname = sstrdup(av[6]);
-	user->my_signon = time(NULL);
+#ifdef IRC_UNDERNET_P10
+        if (ac != 8 && ac > 7) {     
+          /* Lleva los modos en ac[5] */
+            server = find_servernumeric(source);            
+            user = new_user(av[0]);
+            user->numerico = sstrdup(av[7]);            
+            user->signon = atol(av[2]);            
+            user->username = sstrdup(av[3]);
+            user->host = sstrdup(av[4]);
+            user->server = sstrdup(server->name);
+            server->users++;            
+             /* ¿?¿? no seria mas normal av[8] ¿?¿ */            
+            user->realname = sstrdup(av[ac-8+7]);
+            /* Ajusta los modos para el nuevo usuario */
+            av_umode = smalloc(sizeof(char *) *2);
+            av_umode[0] = av[0];
+            av_umode[1] = av[5];
+            do_umode(av[0], 2, av_umode);
+            free(av_umode);
+//          user->timestamp = user->signon;
+            user->my_signon = time(NULL);            
+        } else {     
+            /* Cuando no lleva los modos */
+            server = find_servernumeric(source);
+            user = new_user(av[0]);
+            user->numerico = sstrdup(av[6]);
+            user->signon = atol(av[2]);
+            user->username = sstrdup(av[3]);
+            user->host = sstrdup(av[4]);
+            user->server = sstrdup(server->name);
+            server->users++;
+            user->realname = sstrdup(av[7]);
+//          user->timestamp = user->signon;
+            user->my_signon = time(NULL);
+        }
+        if (ControlClones && !add_clones(av[0], av[4]))
+            return;
+            
+#elif defined (IRC_BAHAMUT)
+            server = find_servername(av[6]);
+            user = new_user(av[0]);    
+            user->signon = atol(av[2]);                    
+            user->username = sstrdup(av[4]);
+            user->host = sstrdup(av[5]);
+            user->server = sstrdup(server->name);
+            server->users++;                                    
+            user->realname = sstrdup(av[8]);
+            /* Ajusta los modos para el nuevo usuario */
+            av_umode = smalloc(sizeof(char *) *2);
+            av_umode[0] = av[0];
+            av_umode[1] = av[3];
+            do_umode(av[0], 2, av_umode);
+            free(av_umode);            
+//          user->timestamp = user->signon;
+            user->my_signon = time(NULL);            
+                        
+#else
+  /* Resto de servidores */
+            server = find_servername(av[5]);
+            user = new_user(av[0]);    
+            user->signon = atol(av[2]);                    
+            user->username = sstrdup(av[3]);
+            user->host = sstrdup(av[4]);
+            user->server = sstrdup(server->name);
+            server->users++;            
+            user->realname = sstrdup(av[6]);            
+//          user->timestamp = user->signon;
+            user->my_signon = time(NULL);
+#endif
 
-	if (CheckClones) {
-	    /* Check to see if it looks like clones. */
-	    check_clones(user);
-	}
+#ifdef NADA_JAJA 
+        if (ac == 9) {
+            s = av[5];
+            while (*s) {
+                switch (*s++) {
+                    case '+': add = 1; break;
+                    case '-': add = 0; break;
+                    case 'i': add ? (user->mode |= UMODE_I) : (user->mode &= ~UMODE_I);
+                        break;
+                    case 'w': add ? (user->mode |= UMODE_W) : (user->mode &= ~UMODE_W);
+                        break;
+                    case 'g': add ? (user->mode |= UMODE_G) : (user->mode &= ~UMODE_G);
+                        break;
+                    case 's': add ? (user->mode |= UMODE_S) : (user->mode &= ~UMODE_S);
+                        break;
+                    case 'r':
+                        if (add) {
+                            user->mode |= UMODE_R;
+                            new_ni = findnick(user->nick);
+                            if (new_ni && !(new_ni->status & NS_SUSPENDED
+                                    || new_ni->status & NS_VERBOTEN)) {
+                                new_ni->status |= NS_IDENTIFIED;
+                                new_ni->id_timestamp = user->signon;
+                                if (!(new_ni->status & NS_RECOGNIZED)) {
+                                    new_ni->last_seen = time(NULL);
+                                    if (new_ni->last_usermask);
+                                        free(new_ni->last_usermask);                                                                                                                                                                    new_ni->id_timestamp = user->signon;                                                                                                                                                                                                                                                                                                                                                                                        
+                                    new_ni->last_usermask = smalloc(strlen(user->username)+strlen(user->host)+2);
+                                    sprintf(new_ni->last_usermask, "%s@%s", user->username, user->host);                                         
+                                    if (new_ni->last_realname)
+                                        free(new_ni->last_realname);
+                                    new_ni->last_realname = sstrdup(user->realname);
+                                }
+                               log("%s: %s!%s@%s AUTO-identified for nick %s", s_NickServ,
+                                       user->nick, user->username, user->host, user->nick);
+                               notice_lang(s_NickServ, user, NICK_IDENTIFY_X_MODE_R, user->nick);
+                               if (!(new_ni->status & NS_RECOGNIZED))
+                                   check_memos(user);
+                               strcpy(new_ni->nick, user->nick);
+                            }                                                                                         
+                        } else {
+//                               user->mode &= ~UMODE_R;
+//                               new_ni->status &= ~NS_IDENTIFIED;
+                        }
+                        break;                                             
+                    case 'o':
+                        if (add) {
+                            user->mode |= UMODE_O;                        
+                            display_news(user, NEWS_OPER);
+                            opcnt++;
+                        } else {
+                            user->mode &= ~UMODE_O;
+                            opcnt--;
+                        }
+                        break;                                            
+                }
+            }    
+        }         
+#endif /* JAJA */
 
 	display_news(user, NEWS_LOGON);
 
@@ -367,13 +634,13 @@ void do_nick(const char *source, int ac, char **av)
 	    return;
 	}
 	if (debug)
-	    log("debug: %s changes nick to %s", source, av[0]);
-
+	    log("debug: %s changes nick to %s", user->nick, av[0]);
 	/* Changing nickname case isn't a real change.  Only update
 	 * my_signon if the nicks aren't the same, case-insensitively. */
 	if (stricmp(av[0], user->nick) != 0)
 	    user->my_signon = time(NULL);
 
+//      user->timestamp = atol(av[1]);
 	new_ni = findnick(av[0]);
 	if (new_ni)
 	    new_ni = getlink(new_ni);
@@ -387,7 +654,7 @@ void do_nick(const char *source, int ac, char **av)
     if (ni_changed) {
 	if (validate_user(user))
 	    check_memos(user);
-#ifdef IRC_DAL4_4_15
+#if defined (IRC_DAL4_4_15) || defined (IRC_BAHAMUT)
 	if (nick_identified(user)) {
 	    send_cmd(ServerName, "SVSMODE %s +r", av[0]);
 	}
@@ -464,6 +731,128 @@ void do_join(const char *source, int ac, char **av)
 
 /*************************************************************************/
 
+#ifdef IRC_BAHAMUT
+
+/* Handle an SJOIN command.
+ *      av[0] = TS3 timestamp
+ *      av[1] = TS3 timestamp - channel creation time
+ *      av[2] = channel 
+ *      av[3] = channel modes
+ *      av[4] = limit /key (depends on modes in av[3]) 
+ *      av[5] = limit /key (depends on modes in av[3]) 
+ *      av[4|5|6] = nickname(s), whith modes, joining channel
+ * 
+ * I'm almost 100% sure this code is not full optimised. However, it
+ * functions and that is all I'm looking to achieve right now. It should be 
+ * noted that there will the problems if unknown channel modes for users
+ * are encountered. -TheShadow
+ */
+ 
+void do_sjoin(const char *source, int ac, char **av)
+{
+    User *user;
+    char *t, *nick;
+    char *channel = av[2];
+    char **av_cmode;
+    struct u_chanlist *c;
+    ChannelInfo *ci = NULL;
+    int modecnt;        /* Number of modes for a user (+o and/or +v) */
+    
+    t = av[ac-1];       /* The nicknames are always the last param */
+    while (*(nick=t)) {
+        char modebuf[4] = { 0 };        /* Used to hold a nice mode string */
+        
+        t = nick + strcspn(nick, " ");
+        if (*t)
+            *t++ = 0;
+         
+        modecnt = 0;
+        modebuf[0] = '+';    
+        while (*nick == '@' || *nick == '+') {
+            switch (*nick) {
+              case '@':
+                modecnt++;
+                modebuf[modecnt] = 'o';
+                break;
+              case '+':
+                modecnt++;
+                modebuf[modecnt] = 'v';
+                break;
+            }
+            nick++;
+        }   
+        
+        user = finduser(nick);
+        if (!user) {
+            log("SJOIN to channel %s for non existant nick %s (%s)",
+                        channel, nick, merge_args(ac, av));
+            continue;
+        }                
+        
+        if (debug)
+            log("debug: %s SJOINS %s", nick, channel);
+
+        /* Make sure check_kick comes before chan_adduser, so banned users
+         * don't get to see things like channel keys. */
+        if (check_kick(user, channel));
+            continue;
+        chan_adduser(user, channel);     
+/* Añadir soporte aviso de MemoServ si hay memos en el canal que entras */
+        if ((ci = cs_findchan(channel))) {
+            check_cs_memos(user, ci);
+            if (ci->entry_message)
+                 notice(s_ChanServ, user->nick, "%s", ci->entry_message);
+        }         
+        c = smalloc(sizeof(*channel));
+        c->next = user->chans;
+        c->prev = NULL;
+        if (user->chans)
+            user->chans->prev = c;
+        user->chans = c;
+        c->chan = findchan(channel);
+        
+        if (modecnt > 0) {
+            /* Set channel modes for user.
+             * We need to watch out for +ov and send two nicks wen it
+             * happens. */
+            
+            if (debug)
+                log("debug: channel modes for %s are %s", nick, modebuf);
+            
+            av_cmode = smalloc(sizeof(char *) * (    modecnt + 2));
+            av_cmode[0] = channel;
+            av_cmode[1] = modebuf;
+            av_cmode[2] = nick;
+            if (modecnt == 2)
+                av_cmode[3] = nick;
+            do_cmode(source, modecnt+2, av_cmode);
+            free(av_cmode);
+        }        
+    }    
+                                                                                                                                
+    /* Did anyone actually join the channel and are there really any modes? */
+    if (ci && av[3]+1 != '\0') {
+        /* Set channel modes.
+         * We need to watch out for the additional params for +k and +l. */                  
+        av_cmode = smalloc(sizeof(char *) * (ac -3));
+        av_cmode[0] = channel;
+        av_cmode[1] = av[3];    /* The actual channel modes */
+        /* Now see if we have additional params for +k and/or +l. */       
+        switch (ac) {
+          case 7:
+            av_cmode[3] = av[5];
+          case 6:
+            av_cmode[2] = av[4];
+        }
+        do_cmode(av[0], ac-3, av_cmode);
+        free(av_cmode);
+    }        
+}
+
+#endif /* IRC_BAHAMUT */
+   
+/*************************************************************************/
+
 /* Handle a PART command.
  *	av[0] = channels to leave
  *	av[1] = reason (optional)
@@ -527,14 +916,18 @@ void do_kick(const char *source, int ac, char **av)
 	t = s + strcspn(s, ",");
 	if (*t)
 	    *t++ = 0;
-	user = finduser(s);
+#ifdef IRC_UNDERNET_P10
+	user = finduserP10(s);
+#else
+        user = finduser(s);
+#endif	
 	if (!user) {
 	    log("user: KICK for nonexistent user %s on %s: %s", s, av[0],
 						merge_args(ac-2, av+2));
 	    continue;
 	}
 	if (debug)
-	    log("debug: kicking %s from %s", s, av[0]);
+	    log("debug: kicking %s from %s", user->nick, av[0]);
 	for (c = user->chans; c && stricmp(av[0], c->chan->name) != 0;
 								c = c->next)
 	    ;
@@ -584,12 +977,19 @@ void do_umode(const char *source, int ac, char **av)
 	switch (*s++) {
 	    case '+': add = 1; break;
 	    case '-': add = 0; break;
-#ifdef IRC_DAL4_4_15
+#if defined (IRC_DAL4_4_15) || defined (IRC_BAHAMUT)
 	    case 'r': 
 	    	if (add && !nick_identified(user)) {
 		    send_cmd(ServerName, "SVSMODE %s -r", av[0]);
 		}
 		break;
+#endif
+#ifdef IRC_BAHAMUT
+            case 'd':
+                log("user: MODE %s from %s for %s", av[1], source, av[0]);
+                canalopers(NULL, "%s tried to set mode %s", source, av[1],
+                                   av[0]);
+                break;
 #endif
 	    case 'i': add ? (user->mode |= UMODE_I) : (user->mode &= ~UMODE_I);
 	              break;
@@ -605,6 +1005,8 @@ void do_umode(const char *source, int ac, char **av)
                       break;
             case 'k': add ? (user->mode |= UMODE_K) : (user->mode &= ~UMODE_K);
                       break;
+#ifdef IRC_UNDERNET_P09                      
+//#ifdef DB_NETWORKS
             case 'r':
                 if (add) {
                     user->mode |= UMODE_R;
@@ -631,11 +1033,11 @@ void do_umode(const char *source, int ac, char **av)
                         strcpy(new_ni->nick, user->nick);
                     } 
                 } else {
-//                        user->mode &= ~UMODE_R;
+                    user->mode &= ~UMODE_R;
 //                        new_ni->status &= ~NS_IDENTIFIED;
                 }    
                 break;
-                                                                                                                                                                                                                                                                                                  
+#endif                                                                                                                                                                                                                                                                                                  
 	    case 'o':
 		if (add) {
 		    user->mode |= UMODE_O;
@@ -696,8 +1098,8 @@ void do_quit(const char *source, int ac, char **av)
 	ni->last_quit = *av[0] ? sstrdup(av[0]) : NULL;
     }
 #ifndef STREAMLINED
-    if (LimitSessions)
-	del_session(user->host);
+    if (ControlClones)
+	del_clones(user->host);
 #endif
     delete_user(user);
 }
@@ -730,8 +1132,8 @@ void do_kill(const char *source, int ac, char **av)
 
     }
 #ifndef STREAMLINED
-    if (LimitSessions)
-	del_session(user->host);
+    if (ControlClones)
+	del_clones(user->host);
 #endif
     delete_user(user);
 }
@@ -744,7 +1146,11 @@ void do_kill(const char *source, int ac, char **av)
 int is_oper(const char *nick)
 {
     User *user = finduser(nick);
+#ifdef DB_NETWORKS
     return user && ((user->mode & UMODE_O) || (user->mode & UMODE_H));
+#else
+    return user && (user->mode & UMODE_O);
+#endif        
 }
 
 /*************************************************************************/

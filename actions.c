@@ -52,7 +52,11 @@ void bad_password(User *u)
     u->invalid_pw_count++;
     u->invalid_pw_time = now;
     if (u->invalid_pw_count >= BadPassLimit)
+#ifdef IRC_UNDERNET_P10
+        kill_user(NULL, u->numerico, "Demasiadas passwords inválidas");
+#else
 	kill_user(NULL, u->nick, "Demasiadas passwords inválidas");
+#endif	
 }
 
 /*************************************************************************/

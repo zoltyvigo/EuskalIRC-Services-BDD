@@ -135,7 +135,9 @@ void process()
     int ac;			/* Parameters for the command */
     char **av;
     Message *m;
-
+#ifdef IRC_UNDERNET_P10
+    User *u=NULL;
+#endif    
 
     /* If debugging, log the buffer. */
     if (debug)
@@ -156,8 +158,29 @@ void process()
 	strscpy(source, buf+1, sizeof(source));
 	memmove(buf, s, strlen(s)+1);
     } else {
+#ifdef IRC_UNDERNET_P10
+        if (strncmp(buf, "SERVER" ,strlen("SERVER"))==0) {
+            s = strdup(buf);
+            source[0] = '\0';
+        } else {
+            s = strpbrk(buf, " ");
+            if (!s)
+                return;
+            *s = 0;
+            while (isspace(*++s));
+            strscpy(source, buf, sizeof(source));
+            if (strlen(source) == 3) {
+                u = finduserP10(source); 
+                if(u != NULL) strscpy(source, u->nick, sizeof(source));
+                else return; 
+            }  
+            memmove(buf, s, strlen(s)+1);
+        }            
+#else            
 	*source = 0;
+#endif
     }
+    
     if (!*buf)
 	return;
     s = strpbrk(buf, " ");

@@ -30,6 +30,12 @@ static NewsItem *news = NULL;
 
 /* List of messages for each news type.  This simplifies message sending. */
 
+
+/*
+    { "CREDITS",  do_credits,  NULL,  -1,                     -1,-1,-1,-1 },
+        { "CREDITOS", do_credits,  NULL,  -1,                     -1,-1,-1,-1 },
+*/        
+
 #define MSG_SYNTAX	0
 #define MSG_LIST_HEADER	1
 #define MSG_LIST_ENTRY	2

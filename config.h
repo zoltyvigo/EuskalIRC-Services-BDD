@@ -56,7 +56,7 @@
 /* Define this to enable OperServ's debugging commands (Services root
  * only).  These commands are undocumented; "use the source, Luke!" */
 /* #define DEBUG_COMMANDS */
-
+/* #define DEBUG_COMMANDS */
 
 /******************* END OF USER-CONFIGURABLE SECTION ********************/
 

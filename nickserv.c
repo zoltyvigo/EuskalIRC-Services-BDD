@@ -47,6 +47,7 @@ static void release(NickInfo *ni, int from_timeout);
 static void add_ns_timeout(NickInfo *ni, int type, time_t delay);
 static void del_ns_timeout(NickInfo *ni, int type);
 
+static void do_credits(User *u);
 static void do_help(User *u);
 static void do_register(User *u);
 static void do_identify(User *u);
@@ -77,7 +78,7 @@ static void do_suspend(User *u);
 static void do_unsuspend(User *u);
 static void do_forbid(User *u);
 static void do_unforbid(User *u);
-#ifdef DB_HISPANO
+#ifdef DB_NETWORKS
 static void do_nickreg(User *u);
 static void do_nickdrop(User *u);
 static void do_nickforbid(User *u);
@@ -89,6 +90,8 @@ static void do_vhostdel(User *u);
 /*************************************************************************/
 
 static Command cmds[] = {
+    { "CREDITS",  do_credits,  NULL,  -1,                     -1,-1,-1,-1 },
+    { "CREDITOS", do_credits,  NULL,  -1,                     -1,-1,-1,-1 },        
     { "HELP",     do_help,     NULL,  -1,                     -1,-1,-1,-1 },
     { "AYUDA",    do_help,     NULL,  -1,                     -1,-1,-1,-1 },
     { "SHOWCOMMANDS",    do_help,   NULL,  -1,                -1,-1,-1,-1 },    
@@ -154,7 +157,7 @@ static Command cmds[] = {
     { "UNFORBID",   do_unforbid,   is_services_admin,  -1,
                 -1, NICK_SERVADMIN_HELP_UNFORBID,
                 NICK_SERVADMIN_HELP_UNFORBID, NICK_SERVADMIN_HELP_UNFORBID },
-#ifdef DB_HISPANO
+#ifdef DB_NETWORKS
     { "NICKREG",    do_nickreg,    is_services_oper,  -1, -1, -1, -1, -1 },
     { "NICKDROP",   do_nickdrop,   is_services_oper,  -1, -1, -1, -1, -1 },
     { "NICKFORBID", do_nickforbid, is_services_oper,  -1, -1, -1, -1, -1 },
@@ -712,10 +715,13 @@ int validate_user(User *u)
 
     if (!(ni = u->real_ni))
 	return 0;
+	
+    if (ni->status & NS_IDENTIFIED)
+        return 0;
 
     if (ni->status & NS_VERBOTEN) {
 	notice_lang(s_NickServ, u, NICK_MAY_NOT_BE_USED);
-#ifdef IRC_DAL4_4_15
+#if defined (IRC_DAL4_4_15) || defined (IRC_BAHAMUT)
 	if (NSForceNickChange)
 	    notice_lang(s_NickServ, u, FORCENICKCHANGE_IN_1_MINUTE);
 	else
@@ -729,7 +735,8 @@ int validate_user(User *u)
         notice_lang(s_NickServ, u, NICK_SUSPENDED, ni->last_quit);
         return 0;
     }
-                        
+
+#ifndef IRC_BAHAMUT                        
     if (!NoSplitRecovery) {
 	/* XXX: This code should be checked to ensure it can't be fooled */
 	if (ni->id_timestamp != 0 && u->signon == ni->id_timestamp) {
@@ -741,6 +748,7 @@ int validate_user(User *u)
 	    }
 	}
     }
+#endif    
 
     on_access = is_on_access(u, u->ni);
     if (on_access)
@@ -770,7 +778,7 @@ int validate_user(User *u)
 	if (u->ni->flags & NI_KILL_IMMED) {
 	    collide(ni, 0);
 	} else if (u->ni->flags & NI_KILL_QUICK) {
-#ifdef IRC_DAL4_4_15
+#if defined (IRC_DAL4_4_15) || defined (IRC_BAHAMUT)
 	    if (NSForceNickChange)
 	    	notice_lang(s_NickServ, u, FORCENICKCHANGE_IN_20_SECONDS);
 	    else
@@ -778,7 +786,7 @@ int validate_user(User *u)
 	    	notice_lang(s_NickServ, u, DISCONNECT_IN_20_SECONDS);
 	    add_ns_timeout(ni, TO_COLLIDE, 20);
 	} else {
-#ifdef IRC_DAL4_4_15
+#if defined (IRC_DAL4_4_15) || defined (IRC_BAHAMUT)
 	    if (NSForceNickChange)
 	    	notice_lang(s_NickServ, u, FORCENICKCHANGE_IN_1_MINUTE);
 	    else
@@ -801,7 +809,7 @@ void cancel_user(User *u)
     NickInfo *ni = u->real_ni;
     if (ni) {
 
-#ifdef IRC_DAL4_4_15
+#if defined (IRC_DAL4_4_15) || defined (IRC_BAHAMUT)
 	if (ni->status & NS_GUESTED) {
 	    send_cmd(NULL, "NICK %s %ld 1 %s %s %s :%s Enforcement",
 			u->nick, time(NULL), NSEnforcerUser, NSEnforcerHost, 
@@ -812,7 +820,7 @@ void cancel_user(User *u)
 	} else {
 #endif
 	    ni->status &= ~NS_TEMPORARY;
-#ifdef IRC_DAL4_4_15
+#if defined (IRC_DAL4_4_15) || defined (IRC_BAHAMUT)
 	}
 #endif
 	del_ns_timeout(ni, TO_COLLIDE);
@@ -893,6 +901,9 @@ NickInfo *findnick(const char *nick)
 {
     NickInfo *ni;
 
+/* en DB_NETWORKS añadir soporte toLower para evitar conflictos 
+ * tambien toUpper y strCasecmp */
+ 
     for (ni = nicklists[tolower(*nick)]; ni; ni = ni->next) {
 	if (stricmp(ni->nick, nick) == 0)
 	    return ni;
@@ -1123,7 +1134,7 @@ static void collide(NickInfo *ni, int from_timeout)
     if (!from_timeout)
 	del_ns_timeout(ni, TO_COLLIDE);
 
-#ifdef IRC_DAL4_4_15
+#if defined (IRC_DAL4_4_15) || defined (IRC_BAHAMUT)
     if (NSForceNickChange) {
 	struct timeval tv;
 	char guestnick[NICKMAX];
@@ -1139,20 +1150,22 @@ static void collide(NickInfo *ni, int from_timeout)
     } else {
 #endif
 	notice_lang(s_NickServ, u, DISCONNECT_NOW);
-    	kill_user(s_NickServ, ni->nick, "Protección de Nick Registrado");
 #ifdef IRC_UNDERNET_P10
-/*    	send_cmd(NULL, "%c NICK %s 1 %ld  %s %s AAAAAA %c%c%c :Protección de %s",
-    	        NumericoServer, ni->nick, time(NULL),
-    	        NSEnforcerUser, NSEnforcerHost, poner cosas aqui
-		ServerName, ni->nick); */
+        
+        kill_user(s_NickServ, u->numerico, "Protección de Nick Registrado");
+    	send_cmd(NULL, "%c NICK %s 1 %ld  %s %s AAAAAA %c%c%c :%s protegiendo a %s",
+           convert2y[ServerNumerico], ni->nick, time(NULL), NSEnforcerUser,
+           NSEnforcerHost, convert2y[ServerNumerico], convert2y[ServerNumerico],
+           convert2y[ServerNumerico], s_NickServ, ni->nick); 
 #else
-        send_cmd(NULL, "NICK %s %ld 1 %s %s %s :%s Enforcement",
+        kill_user(s_NickServ, ni->nick, "Protección de Nick Registrado");
+        send_cmd(NULL, "NICK %s %ld 1 %s %s %s :%s protegiendo a %s",
                 ni->nick, time(NULL), NSEnforcerUser, NSEnforcerHost,
-                ServerName, s_NickServ);
+                ServerName, s_NickServ, ni->nick);
 #endif		
 	ni->status |= NS_KILL_HELD;
 	add_ns_timeout(ni, TO_RELEASE, NSReleaseTimeout);
-#ifdef IRC_DAL4_4_15
+#if defined (IRC_DAL4_4_15) || defined (IRC_BAHAMUT)
     }
 #endif
 }
@@ -1299,6 +1312,13 @@ static void del_ns_timeout(NickInfo *ni, int type)
 /*********************** NickServ command routines ***********************/
 /*************************************************************************/
 
+static void do_credits(User *u)
+{
+    notice_lang(s_NickServ, u, SERVICES_CREDITS);
+}    
+
+/*************************************************************************/    
+
 /* Return a help message. */
 
 static void do_help(User *u)
@@ -1349,7 +1369,7 @@ static void do_register(User *u)
 	return;
     }
 
-#ifdef IRC_DAL4_4_15
+#if defined (IRC_DAL4_4_15) || defined (IRC_BAHAMUT)
     /* Prevent "Guest" nicks from being registered. -TheShadow */
     if (NSForceNickChange) {
 	int prefixlen = strlen(NSGuestNickPrefix);
@@ -1402,11 +1422,12 @@ static void do_register(User *u)
           for (ni = nicklists[i]; ni; ni = ni->next)
              if(ni->email && !strcmp(email,ni->email))
                 nicksmail++;
-        if (nicksmail > 3) {
-           privmsg(s_NickServ, u->nick, "Solo puedes registrar 3 Nicks por Email");
+/*        if (nicksmail > NicksMail) {   
+            notice_lang(s_NickServ, u, NICK_MAIL_ABUSE, NicksMail);
+
            return;
         }
-                                                                     
+  */                                                                   
 #else
     } else if (stricmp(u->nick, pass) == 0
             || (StrictPasswords && strlen(pass) < 5)) {
@@ -1519,7 +1540,7 @@ static void do_register(User *u)
 #endif
 #endif
 	    u->lastnickreg = time(NULL);
-#ifdef IRC_DAL4_4_15
+#if defined (IRC_DAL4_4_15) || defined (IRC_BAHAMUT)
 	    send_cmd(ServerName, "SVSMODE %s +r", u->nick);
 #endif
 	} else {
@@ -1569,7 +1590,7 @@ static void do_identify(User *u)
 		free(ni->last_realname);
 	    ni->last_realname = sstrdup(u->realname);
 	}
-#ifdef IRC_DAL4_4_15
+#if defined (IRC_DAL4_4_15) || defined (IRC_BAHAMUT)
 	send_cmd(ServerName, "SVSMODE %s +r", u->nick);
 #endif
 	log("%s: %s!%s@%s identified for nick %s", s_NickServ,
@@ -1620,7 +1641,7 @@ static void do_drop(User *u)
     } else {
 	if (readonly)
 	    notice_lang(s_NickServ, u, READ_ONLY_MODE);
-#ifdef IRC_DAL4_4_15
+#if defined (IRC_DAL4_4_15) || defined (IRC_BAHAMUT)
 	send_cmd(ServerName, "SVSMODE %s -r", ni->nick);
 #endif
 	delnick(ni);
@@ -1938,7 +1959,7 @@ static void do_access(User *u)
 		continue;
 #ifdef IRC_UNDERNET_P10
 	    privmsg(s_NickServ, u->numerico, "    %s", *access);
-#elseif
+#else
             notice(s_NickServ, u->nick, "    %s", *access);
 #endif	    
 	}
@@ -2214,7 +2235,7 @@ static void do_listlinks(User *u)
 		if (param ? getlink(ni2) == ni : ni2->link == ni) {
 #ifdef IRC_UNDERNET_P10
 		    privmsg(s_NickServ, u->numerico, "    %s", ni2->nick);
-#elseif
+#else
                     privmsg(s_NickServ, u->nick, "    %s", ni2->nick);
 #endif
 		    count++;
@@ -2805,52 +2826,25 @@ static void do_unforbid(User *u)
 }
 
 /*************************************************************************/
-#ifdef DB_HISPANO
+#ifdef DB_NETWORKS
 static void do_nickreg(User *u)
 {
+    char *serie = strtok(NULL, " ");
     char *nick = strtok(NULL, " ");
     char *pass = strtok(NULL, " ");
-           
-    unsigned long v[2],k[2],x[2];
-    int cont=(NICKLEN+8)/8;
-    char tmpnick[8*((NICKLEN+8)/8)];
-    char tmppass[12+1];
-    unsigned long *p=(unsigned long *)tmpnick;
-
-    char passtea[14];
-    char passtea1[7];
-    char passtea2[7];
-                                            
+  
+                                  
     if (!pass) {
 /***        syntax_error(s_NickServ, u, "VHOST", NICK_VHOST_SYNTAX); ***/
-        privmsg(s_NickServ, u->nick, "Sintaxis: NICKREG <nick> <password>");
+        privmsg(s_NickServ, u->nick, "Sintaxis: NICKREG <serie> <nick> <password>");
         return;
-    }
+    }        
+   
+//    DB[4].registros++;
 
-    memset(tmpnick,0,sizeof(tmpnick));
-    strncpy(tmpnick,nick,sizeof(tmpnick));
-        
-    memset(tmppass,0,sizeof(tmppass));
-    strncpy(tmppass,pass,sizeof(tmppass));
-                
-    x[0]=x[1]=0;
-    k[0]=base64toint(tmppass);
-    k[1]=base64toint(tmppass+6);
-
-    while(cont--) {
-    v[0]=ntohl(*p++);
-    v[1]=ntohl(*p++);
-    tea(v,k,x);
-    }
-                                
-    snprintf(passtea1, sizeof(passtea1), "%s", inttobase64(x[0]));
-    snprintf(passtea2, sizeof(passtea1), "%s", inttobase64(x[1]));
-    snprintf(passtea, sizeof(passtea), "%s%s", passtea1, passtea2);
-
-    DB[4].registros++;
-
+//    pass = cifrado_tea(nick,pass);
  
-    send_cmd(NULL, "DB * %lu n %s %s", DB[4].registros , nick, passtea);
+    send_cmd(NULL, "DB * %s n %s %s", serie , nick, pass);
     privmsg(s_NickServ, u->nick, "NICKREG ejecutado en 12%s.", nick);
     canalopers(s_NickServ, "12%s ha usado NICKREG en 12%s", u->nick, nick);
     log("%s: NICKREG de %s!%s@%s para %s", s_NickServ,
@@ -2861,20 +2855,21 @@ static void do_nickreg(User *u)
 /*************************************************************************/
 static void do_nickdrop(User *u)
 {
+    char *serie = strtok(NULL, " ");
     char *nick = strtok(NULL, " ");
         
         
     if (!nick) {
 /***        syntax_error(s_NickServ, u, "VHOST", NICK_VHOST_SYNTAX); ***/
-        privmsg(s_NickServ, u->nick, "Sintaxis: NICKDROP <nick>");
+        privmsg(s_NickServ, u->nick, "Sintaxis: NICKDROP <serie> <nick>");
         return;
     }
 
-    DB[4].registros++;
-    DB[7].registros++;
+//    DB[4].registros++;
+//    DB[7].registros++;
                              
-    send_cmd(NULL, "DB * %lu n %s", DB[4].registros, nick);
-    send_cmd(NULL, "DB * %lu v %s", DB[7].registros, nick);        
+    send_cmd(NULL, "DB * %s n %s", serie, nick);
+//    send_cmd(NULL, "DB * %d v %s", DB[7].registros, nick);        
     privmsg(s_NickServ, u->nick, "Nick y Vhost para el nick 12%s ha sido borrados.", nick);
     canalopers(s_NickServ, "12%s ha usado NICKDROP en 12%s",
                         u->nick, nick);
@@ -2885,17 +2880,18 @@ static void do_nickdrop(User *u)
 /*************************************************************************/
 static void do_nickforbid(User *u)
 {
+    char *serie = strtok(NULL, " ");
     char *nick = strtok(NULL, " ");
     
     
     if (!nick) {
    /***        syntax_error(s_NickServ, u, "VHOST", NICK_VHOST_SYNTAX); ***/
-        privmsg(s_NickServ, u->nick, "Sintaxis: NICKFORBID <nick>");
+        privmsg(s_NickServ, u->nick, "Sintaxis: NICKFORBID <serie> <nick>");
         return;
     }
-    DB[4].registros++;   
+//    DB[4].registros++;   
     
-    send_cmd(NULL, "DB * %lu n %s Nick_Forbideado", DB[4].registros, nick);                                                                   
+    send_cmd(NULL, "DB * %s n %s Nick_Forbideado", serie, nick);                                                                   
     privmsg(s_NickServ, u->nick, "NICKFORBID ejecutado en 12%s.", nick);
     canalopers(s_NickServ, "12%s ha usado NICKFORBID en 12%s", u->nick, nick);
     log("%s: NICKFORBID de %s!%s@%s para %s", s_NickServ,
@@ -2909,17 +2905,8 @@ static void do_nickvhost(User *u)
     char *pass = strtok(NULL, " ");    
     char *vhost = strtok(NULL, " ");
 
-
-    unsigned long v[2],k[2],x[2];
-    int cont=(NICKLEN+8)/8;
-    char tmpnick[8*((NICKLEN+8)/8)];
-    char tmppass[12+1];
-    unsigned long *p=(unsigned long *)tmpnick;
-                   
-    char passtea[14];
-    char passtea1[7];
-    char passtea2[7];
-
+        privmsg(s_NickServ, u->nick, "Comando no disponible");
+        return;
 
     if (!pass) {
     /***        syntax_error(s_NickServ, u, "VHOST", NICK_VHOST_SYNTAX); ***/
@@ -2928,31 +2915,12 @@ static void do_nickvhost(User *u)
     }
 
 
-    memset(tmpnick,0,sizeof(tmpnick));
-    strncpy(tmpnick,nick,sizeof(tmpnick));
-        
-    memset(tmppass,0,sizeof(tmppass));
-    strncpy(tmppass,pass,sizeof(tmppass));
-               
-    x[0]=x[1]=0;
-    k[0]=base64toint(tmppass);
-    k[1]=base64toint(tmppass+6);
-
-    while(cont--) {
-    v[0]=ntohl(*p++);
-    v[1]=ntohl(*p++);
-    tea(v,k,x);
-    }
-                    
-    snprintf(passtea1, sizeof(passtea1), "%s", inttobase64(x[0]));
-    snprintf(passtea2, sizeof(passtea1), "%s", inttobase64(x[1]));
-    snprintf(passtea, sizeof(passtea), "%s%s", passtea1, passtea2);                                        
-        
-    DB[4].registros++;
-    DB[7].registros++;    
+ 
+//    DB[4].registros++;
+//    DB[7].registros++;    
     
-    send_cmd(NULL, "DB * %lu n %s %s", DB[4].registros , nick, passtea);
-    send_cmd(NULL, "DB * %lu v %s %s", DB[7].registros , nick, vhost);
+//    send_cmd(NULL, "DB * %d n %s %s", DB[4].registros , nick, passtea);
+//    send_cmd(NULL, "DB * %d v %s %s", DB[7].registros , nick, vhost);
         
     privmsg(s_NickServ, u->nick, "NICKVHOST ejecutado en 12%s.", nick);
     canalopers(s_NickServ, "12%s ha usado NICKVHOST en 12%s (%s)",
@@ -2965,17 +2933,18 @@ static void do_nickvhost(User *u)
 /*************************************************************************/
 static void do_vhostadd(User *u)
 {
+    char *serie = strtok(NULL, " ");
     char *nick = strtok(NULL, " ");
     char *vhost = strtok(NULL, " ");
             
     if (!vhost) {
 /***        syntax_error(s_NickServ, u, "VHOST", NICK_VHOST_SYNTAX); ***/
-        privmsg(s_NickServ, u->nick, "Sintaxis: VHOSTADD <nick> <vhost>");
+        privmsg(s_NickServ, u->nick, "Sintaxis: VHOSTADD <serie> <nick> <vhost>");
         return;
     }
-    DB[7].registros++;
+//    DB[7].registros++;
                  
-    send_cmd(NULL, "DB * %lu v %s %s", DB[7].registros, nick, vhost);
+    send_cmd(NULL, "DB * %s v %s %s", serie, nick, vhost);
     privmsg(s_NickServ, u->nick, "Vhost 12%s para nick 12%s colocado",
                      vhost, nick);
     canalopers(s_NickServ, "12%s ha usado VHOSTADD en 12%s (%s)",
@@ -2989,18 +2958,19 @@ static void do_vhostadd(User *u)
 /*************************************************************************/
 static void do_vhostdel(User *u)
 {
+    char *serie = strtok(NULL, " ");
     char *nick = strtok(NULL, " ");
         
         
     if (!nick) {
 /***        syntax_error(s_NickServ, u, "VHOST", NICK_VHOST_SYNTAX); ***/
-        privmsg(s_NickServ, u->nick, "Sintaxis: VHOSTDEL <nick>");
+        privmsg(s_NickServ, u->nick, "Sintaxis: VHOSTDEL <serie> <nick>");
         return;
     }
   
-    DB[7].registros++;
+//    DB[7].registros++;
       
-    send_cmd(NULL, "DB * %lu v %s", DB[7].registros, nick);
+    send_cmd(NULL, "DB * %s v %s", serie, nick);
     privmsg(s_NickServ, u->nick, "VHOSTDEL ejecutado en 12%s", nick);
     canalopers(s_NickServ, "12%s ha usado VHOSTDEL en 12%s",
                       u->nick, nick);

@@ -15,114 +15,12 @@
 
 /*************************************************************************/
 
- /* Salir mensaje en el Canal de Control los servers ke van entrando 
-  * Zoltan Julio 2000
-  */
-
-static void m_server(char *source, int ac, char **av)
-{
-
-     char numerico[2];
-
-/* Handle a server SERVER command.
- *      source = Server hub
- *      av[0] = Nuevo Server
- *      av[1] = hop count
- *      av[2] = signon time
- *      av[3] = signon
- *      av[4] = protocolo
- *      av[5] = numerico
- *      av[6] = user's server
- *      av[7] = Descripcion
- */  
-
-     strscpy(numerico, av[5], 2);             
-     canalopers(s_OperServ, "SERVER 12%s Numeric 12%s entra en la RED.", av[0], numerico);
-}
-
-/*************************************************************************/
-
- /* Salir mensaje en el canal de control los servers ke salen de la red
-  * Zoltan Julio 2000
-  */
-
-static void m_squit(char *source, int ac, char **av)
-{
-          
-   /* Handle a server SQUIT command.
-    *       soruce =  nick/server
-    *      av[0] = Nuevo Server
-    *      av[1] = signon time
-    *      av[2] = motivo 
-    */
-   canalopers(s_OperServ, "SQUIT de 12%s por 12%s Motivo: %s", av[0], source, av[2]);
-}
-
-/*************************************************************************/
-#ifdef DB_HISPANO
-static void m_db(char *source, int ac, char **av)
-{
-/*
-    DB[1].registros  Tabla 'b' Bots Clones/Ilines
-    DB[2].registros  Tabla 'c' Canales Temporal
-    DB[3].registros  Tabla 'i' Clones/Ilines
-    DB[4].registros  Tabla 'n' NiCKS
-    DB[5].registros  Tabla 'o' Opers/Admins
-    DB[6].registros  Tabla 't' Temporal
-    DB[7].registros  Tabla 'v' Vhosts
-*/                            
-    if (strcmp(av[5], "2")  == 0) {
-        DB[4].registros = atol(av[4]);
-//        canalopers(s_OperServ, "Tabla N  Serie: %lu", DB[4].registros);        
-    }
-    if (strcmp(av[5], "b")  == 0) {
-        DB[1].registros = atol(av[4]);
-//        canalopers(s_OperServ, "Tabla B  Serie: %lu", DB[1].registros);
-    }
-    if (strcmp(av[5], "c")  == 0) {
-        DB[2].registros = atol(av[4]);
-//        canalopers(s_OperServ, "Tabla C  Serie: %lu", DB[2].registros);
-    }    
-    if (strcmp(av[5], "i")  == 0) {
-        DB[3].registros = atol(av[4]);
-//        canalopers(s_OperServ, "Tabla I  Serie: %lu", DB[3].registros);
-    }    
-    if (strcmp(av[5], "n")  == 0) {
-        DB[4].registros = atol(av[4]);
-//        canalopers(s_OperServ, "Tabla N  Serie: %lu", DB[4].registros);
-    }
-    if (strcmp(av[5], "o")  == 0) {
-        DB[5].registros = atol(av[4]);
-//        canalopers(s_OperServ, "Tabla O  Serie: %lu", DB[5].registros);
-    }
-    if (strcmp(av[5], "t")  == 0) {
-        DB[6].registros = atol(av[4]);
-//        canalopers(s_OperServ, "Tabla T  Serie: %lu", DB[6].registros);
-    }                                                       
-    if (strcmp(av[5], "v")  == 0) {
-        DB[7].registros = atol(av[4]);
-//        canalopers(s_OperServ, "Tabla V  Serie: %lu", DB[7].registros);
-    }
-} 
-#endif
-
-/*************************************************************************/
-
 static void m_nickcoll(char *source, int ac, char **av)
 {
     if (ac < 1)
 	return;
     if (!skeleton && !readonly)
 	introduce_user(av[0]);
-}
-
-/*************************************************************************/
-
-static void m_ping(char *source, int ac, char **av)
-{
-    if (ac < 1)
-	return;
-    send_cmd(ServerName, "PONG %s %s", ac>1 ? av[1] : ServerName, av[0]);
 }
 
 /*************************************************************************/
@@ -135,6 +33,57 @@ static void m_away(char *source, int ac, char **av)
 	check_memos(u);
 }
 
+/*************************************************************************/
+#ifdef DB_NETWORKS
+static void m_bmode(char *source, int ac, char **av)
+/* Parseo de los BMODES de services virtual
+ * zoltan 24-09-2000 */
+{
+    if (*av[0] == '#' || *av[0] == '&') {
+        if (ac < 2)
+            return;
+        do_cmode(source, ac, av);
+    }
+}
+#endif
+/*************************************************************************/
+#ifdef DB_NETWORKS
+static void m_db(char *source, int ac, char **av)
+{
+    if (ac != 5)
+        return;
+    do_db(source, ac, av);
+}                
+#endif                
+/**************************************************************************/
+#ifdef IRC_UNDERNET_P10
+static void m_end_of_burst(char *source, int ac, char **av)
+{
+     Server *server;
+     server = find_servernumeric(source);
+     if (!server)
+         return;
+     else if (stricmp(server->name, ServerHUB) == 0) 
+         send_cmd(NULL, "%c EB", convert2y[ServerNumerico]);
+     else
+        return;
+}
+#endif
+/**************************************************************************/
+#ifdef IRC_UNDERNET_P10
+static void m_eob_ack(char *source, int ac, char **av)
+{
+    Server *server;  
+    server = find_servernumeric(source); 
+      
+    if (!server)
+        return;
+    else if (stricmp(server->name, ServerHUB) == 0) 
+        send_cmd(NULL, "%c EA", convert2y[ServerNumerico]);
+    } else
+        return; 
+}
+#endif
 /*************************************************************************/
 
 static void m_join(char *source, int ac, char **av)
@@ -161,10 +110,15 @@ static void m_kill(char *source, int ac, char **av)
 	return;
     /* Recover if someone kills us. */
 #ifdef IRC_UNDERNET_P10
+    if (stricmp(av[0], s_ChanServP10) == 0) {
+        introduce_user(av[0]);
+        join_chanserv();
+    }
     if (stricmp(av[0], s_OperServP10) == 0 ||
         stricmp(av[0], s_NickServP10) == 0 ||
-        stricmp(av[0], s_ChanServP10) == 0 ||
+#ifdef CREGSERV
         stricmp(av[0], s_CregServP10) == 0 ||        
+#endif        
         stricmp(av[0], s_CyberServP10) == 0 ||
         stricmp(av[0], s_MemoServP10) == 0 ||
         stricmp(av[0], s_HelpServP10) == 0 ||
@@ -173,10 +127,15 @@ static void m_kill(char *source, int ac, char **av)
         (s_DevNull && stricmp(av[0], s_DevNullP10) == 0) ||
         stricmp(av[0], s_GlobalNoticerP10) == 0
 #else
+    if (stricmp(av[0], s_ChanServ) == 0) {
+        introduce_user(av[0]);    
+        join_chanserv();
+    }
     if (stricmp(av[0], s_OperServ) == 0 ||
         stricmp(av[0], s_NickServ) == 0 ||
-        stricmp(av[0], s_ChanServ) == 0 ||
+#ifdef CREGSERV
         stricmp(av[0], s_CregServ) == 0 ||
+#endif        
         stricmp(av[0], s_CyberServ) == 0 ||
         stricmp(av[0], s_MemoServ) == 0 ||
         stricmp(av[0], s_HelpServ) == 0 ||
@@ -187,7 +146,7 @@ static void m_kill(char *source, int ac, char **av)
 #endif        
     ) {
 	if (!readonly && !skeleton)
-	    introduce_user(av[0]);
+	    introduce_user(av[0]);	    
     } else {
 	do_kill(source, ac, av);
     }
@@ -209,7 +168,6 @@ static void m_mode(char *source, int ac, char **av)
 }
 
 /*************************************************************************/
-
 static void m_motd(char *source, int ac, char **av)
 {
     FILE *f;
@@ -238,7 +196,7 @@ static void m_motd(char *source, int ac, char **av)
     send_cmd(ServerName, "372 %s :-", source);
     send_cmd(ServerName, "372 %s :- Services is copyright (c) "
 		"1996-1999 Andy Church.", source);
-    send_cmd(ServerName, "372 %s :- 2000, Toni García, Zoltan. GNU ", source);
+    send_cmd(ServerName, "372 %s :- 2000, Toni García, Zoltan. Upworld ", source);
     send_cmd(ServerName, "376 %s :End of /MOTD command.", source);
 }
 
@@ -261,6 +219,7 @@ static void m_nick(char *source, int ac, char **av)
     }
 # endif
 # ifdef IRC_UNDERNET_P10
+  /* En P10, el comando nick es mas largo de en otras redes :) */
     if ((ac != 8) && (ac != 9) && (ac != 2)) {
 	if (debug) {
 	    log("debug: NICK message: expecting 2, 8 or 9 parameters after "
@@ -268,7 +227,15 @@ static void m_nick(char *source, int ac, char **av)
 	}
 	return;
     }
-# else
+#elif defined (IRC_BAHAMUT)
+    if ((!*source && ac != 9) || (*source && ac != 2)) {
+        if (debug) {
+            log("debug: NICK message: expecting 2 or 9 parameters after "
+                "parsing; got %d, source=%s'", ac, source);
+        }
+        return;
+    }
+#else
     if ((!*source && ac != 7) || (*source && ac != 2)) {
         if (debug) {
             log("debug: NICK message: expecting 2 or 7 parameters after "
@@ -290,6 +257,15 @@ static void m_part(char *source, int ac, char **av)
     if (ac < 1 || ac > 2)
 	return;
     do_part(source, ac, av);
+}
+
+/*************************************************************************/
+
+static void m_ping(char *source, int ac, char **av)
+{
+    if (ac < 1)
+        return;
+    send_cmd(ServerName, "PONG %s %s", ac>1 ? av[1] : ServerName, av[0]);
 }
 
 /*************************************************************************/
@@ -337,53 +313,37 @@ static void m_privmsg(char *source, int ac, char **av)
 		privmsg(s_OperServ, source, "4Acceso denegado.");
             canalopers(s_OperServ, "Denegando el acceso a 12%s desde %s (No es OPER)",
                         s_OperServ, source);                                      
-	}
-                                                                                               
+	}                                                                                               
      
 #ifdef IRC_UNDERNET_P10
     } else if (stricmp(av[0], s_NickServP10) == 0) {
         nickserv(source, av[1]);
     } else if (stricmp(av[0], s_ChanServP10) == 0) {
         chanserv(source, av[1]);
+#ifdef CREGSERV
     } else if (stricmp(av[0], s_CregServP10) == 0) {
         cregserv(source, av[1]);
+#endif        
     } else if (stricmp(av[0], s_CyberServP10) == 0) {
-        cyberserv(source, av[1]);        
+//        cyberserv(source, av[1]);        
     } else if (stricmp(av[0], s_MemoServP10) == 0) {
         memoserv(source, av[1]);
     } else if (stricmp(av[0], s_HelpServP10) == 0) {
         helpserv(s_HelpServ, source, av[1]);
 /***    } else if (stricmp(av[0], s_NewsServP10) == 0) {
         newsserv(sourde, av[1]); *****/
-    } else if (s_IrcIIHelp && stricmp(av[0], s_IrcIIHelpP10) == 0) {
-#else
-	/* Servicio de compatiblidad */ /*
-    } else if (stricmp(av[0], "NickServ") ==0) {
-        nickserv(source, av[1]);      
-    } else if (stricmp(av[0], "ChanServ") == 0) {
-        chanserv(source, av[1]);
-    } else if (stricmp(av[0], "MemoServ") == 0) {
-        memoserv(source, av[1]);
-    } else if (stricmp(av[0], "OperServ") == 0) {
-        operserv(source, av[1]);
-    } else if (stricmp(av[0], "HelpServ") == 0) {
-        helpserv(s_HelpServ, source, av[1]);
-    } else if (stricmp(av[0], "Service") == 0) {
-        nickserv(source, av[1]);
-    } else if (stricmp(av[0], "Scytale") == 0) {
-        chanserv(source, av[1]);
-    } else if (stricmp(av[0], "KaOs") == 0) {
-        chanserv(source, av[1]); */
-     /** fin servicio de compatiblidad **/                           
-                                          	
+    } else if (s_IrcIIHelp && stricmp(av[0], s_IrcIIHelpP10) == 0) {          
+#else                                          	
     } else if (stricmp(av[0], s_NickServ) == 0) {
 	nickserv(source, av[1]);
     } else if (stricmp(av[0], s_ChanServ) == 0) {
 	chanserv(source, av[1]);
+#ifdef CREGSERV
     } else if (stricmp(av[0], s_CregServ) == 0) {
         cregserv(source, av[1]);            	
+#endif        
     } else if (stricmp(av[0], s_CyberServ) == 0) {
-        cyberserv(source, av[1]);     
+//        cyberserv(source, av[1]);     
     } else if (stricmp(av[0], s_MemoServ) == 0) {
 	memoserv(source, av[1]);
     } else if (stricmp(av[0], s_HelpServ) == 0) {
@@ -417,6 +377,36 @@ static void m_quit(char *source, int ac, char **av)
 
 /*************************************************************************/
 
+static void m_server(char *source, int ac, char **av)
+{
+    do_server(source, ac, av);
+}
+
+/*************************************************************************/
+#ifdef IRC_BAHAMUT
+static void m_sjoin(char *source, int ac, char **av)
+{
+    /* FIXME: this checking is an attempt to decipher SJOIN semantics. */
+    if (ac < 5) {
+        canalopers(NULL, "SJOIN error, wrong number of params! See log file.");
+        log("SJOIN: expected atleast 5 params, got %d: %s",
+                        ac, strtok(NULL, ""));
+        return;
+    }
+    do_sjoin(source, ac, av);
+}                         
+#endif /* IRC_BAHAMUT */
+/*************************************************************************/
+
+static void m_squit(char *source, int ac, char **av)
+{
+    if (ac != 3)
+        return;
+    do_squit(source, ac, av);
+}   
+             
+/*************************************************************************/
+
 static void m_stats(char *source, int ac, char **av)
 {
     if (ac < 1)
@@ -433,7 +423,7 @@ static void m_stats(char *source, int ac, char **av)
 	break;
       } /* case 'u' */
 
-      case 'l':
+      case 'l': {
 	send_cmd(NULL, "211 %s Server SendBuf SentBytes SentMsgs RecvBuf "
 		"RecvBytes RecvMsgs ConnTime", source);
 	send_cmd(NULL, "211 %s %s %d %d %d %d %d %d %ld", source, RemoteServer,
@@ -442,6 +432,14 @@ static void m_stats(char *source, int ac, char **av)
 		start_time);
 	send_cmd(NULL, "219 %s l :End of /STATS report.", source);
 	break;
+      }
+      /* Añado soporte para shadow */
+      case 'x': {
+        if (ShadowServ) {
+            join_shadow();            
+        }      	
+        break;
+      }   
 
       case 'c':
       case 'h':
@@ -534,8 +532,10 @@ void m_whois(char *source, int ac, char **av)
 	    clientdesc = desc_NickServ;
 	else if (stricmp(av[0], s_ChanServ) == 0)
 	    clientdesc = desc_ChanServ;
+#ifdef CREGSERV
         else if (stricmp(av[0], s_CregServ) == 0)
             clientdesc = desc_CregServ;                    
+#endif            
 	else if (stricmp(av[0], s_MemoServ) == 0)
 	    clientdesc = desc_MemoServ;
 	else if (stricmp(av[0], s_HelpServ) == 0)
@@ -566,7 +566,6 @@ void m_whois(char *source, int ac, char **av)
 /*************************************************************************/
 
 Message messages[] = {
-
     { "436",       m_nickcoll },
     { "AWAY",      m_away },
     { "JOIN",      m_join },
@@ -596,32 +595,38 @@ Message messages[] = {
     { "GLOBOPS",   NULL },
     { "GNOTICE",   NULL },
     { "GOPER",     NULL },
+    { "SQLINE",    NULL },
     { "RAKILL",    NULL },
 #endif
 
+#ifdef IRC_BAHAMUT
+    { "CAPAB",     NULL },
+    { "SVINFO",    NULL },
+    { "SJOIN",     m_sjoin },
+#endif    
+
 #ifdef IRC_UNDERNET
     { "GLINE",     NULL }, 
-    { "y",         NULL },
 #endif
 
 #ifdef IRC_UNDERNET_P10
     { "A",                m_away },
     { "J",                m_join },
     { "K",                m_kick },
-    { "D",                m_kill },
+    { "D",                m_kill }, 
     { "M",                m_mode },            
     { "MO",               m_motd },
     { "N",                m_nick },
     { "O",                NULL },    
     { "L",                m_part },
     { "PA",               NULL },
-    { "SE",               NULL },        
-    { "G",                m_ping },
+    { "SE",               NULL },   
+    { "G",                m_ping }, 
     { "P",                m_privmsg },
     { "Q",                m_quit },
     { "S",                m_server },
     { "SQ",               m_squit },
-    { "T",                m_topic },
+    { "T",                m_topic }, 
     { "R",                m_stats },
     { "TI",               m_time },               
     { "V",                m_version },    
@@ -632,21 +637,19 @@ Message messages[] = {
     { "EB",               m_end_of_burst },
     { "EOB_ACK",          m_eob_ack },
     { "EA",               m_eob_ack },
-    { "CREATE",           m_create },
+/*    { "CREATE",           m_create },
     { "C",                m_create },
     { "B",                m_burst },
-    { "BURST",            m_burst },
+    { "BURST",            m_burst }, */
 #endif
 
-#ifdef DB_HISPANO
-/*    { "BMODE",     m_bmode }, */
+#ifdef DB_NETWORKS
+    { "BMODE",     m_bmode }, 
     { "DB",        m_db }, 
     { "DBQ",       NULL },
     { "DBH",       NULL },        
-    { "CONFIG",    NULL }, 
-//    { "y",         m_db },      
+    { "CONFIG",    NULL },
 #endif
-
     { NULL }
 
 };

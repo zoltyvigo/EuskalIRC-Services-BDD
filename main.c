@@ -108,8 +108,10 @@ void sighandler(int signum)
 		          break;
 		case -12: snprintf(buf, sizeof(buf), "saving %s", ChanDBName);
 		          break;
+#ifdef CREGSERV
                 case -13: snprintf(buf, sizeof(buf), "saving %s", CregDBName);
                           break;
+#endif                          
 		case -14: snprintf(buf, sizeof(buf), "saving %s", OperDBName);
 		          break;
 		case -15: snprintf(buf, sizeof(buf), "saving %s", AutokillDBName);
@@ -120,8 +122,10 @@ void sighandler(int signum)
 		          break;
 		case -22: snprintf(buf, sizeof(buf), "expiring channels");
 		          break;
+#ifdef CREGSERV
 		case -23: snprintf(buf, sizeof(buf), "espiring peticiones");
 		          break;          
+#endif		          
 		case -25: snprintf(buf, sizeof(buf), "expiring autokills");
 		          break;
 		default : snprintf(buf, sizeof(buf), "waiting=%d", waiting);
@@ -217,11 +221,15 @@ int main(int ac, char **av, char **envp)
 		expire_nicks();
 		waiting = -22;
 		expire_chans();
+#ifdef CREGSERV
+                waiting = -23;
+                expire_creg();
+#endif                		
 	    }
 	    waiting = -25;
 	    expire_akills();
 #ifndef STREAMLINED
-	    expire_exceptions();
+//	    expire_ilines();
 #endif
 	    last_expire = t;
 	}
@@ -234,8 +242,10 @@ int main(int ac, char **av, char **envp)
 		save_ns_dbase();
 		waiting = -12;
 		save_cs_dbase();
+#ifdef CREGSERV
 		waiting = -13;
 		save_cr_dbase();
+#endif		
 	    }
 	    waiting = -14;
 	    save_os_dbase();
@@ -244,7 +254,7 @@ int main(int ac, char **av, char **envp)
 	    waiting = -16;
 	    save_news();
             waiting = -17;
-            save_exceptions();
+  //          save_iline_dbase();
 	    if (save_data < 0)
 		break;	/* out of main loop */
 

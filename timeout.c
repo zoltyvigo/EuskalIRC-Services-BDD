@@ -20,13 +20,18 @@ static Timeout *timeouts = NULL;
 void send_timeout_list(User *u)
 {
     Timeout *to, *last;
+#ifdef IRC_UNDERNET_P10
+    char *source = u->numerico;
+#else    
+    char *source = u->nick;
+#endif    
 
-    notice(s_OperServ, u->nick, "Now: %ld", time(NULL));
+    privmsg(s_OperServ, source, "Ahora: %ld", time(NULL));
     for (to = timeouts, last = NULL; to; last = to, to = to->next) {
-	notice(s_OperServ, u->nick, "%p: %ld: %p (%p)",
+	privmsg(s_OperServ, source, "%p: %ld: %p (%p)",
 			to, to->timeout, to->code, to->data);
 	if (to->prev != last)
-	    notice(s_OperServ, u->nick,
+	    privmsg(s_OperServ, source,
 			"    to->prev incorrect!  expected=%p seen=%p",
 			last, to->prev);
     }

@@ -3,8 +3,8 @@
 include ../Makefile.inc
 
 
-LANGOBJS = en_us es it ja_euc ja_jis ja_sjis pt tr
-LANGSRCS = en_us.l es.l it.l ja_euc.l ja_jis.l ja_sjis.l pt.l tr.l
+LANGOBJS = en_us es it ja_euc ja_jis ja_sjis pt tr ca ga
+LANGSRCS = en_us.l es.l it.l ja_euc.l ja_jis.l ja_sjis.l pt.l tr.l ca.l ga.l
 
 LANGCOMP = ./langcomp
 #LANGCOMP = ./langcomp -w
@@ -54,6 +54,10 @@ pt:       pt.l       langcomp index
 	./langcomp $@.l
 tr:       tr.l       langcomp index
 	./langcomp $@.l
+ca:       ca.l       langcomp index
+	./langcomp $@.l
+ga:       ga.l       langcomp index
+	./langcomp $@.l
 
 ja_jis.l: ja_euc.l jconv.pl
 	perl jconv.pl -jis <ja_euc.l >$@
@@ -66,7 +70,7 @@ langcomp: langcomp.c
 
 language.h: index Makefile
 	@perl -e <index >$@ '\
-		print STDERR "Generating language.h... "; \
+		print STDERR "Generando language.h... "; \
 		$$i=0; \
 		while (<>) { \
 			chop; \

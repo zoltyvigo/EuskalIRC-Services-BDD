@@ -13,6 +13,7 @@
 
 static int delmemo(MemoInfo *mi, int num);
 
+static void do_credits(User *u);
 static void do_help(User *u);
 static void do_send(User *u);
 static void do_cancel(User *u);
@@ -27,6 +28,8 @@ static void do_info(User *u);
 /*************************************************************************/
 
 static Command cmds[] = {
+    { "CREDITS",    do_credits,  NULL,  -1,                  -1,-1,-1,-1 },
+    { "CREDITOS",   do_credits,  NULL,  -1,                  -1,-1,-1,-1 },        
     { "HELP",       do_help, NULL,  -1,                      -1,-1,-1,-1 },
     { "AYUDA",      do_help, NULL,  -1,                      -1,-1,-1,-1 },
     { "SHOWCOMMANDS",  do_help,  NULL,  -1,                  -1,-1,-1,-1 },
@@ -303,6 +306,13 @@ static int delmemo(MemoInfo *mi, int num)
 /*********************** MemoServ command routines ***********************/
 /*************************************************************************/
 
+static void do_credits(User *u)
+{
+    notice_lang(s_MemoServ, u, SERVICES_CREDITS);
+}
+    
+/*************************************************************************/
+    
 /* Return a help message. */
 
 static void do_help(User *u)

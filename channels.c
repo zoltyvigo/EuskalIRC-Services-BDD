@@ -59,19 +59,29 @@ void send_channel_list(User *user)
     char s[16], buf[512], *end;
     struct c_userlist *u, *u2;
     int isop, isvoice;
+#ifdef IRC_UNDERNET_P10
+    const char *source = user->numerico;
+#else    
     const char *source = user->nick;
+#endif
 
     for (c = firstchan(); c; c = nextchan()) {
 	snprintf(s, sizeof(s), " %d", c->limit);
-	notice(s_OperServ, source, "%s %lu +%s%s%s%s%s%s%s%s%s%s%s%s %s",
+	privmsg(s_OperServ, source, "%s %lu +%s%s%s%s%s%s%s%s%s%s%s%s %s",
 				c->name, c->creation_time,
 				(c->mode&CMODE_I) ? "i" : "",
 				(c->mode&CMODE_M) ? "m" : "",
 				(c->mode&CMODE_N) ? "n" : "",
 				(c->mode&CMODE_P) ? "p" : "",
-				(c->mode&CMODE_S) ? "s" : "",
+				(c->mode&CMODE_s) ? "s" : "",
 				(c->mode&CMODE_T) ? "t" : "",
-#ifdef IRC_DAL4_4_15
+#ifdef IRC_BAHAMUT
+                                (c->mode&CMODE_C) ? "c" : "",
+#else
+                                "";
+#endif                                
+                                				
+#if defined (IRC_DAL4_4_15) || defined (IRC_BAHAMUT)
 /* Hay que meter aqui nuevos modos de UNREAL y BAHAMUT cuando los implemente */
 				(c->mode&CMODE_R) ? "R" : "",
 #else
@@ -100,10 +110,10 @@ void send_channel_list(User *user)
 		}
 	    }
 	    end += snprintf(end, sizeof(buf)-(end-buf),
-					" %s%s%s", isvoice ? "+" : "",
+					" Modos en %s Ops:%s Voices:%s", isvoice ? "+" : "",
 					isop ? "@" : "", u->user->nick);
 	}
-	notice(s_OperServ, source, buf);
+	privmsg(s_OperServ, source, buf);
     }
 }
 
@@ -115,22 +125,26 @@ void send_channel_users(User *user)
     char *chan = strtok(NULL, " ");
     Channel *c = chan ? findchan(chan) : NULL;
     struct c_userlist *u;
+#ifdef IRC_UNDERNET_P10
+    const char *source = user->numerico;
+#else    
     const char *source = user->nick;
+#endif
 
     if (!c) {
-	notice(s_OperServ, source, "Canal %s no encontrado!",
+	privmsg(s_OperServ, source, "Canal %s no encontrado!",
 		chan ? chan : "(null)");
 	return;
     }
-    notice(s_OperServ, source, "Canal %s usuarios:", chan);
+    privmsg(s_OperServ, source, "Canal %s usuarios:", chan);
     for (u = c->users; u; u = u->next)
-	notice(s_OperServ, source, "%s", u->user->nick);
-    notice(s_OperServ, source, "Canal %s operadores:", chan);
+	privmsg(s_OperServ, source, "%s", u->user->nick);
+    privmsg(s_OperServ, source, "Canal %s operadores:", chan);
     for (u = c->chanops; u; u = u->next)
-	notice(s_OperServ, source, "%s", u->user->nick);
-    notice(s_OperServ, source, "Canal %s moderadores:", chan);
+	privmsg(s_OperServ, source, "%s", u->user->nick);
+    privmsg(s_OperServ, source, "Canal %s moderadores:", chan);
     for (u = c->voices; u; u = u->next)
-	notice(s_OperServ, source, "%s", u->user->nick);
+	privmsg(s_OperServ, source, "%s", u->user->nick);
 }
 
 #endif	/* DEBUG_COMMANDS */
@@ -373,32 +387,7 @@ void do_cmode(const char *source, int ac, char **av)
 
 	case '-':
 	    add = 0; break;
-#ifdef DB_HISPANO
-        case 'R':
-            if (add) {
-                send_cmd(MODE_SENDER(s_ChanServ), "MODE %s -R", chan->name);
-                notice(s_ChanServ, chan->name, "Modo de canal no permitido (+R)");
-                break;
-            }
-            else
-                break;
-        case 'A':
-            if (add) {
-                send_cmd(MODE_SENDER(s_ChanServ), "MODE %s -A", chan->name);
-                notice(s_ChanServ, chan->name, "Modo de canal no permitido (+A)");
-                break;
-            }                                                                           
-            else
-                break;            
-        case 'S':
-            if (add) {
-                send_cmd(MODE_SENDER(s_ChanServ), "MODE %s -S", chan->name);
-                notice(s_ChanServ, chan->name, "Modo de canal no permitido (+S)");
-                break;
-            }
-            else
-                break;
-#endif                
+                                                                                    
 /* Añadir los nuevos modos para BAHAMUT Y UNREAL cuando los implemente */                
 	case 'i':
 	    if (add)
@@ -430,9 +419,9 @@ void do_cmode(const char *source, int ac, char **av)
 
 	case 's':
 	    if (add)
-		chan->mode |= CMODE_S;
+		chan->mode |= CMODE_s;
 	    else
-		chan->mode &= ~CMODE_S;
+		chan->mode &= ~CMODE_s;
 	    break;
 
 	case 't':
@@ -441,8 +430,16 @@ void do_cmode(const char *source, int ac, char **av)
 	    else
 		chan->mode &= ~CMODE_T;
 	    break;
+#ifdef IRC_BAHAMUT
+        case 'c':
+            if (add)
+                chan->mode |= CMODE_T;
+            else
+                chan->mode &= ~CMODE_T;
+            break;
+#endif	    
 
-#ifdef IRC_DAL4_4_15
+#if defined (IRC_DAL4_4_15) || defined (IRC_BAHAMUT) || defined (DB_NETWORKS)
 	case 'R':
 	    if (add)
 		chan->mode |= CMODE_R;
@@ -457,7 +454,22 @@ void do_cmode(const char *source, int ac, char **av)
 		chan->mode &= ~CMODE_r;
 	    break;
 #endif
+/* Soporte para redes con BDD como Hispano, Globalchat o Upworld */
+#ifdef DB_NETWORKS
+        case 'A':
+            if (add)
+                chan->mode |= CMODE_A;
+            else
+                chan->mode &= ~CMODE_A;
+            break;
 
+        case 'S':
+            if (add)
+                chan->mode |= CMODE_S;
+            else
+                chan->mode &= ~CMODE_S;
+            break;
+#endif
 	case 'k':
 	    if (--ac < 0) {
 		log("Canales: MODE %s %s: falta parametro para %ck",
@@ -528,7 +540,6 @@ void do_cmode(const char *source, int ac, char **av)
 		if (u)
 		    break;
 #ifdef IRC_UNDERNET_P10
-/* P10izado */
                 user = finduserP10(sstrdup(nick));
 #else
 		user = finduser(nick);
@@ -573,14 +584,14 @@ void do_cmode(const char *source, int ac, char **av)
 	    }
 	    nick = *av++;
 	    if (add) {
-		for (u = chan->voices; u && stricmp(u->user->nick, nick);
+		for (u = chan->voices; u && stricmp(u->user->nick, nick) != 0;
 								u = u->next)
 		    ;
 		if (u)
 		    break;
 #ifdef IRC_UNDERNET_P10
                 user = finduserP10(nick);
-#elseif                
+#else                
 		user = finduser(nick);
 #endif		
 		if (!user) {
@@ -590,6 +601,10 @@ void do_cmode(const char *source, int ac, char **av)
 		}
 		if (debug)
 		    log("debug: Setting +v on %s for %s", chan->name, nick);
+/* Aun no implementado Securevoices y Autodeop
+                if (!check_valid_voice(user, chan->name, !!strchr(source, '.')))
+                    break;
+ */                    
 		u = smalloc(sizeof(*u));
 		u->next = chan->voices;
 		u->prev = NULL;

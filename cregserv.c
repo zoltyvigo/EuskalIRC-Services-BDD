@@ -17,9 +17,12 @@
  
 /*************************************************************************/
 
+#ifdef CREGSERV
+
 static CregInfo *creglists[256]; 
 
 
+static void do_credits(User *u);
 static void do_help(User *u);
 static void do_registra(User *u);
 static void do_cancela(User *u);
@@ -47,6 +50,8 @@ static void do_desactiva(User *u);
 
 
 static Command cmds[] = {
+    { "CREDITS",  do_credits,    NULL,  -1,                      -1,-1,-1,-1 },
+    { "CREDITOS", do_credits,    NULL,  -1,                      -1,-1,-1,-1 },        
     { "HELP",       do_help,     NULL,  -1,                      -1,-1,-1,-1 },
     { "AYUDA",      do_help,     NULL,  -1,                      -1,-1,-1,-1 },    
     { "SHOWCOMMANDS",  do_help,  NULL,  -1,                      -1,-1,-1,-1 },
@@ -194,7 +199,7 @@ void cregserv(const char *source, char *buf)
                                             
 void load_cr_dbase(void)
 {
-/*    dbFILE *f;
+    dbFILE *f;
     int ver, i, j, c;
     CregInfo *cr, **last, *prev;
     int failed = 0;
@@ -230,13 +235,15 @@ void load_cr_dbase(void)
                                                                                                                                                                                     
                 SAFE(read_int32(&tmp32, f));
                 cr->time_peticion = tmp32;
-*                SAFE(read_string(&cr->nickoper, f));
+/*                
+                SAFE(read_string(&cr->nickoper, f));
+                if (!cr->nickoper)
+                    cr->nickoper =""
                 SAFE(read_string(&cr->motivo, f));                    
                 SAFE(read_int32(&tmp32, f));
                 cr->time_motivo = tmp32;                                                                                                
-                                *
-                SAFE(read_int32(&cr->estado, f));
-                                                
+                                */
+                SAFE(read_int32(&cr->estado, f));                                                
                 SAFE(read_int16(&cr->apoyoscount, f));
                 if (cr->apoyoscount) {
                     cr->apoyos = scalloc(cr->apoyoscount, sizeof(ApoyosCreg));
@@ -248,7 +255,7 @@ void load_cr_dbase(void)
                     }                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              
                 } else {
                     cr->apoyos = NULL;
-                }
+                }                
                 SAFE(read_int16(&cr->historycount, f));
                 if (cr->historycount) {
                     cr->history = scalloc(cr->historycount, sizeof(HistoryCreg));
@@ -261,17 +268,18 @@ void load_cr_dbase(void)
                 } else {
                     cr->history = NULL;
                 } 
-            }  * while (getc_db(f) != 0) *                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        
+            }  /* while (getc_db(f) != 0) */                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        
              *last = NULL;
 
-        }  * for (i) *                                                                                                    
+        }  /* for (i) */ 
+        break;                                                                                                   
      default:
         fatal("Unsupported version number (%d) on %s", ver, CregDBName);
 
-    }  * switch (version) *
+    }  /* switch (version) */
     
     close_db(f);
-*/
+
 /********* Poner aqui una funcion para hacer volcados de db :) ******/                      
 
 }
@@ -319,22 +327,19 @@ void save_cr_dbase(void)
             SAFE(write_string(cr->motivo, f));
             SAFE(write_int32(cr->time_motivo, f));
  */
-            SAFE(write_int32(cr->estado, f));
-                                                                                                                
+            SAFE(write_int32(cr->estado, f));                                                                                                                
             SAFE(write_int16(cr->apoyoscount, f));
             for (j = 0; j < cr->apoyoscount; j++) {            
                 SAFE(write_string(cr->apoyos[j].nickapoyo, f));
                 SAFE(write_string(cr->apoyos[j].emailapoyo, f));
                 SAFE(write_int32(cr->apoyos[j].time_apoyo, f));
             }                     
-            
             SAFE(write_int16(cr->historycount, f));
             for (j = 0; j < cr->historycount; j++) {
                 SAFE(write_string(cr->history[j].nickoper, f));
                 SAFE(write_string(cr->history[j].marca, f));
                 SAFE(write_int32(cr->history[j].time_marca, f));                                                   
             }                                                                                                                           
-
         } /* for (creglists[i]) */
         
         SAFE(write_int8(0, f));
@@ -414,6 +419,14 @@ static int delcreg(CregInfo *cr)
 }            
   */  
 /*************************************************************************/
+
+static void do_credits(User *u)
+{
+    notice_lang(s_CregServ, u, SERVICES_CREDITS);
+}
+                       
+/*************************************************************************/
+                       
                                                                                                                                                                     
 /* Return a help message. */
 
@@ -424,7 +437,7 @@ static void do_help(User *u)
     if (!cmd) {
         notice_help(s_CregServ, u, CREG_HELP);
         
-/*        if (is_services_oper(u))
+  /*      if (is_services_oper(u))
         notice_help(s_CregServ, u, CREG_SERVADMIN_HELP); */
     } else {
         help_cmd(s_CregServ, u, cmds, cmd);
@@ -440,7 +453,7 @@ static void do_registra(User *u)
     char *desc = strtok(NULL, "");
 
     NickInfo *ni = u->ni;
-    CregInfo *cr;
+    CregInfo *cr, *cr2;
 
     char passtemp[255];
 //    cr = cr_findcreg(chan);
@@ -462,9 +475,9 @@ static void do_registra(User *u)
         notice_lang(s_CregServ, u, CHAN_REGISTER_NOT_LOCAL);
     } else if (!(*chan == '#')) {
         privmsg(s_CregServ, u->nick, "Canal no valido para registrar");                       
-/*    } else if (!(cr = cr_findcreg(chan))) { 
-        privmsg(s_NickServ, u->nick, "El canal esta en proceso de reg");     
-  */  } else if (!(cr = makecreg(chan))) {
+    } else if ((cr2 = cr_findcreg(chan))) { 
+        privmsg(s_CregServ, u->nick, "El canal esta en proceso de reg");     
+    } else if (!(cr = makecreg(chan))) {
         log("%s: makecreg() failed for REGISTER %s", s_CregServ, chan);
         notice_lang(s_CregServ, u, CHAN_REGISTRATION_FAILED);                             
     } else { 
@@ -549,6 +562,12 @@ static void do_apoya(User *u)
     } else {
 /* Implementar control de tiempo! */
 
+        if (!cr->passapoyo) {
+            srand(time(NULL));
+            sprintf(passtemp, "%05u",1+(int)(rand()%99999) );
+            strscpy(cr->passapoyo, passtemp, PASSMAX);
+        }    
+                                  
         if (stricmp(u->nick, cr->founder) == 0) {
             privmsg(s_CregServ, u->nick, "Ya apoyaste como founder");
             return;
@@ -586,15 +605,15 @@ static void do_apoya(User *u)
         cr->time_lastapoyo = time(NULL);
         privmsg(s_CregServ, u->nick, "Anotado tu apoyo al canal 12%s", chan);             
 
-/*        if ((cr->apoyoscount) == 2) {
+        if ((cr->apoyoscount) >= 2) {
             cr->estado &= ~CR_PROCESO_REG;
             cr->estado |= CR_PENDIENTE;
         } else {
-  */          srand(time(NULL));
+            srand(time(NULL));
             sprintf(passtemp, "%05u",1+(int)(rand()%99999) );
             strscpy(cr->passapoyo, passtemp, PASSMAX);                                                                 
-    /*    }
-  */  } 
+        }
+    } 
 }                                                                                                                                               
                                                         
 /*************************************************************************/
@@ -878,3 +897,4 @@ static void do_desactiva(User *u)
 {
 }
                                                                                                                                                                                                                                       
+#endif /* CREGSERV */

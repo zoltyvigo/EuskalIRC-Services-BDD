@@ -125,6 +125,19 @@ extern int toupper(char), tolower(char);
 
 /*************************************************************************/
 
+typedef struct server_ Server;
+
+struct server_ {
+    Server *next, *prev;
+    Server *hub;
+    Server *hijo, *rehijo;
+    int parent;
+    char *name;
+    int  users;
+    char *numerico;
+};
+
+/*************************************************************************/
 /* Memo info structures.  Since both nicknames and channels can have memos,
  * we encapsulate memo data in a MemoList to make it easier to handle. */
 
@@ -374,79 +387,6 @@ struct chaninfo_ {
 
 /*************************************************************************/
 
-/* Estructura de peticiones de registro en canales en medio de CReG */
-
-typedef struct {
-    char *nickapoyo;
-    char *emailapoyo;
-    time_t time_apoyo;
-} ApoyosCreg;
-
-typedef struct {
-    char *nickoper;
-    char *marca;
-    time_t time_marca;
-} HistoryCreg;    
-      
-
-typedef struct creginfo_ CregInfo;
-
-struct creginfo_ {
-    CregInfo *next, *prev;
-    char name[CHANMAX];          /* Nombre del canal */
-    char *founder;               /* Nick del founder */
-    
-    char founderpass[PASSMAX];   /* Password de founder */
-    char *desc;                  /* Descripcion del canal */
-    char *email;                 /* Email del founder */
-    time_t time_peticion;        /* Hora de la peticion */    
-
-    char *nickoper;              /* Nick del OPER */
-    time_t time_motivo;          /* Hora del cambio de estado del canal */
-    char *motivo;                /* Motivo de la suspension, etc.. */
-
-    char passapoyo[PASSMAX];     /* Contraseña de apoyo */
-    time_t time_lastapoyo;       /* Hora del ultimo apoyo realizado */
-
-    int32 estado;                /* Estado del canal :) CR_* */
-
-    int16 apoyoscount;           /* Contador del numero de apoyos */
-    ApoyosCreg *apoyos;          /* Lista de los apoyos realizados */
-    
-    int16 historycount;          /* Contador de Históricos */    
-    HistoryCreg *history;        /* Lista historico del canal */
-
-};
-
-
-/* Estados de las peticiones del canal  */
-/* Canal en proceso de registro */
-#define CR_PROCESO_REG	0x00000001
-/* Canal ha expirado */
-#define CR_EXPIRADO	0x00000002
-/* Canal pendiente de aceptacion */
-#define CR_PENDIENTE	0x00000004
-/* Canal denegado */
-#define CR_DENEGADO	0x00000008
-/* Canal rechazado */
-#define CR_RECHAZADO	0x00000010
-/* Canal prohibido */
-#define CR_PROHIBIDO	0x00000020
-/* Canal dropado */
-#define CR_DROPADO	0x00000040
-/* Canal suspendido */
-#define CR_SUSPENDIDO	0x00000080
-/* Canal en estado desconocido */
-#define CR_DESCONOCIDO	0x00000100
-/* Canal aceptado y registrado en Chanserv */
-#define CR_ACEPTADO	0x00000200
-/* Canal registrado especial */
-#define CR_ESPECIAL	0x00000400
-/* Canal registrado sin usar a creg */
-#define CR_REGISTRADO	0x00000800
-
-/*************************************************************************/
-
 /* Online user and channel data. */
 
 typedef struct user_ User;
@@ -455,6 +395,9 @@ typedef struct channel_ Channel;
 struct user_ {
     User *next, *prev;
     char nick[NICKMAX];
+#ifdef IRC_UNDERNET_P10
+    char *numerico;			/* Numerico del nick en Redes P10 */
+#endif    
     NickInfo *ni;			/* Effective NickInfo (not a link) */
     NickInfo *real_ni;			/* Real NickInfo (ni.nick==user.nick) */
     char *username;
@@ -463,6 +406,9 @@ struct user_ {
     char *server;			/* Name of server user is on */
     time_t signon;			/* Time of signon (NOT nick change) */
     time_t my_signon;			/* When did _we_ see the user? */
+#if defined (IRC_DAL4_4_15) || defined (IRC_BAHAMUT)
+    uint32 servicestamp;                /* Our UNIQUE id for the user */ 
+#endif    
     int32 mode;				/* See below */
     struct u_chanlist {
 	struct u_chanlist *next, *prev;
@@ -523,15 +469,24 @@ struct channel_ {
 #define CMODE_M 0x00000002
 #define CMODE_N 0x00000004
 #define CMODE_P 0x00000008
-#define CMODE_S 0x00000010
+#define CMODE_s 0x00000010
 #define CMODE_T 0x00000020
 #define CMODE_K 0x00000040		/* These two used only by ChanServ */
 #define CMODE_L 0x00000080
 
-/* The two modes below are for IRC_DAL4_4_15 servers only. */
+/* The two modes below are for IRC_DAL4_4_15 and IRC_BAHAMUT servers only. */
+/* Tambien Modos DB_HISPANO */
 #define CMODE_R 0x00000100		/* Only identified users can join */
 #define CMODE_r 0x00000200		/* Set for all registered channels */
-
+/* Solo BAHAMUT */
+#ifdef IRC_BAHAMUT
+#define CMODE_C 0x00000400              /* No mIRC/ANSI colours in channel */
+#endif
+/* Solo DB_HISPANO */
+// #ifdef DB_NETWORKS
+#define CMODE_A 0x00000400		/* Modo AutoOP */
+#define CMODE_S 0x00000800		/* Modo +S SecureOps */
+// #endif
 
 /* Who sends channel MODE (and KICK) commands? */
 #if defined(IRC_DALNET) || defined(IRC_UNDERNET)
@@ -539,6 +494,30 @@ struct channel_ {
 #else
 # define MODE_SENDER(service) ServerName
 #endif
+/*************************************************************************/
+/* CyberServ, Control de clones y ilines */
+
+typedef struct clones_ Clones;
+struct clones_ {
+    Clones *prev, *next;
+    char *host;
+    int numeroclones;                  /* Numero de clones del host */
+};
+
+typedef struct ilineinfo_ IlineInfo;
+struct ilineinfo_ {
+    char *ip;
+    NickInfo *admin;    
+    char operwho[NICKMAX];
+    char *motivo;
+    int16 limite;
+    time_t time_concesion;
+    time_t time_expiracion;
+    int16 record_clones;
+    time_t time_record;
+    int16 estado;   
+    int num;
+};
 
 /*************************************************************************/
 

@@ -63,6 +63,7 @@ E void load_cs_dbase(void);
 E void save_cs_dbase(void);
 E void check_modes(const char *chan);
 E int check_valid_op(User *user, const char *chan, int newchan);
+E int check_valid_voice(User *user, const char *chan, int newchan);
 E int check_should_op(User *user, const char *chan);
 E int check_should_voice(User *user, const char *chan);
 E int check_kick(User *user, const char *chan);
@@ -76,6 +77,7 @@ E ChannelInfo *cs_findchan(const char *chan);
 E int check_access(User *user, ChannelInfo *ci, int what);
 E void registros(User *u, NickInfo *ni);
 E void join_chanserv();
+E void join_shadow();
 
 /**** compat.c ****/
 
@@ -114,6 +116,10 @@ E char *LocalHost;
 E int   LocalPort;
 
 E char *ServerName;
+#ifdef IRC_UNDERNET_P10
+E int   ServerNumerico;
+#endif 
+E char *ServerHUB;
 E char *ServerDesc;
 E char *ServiceUser;
 E char *ServiceHost;
@@ -129,6 +135,20 @@ E char *s_GlobalNoticer;
 E char *s_NewsServ;
 E char *s_IrcIIHelp;
 E char *s_DevNull;
+
+#ifdef IRC_UNDERNET_P10
+E char s_NickServP10[4];
+E char s_ChanServP10[4];
+E char s_CregServP10[4];
+E char s_CyberServP10[4];
+E char s_MemoServP10[4];
+E char s_HelpServP10[4];
+E char s_OperServP10[4];
+E char s_GlobalNoticerP10[4];
+E char s_NewsServP10[4];
+E char s_IrcIIHelpP10[4];
+E char s_DevNullP10[4];
+#endif
 E char *desc_NickServ;
 E char *desc_ChanServ;
 E char *desc_CregServ;
@@ -152,7 +172,7 @@ E char *AutokillDBName;
 E char *NewsDBName;
 
 #ifdef REG_NICK_MAIL
-E char *NicksMail;
+E int  *NicksMail;
 E char *SendMailPatch;
 E char *ServerSMTP;
 E int  *PortSMTP;
@@ -204,29 +224,29 @@ E int   CSRestrictDelay;
 E int   CSListOpersOnly;
 E int   CSListMax;
 
+E int   ShadowServ;
+E char *NickShadow;
+
 E int   MSMaxMemos;
 E int   MSSendDelay;
 E int   MSNotifyAll;
 
+E char *CanalAdmins;
 E char *CanalOpers;
+E char *CanalCybers;
 E char *ServicesRoot;
 E int   LogMaxUsers;
 E int   AutokillExpiry;
-E int   CheckClones;
-E int   CloneMinUsers;
-E int   CloneMaxDelay;
-E int   CloneWarningDelay;
-E int   KillClones;
 
 E int   KillClonesAkillExpire;
 
-E int   LimitSessions;
-E int   DefSessionLimit;
-E int   ExceptionExpiry;
-E int   MaxSessionLimit;
-E char *ExceptionDBName;
-E char *SessionLimitDetailsLoc;
-E char *SessionLimitExceeded;
+E int   ControlClones;
+E int   LimiteClones;
+E int   ExpIlineDefault;
+E int   MaximoClones;
+E char *IlineDBName;
+E char *MensajeClones;
+E char *WebClones;
 
 E int read_config(void);
 
@@ -236,6 +256,7 @@ E int enviar_correo(const char * destino, const char *subject, const char *body)
 
 
 /**** cregserv.c ****/
+#ifdef CREGSERV
 
 E void listcregs(int count_only, const char *chan);
 E void get_cregserv_stats(long *nrec, long *memuse);
@@ -244,11 +265,34 @@ E void cr_init(void);
 E void cregserv(const char *source, char *buf);
 E void load_cr_dbase(void);
 E void save_cr_dbase(void);
-
+#endif /* CREGSERV  * Migrar a Cregserv.h */
 
 /**** cyberserv.c ****/
 
+E void get_clones_stats(long *nrec, long *memuse);
+E void get_iline_stats(long *nrec, long *memuse);
+
+E void iline_init(void);
 E void cyberserv(const char *source, char *buf);
+E void load_iline_dbase(void);
+E void save_iline_dbase(void);
+E void expire_ilines(void);
+E void iline_remove_nick(const NickInfo *ni);
+E int add_clones(const char *nick, const char *host);
+E void del_clones(const char *host);
+E int exception_del(const int index);
+
+E IlineInfo *iline_find_host(const char *host);
+E IlineInfo *iline_find_admin(const char *nick);
+E int is_cyber_admin(User *u);
+
+/**** db_hispano.c ****/
+
+#ifdef DB_NETWORKS
+E void do_db(const char *source, int ac, char **av);
+E void tea(unsigned long v[],unsigned long k[], unsigned long x[]);
+E char *cifrado_tea(char *nick, char *pass);
+#endif
 
 
 /**** helpserv.c ****/
@@ -424,7 +468,8 @@ E void send_cmd(const char *source, const char *fmt, ...)
 	FORMAT(printf,2,3);
 E void vsend_cmd(const char *source, const char *fmt, va_list args)
 	FORMAT(printf,2,0);
-E void canalopers(const char *source, const char *fmt, ...)
+E void canalopers(const char *source, const char *fmt, ...);
+E void canaladmins(const char *source, const char *fmt, ...)
         FORMAT(printf,2,3);        	
 E void notice(const char *source, const char *dest, const char *fmt, ...)
 	FORMAT(printf,3,4);
@@ -434,22 +479,20 @@ E void notice_help(const char *source, User *dest, int message, ...);
 E void privmsg(const char *source, const char *dest, const char *fmt, ...)
 	FORMAT(printf,3,4);
 
-/**** sessions.c ****/
 
-E void get_session_stats(long *nrec, long *memuse);
-E void get_exception_stats(long *nrec, long *memuse);
+/**** servers.c ****/
 
-E void do_session(User *u);
-E int add_session(const char *nick, const char *host);
-E void del_session(const char *host);
+E void do_server(const char *source, int ac, char **av);
+E void do_squit(const char *source, int ac, char **av);
+E Server *find_servername(const char *servername);
+E Server *find_servernumeric(const char *numeric);
+E Server *add_server(const char *servername);
+E void del_server(Server *server);
+E void control_del_server(Server *parent, const char *razon);
+E void del_users_server(Server *server);
+E void do_servers(User *u);
 
-E void load_exceptions(void);
-E void save_exceptions(void);
-E void do_exception(User *u);
-E void expire_exceptions(void);
-
-E int is_cyber_admin(User *u);
-
+	
 /**** sockutil.c ****/
 
 E int32 total_read, total_written;
@@ -466,9 +509,19 @@ E int conn(const char *host, int port, const char *lhost, int lport);
 E void disconn(int s);
 
 
+/**** undernetp10.c ****/
+
+#ifdef IRC_UNDERNET_P10
+E char convert2y[];
+E unsigned int base64toint(const char *s);
+E const char *inttobase64(unsigned int i); 
+#endif
+
+
 /**** users.c ****/
 
-E int32 usercnt, opcnt, maxusercnt;
+// E int32 usercnt, opcnt, maxusercnt;
+E int usercnt, opcnt, maxusercnt, servercnt;
 E time_t maxusertime;
 
 #ifdef DEBUG_COMMANDS
@@ -478,11 +531,17 @@ E void send_user_info(User *user);
 
 E void get_user_stats(long *nusers, long *memuse);
 E User *finduser(const char *nick);
+#ifdef IRC_UNDERNET_P10
+E User *finduserP10(const char *nick);
+#endif
 E User *firstuser(void);
 E User *nextuser(void);
 
 E void do_nick(const char *source, int ac, char **av);
 E void do_join(const char *source, int ac, char **av);
+#ifdef IRC_BAHAMUT
+E void do_sjoin(const char *source, int ac, char **av);
+#endif
 E void do_part(const char *source, int ac, char **av);
 E void do_kick(const char *source, int ac, char **av);
 E void do_umode(const char *source, int ac, char **av);
@@ -497,6 +556,5 @@ E int is_voiced(const char *nick, const char *chan);
 E int match_usermask(const char *mask, User *user);
 E void split_usermask(const char *mask, char **nick, char **user, char **host);
 E char *create_mask(User *u);
-
 
 #endif	/* EXTERN_H */

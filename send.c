@@ -40,6 +40,19 @@ void vsend_cmd(const char *source, const char *fmt, va_list args)
 
 /*************************************************************************/
 
+/* Enviar cosas al canal de admins.. */
+
+void canaladmins(const char *source, const char *fmt, ...)
+{
+    va_list args;
+    char buf[BUFSIZE];
+        
+    va_start(args, fmt);
+    snprintf(buf, sizeof(buf), "PRIVMSG #%s :%s", CanalAdmins, fmt);
+    vsend_cmd(source, buf, args);
+}
+/*************************************************************************/
+
 /* Enviar cosas al canal de opers.. */
 
 void canalopers(const char *source, const char *fmt, ...)
@@ -50,8 +63,7 @@ void canalopers(const char *source, const char *fmt, ...)
     va_start(args, fmt);
     snprintf(buf, sizeof(buf), "PRIVMSG #%s :%s", CanalOpers, fmt);
     vsend_cmd(source, buf, args);
-}
-            
+}            
 
 /*************************************************************************/
 

@@ -136,7 +136,7 @@ static dbFILE *open_db_write(const char *service, const char *filename)
 	static int walloped = 0;
 	if (!walloped) {
 	    walloped++;
-	    wallops(NULL, "Can't back up %s database %s", service, filename);
+	    canalopers(NULL, "Can't back up %s database %s", service, filename);
 	}
 	errno = errno_save;
 	log_perror("Can't back up %s database %s", service, filename);
@@ -162,7 +162,7 @@ static dbFILE *open_db_write(const char *service, const char *filename)
 	static int walloped = 0;
 	if (!walloped) {
 	    walloped++;
-	    wallops(NULL, "Can't write to %s database %s", service, filename);
+	    canalopers(NULL, "Can't write to %s database %s", service, filename);
 	}
 	errno = errno_save;
 	log_perror("Can't write to %s database %s", service, filename);

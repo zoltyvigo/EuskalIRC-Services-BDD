@@ -510,7 +510,7 @@ NICK_GHOST_KILLED
 NICK_STATUS_OFFLINE
 	STATUS %s 0 (No conectado)
 NICK_STATUS_NOT_REGISTRED
-	STATUS %s 0 (Conectado, no registraso)
+	STATUS %s 0 (Conectado, no registrado)
 NICK_STATUS_NOT_IDENTIFIED
 	STATUS %s 1 (Conectado, no coincide mascara, ni identificado)
 NICK_STATUS_RECOGNIZED
@@ -866,7 +866,7 @@ CHAN_ACCESS_LIST_HEADER
 	Lista de acceso de 12%s:
 	  Num   Niv  Nick
 CHAN_ACCESS_LIST_EMPTY
-	Lista de access de 12%d está vacia.
+	Lista de access de 12%s está vacia.
 CHAN_ACCESS_LIST_FORMAT
 	  %3d  %4d  %s%s%s%s
 
@@ -1099,7 +1099,7 @@ MEMO_AT_LIMIT
 MEMO_OVER_LIMIT
 	4Atención: has pasado el limite máximo de mensajes (12%d). No podrás recibir mensajes nuevos hasta que borres algunos de los mensajes que tienes.
 MEMO_NEW_MEMO_ARRIVED
-	Usted tiene un mensaje nuevo de 12%s.	Escribe 12/msg %s READ %d para leerlo.
+	Usted tiene un mensaje nuevo de 12%s. Escribe 12/msg %s READ %d para leerlo.
 # Multi-use responses
 MEMO_HAVE_NO_MEMOS
 	No tienes mensajes.
@@ -1136,9 +1136,9 @@ MEMO_LIST_MEMOS
 MEMO_LIST_NEW_MEMOS
 	Nuevos mensajes para 12%s. Para leerlos, escribe: 12/msg %s READ <numero>
 MEMO_LIST_CHAN_MEMOS
-	Mensaje para 12%s. Para leerlos, escrib2: 12/msg %s READ %s <numero>
+	Mensaje para 12%s. Para leerlos, escribe 12/msg %s READ %s <numero>
 MEMO_LIST_CHAN_NEW_MEMOS
-	Nuevos mensajes para 12%s.  Para leerlos, escribe: 12/msg %s READ %s <numero>
+	Nuevos mensajes para 12%s. Para leerlos, escribe: 12/msg %s READ %s <numero>
 MEMO_LIST_HEADER
 	 Num  Remitente         Día/Hora
 MEMO_LIST_FORMAT
@@ -1333,21 +1333,21 @@ OPER_STATS_CHANSERV_MEM
 OPER_STATS_OPERSERV_MEM
 	OPeR    : 12%6d registros, 12%5d kB
 OPER_STATS_AKILL_COUNT
-	Numero actual de AKILLs: 12%d
+	Numero actual de GLINEs: 12%d
 OPER_STATS_AKILL_EXPIRE_DAYS
-	Tiempo default para expirar AKILL: 12%d días
+	Tiempo default para expirar GLINE: 12%d días
 OPER_STATS_AKILL_EXPIRE_DAY
-	Tiempo default para expirar AKILL:12 1 día
+	Tiempo default para expirar GLINE:12 1 día
 OPER_STATS_AKILL_EXPIRE_HOURS
-	Tiempo default para expirar AKILL: 12%d horas
+	Tiempo default para expirar GLINE: 12%d horas
 OPER_STATS_AKILL_EXPIRE_HOUR
-	Tiempo default para expirar AKILL:12 1 hora
+	Tiempo default para expirar GLINE:12 1 hora
 OPER_STATS_AKILL_EXPIRE_MINS
-	Tiempo default para expirar AKILL: 12%d minutos
+	Tiempo default para expirar GLINE: 12%d minutos
 OPER_STATS_AKILL_EXPIRE_MIN
-	Tiempo default para expirar AKILL:12 1 minuto
+	Tiempo default para expirar GLINE:12 1 minuto
 OPER_STATS_AKILL_EXPIRE_NONE
-	Tiempo default para expirar AKILL: 12No expira
+	Tiempo default para expirar GLINE: 12No expira
 OPER_STATS_SESSIONS_MEM
 	Sesiones: 12%6d registros, 12%5d kB
 
@@ -1416,24 +1416,24 @@ OPER_OPER_LIST_HEADER
 
 # AKILL responses
 OPER_AKILL_SYNTAX
-	12AKILL {ADD | DEL | LIST | VIEW} [[+expiracion] <mask> [motivo]]
+	12GLINE {ADD | DEL | LIST | VIEW} [[+expiracion] <mascara> [motivo]]
 OPER_AKILL_ADD_SYNTAX
-	12AKILL ADD [+expiracion] <mask> <motivo>
+	12GLINE ADD [+expiracion] <mascara> <motivo>
 OPER_AKILL_DEL_SYNTAX
-	12AKILL DEL <mascara>
+	12GLINE DEL <mascara>
 OPER_TOO_MANY_AKILLS
-	La lista de AKILL esta lleno!
+	La lista de GLINEs esta 12llena.
 OPER_AKILL_NO_NICK
-	4Atención: Mascaras de 12AKILL no pueden contener nicks;
-	Tenga la certeza de 4NO incluir una parte de nick en su mascara.
+	4Atención: Las máscaras de 12GLINE no pueden contener nicks;
+	4NO incluyas la parte de nick en su mascara.
 OPER_AKILL_ADDED
-	12%s agregado a la lista de AKILL.
+	12%s agregado a la lista de GLINEs.
 OPER_AKILL_REMOVED
-	12%s eliminado de la lista de AKILL.
+	12%s eliminado de la lista de GLINEs.
 OPER_AKILL_NOT_FOUND
-	12%s no fue encontrado en la lista de AKILL.
+	12%s no fue encontrado en la lista de GLINEs.
 OPER_AKILL_LIST_HEADER
-	Lista actual de AKILL:
+	Lista actual de 12GLINEs:
 # mask, reason
 OPER_AKILL_LIST_FORMAT
 	%-32s  %s
@@ -1510,12 +1510,6 @@ OPER_IGNORE_LIST
 OPER_IGNORE_LIST_EMPTY
 	Lista de ignoración esta vacía.
 
-# KILLCLONES responses
-OPER_KILLCLONES_SYNTAX
-	12KILLCLONES <nick>
-OPER_KILLCLONES_UNKNOWN_NICK
-	No ha sido encontrado el nick 12%s.
-
 # ROTATELOG responses
 OPER_ROTATELOG_FILE_EXISTS
 	No ha podido renombrar el log, un archivo con el nombre 12%s todavia existe!
@@ -1528,43 +1522,68 @@ OPER_ROTATELOG_OPEN_LOG_FAIL
 
 ###########################################################################
 #
-# Session Limiting and Exception messages
+# Mensajes de CyberServ
 #
 ###########################################################################
 
+CYBER_NO_ADMIN_CYBER
+	No eres un admin de un Cyber.
+CYBER_NICK_NOT_IN_CYBER
+	12%s no está en tu Cyber.
+
+#Respuestas a KILL
+CYBER_KILL_SYNTAX
+	12KILL <nick> [motivo]
+CYBER_KILL_SUCCEEDED
+	El usuario 12%s de tu cyber KILLeado!.
+
+#Respuestas a Gline
+CYBER_GLINE_SYNTAX
+	12GLINE <nick> [motivo]
+CYBER_GLINE_SUCCEEDED
+	El usuario 12%s de tu cyber GLINEeado!.
+
+#Respuestas a UNBAN
+CYBER_UNBAN_SYNTAX
+	12UNBAN <canal>
+CYBER_UNBAN_FAILED
+	No hay ban en 12%s que afecte a tu cyber.
+CYBER_UNBAN_SUCCEEDED
+	El Cyber desbaneado de 12%s.
+
 # EXCEPTION responses
 OPER_EXCEPTION_SYNTAX
-	12EXCEPTION {ADD | DEL | MOVE | LIST | VIEW} [parametros]
+	12ILINE {ADD | DEL | MOVE | LIST | VIEW} [parametros]
 OPER_EXCEPTION_ADD_SYNTAX
-	12EXCEPTION ADD [+expiracion] <mascara> <limite> <razon>
+	12ILINE ADD [+expiracion] <mascara> <limite> <razon>
 OPER_EXCEPTION_DEL_SYNTAX
-	12EXCEPTION DEL {mascara | list}
+	12ILINE DEL {mascara | list}
 OPER_EXCEPTION_MOVE_SYNTAX
-	12EXCEPTION MOVE <numero> <posicion>
+	12ILINE MOVE <numero> <posicion>
 OPER_EXCEPTION_DISABLED
-	Limite de sessiones esta deshabilitado.
+	El control de clones está 12desactivado.
 OPER_EXCEPTION_ALREADY_PRESENT
-	La mascara 12%s todavia esta en la lista de excepciones.
+	El host 12%s ya tiene concedidos clones.
 OPER_EXCEPTION_TOO_MANY
-	Session-limit exception list is full!
+	La lista de clones está 12llena.
 OPER_EXCEPTION_ADDED
-	Session limit for 12%s set to 12%d.
+	Añadida Iline para 12%s, 12%d clones.
 OPER_EXCEPTION_MOVED
-	Exception for 12%s (12#%d) moved to position 12%d.
+	Iline para 12%s (12#%d) movida a la posicion 12%d.
 OPER_EXCEPTION_NO_SUCH_ENTRY
-	No such entry (12#%d) session-limit exception list.
+	No existe entrada (12#%d) en la lista de Ilines.
 OPER_EXCEPTION_NOT_FOUND
-	12%s not found on session-limit exception list.
+	El host 12%s no tiene concedidos clones.
 OPER_EXCEPTION_NO_MATCH
-	No matching entries on session-limit exception list.
+	No hay ningun 12HOST en la lista de Ilines.
 OPER_EXCEPTION_DELETED
-	12%s deleted from session-limit exception list.
+	Iline para 12%s borrada en la lista de Ilines.
 OPER_EXCEPTION_DELETED_ONE
-	Deleted12 1 entry from session-limit exception list.
+	Borrada12 1 entrada en la lista de Ilines.
 OPER_EXCEPTION_DELETED_SEVERAL
-	Deleted 12%d entries from session-limit exception list.
+	Borradas 12%d entradas en la lista de ilines.
 OPER_EXCEPTION_LIST_HEADER
-	Current Session Limit Exception list:
+	Lista de 12ILINES:
 # mask, limit
 OPER_EXCEPTION_LIST_FORMAT
 	%3d  %4d   %s
@@ -1572,36 +1591,48 @@ OPER_EXCEPTION_LIST_COLHEAD
 	Num  Limite  Host
 # mask, set-by, set-time, expires, limit, reason
 OPER_EXCEPTION_VIEW_FORMAT
-	%3d.  %s  (by %s on %s; %s)
-	    Limit: %-4d  - %s
+	%3d.  %s  (por %s en %s; %s)
+	    Limite: %-4d  - %s
 OPER_EXCEPTION_INVALID_LIMIT
-	Invalid session limit. It must be a valid integer greater than or equal
+	Número de clones no valido. It must be a valid integer greater than or equal
 OPER_EXCEPTION_INVALID_HOSTMASK
-	Invalid hostmask. Only real hostmasks are valid as exceptions are not m
+	Host no valido. Only real hostmasks are valid as exceptions are not m
 
 # SESSION responses
 OPER_SESSION_SYNTAX
-	12SESSION {LIST limite | VIEW host}
+	12CLONES {LIST numero | VIEW host}
 OPER_SESSION_LIST_SYNTAX
-	12SESSION LIST <limite>
+	12CLONES LIST <numero>
 OPER_SESSION_VIEW_SYNTAX
-	12SESSION VIEW <host>
+	12CLONES VIEW <host>
 OPER_SESSION_DISABLED
-	Session limiting is disabled.
+	El control de clones esta 12desactivado.
 OPER_SESSION_INVALID_THRESHOLD
-	Invalid threshold value. It must be a valid integer greater than 1.
+	Valor incorrecto. El valor debe ser mayor que 1.
 OPER_SESSION_NOT_FOUND
-	12%s not found on session list.
+	El host 12%s no tiene clones.
 OPER_SESSION_LIST_HEADER
-	Hosts with atleast 12%d sessions:
+	Hosts con por lo menos 12%d clones:
 OPER_SESSION_LIST_COLHEAD
-	Sessions  Host
+	Clones  Host
 # limit, host
 OPER_SESSION_LIST_FORMAT
 	%6d    %s
 # host, sessions, limit
 OPER_SESSION_VIEW_FORMAT
-	The host 12%s currently has B%dB sessions with a limit of 12%d.
+	El host 12%s tiene actualmente 12%d clones con un limite de 12%d.
+CYBER_CLONES_IS_CYBER
+	Eres Cyber, tu host 12%s tiene ahora mismo 12%d clones (Limite 12%d clones)
+CYBER_CLONES_NOT_IS_CYBER
+	No eres Cyber
+
+# KILLCLONES responses
+OPER_KILLCLONES_SYNTAX
+	12KILLCLONES <nick>
+OPER_KILLCLONES_UNKNOWN_NICK
+	No ha sido encontrado el nick 12%s.
+CYBER_KILLCLONES_SUCCEEDED
+	Han sido killeados 12%d clones del nick 12%s.
 
 ###########################################################################
 #
@@ -3001,7 +3032,7 @@ OPER_HELP
 	    12KICK        Patea a un usuario de un canal
 	    12BLOCK       Expulsa 5 minutos a un tipejo
 	    12UNGLINE     Elimina un BLOCK/GLINE
-	    12GLINE       Manipula la lista de GLINES
+	    12GLINE       Manipula la lista de GLINEs
 	    12SETTIME     Sincroniza la RED a tiempo real
 	    12APODERA     MassDeop de los usuarios de un canal
 	    12LIMPIA      MassKick de los usuarios de un canal
@@ -3261,21 +3292,6 @@ OPER_HELP_RESTART
 	
 	Limitado a 4Administradores de Servicios.
 
-
-
-OPER_HELP_KILLCLONES
-	Syntax: 12KILLCLONES <nick>
-	
-	Kills all users who have the same hostname as 12nick. A
-	temporary AKILL, in the form 12*@host, is added to
-	prevent the offending clients from immediately
-	reconnecting. A wallops is also sent indicating who
-	used the command, which host was affected and how many
-	users were killed. It's usefull for removing numerous
-	clones from the network.
-	
-	Limitado a 4Administradores de Servicios.
-
 OPER_HELP_ROTATELOG
 	Syntax: 12ROTATELOG
 	
@@ -3285,13 +3301,77 @@ OPER_HELP_ROTATELOG
 	Limitado a 4súper-usuarios de Servicios
 
 
-# EXCEPTION help
+###########################################################################
+#
+# Mensajes de ayuda de CyberServ
+#
+###########################################################################
+
+CYBER_HELP
+	4%S es un servicio que la RED pone a disposicion de los
+	CyberCafes, con el fin de proporcionar una mayor facilidad a
+	dichos locales y sus multiples conexiones simultaneas que
+	que tiene (Clones).
+	Para utilizar los comandos teclee 12/msg %S comando.
+	
+	Para mayor informacion sobre un comando especifico teclee
+	12/msg %S HELP comando.
+	
+	    12KILL       Killea a un Usuario de tu Cyber
+	    12GLINE      Glinea a un Usuario de su Cyber
+	    12UNBAN      Desbanea la IP de su Cyber de un canal.
+	    12CLONES     Mira los clones que estan conectados de tu Cyber.
+	
+	4NOTA: Este servicio esta diseñado para dotar a los CyberCafes
+	de una "Pseudo-protección" de estos en la RED. Su intencion
+	no es la de fomentar su mal uso.
+	El mal uso de 4%S llevará a la denegacion de dicho servicio
+	por parte de la RED a dicho CyberCafé.
+
+CYBER_HELP_KILL
+	Sintaxis: 12KILL <nick> [motivo]
+	
+	Killea al usuario on-line de tu cyber.
+	
+	Limitado a 4Admininistradores de Cybers.
+
+CYBER_HELP_GLINE
+	Sintaxis: 12GLINE <nick> [motivo]
+	
+	Glinea durante 5 minutos al usuario on-line de tu cyber.
+	
+	Limitado a 4Administradores de Cybers.
+
+CYBER_HELP_UNBAN
+	Sintaxis: 12UNBAN <canal>
+	
+	Le dice a 12%S que elimine todos los accesos prohibidos
+	previniendo el ingreso de tu Cyber a dicho canal.
+	
+	Limitado a 4Administradores de Cybers.
+
+CYBER_HELP_CLONES
+	Sintaxis: 12CLONES
+	
+	Te dice cuantos clones, bla bla. xDDDD
+
+CYBER_SERVADMIN_HELP
+	
+	Los siguientes comandos están disponibles para los
+	4Administradores de Services:
+	
+	    12ILINE      Añade clones a un determinado nick/host
+	    12CLONES	   Información sobre clones
+	    12KILLCLONES Killea a todos los usuarios de una ip
+	
+	Los 4Administradores de Services bla bla.
 
 OPER_HELP_EXCEPTION
-	        12EXCEPTION DEL {mascara | list}
-	        12EXCEPTION MOVE <numero> <posicion>
-	        12EXCEPTION LIST [mascara | list]
-	        12EXCEPTION VIEW [mascara | list]
+	Sintaxis: 12ILINE ADD [+expiracion]
+	          12ILINE DEL {mascara | list}
+	          12ILINE MOVE <numero> <posicion>
+	          12ILINE LIST [mascara | list]
+	          12ILINE VIEW [mascara | list]
 	
 	Allows Services admins to manipulate the list of hosts that
 	have specific session limits - allowing certain machines,
@@ -3302,7 +3382,7 @@ OPER_HELP_EXCEPTION
 	/NOTICE from OperServ, of a source of help regarding session
 	limiting. The content of this notice is a config setting.
 	
-	12EXCEPTION ADD adds the given host mask to the exception list.
+	12ILINE ADD adds the given host mask to the exception list.
 	Note that 12nick!user@host and 12user@host masks are invalid!
 	Only real host masks, such as 12box.host.dom and 12*.host.dom,
 	are allowed because sessions limiting does not take nick or
@@ -3311,45 +3391,59 @@ OPER_HELP_EXCEPTION
 	may carry at a time. A value of zero means the host has an
 	unlimited session limit. See the 12AKILL help for details about
 	the format of the optional 12expiracion parameter.
-		
-	12EXCEPTION DEL removes the given mask from the exception list.
-		
-	12EXCEPTION MOVE moves exception 12numero to 12posicion. The
+	
+	12ILINE DEL borra el host de la lista de Ilines..
+	
+	12ILINE MOVE mueve el Iline 12numero a la 12posicion. The
 	exceptions inbetween will be shifted up or down to fill the gap.
-		
-	12EXCEPTION LIST and 12EXCEPTION VIEW show all current
+	
+	12ILINE LIST y 12ILINE VIEW muestra todos los Ilines actuales
 	exceptions; if the optional mask is given, the list is limited
 	to those exceptions matching the mask. The difference is that
-	12EXCEPTION VIEW is more verbose, displaying the name of the
+	12ILINE VIEW is more verbose, displaying the name of the
 	person who added the exception, it's session limit, reason,
 	host mask and the expiry date and time.
-		
+	
 	Note that a connecting client will "use" the first exception
 	their host matches. Large exception lists and widely matching
 	exception masks are likely to degrade services' performance
-		
+	
 	Limitado a 4Administradores de Servicios.
 
 OPER_HELP_SESSION
-	Syntax: 12SESSION LIST <threshold>
-	        12SESSION VIEW <host>
+	Sintaxis: 12CLONES LIST <número>
+	          12CLONES VIEW <host>
 	
-	Allows Services admins to view the session list.
+	Permite a los 4Administradores de Services listar los clones en
+	uso de la red.
 	
-	12SESSION LIST lists hosts with atleast 12threshold sessions.
-	The threshold must be a number greater than 1. This is to
-	prevent accidental listing of the large number of single
-	session hosts.
+	12CLONES LIST lista los hosts con hasta 12numero de clones.
+	El numero debe ser un numero mayor que 1. Esto es para prevenir
+	listados accidentales de hosts con un 1 solo clon.
 	
-	12SESSION VIEW displays detailed information about a specific
-	host - including the current session count and session limit.
-	The 12host value may not include wildcards.
+	12CLONES VIEW muestra informacion detallada sobre un 12host
+	especifico, incluyendo el numero de clones actual y el limite 
+	máximo de clones que tiene concedidos.
+	El valor del 12host no debe tener signos (! o @).
 	
-	See the 12EXCEPTION help for more information about session
-	limiting and how to set session limits specific to certain
-	hosts and groups thereof.
+	Ver la ayuda de 12ILINE para más informacion sobre el limite de
+	clones y como poner limites de clones especificos para ciertos hosts
+	y grupos.
 	
 	Limitado a 4Administradores de Servicios.
+
+OPER_HELP_KILLCLONES
+	Sintaxis: 12KILLCLONES <nick>
+	
+	Killea a todos los users con el mismo host (clones) que
+	el usuario llamado 12nick. Un Gline temporal, en la
+	forma 12*@host, es añadido para prevenir que los clientes
+	reconectaran inmediatamente. Un mensaje en el canal de control
+	se enviara cuando sea usado el comando, con el host afectado y
+	cuantos usuarios han sido killeados.
+	Esto se usa para borrar muchos clones en una red.
+	
+	Limitado a 4Administradores de Servicies.
 
 #######################################################################
 #

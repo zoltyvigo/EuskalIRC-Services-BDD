@@ -40,24 +40,6 @@ void vsend_cmd(const char *source, const char *fmt, va_list args)
 
 /*************************************************************************/
 
-/* Send out a WALLOPS (a GLOBOPS on ircd.dal). */
-
-void wallops(const char *source, const char *fmt, ...)
-{
-    va_list args;
-    char buf[BUFSIZE];
-
-    va_start(args, fmt);
-#ifdef IRC_DALNET
-    snprintf(buf, sizeof(buf), "GLOBOPS :%s", fmt);
-#else
-    snprintf(buf, sizeof(buf), "PRIVMSG #%s :%s", CanalOpers, fmt);
-#endif
-    vsend_cmd(source ? source : ServerName, buf, args);
-}
-
-/*************************************************************************/
-
 /* Enviar cosas al canal de opers.. */
 
 void canalopers(const char *source, const char *fmt, ...)
@@ -123,7 +105,11 @@ void notice_lang(const char *source, User *dest, int message, ...)
 	s += strcspn(s, "\n");
 	if (*s)
 	    *s++ = 0;
-	send_cmd(source, "PRIVMSG %s :%s", dest->nick, *t ? t : " ");
+#ifdef IRC_UNDERNET_P10
+	send_cmd(source, "P %s :%s", dest->numerico, *t ? t : " ");
+#else
+        send_cmd(source, "PRIVMSG %s :%s", dest->nick, *t ? t : " ");
+#endif	
     }
 }
 
@@ -159,7 +145,11 @@ void notice_help(const char *source, User *dest, int message, ...)
 	    *s++ = 0;
 	strscpy(outbuf, t, sizeof(outbuf));
 	strnrepl(outbuf, sizeof(outbuf), "\1\1", source);
+#ifdef IRC_UNDERNET_P10
+        send_cmd(source, "PRIVMSG %s :%s", dest->numerico, *outbuf ? outbuf : " ");
+#else	
 	send_cmd(source, "PRIVMSG %s :%s", dest->nick, *outbuf ? outbuf : " ");
+#endif
     }
 }
 

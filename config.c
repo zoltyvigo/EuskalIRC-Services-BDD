@@ -27,6 +27,7 @@ static char *temp_userhost;
 char *s_NickServ;
 char *s_ChanServ;
 char *s_CregServ;
+char *s_CyberServ;
 char *s_MemoServ;
 char *s_HelpServ;
 char *s_OperServ;
@@ -37,6 +38,7 @@ char *s_DevNull;
 char *desc_NickServ;
 char *desc_ChanServ;
 char *desc_CregServ;
+char *desc_CyberServ;
 char *desc_MemoServ;
 char *desc_HelpServ;
 char *desc_OperServ;
@@ -67,9 +69,13 @@ int   WarningTimeout;
 int   TimeoutCheck;
 
 #ifdef REG_NICK_MAIL
+#ifdef SENDMAIL
 char *SendMailPatch;
+#endif
+#ifdef SMTP
 char *ServerSMTP;
 int  *PortSMTP;
+#endif
 char *SendFrom;
 char *WebNetwork;
 #endif
@@ -117,16 +123,6 @@ char *CanalOpers;
 char *ServicesRoot;
 int   LogMaxUsers;
 int   AutokillExpiry;
-int   WallOper;
-int   WallBadOS;
-int   WallOSMode;
-int   WallOSClearmodes;
-int   WallOSKick;
-int   WallOSAkill;
-int   WallAkillExpire;
-int   WallExceptionExpire;
-int   WallGetpass;
-int   WallSetpass;
 int   CheckClones;
 int   CloneMinUsers;
 int   CloneMaxDelay;
@@ -207,6 +203,8 @@ Directive directives[] = {
     { "CSListOpersOnly",  { { PARAM_SET, 0, &CSListOpersOnly } } },
     { "CSMaxReg",         { { PARAM_POSINT, 0, &CSMaxReg } } },
     { "CSRestrictDelay",  { { PARAM_TIME, 0, &CSRestrictDelay } } },
+    { "CyberServName",    { { PARAM_STRING, 0, &s_CyberServ },
+                            { PARAM_STRING, 0, &desc_CyberServ } } },
     { "DefSessionLimit",  { { PARAM_POSINT, 0, &DefSessionLimit } } },
     { "DevNullName",      { { PARAM_STRING, 0, &s_DevNull },
                             { PARAM_STRING, 0, &desc_DevNull } } },
@@ -280,9 +278,13 @@ Directive directives[] = {
     { "SessionLimitExceeded",{{PARAM_STRING, 0, &SessionLimitExceeded}}},
 #ifdef REG_NICK_MAIL
 /**    { "NicksMail",        { { PARAM_POSINT, 0, &NicksMail } } },    **/
+#ifdef SENDMAIL
     { "SendMailPatch",    { { PARAM_STRING, 0, &SendMailPatch } } },
+#endif
+#ifdef SMTP
     { "ServerSMTP",       { { PARAM_STRING, 0, &ServerSMTP } } },
     { "PortSMTP",         { { PARAM_PORT, 0, &PortSMTP } } },         
+#endif
     { "SendFrom",         { { PARAM_STRING, 0, &SendFrom } } },
     { "WebNetwork",       { { PARAM_STRING, 0, &WebNetwork } } },
 #endif
@@ -290,16 +292,6 @@ Directive directives[] = {
     { "StrictPasswords",  { { PARAM_SET, 0, &StrictPasswords } } },
     { "TimeoutCheck",     { { PARAM_TIME, 0, &TimeoutCheck } } },
     { "UpdateTimeout",    { { PARAM_TIME, 0, &UpdateTimeout } } },
-    { "WallAkillExpire",  { { PARAM_SET, 0, &WallAkillExpire } } },
-    { "WallExceptionExpire",{{PARAM_SET, 0, &WallExceptionExpire } } },
-    { "WallBadOS",        { { PARAM_SET, 0, &WallBadOS } } },
-    { "WallGetpass",      { { PARAM_SET, 0, &WallGetpass } } },
-    { "WallOper",         { { PARAM_SET, 0, &WallOper } } },
-    { "WallOSAkill",      { { PARAM_SET, 0, &WallOSAkill } } },
-    { "WallOSClearmodes", { { PARAM_SET, 0, &WallOSClearmodes } } },
-    { "WallOSKick",       { { PARAM_SET, 0, &WallOSKick } } },
-    { "WallOSMode",       { { PARAM_SET, 0, &WallOSMode } } },
-    { "WallSetpass",      { { PARAM_SET, 0, &WallSetpass } } },
     { "WarningTimeout",   { { PARAM_TIME, 0, &WarningTimeout } } },
 };
 
@@ -541,6 +533,7 @@ int read_config()
     CHEK2(s_NickServ, NickServName);
     CHEK2(s_ChanServ, ChanServName);
     CHEK2(s_CregServ, CregServName);
+    CHEK2(s_CyberServ, CyberServName);    
     CHEK2(s_MemoServ, MemoServName);
     CHEK2(s_HelpServ, HelpServName);
     CHEK2(s_OperServ, OperServName);
@@ -575,9 +568,13 @@ int read_config()
     CHECK(AutokillExpiry);
 #ifdef REG_NICK_MAIL
 /**    CHECK(NicksMail); **/
+#ifdef SENDMAIL
     CHECK(SendMailPatch);
+#endif
+#ifdef SMTP    
     CHECK(ServerSMTP);
     CHECK(PortSMTP);
+#endif    
     CHECK(SendFrom);
     CHECK(WebNetwork);                   
 #endif

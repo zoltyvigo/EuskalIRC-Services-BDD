@@ -56,7 +56,7 @@ static void load_lang(int index, const char *filename)
     int num, i;
 
     if (debug) {
-	log("debug: Loading language %d from file `languages/%s'",
+	log("debug: Cargando idioma %d del archivo `languages/%s'",
 		index, filename);
     }
     snprintf(buf, sizeof(buf), "languages/%s", filename);

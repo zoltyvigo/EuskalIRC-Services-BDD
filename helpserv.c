@@ -88,12 +88,12 @@ static void do_help(const char *whoami, const char *source, char *topic)
      */
     if (!(f = fopen(buf, "r"))) {
 	if (debug)
-	    log_perror("debug: Cannot open help file %s", buf);
+	    log_perror("debug: No encuentra el archivo de ayuda %s", buf);
 	if (u) {
 	    notice_lang(whoami, u, NO_HELP_AVAILABLE, old_topic);
 	} else {
 	    privmsg(whoami, source,
-			"Sorry, no help available for \2%s\2.", old_topic);
+			"Lo siento, no hay ayuda disponible para 12%s.", old_topic);
 	}
 	free(old_topic);
 	return;

@@ -261,6 +261,8 @@ done
 echo ""
 echo "Empezando la configuracion de los Services."
 echo ""
+echo "Traducido por Toni García - Zoltan."
+echo ""
 
 ###########################################################################
 
@@ -295,8 +297,8 @@ export ok INPUT
 ####
 
 ok=0
-echo "In what directory do you want the binaries to be installed?"
-echo "Press Return for the default, or enter a new value."
+echo "En que directorio quieres que se instalen los binarios?"
+echo "Presiona Enter para el valor por defecto o escriba un nuevo directorio."
 while [ $ok -eq 0 ] ; do
 	echo2 "[$BINDEST] "
 	if read INPUT ; then : ; else echo "" ; exit 1 ; fi
@@ -305,9 +307,9 @@ while [ $ok -eq 0 ] ; do
 	fi
 	if [ ! -d "$INPUT" ] ; then
 		if exists "$INPUT" ; then
-			echo "$INPUT exists, but is not a directory!"
+			echo "$INPUT existe, pero no es un directorio!"
 		else
-			echo "$INPUT does not exist.  Create it?"
+			echo "$INPUT no existe. Quieres crearlo?"
 			echo2 "[y] "
 			read YN
 			if [ "$YN" != "n" ] ; then
@@ -317,7 +319,7 @@ while [ $ok -eq 0 ] ; do
 			fi
 		fi
 	elif exists "$INPUT/services.h" ; then
-		echo "You cannot use the Services source directory as a target directory."
+		echo "No puedes usar el directorio donde estan los fuentes de los SErvicios como directorio elegido para instalar."
 	else
 		ok=1
 	fi
@@ -328,7 +330,7 @@ echo ""
 ####
 
 ok=0
-echo "Where do you want the data files to be installed?"
+echo "Donde quieres que se instalen los archivos de datos?"
 while [ $ok -eq 0 ] ; do
 	echo2 "[$DATDEST] "
 	if read INPUT ; then : ; else echo "" ; exit 1 ; fi
@@ -392,7 +394,7 @@ fi
 
 ok=0
 echo "What should the default umask for data files be (in octal)?"
-echo "(077 = only accessible by owner; 007 = accessible by owner and group)"
+echo "(077 = Sólo accesible para el propietario; 007 = Accesible para propietario y su grupo)"
 while [ $ok -eq 0 ] ; do
 	echo2 "[$UMASK] "
 	if read INPUT ; then : ; else echo "" ; exit 1 ; fi
@@ -400,7 +402,7 @@ while [ $ok -eq 0 ] ; do
 		INPUT=$UMASK
 	fi
 	if [ `echo "$INPUT" | grep -c '[^0-7]'` -gt 0 ] ; then
-		echo "$UMASK is not a valid octal number!"
+		echo "$UMASK no es un numero octal valido!"
 	else
 		if [ "`echo $INPUT | cut -c1`" != "0" ] ; then
 			INPUT=0$INPUT
@@ -413,10 +415,10 @@ echo ""
 
 ####
 
-echo "If all of your servers run under a common domain name, what is that"
-echo "domain name?  (For example:  All EsperNet servers have names ending in"
-echo \`.esper.net\', so \`esper.net\' "would be entered here.)  If your servers"
-echo "do not all share a common domain name, just press Return."
+echo "Si todos tus servidores corren bajo un nombre de dominio comun, cual es su nombre de dominio?"
+echo "(Por ejemplo:  Todos los servidores de GlobalChat.Org tienen sus nombres acabados en"
+echo \`.globalchat.org\', en este caso, debes introducir \`globalchat.org\' ".) Si tus servidores"
+echo "no comparten un nombre de dominio comun, presiona Enter."
 echo2 "[$NETWORK_DOMAIN] "
 if read INPUT ; then : ; else echo "" ; exit 1 ; fi
 if [ "$INPUT" ] ; then
@@ -426,18 +428,17 @@ echo ""
 
 ####
 
-# XXX ircu 2.10 commented out because it doesn't seem to work
 
 ok=0
-echo "Which of the following is closest to the type of server on your IRC"
-echo "network?"
-echo "     1) Base irc2 distribution (RFC 1459 compliant)"
-echo "     2) irc2 with TS8 protocol"
-echo "    11) Undernet (ircu) 2.9.32 or earlier"
-echo "    12) Undernet (ircu) 2.10.x (version 9 protocol support required)"
-echo "    13) ESNET-HISPANO (ircu) 2.10.07 deep.space con BDD support)"
-echo "    21) DALnet (ircd.dal) prior to 4.4.15"
-echo "    22) DALnet (ircd.dal) 4.4.15 or later"
+echo "Cual de los siguientes es el tipo de los servidores de tu red de irc?"
+echo " "
+echo "     1) Base irc2 distribucion (RFC 1459 compliant)"
+echo "     2) irc2 con protocolo TS8"
+echo "    11) Undernet (ircu) 2.9.32 o inferior"
+echo "    12) Undernet (ircu) 2.10.01 - 2.10.07 (requiere soporte P9)"
+echo "    13) Undernet (ircu) 2.10.x (Soporte P10 COMPLETO)  EXPERIMENTAL!!"
+echo "    21) DALnet (ircd.dal) anterior a 4.4.15"
+echo "    22) DALnet (ircd.dal) 4.4.15 o superior"
 while [ $ok -eq 0 ] ; do
 	echo2 "[$IRCTYPE] "
 	if read INPUT ; then : ; else echo "" ; exit 1 ; fi
@@ -446,8 +447,8 @@ while [ $ok -eq 0 ] ; do
 	fi
 	case $INPUT in
 		no\ default)
-			echo "You must specify your IRC server type in order for Services to function"
-			echo "correctly."
+			echo "Debes especificar el tipo de tu servidor IRC"
+			echo "funcionen correctamente los Servicios."
 			;;
 		1)
 			IRCTYPE_DEF="IRC_CLASSIC"
@@ -463,13 +464,15 @@ while [ $ok -eq 0 ] ; do
 			;;
 		12)
 			IRCTYPE_DEF="IRC_UNDERNET"
-			IRCTYPE_DEF2="IRC_UNDERNET_NEW"
+			IRCTYPE_DEF2="IRC_UNDERNET_P09"
+                        IRCTYPE_DEF3="IRC_UNDERNET_NEW"
+#                        IRCTYPE_DEF3="ESNET_HISPANO"
 			ok=1
 			;;
                 13)
                         IRCTYPE_DEF="IRC_UNDERNET"
-                        IRCTYPE_DEF2="IRC_UNDERNET_NEW"
-                        IRCTYPE_DEF3="ESNET_HISPANO"
+                        IRCTYPE_DEF2="IRC_UNDERNET_P10"
+#                        IRCTYPE_DEF3="ESNET_HISPANO"
                         ok=1
                         ;;
 
@@ -483,7 +486,7 @@ while [ $ok -eq 0 ] ; do
 			ok=1
 			;;
 		*)
-			echo "Please enter a valid option number."
+			echo "Por favor, escoja un numero de opcion valida."
 			;;
 	esac
 done
@@ -557,7 +560,7 @@ while [ $ok -eq 0 ] ; do
                         ok=1
                         ;;
                 *)
-                        echo "Please enter 'y' or 'n'."
+                        echo "Por favor, presione 'y' o 'n'."
                         ;;
         esac
 done
@@ -565,7 +568,7 @@ echo ""
 
 ####
 # if [ "$REG_NICK_MAIL" = "ACTIVADO" ] ; then
-     if [ "$SENDPASS" = "SENDPASS" ] ; then
+     if [ "$SENDMAIL" = "SENDMAIL" ] ; then
            DEF=y
      else
            DEF=n
@@ -573,9 +576,9 @@ echo ""
      ok=0
      echo "Quieres usar el sendmail en vez de un SMTP?"
      echo " "
-     echo "(Seleccionando "\"yes\"", activaras el registro de nicks por e-mail"
-     echo "en caso contrario, "\"no"\", el registro de nicks, sera directamente"
-     echo "metiendo la password.)"
+     echo "(Seleccionando "\"yes\"", usaras el sendmail que es recomendable si tiene ip de internet"
+     echo "en caso contrario, "\"no"\", usaras SMTP."
+     echo ""
      while [ $ok -eq 0 ] ; do
         echo2 "[$DEF] "
         if read INPUT ; then : ; else echo "" ; exit 1 ; fi
@@ -584,15 +587,15 @@ echo ""
         fi
         case $INPUT in
                 n*|N*)
-                        SENDPASS=
+                        SENDMAIL=
                         ok=1
                         ;;
                 y*|Y*)
-                        SENDPASS=SENDPASS
+                        SENDMAIL=SENDMAIL
                         ok=1
                         ;;
                 *)
-                        echo "Please enter 'y' or 'n'."
+                        echo "Por favor, presione 'y' o 'n'."
                         ;;
         esac
 
@@ -602,7 +605,7 @@ echo ""
 ######
 
 
-echo "End of interactive configuration."
+echo "Fin de la configuracion interactiva de los Services."
 echo ""
 
 ###########################################################################
@@ -1258,8 +1261,8 @@ EOT
 if [ "$REG_NICK_MAIL" ] ; then cat >>sysconf.h <<EOT ; fi
 #define $REG_NICK_MAIL
 EOT
-if [ "$SENDPASS" ] ; then cat >>sysconf.h <<EOT ; fi
-#define $SENDPASS
+if [ "$SENDMAIL" ] ; then cat >>sysconf.h <<EOT ; fi
+#define $SENDMAIL
 EOT
 
 if [ "$ENCRYPTION" ] ; then cat >>sysconf.h <<EOT ; fi

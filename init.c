@@ -28,11 +28,19 @@
     } while (0)
 # endif
 #elif defined(IRC_UNDERNET)
-# define NICK(nick,name) \
+#ifdef IRC_UNDERNET_P10
+#  define NICK(nick,name) \
     do { \
-	send_cmd(ServerName, "NICK %s 1 %ld %s %s %s :%s", (nick), time(NULL),\
+	send_cmd(NULL, %c "NICK %s 1 %lu %s %s AAAAAA %s :%s", NumericoServer, (nick), time(NULL),\
 		ServiceUser, ServiceHost, ServerName, (name)); \
     } while (0)
+# else
+#  define NICK(nick,name) \
+    do { \
+        send_cmd(ServerName, "NICK %s 1 %ld %s %s %s :%s", (nick), time(NULL),\
+                ServiceUser, ServiceHost, ServerName, (name)); \
+    } while (0)
+# endif    
 #elif defined(IRC_TS8)
 # define NICK(nick,name) \
     do { \
@@ -61,18 +69,22 @@ void introduce_user(const char *user)
 #undef LTSIZE
 
     if (!user || stricmp(user, s_NickServ) == 0) {
+#ifdef IRC_UNDERNET_P10
+
+#else
 	NICK(s_NickServ, desc_NickServ);
-        NICK("NickServ", "Servicio de Compatibilidad");
-        NICK("Service", "Servicio de Compatibilidad");                
+//        NICK("NickServ", "Servicio de Compatibilidad");
+//        NICK("Service", "Servicio de Compatibilidad");                
 	send_cmd(s_NickServ, "MODE %s +krhd", s_NickServ);
         send_cmd(s_NickServ, "JOIN #%s", CanalOpers);
         send_cmd(ServerName, "MODE #%s +o %s", CanalOpers, s_NickServ);                
+#endif
     }
     if (!user || stricmp(user, s_ChanServ) == 0) {
 	NICK(s_ChanServ, desc_ChanServ);
-        NICK("ChanServ", "Servicio de compatibilidad");
-        NICK("Scytale", "Servicio de compatibilidad");
-        NICK("KaOs", "Servicio de compatibilidad");                        	
+//        NICK("ChanServ", "Servicio de compatibilidad");
+//        NICK("Scytale", "Servicio de compatibilidad");
+//        NICK("KaOs", "Servicio de compatibilidad");                        	
 	send_cmd(s_ChanServ, "MODE %s +Bkrdh", s_ChanServ);
         send_cmd(s_ChanServ, "JOIN #%s", CanalOpers);
         send_cmd(ServerName, "MODE #%s +o %s", CanalOpers, s_ChanServ);                	
@@ -83,24 +95,31 @@ void introduce_user(const char *user)
         send_cmd(s_CregServ, "JOIN #%s", CanalOpers);
         send_cmd(ServerName, "MODE #%s +o %s", CanalOpers, s_CregServ);
     }                                        
+    if (!user || stricmp(user, s_CyberServ) == 0) {
+        NICK(s_CyberServ, desc_CyberServ);
+        send_cmd(s_CyberServ, "MODE %s +ikrhd", s_CyberServ);
+        send_cmd(s_CyberServ, "JOIN #%s", CanalOpers);
+        send_cmd(ServerName, "MODE #%s +o %s", CanalOpers, s_CyberServ);
+    }    
+  
     if (!user || stricmp(user, s_HelpServ) == 0) {
-        NICK("HelpServ", "Servicio de compatibilidad");       
+//        NICK("HelpServ", "Servicio de compatibilidad");       
 	NICK(s_HelpServ, desc_HelpServ);
     }
     if (s_IrcIIHelp && (!user || stricmp(user, s_IrcIIHelp) == 0)) {
 	NICK(s_IrcIIHelp, desc_IrcIIHelp);
     }
     if (!user || stricmp(user, s_MemoServ) == 0) {
-        NICK("MemoServ", "Servicio de compatibilidad");        
+//        NICK("MemoServ", "Servicio de compatibilidad");        
 	NICK(s_MemoServ, desc_MemoServ);
 	send_cmd(s_MemoServ, "MODE %s +krh", s_MemoServ);
     }
     if (!user || stricmp(user, s_OperServ) == 0) {
-        NICK("OperServ", "Servicio de compatibilidad");        
+//        NICK("OperServ", "Servicio de compatibilidad");        
 	NICK(s_OperServ, desc_OperServ);
-        send_cmd(s_OperServ, "MODE %s +ikBrdh", s_OperServ);        
+        send_cmd(s_OperServ, "MODE %s +ikBrdho", s_OperServ);        
         send_cmd(ServerName, "SETTIME %lu", time(NULL));
-        send_cmd(s_OperServ, "NOTICE $*.%s :Sincronizacion automatica de la RED..." ,NETWORK_DOMAIN);        
+//        send_cmd(s_OperServ, "NOTICE $*.%s :Sincronizacion automatica de la RED..." ,NETWORK_DOMAIN);        
         send_cmd(s_OperServ, "JOIN #%s", CanalOpers);
         send_cmd(ServerName, "MODE #%s +o %s", CanalOpers, s_OperServ);
     }
@@ -110,11 +129,11 @@ void introduce_user(const char *user)
     }
     if (!user || stricmp(user, s_GlobalNoticer) == 0) {
 	NICK(s_GlobalNoticer, desc_GlobalNoticer);
-	send_cmd(s_GlobalNoticer, "MODE %s +ikrh", s_GlobalNoticer);
+	send_cmd(s_GlobalNoticer, "MODE %s +ikorh", s_GlobalNoticer);
     }
     if (!user || stricmp(user, s_NewsServ) == 0) {
         NICK(s_NewsServ, desc_NewsServ);
-        send_cmd(s_NewsServ, "MODE %s +krh", s_NewsServ);
+        send_cmd(s_NewsServ, "MODE %s +krho", s_NewsServ);
     }                                  
 }
 
@@ -505,15 +524,19 @@ int init(int ac, char **av)
 
     /* Announce a logfile error if there was one */
     if (openlog_failed) {
-	wallops(NULL, "Warning: couldn't open logfile: %s",
+	canalopers(NULL, "Warning: couldn't open logfile: %s",
 		strerror(openlog_errno));
     }
 
     /* Bring in our pseudo-clients */
     introduce_user(NULL);
-#ifdef ESNET_HISPANO    
+
+    join_chanserv();
+    
+#ifdef DB_HISPANO    
     send_cmd(ServerName, "DB * 0 J 999999999 2");
 #endif    
+
     /* Success! */
     return 0;
 }

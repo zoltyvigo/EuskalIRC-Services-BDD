@@ -77,12 +77,14 @@ static void do_suspend(User *u);
 static void do_unsuspend(User *u);
 static void do_forbid(User *u);
 static void do_unforbid(User *u);
+#ifdef DB_HISPANO
 static void do_nickreg(User *u);
 static void do_nickdrop(User *u);
 static void do_nickforbid(User *u);
 static void do_nickvhost(User *u);
 static void do_vhostadd(User *u);
 static void do_vhostdel(User *u);
+#endif
 
 /*************************************************************************/
 
@@ -152,12 +154,14 @@ static Command cmds[] = {
     { "UNFORBID",   do_unforbid,   is_services_admin,  -1,
                 -1, NICK_SERVADMIN_HELP_UNFORBID,
                 NICK_SERVADMIN_HELP_UNFORBID, NICK_SERVADMIN_HELP_UNFORBID },
+#ifdef DB_HISPANO
     { "NICKREG",    do_nickreg,    is_services_oper,  -1, -1, -1, -1, -1 },
     { "NICKDROP",   do_nickdrop,   is_services_oper,  -1, -1, -1, -1, -1 },
     { "NICKFORBID", do_nickforbid, is_services_oper,  -1, -1, -1, -1, -1 },
     { "VHOSTADD",   do_vhostadd,   is_services_oper,  -1, -1, -1, -1, -1 },
     { "VHOSTDEL",   do_vhostdel,   is_services_oper,  -1, -1, -1, -1, -1 },                                                                                                                                                             
     { "NICKVHOST",  do_nickvhost,  is_services_oper,  -1, -1, -1, -1, -1 },
+#endif 
     { NULL }
 };
 
@@ -200,7 +204,7 @@ void listnicks(int count_only, const char *nick)
 	    return;
 	}
 	if (ni->status & NS_SUSPENDED)
-	    printf("SUSPENDIDO:%s\n", ni->msuspend);
+          printf("SUSPENDIDO:%s\n", ni->last_quit);
 	printf("Realname de %s es %s\n", nick, ni->last_realname);
 	printf("Ultima direccion: %s\n", ni->last_usermask);
 	tm = localtime(&ni->time_registered);
@@ -587,7 +591,6 @@ void load_ns_dbase(void)
 		    SAFE(read_int16(&ni->language, f));
 		}
 		ni->id_timestamp = 0;
-/*                SAFE(read_string(&ni->msuspend, f));         */
 	    } /* while (getc_db(f) != 0) */
 	    *last = NULL;
 	} /* for (i) */
@@ -626,7 +629,7 @@ void load_ns_dbase(void)
 	restore_db(f);						\
 	log_perror("Write error on %s", NickDBName);		\
 	if (time(NULL) - lastwarn > WarningTimeout) {		\
-	    wallops(NULL, "Write error on %s: %s", NickDBName,	\
+	    canalopers(NULL, "Write error on %s: %s", NickDBName,	\
 			strerror(errno));			\
 	    lastwarn = time(NULL);				\
 	}							\
@@ -683,7 +686,6 @@ void save_ns_dbase(void)
 		SAFE(write_int16(ni->channelmax, f));
 		SAFE(write_int16(ni->language, f));
 	    }
-/*	    SAFE(write_string(ni->msuspend, f));	                 */
 	} /* for (ni) */
 	SAFE(write_int8(0, f));
     } /* for (i) */
@@ -724,7 +726,7 @@ int validate_user(User *u)
     }
 
     if (ni->status & NS_SUSPENDED) {
-        notice_lang(s_NickServ, u, NICK_SUSPENDED, ni->msuspend); 
+        notice_lang(s_NickServ, u, NICK_SUSPENDED, ni->last_quit);
         return 0;
     }
                         
@@ -734,7 +736,7 @@ int validate_user(User *u)
 	    char buf[256];
 	    snprintf(buf, sizeof(buf), "%s@%s", u->username, u->host);
 	    if (strcmp(buf, ni->last_usermask) == 0) {
-		ni->status |= NS_IDENTIFIED;
+//		ni->status |= NS_IDENTIFIED;
 		return 1;
 	    }
 	}
@@ -872,7 +874,7 @@ void expire_nicks()
 	for (ni = nicklists[i]; ni; ni = next) {
 	    next = ni->next;
 	    if (now - ni->last_seen >= NSExpire
-			&& !(ni->status & (NS_VERBOTEN | NS_NO_EXPIRE))) {
+			&& !(ni->status & (NS_VERBOTEN | NS_NO_EXPIRE | NS_SUSPENDED))) {
 		log("Expirando Nick %s", ni->nick);
 		canalopers(s_NickServ, "El nick 12%s ha expirado", ni->nick);
 		delnick(ni);
@@ -1138,9 +1140,16 @@ static void collide(NickInfo *ni, int from_timeout)
 #endif
 	notice_lang(s_NickServ, u, DISCONNECT_NOW);
     	kill_user(s_NickServ, ni->nick, "Protección de Nick Registrado");
-    	send_cmd(NULL, "NICK %s %ld 1 %s %s %s :%s Enforcement",
-		ni->nick, time(NULL), NSEnforcerUser, NSEnforcerHost,
-		ServerName, s_NickServ);
+#ifdef IRC_UNDERNET_P10
+/*    	send_cmd(NULL, "%c NICK %s 1 %ld  %s %s AAAAAA %c%c%c :Protección de %s",
+    	        NumericoServer, ni->nick, time(NULL),
+    	        NSEnforcerUser, NSEnforcerHost, poner cosas aqui
+		ServerName, ni->nick); */
+#else
+        send_cmd(NULL, "NICK %s %ld 1 %s %s %s :%s Enforcement",
+                ni->nick, time(NULL), NSEnforcerUser, NSEnforcerHost,
+                ServerName, s_NickServ);
+#endif		
 	ni->status |= NS_KILL_HELD;
 	add_ns_timeout(ni, TO_RELEASE, NSReleaseTimeout);
 #ifdef IRC_DAL4_4_15
@@ -1307,7 +1316,11 @@ static void do_help(User *u)
 	int i;
 	notice_help(s_NickServ, u, NICK_HELP_SET_LANGUAGE);
 	for (i = 0; i < NUM_LANGS && langlist[i] >= 0; i++) {
-	    privmsg(s_NickServ, u->nick, "    %2d) %s",
+#ifdef IRC_UNDERNET_P10
+	    privmsg(s_NickServ, u->numerico, "    %2d) %s",
+#else
+            privmsg(s_NickServ, u->nick, "    %2d) %s",
+#endif	    
 			i+1, langnames[langlist[i]]);
 	}
     } else {
@@ -1389,7 +1402,7 @@ static void do_register(User *u)
           for (ni = nicklists[i]; ni; ni = ni->next)
              if(ni->email && !strcmp(email,ni->email))
                 nicksmail++;
-        if (nicksmail>3) {
+        if (nicksmail > 3) {
            privmsg(s_NickServ, u->nick, "Solo puedes registrar 3 Nicks por Email");
            return;
         }
@@ -1398,50 +1411,41 @@ static void do_register(User *u)
     } else if (stricmp(u->nick, pass) == 0
             || (StrictPasswords && strlen(pass) < 5)) {
         notice_lang(s_NickServ, u, MORE_OBSCURE_PASSWORD);
-   } else {
+    } else {
                                               
 #endif                                                                                                 
 	ni = makenick(u->nick);
 	if (ni) {
 #ifdef REG_NICK_MAIL
 /*** Registro de nicks por mail by Zoltan ***/
-            FILE *p;
-            char sendmail[PATH_MAX];
-            char passreg[7];
-            char *pass;
 
-            snprintf(passreg, sizeof(passreg), "pw%04u", (rand()%9999));                                            
-                                                      
-            pass = sstrdup(passreg);
-            strscpy(ni->pass, pass, PASSMAX);
-                                                                                    
-            ni->email = sstrdup(email);
+            char pass[255];
             
-            snprintf(sendmail, sizeof(sendmail), SendMailPatch, ni->email);
-           
-            if (!(p = popen(sendmail, "w"))) {
-                privmsg(s_NickServ, u->nick, "mail jodido");
-                return;
+            srand(time(NULL));
+            sprintf(pass,"Hp%04u",1+(int)(rand()%9999));
+                                    
+            strscpy(ni->pass, pass, PASSMAX);
+            ni->email = sstrdup(email);
+
+            {
+            char *buf;
+            char subject[BUFSIZE];                        
+            if (fork()==0) {
+
+               buf = smalloc(sizeof(char *) * 1024);
+               sprintf(buf,"\n    NiCK: %s\n"
+                             "Password: %s\n\n"
+                             "Para identificarte   -> /msg %s IDENTIFY %s\n"
+                             "Para cambio de clave -> /msg %s SET PASSWORD nueva_password\n\n"
+                             "Página de Información %s\n",
+                       ni->nick, ni->pass, s_NickServ, ni->pass, s_NickServ, WebNetwork);
+       
+               snprintf(subject, sizeof(subject), "Registro del NiCK '%s'", ni->nick);
+               
+               enviar_correo(ni->email, subject, buf);
+               exit(0);
             }
-
-            fprintf(p, "From: %s\n", SendFrom);        
-            fprintf(p, "To: %s\n", ni->email);
-            fprintf(p, "Subject: Registro del NiCK '%s'\n", ni->nick);
-            fprintf(p, "\n");
-            fprintf(p, "    NiCK: %s\n", ni->nick);
-            fprintf(p, "Password: %s\n", ni->pass);
-            fprintf(p, "\n");
-                                                                                               
-            fprintf(p, "\n");
-            fprintf(p, "Para identificarte -> /msg %s IDENTIFY %s\n",
-                    s_NickServ, ni->pass);
-            fprintf(p, "Para cambio clave  -> /msg %s SET PASSWORD nueva_clave\n",
-                    s_NickServ);
-            fprintf(p, "\n\n");
-            fprintf(p, "Pagina información -> %s", WebNetwork);
-            fprintf(p, "\n.\n");
-
-            pclose(p);                                                                                                            
+           }                                                                                                                                                                      
 
 #else	
 #ifdef USE_ENCRYPTION
@@ -1540,9 +1544,8 @@ static void do_identify(User *u)
 
     } else if (!(ni = u->real_ni)) {
         privmsg(s_NickServ, u->nick, "Tu nick no esta registrado");
-/*	notice_lang(s_NickServ, u, NICK_NOT_REGISTRED); */
     } else if (ni->status & NS_SUSPENDED) {
-        notice_lang(s_NickServ, u, NICK_SUSPENDED, ni->msuspend);
+        notice_lang(s_NickServ, u, NICK_SUSPENDED, ni->last_quit);
     } else if (!(res = check_password(pass, ni->pass))) {
 	log("%s: Failed IDENTIFY for %s!%s@%s",
 		s_NickServ, u->nick, u->username, u->host);
@@ -1553,7 +1556,8 @@ static void do_identify(User *u)
 	notice_lang(s_NickServ, u, NICK_IDENTIFY_FAILED);
 
     } else {
-	ni->status |= NS_IDENTIFIED;
+        if (ni->status & NS_IDENTIFIED)
+           notice_lang(s_NickServ, u, NICK_IS_IDENTIFIED);
 	ni->id_timestamp = u->signon;
 	if (!(ni->status & NS_RECOGNIZED)) {
 	    ni->last_seen = time(NULL);
@@ -1570,9 +1574,12 @@ static void do_identify(User *u)
 #endif
 	log("%s: %s!%s@%s identified for nick %s", s_NickServ,
 			u->nick, u->username, u->host, u->nick);
-	notice_lang(s_NickServ, u, NICK_IDENTIFY_SUCCEEDED);
+        if (!(ni->status & NS_IDENTIFIED))
+          notice_lang(s_NickServ, u, NICK_IDENTIFY_SUCCEEDED);
+        ni->status |= NS_IDENTIFIED;
 	if (!(ni->status & NS_RECOGNIZED))
 	    check_memos(u);
+	strcpy(ni->nick, u->nick);    
 
     }
 }
@@ -1585,7 +1592,7 @@ static void do_drop(User *u)
     NickInfo *ni;
     User *u2;
 
-    if (readonly && !is_services_admin(u)) {
+    if (readonly && !is_services_oper(u)) {
 	notice_lang(s_NickServ, u, NICK_DROP_DISABLED);
 	return;
     }
@@ -1599,8 +1606,8 @@ static void do_drop(User *u)
 	else
 	    notice_lang(s_NickServ, u, NICK_NOT_REGISTERED);
 
-    } else if (NSSecureAdmins && nick && nick_is_services_admin(ni) 
-            || nick_is_services_oper(ni) && !is_services_root(u)) {
+    } else if (NSSecureAdmins && nick && (nick_is_services_admin(ni) 
+            || nick_is_services_oper(ni)) && !is_services_root(u)) {
 	notice_lang(s_NickServ, u, PERMISSION_DENIED);
 	
     } else if (!nick && !nick_identified(u)) {
@@ -1738,11 +1745,7 @@ static void do_set_password(User *u, NickInfo *ni, char *param)
         canalopers(s_NickServ, "12%s  ha usado SET PASSWORD sobre 12%s",
          u->nick, ni->nick);
 	log("%s: %s!%s@%s used SET PASSWORD as Services admin on %s",
-		s_NickServ, u->nick, u->username, u->host, ni->nick);
-	if (WallSetpass) {
-	    wallops(s_NickServ, "\2%s\2 used SET PASSWORD as Services admin "
-			"on \2%s\2", u->nick, ni->nick);
-	}
+		s_NickServ, u->nick, u->username, u->host, ni->nick);	
     }
 }
 
@@ -1925,7 +1928,7 @@ static void do_access(User *u)
     int i;
     char **access;
 
-    if (cmd && stricmp(cmd, "LIST") == 0 && mask && is_services_admin(u)
+    if (cmd && stricmp(cmd, "LIST") == 0 && mask && is_services_oper(u)
 			&& (ni = findnick(mask))) {
 	ni = getlink(ni);
 	notice_lang(s_NickServ, u, NICK_ACCESS_LIST_X, mask);
@@ -1933,7 +1936,11 @@ static void do_access(User *u)
 	for (access = ni->access, i = 0; i < ni->accesscount; access++, i++) {
 	    if (mask && !match_wild(mask, *access))
 		continue;
-	    notice(s_NickServ, u->nick, "    %s", *access);
+#ifdef IRC_UNDERNET_P10
+	    privmsg(s_NickServ, u->numerico, "    %s", *access);
+#elseif
+            notice(s_NickServ, u->nick, "    %s", *access);
+#endif	    
 	}
 
     } else if (!cmd || ((stricmp(cmd,"LIST")==0) ? !!mask : !mask)) {
@@ -2205,7 +2212,11 @@ static void do_listlinks(User *u)
 		if (ni2 == ni)
 		    continue;
 		if (param ? getlink(ni2) == ni : ni2->link == ni) {
-		    privmsg(s_NickServ, u->nick, "    %s", ni2->nick);
+#ifdef IRC_UNDERNET_P10
+		    privmsg(s_NickServ, u->numerico, "    %s", ni2->nick);
+#elseif
+                    privmsg(s_NickServ, u->nick, "    %s", ni2->nick);
+#endif
 		    count++;
 		}
 	    }
@@ -2265,8 +2276,7 @@ static void do_info(User *u)
             notice_lang(s_NickServ, u, NICK_INFO_LINKED, real->nick); 
             
         if (ni->status & NS_SUSPENDED)
-            notice_lang(s_NickServ, u, NICK_INFO_SUSPENDED, ni->msuspend); 
-                                   	                          
+            notice_lang(s_NickServ, u, NICK_INFO_SUSPENDED, ni->last_quit);                                 	                          
 	notice_lang(s_NickServ, u, NICK_INFO_REALNAME,
 		nick, ni->last_realname);
 
@@ -2291,7 +2301,7 @@ static void do_info(User *u)
 	tm = localtime(&ni->time_registered);
 	strftime_lang(buf, sizeof(buf), u, STRFTIME_DATE_TIME_FORMAT, tm);
 	notice_lang(s_NickServ, u, NICK_INFO_TIME_REGGED, buf);
-	if (ni->last_quit && (show_hidden || !(real->flags & NI_HIDE_QUIT)))
+	if ((ni->last_quit && (show_hidden || !(real->flags & NI_HIDE_QUIT))) && !(ni->status & NS_SUSPENDED))
 	    notice_lang(s_NickServ, u, NICK_INFO_LAST_QUIT, ni->last_quit);
 	if (ni->url)
 	    notice_lang(s_NickServ, u, NICK_INFO_URL, ni->url);
@@ -2414,7 +2424,11 @@ static void do_list(User *u)
 			    snprintf(buf, sizeof(buf), "%-20s  %s",
 						ni->nick, ni->last_usermask);
 			}
-			privmsg(s_NickServ, u->nick, "   %c%s",
+#ifdef IRC_UNDERNET_P10
+			privmsg(s_NickServ, u->numerico, "   %c%s",
+#else
+                        privmsg(s_NickServ, u->nick, "   %c%s",
+#endif			
 						noexpire_char, buf);
 		    }
 		}
@@ -2442,6 +2456,8 @@ static void do_recover(User *u)
 	notice_lang(s_NickServ, u, NICK_X_NOT_REGISTERED, nick);
     } else if (stricmp(nick, u->nick) == 0) {
 	notice_lang(s_NickServ, u, NICK_NO_RECOVER_SELF);
+/* poner aqui nick suspendido */
+
     } else if (pass) {
 	int res = check_password(pass, ni->pass);
 	if (res == 1) {
@@ -2479,6 +2495,8 @@ static void do_release(User *u)
 	notice_lang(s_NickServ, u, NICK_X_NOT_REGISTERED, nick);
     } else if (!(ni->status & NS_KILL_HELD)) {
 	notice_lang(s_NickServ, u, NICK_RELEASE_NOT_HELD, nick);
+
+/* Poner aqui nick suspendido */
     } else if (pass) {
 	int res = check_password(pass, ni->pass);
 	if (res == 1) {
@@ -2519,6 +2537,8 @@ static void do_ghost(User *u)
 	notice_lang(s_NickServ, u, NICK_X_NOT_REGISTERED, nick);
     } else if (stricmp(nick, u->nick) == 0) {
 	notice_lang(s_NickServ, u, NICK_NO_GHOST_SELF);
+/* Poner aqui nick suspendido */
+
     } else if (pass) {
 	int res = check_password(pass, ni->pass);
 	if (res == 1) {
@@ -2584,36 +2604,31 @@ static void do_sendpass(User *u)
     } else if (!(ni = findnick(nick))) {
         notice_lang(s_NickServ, u, NICK_X_NOT_REGISTERED, nick);
     } else {
-         FILE *p;
-         char sendmail[PATH_MAX];
-                
-         snprintf(sendmail, sizeof(sendmail), SendMailPatch, ni->email);
-                         
-         if (!(p = popen(sendmail, "w"))) {
-              privmsg(s_NickServ, u->nick, "mail jodido");
-              return;
+        {
+         char *buf;
+         char subject[BUFSIZE];
+                       
+         if (fork()==0) {
+                       
+             buf = smalloc(sizeof(char *) * 1024);
+             sprintf(buf,"\n    NiCK: %s\n"
+                           "Password: %s\n\n"
+                           "Para identificarte   -> /msg %s IDENTIFY %s\n"
+                           "Para cambio de clave -> /msg %s SET PASSWORD nueva_contraseña\n\n"
+                           "Página de Información %s\n",                           
+                  ni->nick, ni->pass, s_NickServ, ni->pass, s_NickServ, WebNetwork);
+                    
+             snprintf(subject, sizeof(subject), "Contraseña del NiCK '%s'", ni->nick);
+       
+             enviar_correo(ni->email, subject, buf);             
+             exit(0);
          }
-                                                          
-         fprintf(p, "From: %s\n", SendFrom);
-         fprintf(p, "To: %s\n", ni->email);
-         fprintf(p, "Subject: Registro del NiCK '%s'\n", ni->nick);
-         fprintf(p, "\n");
-         fprintf(p, "    NiCK: %s\n", ni->nick);
-         fprintf(p, "Password: %s\n", ni->pass);
-         fprintf(p, "\n");
-         fprintf(p, "Para identificarte -> /msg %s IDENTIFY %s\n",
-                  s_NickServ, ni->pass);
-         fprintf(p, "Para cambio clave  -> /msg %s SET PASSWORD nueva_clave\n",
-                  s_NickServ);
-         fprintf(p, "\n\n");
-         fprintf(p, "Pagina información -> %s", WebNetwork);
-         fprintf(p, "\n.\n");
-        
-         pclose(p);
- 
+        }                           
          notice_lang(s_NickServ, u, NICK_SENDPASS_SUCCEEDED, nick, ni->email);
          canalopers(s_NickServ, "12%s ha usado 12SENDPASS sobre 12%s", u->nick, nick);
     }
+#else
+         privmsg(s_NickServ, u->nick, "En esta red no esta disponible el SENDPASS");    
 #endif    
 }                                                                                                               
                                                                                                                        
@@ -2641,8 +2656,6 @@ static void do_getpass(User *u)
         canalopers(s_NickServ, "12%s Uso GETPASS sobre 12%s", u->nick, ni->nick);
 	log("%s: %s!%s@%s used GETPASS on %s",
 		s_NickServ, u->nick, u->username, u->host, nick);
-	if (WallGetpass)
-	    wallops(s_NickServ, "\2%s\2 used GETPASS on \2%s\2", u->nick, nick);
 	notice_lang(s_NickServ, u, NICK_GETPASS_PASSWORD_IS, nick, ni->pass);
     }
 #endif
@@ -2655,13 +2668,11 @@ static void do_suspend(User *u)
 {
 
     char *nick = strtok(NULL, " ");
-    char *msuspend = strtok(NULL, "");
+    char *motivo = strtok(NULL, "");
     NickInfo *ni;
+                        
             
-            
-            
-   /* Assumes that permission checking has already been done. */
-    if (!msuspend) {
+    if (!motivo) {
         syntax_error(s_NickServ, u, "SUSPEND", NICK_SUSPEND_SYNTAX);
     } else if (!(ni = findnick(nick))) {
         notice_lang(s_NickServ, u, NICK_X_NOT_REGISTERED, nick);
@@ -2672,28 +2683,30 @@ static void do_suspend(User *u)
     } else if (nick_is_services_admin(ni)) {
         notice_lang(s_NickServ, u, NICK_SUSPEND_OPER);
         canalopers(s_NickServ, "12%s ha intentado 12SUSPENDer al admin 12%s (%s)",
-                                        u->nick, ni->nick, msuspend);
+                                        u->nick, ni->nick, motivo);
     } else if (nick_is_services_oper(ni)) {
         notice_lang(s_NickServ, u, NICK_SUSPEND_OPER);
-        wallops(s_NickServ, "12%s ha intentado 12SUSPENDer al oper 12%s (%s)",
-              u->nick, ni->nick, msuspend);
+        canalopers(s_NickServ, "12%s ha intentado 12SUSPENDer al oper 12%s (%s)",
+              u->nick, ni->nick, motivo);
     } else {
         char buf[BUFSIZE];
                                     
         log("%s: %s!%s@%s usado SUSPEND on %s (%s)",
-             s_NickServ, u->nick, u->username, u->host, nick, msuspend);
+             s_NickServ, u->nick, u->username, u->host, nick, motivo);
         ni->status |= NS_SUSPENDED;
-        snprintf(buf, sizeof(buf), "%s (by 12%s)", msuspend, u->nick);
-        ni->msuspend = sstrdup(buf);
+        ni->status &= ~NS_IDENTIFIED;
+        snprintf(buf, sizeof(buf), "%s (by 12%s)", motivo, u->nick);
+        if (ni->last_quit)
+            free(ni->last_quit);
+        ni->last_quit = sstrdup(buf);
         canalopers(s_NickServ, "12%s ha 12SUSPENDido el nick 12%s (%s)",
-          u->nick, nick, msuspend); 
+          u->nick, nick, motivo); 
         notice_lang(s_NickServ, u, NICK_SUSPEND_SUCCEEDED, nick);
 
         if (finduser(nick)) {
             privmsg (s_NickServ, ni->nick, "Tu nick 12%s ha sido 12SUSPENDido"
                  " temporalmente.", ni->nick);
-            privmsg (s_NickServ, ni->nick, "Causa de suspension: %s.", msuspend);
-            ni->status &= ~NS_IDENTIFIED;
+            privmsg (s_NickServ, ni->nick, "Causa de suspension: %s.", motivo);       
         }
                           
     }
@@ -2718,7 +2731,8 @@ static void do_unsuspend(User *u)
          log("%s: %s!%s@%s usado UNSUSPEND on %s",
                 s_NickServ, u->nick, u->username, u->host, nick);
           ni->status &= ~NS_SUSPENDED;
-          ni->msuspend = NULL; 
+//          ni->msuspend = NULL; 
+//          ni->last_quit = NULL;
           canalopers(s_NickServ, "12%s ha reactivado el nick 12%s", u->nick, nick);
           notice_lang(s_NickServ, u, NICK_UNSUSPEND_SUCCEEDED, nick);
           if (finduser(nick)) {
@@ -2791,6 +2805,7 @@ static void do_unforbid(User *u)
 }
 
 /*************************************************************************/
+#ifdef DB_HISPANO
 static void do_nickreg(User *u)
 {
     char *nick = strtok(NULL, " ");
@@ -2994,3 +3009,4 @@ static void do_vhostdel(User *u)
                                                           
 }
                                                                                                                                                                                                            
+#endif

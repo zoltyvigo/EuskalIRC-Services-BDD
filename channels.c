@@ -72,6 +72,7 @@ void send_channel_list(User *user)
 				(c->mode&CMODE_S) ? "s" : "",
 				(c->mode&CMODE_T) ? "t" : "",
 #ifdef IRC_DAL4_4_15
+/* Hay que meter aqui nuevos modos de UNREAL y BAHAMUT cuando los implemente */
 				(c->mode&CMODE_R) ? "R" : "",
 #else
 				"",
@@ -117,17 +118,17 @@ void send_channel_users(User *user)
     const char *source = user->nick;
 
     if (!c) {
-	notice(s_OperServ, source, "Channel %s not found!",
+	notice(s_OperServ, source, "Canal %s no encontrado!",
 		chan ? chan : "(null)");
 	return;
     }
-    notice(s_OperServ, source, "Channel %s users:", chan);
+    notice(s_OperServ, source, "Canal %s usuarios:", chan);
     for (u = c->users; u; u = u->next)
 	notice(s_OperServ, source, "%s", u->user->nick);
-    notice(s_OperServ, source, "Channel %s chanops:", chan);
+    notice(s_OperServ, source, "Canal %s operadores:", chan);
     for (u = c->chanops; u; u = u->next)
 	notice(s_OperServ, source, "%s", u->user->nick);
-    notice(s_OperServ, source, "Channel %s voices:", chan);
+    notice(s_OperServ, source, "Canal %s moderadores:", chan);
     for (u = c->voices; u; u = u->next)
 	notice(s_OperServ, source, "%s", u->user->nick);
 }
@@ -173,7 +174,7 @@ Channel *firstchan(void)
 	current = chanlist[next_index++];
     if (debug >= 3)
 	log("debug: firstchan() returning %s",
-			current ? current->name : "NULL (end of list)");
+			current ? current->name : "NULL (fin de la lista)");
     return current;
 }
 
@@ -187,7 +188,7 @@ Channel *nextchan(void)
     }
     if (debug >= 3)
 	log("debug: nextchan() returning %s",
-			current ? current->name : "NULL (end of list)");
+			current ? current->name : "NULL (fin de la lista)");
     return current;
 }
 
@@ -207,7 +208,7 @@ void chan_adduser(User *user, const char *chan)
 
     if (newchan) {
 	if (debug)
-	    log("debug: Creating channel %s", chan);
+	    log("debug: Creando canal %s", chan);
 	/* Allocate pre-cleared memory */
 	c = scalloc(sizeof(Channel), 1);
 	strscpy(c->name, chan, sizeof(c->name));
@@ -227,7 +228,7 @@ void chan_adduser(User *user, const char *chan)
 	    /* Store return pointer in ChannelInfo record */
 	    c->ci->c = c;
 	}
-	/* Restore locked modes and saved topic */
+	/* Restaura el modos de candado y topic en canales reg */
 	check_modes(chan);
 	restore_topic(chan);
     }
@@ -298,7 +299,7 @@ void chan_deluser(User *user, Channel *c)
     }
     if (!c->users) {
 	if (debug)
-	    log("debug: Deleting channel %s", c->name);
+	    log("debug: Borrando canal %s", c->name);
 	if (c->ci)
 	    c->ci->c = NULL;
 	if (c->topic)
@@ -309,17 +310,17 @@ void chan_deluser(User *user, Channel *c)
 	    if (c->bans[i])
 		free(c->bans[i]);
 	    else
-		log("channel: BUG freeing %s: bans[%d] is NULL!", c->name, i);
+		log("Canales: BUG freeing %s: bans[%d] es NULL!", c->name, i);
 	}
 	if (c->bansize)
 	    free(c->bans);
 	if (c->chanops || c->voices)
-	    log("channel: Memory leak freeing %s: %s%s%s %s non-NULL!",
+	    log("Canales: Memory leak freeing %s: %s%s%s %s no es NULL!",
 			c->name,
 			c->chanops ? "c->chanops" : "",
-			c->chanops && c->voices ? " and " : "",
+			c->chanops && c->voices ? " y " : "",
 			c->voices ? "c->voices" : "",
-			c->chanops && c->voices ? "are" : "is");
+			c->chanops && c->voices ? "son" : "es");
 	if (c->next)
 	    c->next->prev = c->prev;
 	if (c->prev)
@@ -345,7 +346,7 @@ void do_cmode(const char *source, int ac, char **av)
 
     chan = findchan(av[0]);
     if (!chan) {
-	log("channel: MODE %s for nonexistent channel %s",
+	log("Canales: MODE %s para canal %s no existente",
 					merge_args(ac-1, av+1), av[0]);
 	return;
     }
@@ -372,7 +373,33 @@ void do_cmode(const char *source, int ac, char **av)
 
 	case '-':
 	    add = 0; break;
-
+#ifdef DB_HISPANO
+        case 'R':
+            if (add) {
+                send_cmd(MODE_SENDER(s_ChanServ), "MODE %s -R", chan->name);
+                notice(s_ChanServ, chan->name, "Modo de canal no permitido (+R)");
+                break;
+            }
+            else
+                break;
+        case 'A':
+            if (add) {
+                send_cmd(MODE_SENDER(s_ChanServ), "MODE %s -A", chan->name);
+                notice(s_ChanServ, chan->name, "Modo de canal no permitido (+A)");
+                break;
+            }                                                                           
+            else
+                break;            
+        case 'S':
+            if (add) {
+                send_cmd(MODE_SENDER(s_ChanServ), "MODE %s -S", chan->name);
+                notice(s_ChanServ, chan->name, "Modo de canal no permitido (+S)");
+                break;
+            }
+            else
+                break;
+#endif                
+/* Añadir los nuevos modos para BAHAMUT Y UNREAL cuando los implemente */                
 	case 'i':
 	    if (add)
 		chan->mode |= CMODE_I;
@@ -433,7 +460,7 @@ void do_cmode(const char *source, int ac, char **av)
 
 	case 'k':
 	    if (--ac < 0) {
-		log("channel: MODE %s %s: missing parameter for %ck",
+		log("Canales: MODE %s %s: falta parametro para %ck",
 					chan->name, modestr, add ? '+' : '-');
 		break;
 	    }
@@ -448,7 +475,7 @@ void do_cmode(const char *source, int ac, char **av)
 	case 'l':
 	    if (add) {
 		if (--ac < 0) {
-		    log("channel: MODE %s %s: missing parameter for +l",
+		    log("Canales: MODE %s %s: falta parametro para +l",
 							chan->name, modestr);
 		    break;
 		}
@@ -460,7 +487,7 @@ void do_cmode(const char *source, int ac, char **av)
 
 	case 'b':
 	    if (--ac < 0) {
-		log("channel: MODE %s %s: missing parameter for %cb",
+		log("Canales: MODE %s %s: falta parametro para %cb",
 					chan->name, modestr, add ? '+' : '-');
 		break;
 	    }
@@ -489,7 +516,7 @@ void do_cmode(const char *source, int ac, char **av)
 
 	case 'o':
 	    if (--ac < 0) {
-		log("channel: MODE %s %s: missing parameter for %co",
+		log("Canales: MODE %s %s: falta parametro para %co",
 					chan->name, modestr, add ? '+' : '-');
 		break;
 	    }
@@ -500,9 +527,14 @@ void do_cmode(const char *source, int ac, char **av)
 		    ;
 		if (u)
 		    break;
+#ifdef IRC_UNDERNET_P10
+/* P10izado */
+                user = finduserP10(sstrdup(nick));
+#else
 		user = finduser(nick);
+#endif 		
 		if (!user) {
-		    log("channel: MODE %s +o for nonexistent user %s",
+		    log("Canales: MODE %s +o para usuario inexistente %s",
 							chan->name, nick);
 		    break;
 		}
@@ -535,7 +567,7 @@ void do_cmode(const char *source, int ac, char **av)
 
 	case 'v':
 	    if (--ac < 0) {
-		log("channel: MODE %s %s: missing parameter for %cv",
+		log("Canales: MODE %s %s: falta parametro para %cv",
 					chan->name, modestr, add ? '+' : '-');
 		break;
 	    }
@@ -546,9 +578,13 @@ void do_cmode(const char *source, int ac, char **av)
 		    ;
 		if (u)
 		    break;
+#ifdef IRC_UNDERNET_P10
+                user = finduserP10(nick);
+#elseif                
 		user = finduser(nick);
+#endif		
 		if (!user) {
-		    log("channe: MODE %s +v for nonexistent user %s",
+		    log("channe: MODE %s +v para usuario inexistente %s",
 							chan->name, nick);
 		    break;
 		}
@@ -589,6 +625,25 @@ void do_cmode(const char *source, int ac, char **av)
 
 /* Handle a TOPIC command. */
 
+/* En Undernet P9 y P10 el comando topic es asi
+ *
+ *      source = Nick de kien pone el topic
+ *      av[0]  = Canal
+ *      av[1]  = Topic
+ *
+ * En el resto de ircds
+ *
+ *      source = ??
+ *      av[0]  = Canal
+ *      av[1]  = Nick de kien pone el topic
+ *      av[2]  = Tiempo ke fue cambiado el topic
+ *      av[3]  = Topic
+ * 
+ * Por este motivo he hecho cambios en do_topic :)
+ *
+ * Toni García  -Zoltan-  1- Septiembre- 2000
+ */
+
 void do_topic(const char *source, int ac, char **av)
 {
     Channel *c = findchan(av[0]);
@@ -600,14 +655,24 @@ void do_topic(const char *source, int ac, char **av)
     }
     if (check_topiclock(av[0]))
 	return;
+#ifdef IRC_UNDERNET	
+    strscpy(c->topic_setter, source, sizeof(c->topic_setter));
+    c->topic_time = time(NULL);    
+#else
     strscpy(c->topic_setter, av[1], sizeof(c->topic_setter));
     c->topic_time = atol(av[2]);
+#endif    
     if (c->topic) {
 	free(c->topic);
 	c->topic = NULL;
     }
+#ifdef IRC_UNDERNET
+    if (ac > 1 && *av[1])
+        c->topic = sstrdup(av[1]);
+#else
     if (ac > 3 && *av[3])
 	c->topic = sstrdup(av[3]);
+#endif	
     record_topic(av[0]);
 }
 

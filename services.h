@@ -187,7 +187,7 @@ struct nickinfo_ {
     uint16 language;	/* Language selected by nickname owner (LANG_*) */
 
     time_t id_timestamp;/* TS8 timestamp of user who last ID'd for nick */
-    char *msuspend;
+/*     char *msuspend; */
 };
 
 
@@ -341,12 +341,12 @@ struct chaninfo_ {
 #define CI_MEMO_HARDMAX	0x00000400
 /* Send notice to channel on use of OP/DEOP */
 #define CI_OPNOTICE	0x00000800
-/* Chanserv dentro o fuera del canal */
-#define CI_STAY         0x00001600
 /* Canal Suspendido */
-#define CI_SECUREVOICES 0x00003200
+#define CI_SUSPEND	0x00001000
+/* Chanserv dentro o fuera del canal */
+#define CI_STAY		0x00002000
 /* No registrados no pueden tener voz */
-#define CI_SUSPEND      0x00006400
+#define CI_SECUREVOICES	0x00004000
  
 
 
@@ -486,8 +486,8 @@ struct user_ {
 #define UMODE_H 0x00000020
 #define UMODE_R 0x00000040
 #define UMODE_X 0x00000080
-#define UMODE_Z 0x00000160
-#define UMODE_K 0x00000320
+#define UMODE_Z 0x00000100
+#define UMODE_K 0x00000200
 
 
 struct channel_ {
@@ -559,10 +559,12 @@ typedef struct ignore_data {
 
 /*************************************************************************/
 /********* Protocolo DB *********/
+#ifdef ESNET_HISPANO
 struct DB {
      long registros;   // Numero de registro por el ke van
 } DB[7];
 
+#endif
 /*************************************************************************/
 
 #include "extern.h"

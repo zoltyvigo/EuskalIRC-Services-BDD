@@ -75,6 +75,7 @@ E void cs_remove_nick(const NickInfo *ni);
 E ChannelInfo *cs_findchan(const char *chan);
 E int check_access(User *user, ChannelInfo *ci, int what);
 E void registros(User *u, NickInfo *ni);
+E void join_chanserv();
 
 /**** compat.c ****/
 
@@ -120,6 +121,7 @@ E char *ServiceHost;
 E char *s_NickServ;
 E char *s_ChanServ;
 E char *s_CregServ;
+E char *s_CyberServ;
 E char *s_MemoServ;
 E char *s_HelpServ;
 E char *s_OperServ;
@@ -130,6 +132,7 @@ E char *s_DevNull;
 E char *desc_NickServ;
 E char *desc_ChanServ;
 E char *desc_CregServ;
+E char *desc_CyberServ;
 E char *desc_MemoServ;
 E char *desc_HelpServ;
 E char *desc_OperServ;
@@ -209,16 +212,6 @@ E char *CanalOpers;
 E char *ServicesRoot;
 E int   LogMaxUsers;
 E int   AutokillExpiry;
-E int   WallOper;
-E int   WallBadOS;
-E int   WallOSMode;
-E int   WallOSClearmodes;
-E int   WallOSKick;
-E int   WallOSAkill;
-E int   WallAkillExpire;
-E int   WallExceptionExpire;
-E int   WallGetpass;
-E int   WallSetpass;
 E int   CheckClones;
 E int   CloneMinUsers;
 E int   CloneMaxDelay;
@@ -237,6 +230,11 @@ E char *SessionLimitExceeded;
 
 E int read_config(void);
 
+/**** correo.c ****/
+
+E int enviar_correo(const char * destino, const char *subject, const char *body);
+
+
 /**** cregserv.c ****/
 
 E void listcregs(int count_only, const char *chan);
@@ -246,6 +244,11 @@ E void cr_init(void);
 E void cregserv(const char *source, char *buf);
 E void load_cr_dbase(void);
 E void save_cr_dbase(void);
+
+
+/**** cyberserv.c ****/
+
+E void cyberserv(const char *source, char *buf);
 
 
 /**** helpserv.c ****/
@@ -329,7 +332,7 @@ E void ms_init(void);
 E void memoserv(const char *source, char *buf);
 E void load_old_ms_dbase(void);
 E void check_memos(User *u);
-
+E void check_cs_memos(User *u, ChannelInfo *ci);
 
 /********** messages.c ********/
 
@@ -362,6 +365,8 @@ E void save_news(void);
 E void display_news(User *u, int16 type);
 E void do_logonnews(User *u);
 E void do_opernews(User *u);
+
+E void newsserv(const char *source, char *buf);
 
 
 /**** nickserv.c ****/
@@ -419,8 +424,6 @@ E void send_cmd(const char *source, const char *fmt, ...)
 	FORMAT(printf,2,3);
 E void vsend_cmd(const char *source, const char *fmt, va_list args)
 	FORMAT(printf,2,0);
-E void wallops(const char *source, const char *fmt, ...)
-	FORMAT(printf,2,3);
 E void canalopers(const char *source, const char *fmt, ...)
         FORMAT(printf,2,3);        	
 E void notice(const char *source, const char *dest, const char *fmt, ...)
@@ -444,6 +447,8 @@ E void load_exceptions(void);
 E void save_exceptions(void);
 E void do_exception(User *u);
 E void expire_exceptions(void);
+
+E int is_cyber_admin(User *u);
 
 /**** sockutil.c ****/
 

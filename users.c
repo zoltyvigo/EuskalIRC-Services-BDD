@@ -7,6 +7,7 @@
  */
 
 #include "services.h"
+#include "language.h"
 
 #define HASH(nick)	(((nick)[0]&31)<<5 | ((nick)[1]&31))
 static User *userlist[1024];
@@ -421,6 +422,8 @@ void do_join(const char *source, int ac, char **av)
 	if (debug)
 	    log("debug: %s joins %s", source, s);
 
+/* Soporte para JOIN #,0 */
+
 	if (*s == '0') {
 	    c = user->chans;
 	    while (c) {
@@ -438,8 +441,17 @@ void do_join(const char *source, int ac, char **av)
 	if (check_kick(user, s))
 	    continue;
 	chan_adduser(user, s);
-	if ((ci = cs_findchan(s)) && ci->entry_message)
-	    notice(s_ChanServ, user->nick, "%s", ci->entry_message);
+	
+/* Añadir soporte aviso de MemoServ si hay memos en el canal que entras */
+	if ((ci = cs_findchan(s))) {
+	    check_cs_memos(user, ci);
+	    if (ci->entry_message)
+#ifdef IRC_UNDERNET_P10
+	        notice(s_ChanServ, user->numerico, "%s", ci->entry_message);
+#else
+                notice(s_ChanServ, user->nick, "%s", ci->entry_message);
+#endif	        
+	}        
 	c = smalloc(sizeof(*c));
 	c->next = user->chans;
 	c->prev = NULL;
@@ -555,7 +567,7 @@ void do_umode(const char *source, int ac, char **av)
 
     if (stricmp(source, av[0]) != 0) {
 	log("user: MODE %s %s from different nick %s!", av[0], av[1], source);
-	wallops(NULL, "%s attempted to change mode %s for %s",
+	canalopers(NULL, "%s attempted to change mode %s for %s",
 		source, av[1], av[0]);
 	return;
     }
@@ -593,28 +605,43 @@ void do_umode(const char *source, int ac, char **av)
                       break;
             case 'k': add ? (user->mode |= UMODE_K) : (user->mode &= ~UMODE_K);
                       break;
-            case 'r': add ? (user->mode |= UMODE_R) : (user->mode &= ~UMODE_R);
+            case 'r':
                 if (add) {
+                    user->mode |= UMODE_R;
                     new_ni = findnick(user->nick);
-                    if (new_ni) {
+                    if (new_ni && !(new_ni->status & NS_SUSPENDED
+                            || new_ni->status & NS_VERBOTEN)) {
                         new_ni->status |= NS_IDENTIFIED;
-                        new_ni->status |= NS_RECOGNIZED;
-/*                        notice_lang(s_NickServ, user, NICK_IDENTIFY_X_MODE_R, user->nick); */
-                        privmsg(s_NickServ, user->nick, "autoidentf por modo +r");
-                        check_memos(user); 
-                    }
-                      break;  }
-                                                                                                                                                                                                                                                                              
+                        new_ni->id_timestamp = user->signon;
+                        if (!(new_ni->status & NS_RECOGNIZED)) {
+                            new_ni->last_seen = time(NULL);
+                            if (new_ni->last_usermask);
+                                free(new_ni->last_usermask);
+                            new_ni->last_usermask = smalloc(strlen(user->username)+strlen(user->host)+2);    
+                            sprintf(new_ni->last_usermask, "%s@%s", user->username, user->host);
+                            if (new_ni->last_realname)
+                                free(new_ni->last_realname);
+                            new_ni->last_realname = sstrdup(user->realname);
+                        }      
+                        log("%s: %s!%s@%s AUTO-identified for nick %s", s_NickServ,
+                        user->nick, user->username, user->host, user->nick);
+                        notice_lang(s_NickServ, user, NICK_IDENTIFY_X_MODE_R, user->nick);                                   
+                        if (!(new_ni->status & NS_RECOGNIZED))                    
+                            check_memos(user); 
+                        strcpy(new_ni->nick, user->nick);
+                    } 
+                } else {
+//                        user->mode &= ~UMODE_R;
+//                        new_ni->status &= ~NS_IDENTIFIED;
+                }    
+                break;
+                                                                                                                                                                                                                                                                                                  
 	    case 'o':
 		if (add) {
 		    user->mode |= UMODE_O;
-		    if (WallOper) {
-			wallops(s_OperServ, "\2%s\2 is now an IRC operator.",
-				user->nick);
-		    }
-/*		    send_cmd(s_OperServ, "PRIVMSG #admins :12%s es ahora un 12IRCOP.",
-		      user->nick);
-		    display_news(user, NEWS_OPER); */
+//		    send_cmd(s_OperServ, "PRIVMSG #admins :12%s es ahora un 12IRCOP.",
+//		      user->nick);
+//		    display_news(user, NEWS_OPER); 
 		    opcnt++;
 		} else {
 		    user->mode &= ~UMODE_O;
@@ -624,13 +651,9 @@ void do_umode(const char *source, int ac, char **av)
            case 'h':
                if (add) {
                    user->mode |= UMODE_H;
-                   if (WallOper) {
-                       wallops(s_OperServ, "\2%s\2 is now an Helper.",
-                               user->nick);
-                   }
-/*                  send_cmd(s_OperServ, "PRIVMSG #admins :12%s es ahora un 12OPER.",
-                      user->nick);
-  */                  display_news(user, NEWS_OPER);
+//                   send_cmd(s_OperServ, "PRIVMSG #admins :12%s es ahora un 12OPER.",
+//                      user->nick);
+                   display_news(user, NEWS_OPER);
                 } else {
                     user->mode &= ~UMODE_H;
                 }
@@ -664,7 +687,8 @@ void do_quit(const char *source, int ac, char **av)
     if (debug)
 	log("debug: %s quits", source);
     if ((ni = user->ni) && (!(ni->status & NS_VERBOTEN)) &&
-			(ni->status & (NS_IDENTIFIED | NS_RECOGNIZED))) {
+			(ni->status & (NS_IDENTIFIED | NS_RECOGNIZED))
+		&& !(ni->status & NS_SUSPENDED)) {
 	ni = user->real_ni;
 	ni->last_seen = time(NULL);
 	if (ni->last_quit)
@@ -696,7 +720,8 @@ void do_kill(const char *source, int ac, char **av)
     if (debug)
 	log("debug: %s killed", av[0]);
     if ((ni = user->ni) && (!(ni->status & NS_VERBOTEN)) &&
-			(ni->status & (NS_IDENTIFIED | NS_RECOGNIZED))) {
+			(ni->status & (NS_IDENTIFIED | NS_RECOGNIZED))
+		 && !(ni->status & NS_SUSPENDED)) {
 	ni = user->real_ni;
 	ni->last_seen = time(NULL);
 	if (ni->last_quit)

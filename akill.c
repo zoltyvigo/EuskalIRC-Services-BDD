@@ -54,7 +54,7 @@ int num_akills(void)
 #define SAFE(x) do {					\
     if ((x) < 0) {					\
 	if (!forceload)					\
-	    fatal("Read error on %s", AutokillDBName);	\
+	    fatal("Error de lectura en %s", AutokillDBName);	\
 	nakill = i;					\
 	break;						\
     }							\
@@ -163,7 +163,7 @@ void load_akill(void)
       } /* case 1 */
 
       default:
-	fatal("Unsupported version (%d) on %s", ver, AutokillDBName);
+	fatal("Version no soportada (%d) en %s", ver, AutokillDBName);
     } /* switch (version) */
 
     close_db(f);
@@ -176,9 +176,9 @@ void load_akill(void)
 #define SAFE(x) do {							\
     if ((x) < 0) {							\
 	restore_db(f);							\
-	log_perror("Write error on %s", AutokillDBName);		\
+	log_perror("Error de escritura en %s", AutokillDBName);		\
 	if (time(NULL) - lastwarn > WarningTimeout) {			\
-	    wallops(NULL, "Write error on %s: %s", AutokillDBName,	\
+	    canalopers(NULL, "Error de escritura en %s: %s", AutokillDBName,	\
 			strerror(errno));				\
 	    lastwarn = time(NULL);					\
 	}								\
@@ -231,24 +231,36 @@ int check_akill(const char *nick, const char *username, const char *host)
 	     * signed on.  This is called before the User structure is
 	     * created.
 	     */
+#ifdef IRC_UNDERNET_P10
+            send_cmd(s_OperServ,
+                        "K %s :%s (Estas baneado de esta RED)",
+                        nick, s_OperServ);
+#else
 	    send_cmd(s_OperServ,
 			"KILL %s :%s (Estas baneado de esta RED)",
 			nick, s_OperServ);
+#endif
 	    username2 = sstrdup(akills[i].mask);
 	    host2 = strchr(username2, '@');
 	    if (!host2) {
 		/* Glurp... this oughtn't happen, but if it does, let's not
 		 * play with null pointers.  Yell and bail out.
 		 */
-		wallops(NULL, "Missing @ in AKILL: %s", akills[i].mask);
-		log("Missing @ in AKILL: %s", akills[i].mask);
-		continue;
+		canalopers(NULL, "Encontrado @ en el AKILL: %s", akills[i].mask);
+		log("Encontrado @ en el AKILL: %s", akills[i].mask);		continue;
 	    }
 	    *host2++ = 0;
 #ifdef IRC_DALNET
 	    send_cmd(ServerName,
 		    "AKILL %s %s :You are banned from this network",
 		    host2, username2);
+#elif IRC_UNDERNET_P10
+            send_cmd(ServerName,
+                    "G * +%s@%s %ld :Estas baneado de esta RED",
+                    username2, host2,
+                    akills[i].expires && akills[i].expires>now                                                                                         
+                                ? akills[i].expires-time(NULL)
+                                : 999999999);
 #else
 	    send_cmd(ServerName,
 		    "GLINE * +%s@%s %ld :Estas baneado de esta RED",
@@ -279,8 +291,7 @@ void expire_akills(void)
     for (i = 0; i < nakill; i++) {
 	if (akills[i].expires == 0 || akills[i].expires > now)
 	    continue;
-	if (WallAkillExpire)
-	    wallops(s_OperServ, "AKILL on %s has expired", akills[i].mask);
+	    canalopers(s_OperServ, "AKILL en %s ha expirado", akills[i].mask);
 #ifdef IRC_DALNET
 	s = strchr(akills[i].mask, '@');
 	if (s) {
@@ -314,7 +325,7 @@ void add_akill(const char *mask, const char *reason, const char *who,
 		      const time_t expiry)
 {
     if (nakill >= 32767) {
-	log("%s: Attempt to add AKILL to full list!", s_OperServ);
+	log("%s: Intento para añadir AKILL a la lista llena!", s_OperServ);
 	return;
     }
     if (nakill >= akill_size) {
@@ -408,39 +419,48 @@ void do_akill(User *u)
 	}
 
 	if (mask && (reason = strtok(NULL, ""))) {
+            if (strchr(mask, '!')) {
+                notice_lang(s_OperServ, u, OPER_AKILL_NO_NICK);
+                notice_lang(s_OperServ, u, BAD_USERHOST_MASK);
+                return;
+            }	
+
 	    s = strchr(mask, '@');
-	    if (s) {
-		strlower(s);
-	    } else {
-		notice_lang(s_OperServ, u, BAD_USERHOST_MASK);
-		return;
+
+            if (!s) {
+                 notice_lang(s_OperServ, u, BAD_USERHOST_MASK);
+                 return;
 	    }
-	    if (strchr(mask, '!'))
-		notice_lang(s_OperServ, u, OPER_AKILL_NO_NICK);
-	    add_akill(mask, reason, u->nick, expires);
-	    notice_lang(s_OperServ, u, OPER_AKILL_ADDED, mask);
-	    if (WallOSAkill) {
-		char buf[128], *s = NULL;
-		int amount = AutokillExpiry;
-		if (expiry) {
-		    amount = strtol(expiry, (char **)&expiry, 10);
-		    if (amount) {
-			switch (*expiry) {
-			    case 'd': s = "day";    break;
-			    case 'h': s = "hour";   break;
-			    case 'm': s = "minute"; break;
-			    default : amount = 0;
-			}
+             if (stricmp("*@*", mask) == 0) {
+                 privmsg(s_OperServ, u->nick, "4ACCESO DENEGADO!");
+                 canalopers(s_OperServ, "El Lamer 12%s intenta meter un GLINE Global (*@*)", u->nick);
+                 return;
+            }     	    
+/*	    add_akill(mask, reason, u->nick, expires);
+            send_cmd(ServerName, "GLINE * +%s %lu :%s", mask, expires-time(NULL), reason);	    
+*/	    notice_lang(s_OperServ, u, OPER_AKILL_ADDED, mask);
+/*
+            char buf[128], *s = NULL;
+	    int amount = AutokillExpiry;
+	    if (expiry) {
+	        amount = strtol(expiry, (char **)&expiry, 10);
+	        if (amount) {
+	            switch (*expiry) {
+		        case 'd': s = "day";    break;
+			case 'h': s = "hour";   break;
+			case 'm': s = "minute"; break;
+			default : amount = 0;
 		    }
 		}
-		if (!amount)
-		    strcpy(buf, "does not expire");
-		else
-		    snprintf(buf, sizeof(buf), "expires in %d %s%s",
-					amount, s, amount==1 ? "" : "s");
-		wallops(s_OperServ, "%s added an AKILL for %s (%s)",
-			u->nick, mask, buf);
 	    }
+	    if (!amount)
+	        strcpy(buf, "No expira");
+	    else
+	        snprintf(buf, sizeof(buf), "expira en %d %s%s",
+				amount, s, amount==1 ? "" : "s");
+		canalopers(s_OperServ, "%s ha añadido un AKILL para %s (%s)",
+			u->nick, mask, buf);
+	    } */
 	    if (readonly)
 		notice_lang(s_OperServ, u, READ_ONLY_MODE);
 	} else {
@@ -560,7 +580,7 @@ void do_akill(User *u)
 		}
 		notice_lang(s_OperServ, u, OPER_AKILL_VIEW_FORMAT,
 				akills[i].mask,
-				*akills[i].who ? akills[i].who : "<unknown>",
+				*akills[i].who ? akills[i].who : "<desconocido>",
 				timebuf, expirebuf, akills[i].reason);
 	    }
 	}

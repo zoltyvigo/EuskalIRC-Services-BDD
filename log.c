@@ -57,7 +57,7 @@ int rename_log(User *u, const char *newname)
 	if (u) {
 	    notice_lang(s_OperServ, u, OPER_ROTATELOG_FILE_EXISTS, newname);
 	} else {
-            wallops(NULL, "WARNING: Could not rename logfile, a file with "
+            canalopers(NULL, "WARNING: Could not rename logfile, a file with "
 			"the name \2%s\2 already exists!", newname);
 	}
 	log("ERROR: Could not rename logfile, a file with the name \2%s\2 "
@@ -83,7 +83,7 @@ int rename_log(User *u, const char *newname)
 	    notice_lang(s_OperServ, u, OPER_ROTATELOG_RENAME_FAIL, 
 			strerror(errno));
 	} else {
-	    wallops(NULL, "WARNING: Logfile could not be renamed: %s", 
+	    canalopers(NULL, "WARNING: Logfile could not be renamed: %s", 
 			strerror(errno));
 	}
 	success = 0;
@@ -99,9 +99,9 @@ int rename_log(User *u, const char *newname)
 	     * for help and tell who ever is listening to find the services
 	     * administrator (root) and notify them. -TheShadow */
 
-            wallops(NULL, "WARNING: Logging could not be restarted: \2%s\2",
+            canalopers(NULL, "WARNING: Logging could not be restarted: \2%s\2",
 			strerror(errno));
-	    wallops(NULL, "Please notify your services administrator, \2%s\2, "
+	    canalopers(NULL, "Please notify your services administrator, \2%s\2, "
 			"and include the above error message.", ServicesRoot);
 	    success = 0;
 	}
@@ -269,7 +269,7 @@ void fatal(const char *fmt, ...)
     if (nofork)
 	fprintf(stderr, "%sFATAL: %s\n", buf, buf2);
     if (servsock >= 0)
-	wallops(NULL, "FATAL ERROR!  %s", buf2);
+	canalopers(NULL, "FATAL ERROR!  %s", buf2);
     exit(1);
 }
 
@@ -308,7 +308,7 @@ void fatal_perror(const char *fmt, ...)
     if (stderr)
 	fprintf(stderr, "%sFATAL: %s: %s\n", buf, buf2, strerror(errno_save));
     if (servsock >= 0)
-	wallops(NULL, "FATAL ERROR!  %s: %s", buf2, strerror(errno_save));
+	canalopers(NULL, "FATAL ERROR!  %s: %s", buf2, strerror(errno_save));
     exit(1);
 }
 

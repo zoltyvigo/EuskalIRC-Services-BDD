@@ -1,4 +1,4 @@
-/* Funciones CReGServ functions.
+/* Funciones CregServ.
  *
  * Services is copyright (c) 1996-1999 Andy Church.
  *     E-mail: <achurch@dragonfire.net>
@@ -7,6 +7,7 @@
  *
  * Modulo CregServ hecho por zoltan <zolty@ctv.es>
  *
+ * Basado en CReG de iRC-Hispano <irc.irc-hispano.org>
  */
  
 /*************************************************************************/
@@ -441,6 +442,9 @@ static void do_registra(User *u)
     NickInfo *ni = u->ni;
     CregInfo *cr;
 
+    char passtemp[255];
+//    cr = cr_findcreg(chan);
+
     if (readonly) {
         notice_lang(s_CregServ, u, CHAN_REGISTER_DISABLED);
         return;
@@ -448,25 +452,24 @@ static void do_registra(User *u)
                         
     if (!desc) {
 /*         syntax_error(s_CregServ, u, "REGISTRA", CREG_REGISTER_SYNTAX); */
-         privmsg(s_CregServ, u->nick, "REGISTRA <canal> <password> <descripcion>");
+        privmsg(s_CregServ, u->nick, "REGISTRA <canal> <password> <descripcion>");
     } else if (!ni) {
-         notice_lang(s_CregServ, u, CHAN_MUST_REGISTER_NICK, s_NickServ);
+        notice_lang(s_CregServ, u, CHAN_MUST_REGISTER_NICK, s_NickServ);
     } else if (!nick_identified(u)) {
-         notice_lang(s_CregServ, u, CHAN_MUST_IDENTIFY_NICK,
+        notice_lang(s_CregServ, u, CHAN_MUST_IDENTIFY_NICK,
                      s_NickServ, s_NickServ);                                                    
     } else if (*chan == '&') {
-         notice_lang(s_CregServ, u, CHAN_REGISTER_NOT_LOCAL);
+        notice_lang(s_CregServ, u, CHAN_REGISTER_NOT_LOCAL);
     } else if (!(*chan == '#')) {
-         privmsg(s_CregServ, u->nick, "Canal no valido para registrar");                       
-/*    } else if (!(cr = cr_findcreg(chan))) { */
-
-    } else if (!(cr = makecreg(chan))) {
-         log("%s: makecreg() failed for REGISTER %s", s_CregServ, chan);
-         notice_lang(s_CregServ, u, CHAN_REGISTRATION_FAILED);                             
+        privmsg(s_CregServ, u->nick, "Canal no valido para registrar");                       
+/*    } else if (!(cr = cr_findcreg(chan))) { 
+        privmsg(s_NickServ, u->nick, "El canal esta en proceso de reg");     
+  */  } else if (!(cr = makecreg(chan))) {
+        log("%s: makecreg() failed for REGISTER %s", s_CregServ, chan);
+        notice_lang(s_CregServ, u, CHAN_REGISTRATION_FAILED);                             
     } else { 
         cr = makecreg(chan);
         
-    /*   cr->founder = u->real_ni; */
         cr->founder =  u->nick; 
         if (strlen(pass) > PASSMAX-1) /* -1 for null byte */
             notice_lang(s_CregServ, u, PASSWORD_TRUNCATED, PASSMAX-1);
@@ -477,6 +480,12 @@ static void do_registra(User *u)
 
         cr->time_peticion = time(NULL);
         cr->estado = CR_PROCESO_REG;
+
+        srand(time(NULL));
+        sprintf(passtemp, "%05u",1+(int)(rand()%99999) );
+        strscpy(cr->passapoyo, passtemp, PASSMAX);
+
+        cr->time_lastapoyo = time(NULL);
 
         privmsg(s_CregServ, u->nick, "Canal 12%s aceptado para el proceso de registro", chan);
         canalopers(s_CregServ, "12%s ha solicitado el registro del canal 12%s", u->nick, chan);
@@ -518,64 +527,75 @@ static void do_apoya(User *u)
     char *pass = strtok(NULL, " "); 
     
     NickInfo *ni = u->ni;
-    CregInfo *cr;    
+    CregInfo *cr; 
     
-/*    ApoyosCreg *apoyos; */
-/*   int i; */
+    ApoyosCreg *apoyos; 
+    int i; 
         
-    char passtemp[PASSMAX]; 
+    char passtemp[255];            
     
-    cr = cr_findcreg(chan);          
-    if (!chan) {
-/*            syntax_error(s_CregServ, u, "APOYA", CHAN_REGISTER_SYNTAX); */
+    if (!chan) { 
+/*       syntax_error(s_CregServ, u, "APOYA", CHAN_REGISTER_SYNTAX); */
        privmsg(s_CregServ, u->nick, "APOYA <canal>");
     } else if (!ni) {
         notice_lang(s_CregServ, u, CHAN_MUST_REGISTER_NICK, s_NickServ);
     } else if (!nick_identified(u)) {
         notice_lang(s_CregServ, u, CHAN_MUST_IDENTIFY_NICK,
                        s_NickServ, s_NickServ);
-    } else if (!(cr->estado & CR_PROCESO_REG)) {                                           
+    } else if (!(cr = cr_findcreg(chan))) {
         privmsg(s_CregServ, u->nick, "El canal 12%s no esta en proceso de registro", chan);
+    } else if (!(cr->estado & CR_PROCESO_REG)) {                                           
+        privmsg(s_CregServ, u->nick, "El canal 12%s no esta en proceso de registro1", chan); 
     } else {
-        if (!cr->passapoyo) {
-            srand(time(NULL));
-            sprintf(passtemp, "%05u",1+(int)(rand()%99999) );
-            strscpy(cr->passapoyo, passtemp, PASSMAX); 
-/*            cr->passapoyo = passtemp; */
-        }  
-        if (!pass) {
+/* Implementar control de tiempo! */
+
+        if (stricmp(u->nick, cr->founder) == 0) {
+            privmsg(s_CregServ, u->nick, "Ya apoyaste como founder");
+            return;
+        }
+
+        for (apoyos = cr->apoyos, i = 0; i < cr->apoyoscount; apoyos++, i++) {
+            if (stricmp(u->nick, apoyos->nickapoyo) == 0) {
+                privmsg(s_CregServ, u->nick, "Ya has apoyado al canal");
+                return;
+            }
+        }
+        if (!pass) { 
  privmsg(s_CregServ, u->nick, "No apoye el canal solamente porque le hayan dicho que"); 
  privmsg(s_CregServ, u->nick, "escriba 12/msg %s APOYA %s. Infórmese sobre la temática", s_CregServ, chan); 
  privmsg(s_CregServ, u->nick, "del canal, sus usuarios, etc.");
  privmsg(s_CregServ, u->nick, "Si decide finalmente apoyar al canal 12%s hágalo escribiendo:", chan);
  privmsg(s_CregServ, u->nick, "12/msg %s APOYA %s %s", s_CregServ, chan, cr->passapoyo); 
- privmsg(s_CregServ, u->nick, "12/msg %s APOYA %s %s", s_CregServ, chan, passtemp);
            return;
         } 
-        privmsg(s_CregServ, u->nick, "Biennnnnnn!!!!");   
-        
-/*        for (apoyos = cr->apoyos, i = 0; i < cr->apoyoscount; apoyos++, i++) {
-            if (apoyos->nickapoyo == u->nick) {
-                privmsg(s_CregServ, u->nick, "Ya has apoyado al canal");
-                return;                            
-            }
-        }    */
-/*        cr->apoyoscount++;
-        cr->apoyos = srealloc(cr->apoyos, sizeof(char *) * cr->apoyoscount);
-        cr->apoyos[cr->apoyoscount-1] = sstrdup();
-  */                             
-/*        apoyos = &cr->apoyos[cr->apoyoscount];
-        apoyos->nickapoyo = u->nick;
-        apoyos->emailapoyo = ni->email;
-        apoyos->time_apoyo = time(NULL); */
+        if (stricmp(pass, cr->passapoyo) != 0) {
+            privmsg(s_CregServ, u->nick, "Clave inválida");
+            privmsg(s_CregServ, u->nick, "Para confirmar tu apoyo al canal 12%s hágalo escribiendo:", chan);
+            privmsg(s_CregServ, u->nick, "12/msg %s APOYA %s %s", s_CregServ, chan, cr->passapoyo);
+            return;
+        }    
+
+        cr->apoyoscount++;
+        cr->apoyos = srealloc(cr->apoyos, sizeof(ApoyosCreg) * cr->apoyoscount);
+                               
+        apoyos = &cr->apoyos[cr->apoyoscount-1];
+        apoyos->nickapoyo = sstrdup(u->nick);
+        apoyos->emailapoyo = sstrdup(ni->email);
+        apoyos->time_apoyo = time(NULL); 
+ 
+        cr->time_lastapoyo = time(NULL);
         privmsg(s_CregServ, u->nick, "Anotado tu apoyo al canal 12%s", chan);             
 
-                                                                       
-  } 
-}
-                
-                                                                        
-                                                        
+/*        if ((cr->apoyoscount) == 2) {
+            cr->estado &= ~CR_PROCESO_REG;
+            cr->estado |= CR_PENDIENTE;
+        } else {
+  */          srand(time(NULL));
+            sprintf(passtemp, "%05u",1+(int)(rand()%99999) );
+            strscpy(cr->passapoyo, passtemp, PASSMAX);                                                                 
+    /*    }
+  */  } 
+}                                                                                                                                               
                                                         
 /*************************************************************************/
 
@@ -583,7 +603,7 @@ static void do_apolla(User *u)
 {
   
         privmsg(s_CregServ, u->nick, "No, que duele mucho (Prueba con  APOYA)");
-        wallops(s_CregServ, "12%s ha ejecutado el comando APOLLA, hehehe", u->nick);
+        canalopers(s_CregServ, "12%s ha ejecutado el comando APOLLA, hehehe", u->nick);
 }
         
 /*************************************************************************/
@@ -717,9 +737,9 @@ static void do_info(User *u)
         for (apoyos = cr->apoyos, i = 0; i < cr->apoyoscount; apoyos++, i++) {           
               tm = localtime(&apoyos->time_apoyo);
               strftime(buf, sizeof(buf), getstring(NULL,STRFTIME_DATE_TIME_FORMAT), tm);                      
-              privmsg(s_CregServ, u->nick, "%s  %s  %s", apoyos->nickapoyo, apoyos->emailapoyo, buf);
+              privmsg(s_CregServ, u->nick, "  %s  %s  %s", apoyos->nickapoyo, apoyos->emailapoyo, buf);
           } 
-
+        privmsg(s_CregServ, u->nick, "Histórico:");
     }
  
 }                       

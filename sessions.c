@@ -137,9 +137,16 @@ void get_exception_stats(long *nrec, long *memuse)
  *	Displays detailed session information about the supplied host.
  */
 
+/* Toni García - Zoltan <zolty@ctv.es>
+ * 23 - Agosto 2000
+ * Cambio OperServ por CyberServ y Session por clones
+ * que es mas bonito ;)
+ */
+    
 void do_session(User *u)
 {
     Session *session;
+    Session *session1;
     Exception *exception;
     char *cmd = strtok(NULL, " ");
     char *param1 = strtok(NULL, " ");
@@ -147,52 +154,71 @@ void do_session(User *u)
     int i;
 
     if (!LimitSessions) {
-	notice_lang(s_OperServ, u, OPER_SESSION_DISABLED);
+	notice_lang(s_CyberServ, u, OPER_SESSION_DISABLED);
 	return;
     }
 
-    if (!cmd)
-        cmd = "";
-
+    if (!cmd) {
+//        cmd = "";
+        if (!(is_services_admin(u))) {
+            session1 = findsession(u->host);
+            exception = find_host_exception(u->host);
+            if (!exception) {
+                notice_lang(s_CyberServ, u, CYBER_CLONES_NOT_IS_CYBER);
+                return;
+            } else {
+                notice_lang(s_CyberServ, u, CYBER_CLONES_IS_CYBER, u->host,
+                session1->count, exception->limit);
+                return;
+            }                    
+        } else {
+            cmd = "";
+            privmsg(s_CyberServ, u->nick, "prueba");
+        }    
+    }
+    if (is_services_admin(u)) {
     if (stricmp(cmd, "LIST") == 0) {
 	if (!param1) {
-	    syntax_error(s_OperServ, u, "SESSION", OPER_SESSION_LIST_SYNTAX);
+	    syntax_error(s_CyberServ, u, "CLONES", OPER_SESSION_LIST_SYNTAX);
 
 	} else if ((mincount = atoi(param1)) <= 1) {
-	    notice_lang(s_OperServ, u, OPER_SESSION_INVALID_THRESHOLD);
+	    notice_lang(s_CyberServ, u, OPER_SESSION_INVALID_THRESHOLD);
 
 	} else {
-	    notice_lang(s_OperServ, u, OPER_SESSION_LIST_HEADER, mincount);
-	    notice_lang(s_OperServ, u, OPER_SESSION_LIST_COLHEAD);
+	    notice_lang(s_CyberServ, u, OPER_SESSION_LIST_HEADER, mincount);
+	    notice_lang(s_CyberServ, u, OPER_SESSION_LIST_COLHEAD);
     	    for (i = 0; i < 1024; i++) {
             	for (session = sessionlist[i]; session; session=session->next) 
 		{
             	    if (session->count >= mincount)
-                        notice_lang(s_OperServ, u, OPER_SESSION_LIST_FORMAT,
+                        notice_lang(s_CyberServ, u, OPER_SESSION_LIST_FORMAT,
                     	            session->count, session->host);
                 }
     	    }
 	}
     } else if (stricmp(cmd, "VIEW") == 0) {
         if (!param1) {
-	    syntax_error(s_OperServ, u, "SESSION", OPER_SESSION_VIEW_SYNTAX);
+	    syntax_error(s_CyberServ, u, "CLONES", OPER_SESSION_VIEW_SYNTAX);
 
         } else {
 	    session = findsession(param1);
 	    if (!session) {
-		notice_lang(s_OperServ, u, OPER_SESSION_NOT_FOUND, param1);
+		notice_lang(s_CyberServ, u, OPER_SESSION_NOT_FOUND, param1);
 	    } else {
 	        exception = find_host_exception(param1);
 
-	        notice_lang(s_OperServ, u, OPER_SESSION_VIEW_FORMAT,
+	        notice_lang(s_CyberServ, u, OPER_SESSION_VIEW_FORMAT,
 				param1, session->count, 
 				exception ? exception->limit : DefSessionLimit);
 	    }
         }
 
     } else {
-	syntax_error(s_OperServ, u, "SESSION", OPER_SESSION_SYNTAX);
+	syntax_error(s_CyberServ, u, "CLONES", OPER_SESSION_SYNTAX);
     }
+    } else {
+        notice_lang(s_CyberServ, u, ACCESS_DENIED);
+    }    
 }
 
 /*************************************************************************/
@@ -237,15 +263,15 @@ int add_session(const char *nick, const char *host)
 
 	if (sessionlimit != 0 && session->count >= sessionlimit) {
     	    if (SessionLimitExceeded)
-		notice(s_OperServ, nick, SessionLimitExceeded, host);
+		notice(s_CyberServ, nick, SessionLimitExceeded, host);
 	    if (SessionLimitDetailsLoc)
-		notice(s_OperServ, nick, SessionLimitDetailsLoc);
+		notice(s_CyberServ, nick, SessionLimitDetailsLoc);
 
 	    /* We don't use kill_user() because a user stucture has not yet
 	     * been created. Simply kill the user. -TheShadow
 	     */
-            send_cmd(s_OperServ, "KILL %s :%s (Session limit exceeded)",
-                        	nick, s_OperServ);
+            send_cmd(s_CyberServ, "KILL %s :%s (En esta red solo se permiten %d clones"
+              " para tu IP (%s))",  nick, s_CyberServ, sessionlimit, host);
 	    return 0;
 	} else {
 	    session->count++;
@@ -276,7 +302,7 @@ void del_session(const char *host)
     session = findsession(host);
 
     if (!session) {
-	wallops(s_OperServ, 
+	canalopers(s_CyberServ, 
 		"WARNING: Tried to delete non-existant session: \2%s", host);
 	log("session: Tried to delete non-existant session: %s", host);
 	return;
@@ -319,9 +345,8 @@ void expire_exceptions(void)
     for (i = 0; i < nexceptions; i++) {
         if (exceptions[i].expires == 0 || exceptions[i].expires > now)
             continue;
-        if (WallExceptionExpire)
-            wallops(s_OperServ, "Session limit exception for %s has expired.", 
-				exceptions[i].mask);
+        canalopers(s_CyberServ, "Session limit exception for %s has expired.", 
+		exceptions[i].mask);
         free(exceptions[i].mask);
         free(exceptions[i].reason);
         nexceptions--;
@@ -369,7 +394,7 @@ void load_exceptions()
     int16 tmp16;
     int32 tmp32;
 
-    if (!(f = open_db(s_OperServ, ExceptionDBName, "r")))
+    if (!(f = open_db(s_CyberServ, ExceptionDBName, "r")))
         return;
     switch (i = get_file_version(f)) {
       case 7:
@@ -410,7 +435,7 @@ void load_exceptions()
         restore_db(f);                                          \
         log_perror("Write error on %s", ExceptionDBName);       \
         if (time(NULL) - lastwarn > WarningTimeout) {           \
-            wallops(NULL, "Write error on %s: %s", ExceptionDBName,  \
+            canalopers(NULL, "Write error on %s: %s", ExceptionDBName,  \
                         strerror(errno));                       \
             lastwarn = time(NULL);                              \
         }                                                       \
@@ -424,7 +449,7 @@ void save_exceptions()
     int i;
     static time_t lastwarn = 0;
 
-    if (!(f = open_db(s_OperServ, ExceptionDBName, "w")))
+    if (!(f = open_db(s_CyberServ, ExceptionDBName, "w")))
         return;
     SAFE(write_int16(nexceptions, f));
     for (i = 0; i < nexceptions; i++) {
@@ -514,11 +539,11 @@ static int exception_list(User *u, const int index, int *sent_header)
     if (index < 0 || index >= nexceptions)
 	return 0;
     if (!*sent_header) {
-	notice_lang(s_OperServ, u, OPER_EXCEPTION_LIST_HEADER);
-	notice_lang(s_OperServ, u, OPER_EXCEPTION_LIST_COLHEAD);
+	notice_lang(s_CyberServ, u, OPER_EXCEPTION_LIST_HEADER);
+	notice_lang(s_CyberServ, u, OPER_EXCEPTION_LIST_COLHEAD);
 	*sent_header = 1;
     }
-    notice_lang(s_OperServ, u, OPER_EXCEPTION_LIST_FORMAT, index+1,
+    notice_lang(s_CyberServ, u, OPER_EXCEPTION_LIST_FORMAT, index+1,
 			exceptions[index].limit, exceptions[index].mask);
     return 1;
 }
@@ -539,7 +564,7 @@ static int exception_view(User *u, const int index, int *sent_header)
     if (index < 0 || index >= nexceptions)
 	return 0;
     if (!*sent_header) {
-	notice_lang(s_OperServ, u, OPER_EXCEPTION_LIST_HEADER);
+	notice_lang(s_CyberServ, u, OPER_EXCEPTION_LIST_HEADER);
 	*sent_header = 1;
     }
 
@@ -602,10 +627,10 @@ static int exception_view(User *u, const int index, int *sent_header)
 	}
 
     }
-    notice_lang(s_OperServ, u, OPER_EXCEPTION_VIEW_FORMAT,
+    notice_lang(s_CyberServ, u, OPER_EXCEPTION_VIEW_FORMAT,
 		    index+1, exceptions[index].mask,
 		    *exceptions[index].who ? 
-			    exceptions[index].who : "<unknown>",
+			    exceptions[index].who : "<desconocido>",
 		    timebuf, expirebuf, exceptions[index].limit,
 		    exceptions[index].reason);
     return 1;
@@ -637,7 +662,13 @@ static int exception_view_callback(User *u, int num, va_list args)
  * Syntax: EXCEPTION MOVE num position
  *	Moves the exception at position num to position.
  */
-
+ 
+/* Toni García - Zoltan <zolty@ctv.es>
+ * 23 - Agosto 2000
+ * Cambio OperServ por CyberServ y Exception por iline
+ * que es mas bonito ;)
+ */
+ 
 void do_exception(User *u)
 {
     char *cmd = strtok(NULL, " ");
@@ -646,7 +677,7 @@ void do_exception(User *u)
     int i;
 
     if (!LimitSessions) {
-        notice_lang(s_OperServ, u, OPER_EXCEPTION_DISABLED);
+        notice_lang(s_CyberServ, u, OPER_EXCEPTION_DISABLED);
         return;
     }
 
@@ -655,7 +686,7 @@ void do_exception(User *u)
 
     if (stricmp(cmd, "ADD") == 0) {
         if (nexceptions >= 32767) {
-            notice_lang(s_OperServ, u, OPER_EXCEPTION_TOO_MANY);
+            notice_lang(s_CyberServ, u, OPER_EXCEPTION_TOO_MANY);
             return;
         }
 
@@ -670,13 +701,13 @@ void do_exception(User *u)
 	reason = strtok(NULL, "");
 
         if (!reason) {
-            syntax_error(s_OperServ, u, "EXCEPTION", OPER_EXCEPTION_ADD_SYNTAX);
+            syntax_error(s_CyberServ, u, "ILINE", OPER_EXCEPTION_ADD_SYNTAX);
             return;
 	}
 
 	expires = expiry ? dotime(expiry) : ExceptionExpiry;
 	if (expires < 0) {
-	    notice_lang(s_OperServ, u, BAD_EXPIRY_TIME);
+	    notice_lang(s_CyberServ, u, BAD_EXPIRY_TIME);
             return;
 	} else if (expires > 0) {
 	    expires += time(NULL);
@@ -685,31 +716,31 @@ void do_exception(User *u)
         limit = (limitstr && isdigit(*limitstr)) ? atoi(limitstr) : -1;
 
 	if (limit < 0 || limit > MaxSessionLimit) {
-	    notice_lang(s_OperServ, u, OPER_EXCEPTION_INVALID_LIMIT, 
+	    notice_lang(s_CyberServ, u, OPER_EXCEPTION_INVALID_LIMIT, 
 				MaxSessionLimit);
 	    return;
 
         } else {
             if (strchr(mask, '!') || strchr(mask, '@')) {
-                notice_lang(s_OperServ, u, OPER_EXCEPTION_INVALID_HOSTMASK);
+                notice_lang(s_CyberServ, u, OPER_EXCEPTION_INVALID_HOSTMASK);
 		return;
 	    } else {
 		strlower(mask);
 	    }
 
             if (exception_add(mask, limit, reason, u->nick, expires))
-	    	notice_lang(s_OperServ, u, OPER_EXCEPTION_ADDED, mask, limit);
+	    	notice_lang(s_CyberServ, u, OPER_EXCEPTION_ADDED, mask, limit);
 	    else
-		notice_lang(s_OperServ, u, OPER_EXCEPTION_ALREADY_PRESENT, 
+		notice_lang(s_CyberServ, u, OPER_EXCEPTION_ALREADY_PRESENT, 
 								mask, limit);
 	    if (readonly)
-		notice_lang(s_OperServ, u, READ_ONLY_MODE);
+		notice_lang(s_CyberServ, u, READ_ONLY_MODE);
         }
     } else if (stricmp(cmd, "DEL") == 0) {
         mask = strtok(NULL, " ");
 
 	if (!mask) {
-	    syntax_error(s_OperServ, u, "EXCEPTION", OPER_EXCEPTION_DEL_SYNTAX);	    return;
+	    syntax_error(s_CyberServ, u, "ILINE", OPER_EXCEPTION_DEL_SYNTAX);	    return;
 	}
 
 	if (isdigit(*mask) && strspn(mask, "1234567890,-") == strlen(mask)) {
@@ -718,27 +749,27 @@ void do_exception(User *u)
 				&last);
 	    if (!deleted) {
 		if (count == 1) {
-		    notice_lang(s_OperServ, u, OPER_EXCEPTION_NO_SUCH_ENTRY,
+		    notice_lang(s_CyberServ, u, OPER_EXCEPTION_NO_SUCH_ENTRY,
 				last);
 		} else {
-		    notice_lang(s_OperServ, u, OPER_EXCEPTION_NO_MATCH);
+		    notice_lang(s_CyberServ, u, OPER_EXCEPTION_NO_MATCH);
 		}
 	    } else if (deleted == 1) {
-		notice_lang(s_OperServ, u, OPER_EXCEPTION_DELETED_ONE);
+		notice_lang(s_CyberServ, u, OPER_EXCEPTION_DELETED_ONE);
 	    } else {
-		notice_lang(s_OperServ, u, OPER_EXCEPTION_DELETED_SEVERAL,
+		notice_lang(s_CyberServ, u, OPER_EXCEPTION_DELETED_SEVERAL,
 				deleted);
 	    }
         } else {
 	    for (i = 0; i < nexceptions; i++) {
 		if (stricmp(mask, exceptions[i].mask) == 0) {
 		    exception_del(i);
-		    notice_lang(s_OperServ, u, OPER_EXCEPTION_DELETED, mask);
+		    notice_lang(s_CyberServ, u, OPER_EXCEPTION_DELETED, mask);
 		    break;
 		}
             }
 	    if (i == nexceptions)
-		notice_lang(s_OperServ, u, OPER_EXCEPTION_NOT_FOUND, mask);
+		notice_lang(s_CyberServ, u, OPER_EXCEPTION_NOT_FOUND, mask);
         }
 
 	/* Renumber the exception list. I don't believe in having holes in 
@@ -750,7 +781,7 @@ void do_exception(User *u)
 	    exceptions[i].num = i;
 
 	if (readonly)
-	    notice_lang(s_OperServ, u, READ_ONLY_MODE);
+	    notice_lang(s_CyberServ, u, READ_ONLY_MODE);
 
     } else if (stricmp(cmd, "MOVE") == 0) {
 	Exception *exception;
@@ -759,7 +790,7 @@ void do_exception(User *u)
 	int n1, n2;
 
 	if (!n2str) {
-	    syntax_error(s_OperServ, u, "EXCEPTION", 
+	    syntax_error(s_CyberServ, u, "ILINE", 
 						OPER_EXCEPTION_MOVE_SYNTAX);
 	    return;
 	}
@@ -785,7 +816,7 @@ void do_exception(User *u)
 
 	    free(exception);
 
-	    notice_lang(s_OperServ, u, OPER_EXCEPTION_MOVED, 
+	    notice_lang(s_CyberServ, u, OPER_EXCEPTION_MOVED, 
 	    		exceptions[n1].mask, n1+1, n2+1);
 
 	    /* Renumber the exception list. See the DEL block above for why. */
@@ -793,9 +824,9 @@ void do_exception(User *u)
 		exceptions[i].num = i;
 
 	    if (readonly)
-		notice_lang(s_OperServ, u, READ_ONLY_MODE);
+		notice_lang(s_CyberServ, u, READ_ONLY_MODE);
 	} else {
-	    syntax_error(s_OperServ, u, "EXCEPTION", 
+	    syntax_error(s_CyberServ, u, "ILINE", 
 						OPER_EXCEPTION_MOVE_SYNTAX);
 	}
     } else if (stricmp(cmd, "LIST") == 0) {
@@ -814,7 +845,7 @@ void do_exception(User *u)
 	    }
         }
 	if (!sent_header)
-	    notice_lang(s_OperServ, u, OPER_EXCEPTION_NO_MATCH);
+	    notice_lang(s_CyberServ, u, OPER_EXCEPTION_NO_MATCH);
 
     } else if (stricmp(cmd, "VIEW") == 0) {
 	int sent_header = 0;
@@ -833,11 +864,26 @@ void do_exception(User *u)
 	    }
         }
 	if (!sent_header)
-	    notice_lang(s_OperServ, u, OPER_EXCEPTION_NO_MATCH);
+	    notice_lang(s_CyberServ, u, OPER_EXCEPTION_NO_MATCH);
 
     } else {
-        syntax_error(s_OperServ, u, "EXCEPTION", OPER_EXCEPTION_SYNTAX);
+        syntax_error(s_CyberServ, u, "ILINE", OPER_EXCEPTION_SYNTAX);
     }
 }
 
 /*************************************************************************/
+/* Es Admin de Cyber o no :) */
+/* Todavia incompleto :/ */
+
+int is_cyber_admin(User *u)
+{
+    char *nick = u->nick;
+        
+    if (!nick)
+        return 0;
+                  
+    if (is_services_admin(u))
+        return 1;
+    
+    return 0;
+}        

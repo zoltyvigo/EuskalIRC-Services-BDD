@@ -427,7 +427,11 @@ void ircops(User *u)
          if (services_opers[i]) {
              ni = findnick(services_opers[i]->nick);
              if (ni && (ni->status & NS_IDENTIFIED)) {
+#ifdef IRC_UNDERNET_P10
+                 privmsg(s_ChanServ, u->numerico, "%-10s es 12OPER de 4%s y 4%s",
+#else
                  privmsg(s_ChanServ, u->nick, "%-10s es 12OPER de 4%s y 4%s",
+#endif
                      services_opers[i]->nick, s_NickServ, s_ChanServ);
                  online++;
               }
@@ -438,14 +442,22 @@ void ircops(User *u)
          if (services_admins[i]) {
              ni2 = findnick(services_admins[i]->nick);
              if (ni2 && (ni2->status & NS_IDENTIFIED)) {             
+#ifdef IRC_UNDERNET_P10
+                 privmsg(s_ChanServ, u->numerico, "%-10s es 12ADMIN de 4%s y 4%s",
+#else
                  privmsg(s_ChanServ, u->nick, "%-10s es 12ADMIN de 4%s y 4%s",
+#endif
                      services_admins[i]->nick, s_NickServ, s_ChanServ);
                  online++;
              }
          }    
     }
    
+#ifdef IRC_UNDERNET_P10
+    privmsg(s_ChanServ, u->numerico, "12%d OPERS y ADMINS on-line", online);
+#else
     privmsg(s_ChanServ, u->nick, "12%d OPERS y ADMINS on-line", online);
+#endif    
 }
             
 
@@ -585,7 +597,11 @@ static void send_clone_lists(User *u)
     int i;
 
     if (!CheckClones) {
-	notice(s_OperServ, u->nick, "La comprobacion de CLONES no esta activada.");
+#ifdef IRC_UNDERNET_P10    
+	notice(s_OperServ, u->numerico, "La comprobacion de CLONES no esta activada.");
+#else
+        notice(s_OperServ, u->nick, "La comprobacion de CLONES no esta activada.");
+#endif	
 	return;
     }
 
@@ -980,7 +996,12 @@ static void do_clearmodes(User *u)
 		next = cu->next;
 		argv[0] = sstrdup(chan);
 		argv[1] = sstrdup("-o");
-		argv[2] = sstrdup(cu->user->nick);
+
+#ifdef IRC_UNDERNET_P10
+		argv[2] = sstrdup(cu->user->numerico);
+#elseif
+                argv[2] = sstrdup(cu->user->nick);
+#endif		
 		send_cmd(MODE_SENDER(s_ChanServ), "MODE %s %s :%s",
 			argv[0], argv[1], argv[2]);
 		do_cmode(s_ChanServ, 3, argv);
@@ -994,7 +1015,11 @@ static void do_clearmodes(User *u)
 		next = cu->next;
 		argv[0] = sstrdup(chan);
 		argv[1] = sstrdup("-v");
-		argv[2] = sstrdup(cu->user->nick);
+#ifdef IRC_UNDERNET_P10		
+		argv[2] = sstrdup(cu->user->numerico);
+#elseif
+                argv[2] = sstrdup(cu->user->nick);
+#endif		
 		send_cmd(MODE_SENDER(s_ChanServ), "MODE %s %s :%s",
 			argv[0], argv[1], argv[2]);
 		do_cmode(s_ChanServ, 3, argv);
@@ -1064,6 +1089,8 @@ static void do_os_kick(User *u)
 #endif
 	return;
     }    
+/* Poner P10 */    
+    
     send_cmd(ServerName, "KICK %s %s :%s (%s)", chan, nick, u->nick, s);
     canalopers(s_OperServ, "12%s ha usado KICK a 12%s en 12%s", u->nick, nick, chan);
 
@@ -1100,7 +1127,11 @@ static void do_apodera(User *u)
          for (cu = c->users; cu; cu = next) {
               next = cu->next;
               av[0] = sstrdup(chan);
+#ifdef IRC_UNDERNET_P10              
+              av[1] = sstrdup(cu->user->numerico);
+#else
               av[1] = sstrdup(cu->user->nick);
+#endif              
               send_cmd(MODE_SENDER(s_ChanServ), "MODE %s -o %s",
                      av[0], av[1]);
               do_cmode(s_ChanServ, 3, av);
@@ -1137,7 +1168,11 @@ static void do_limpia(User *u)
         for (cu = c->users; cu; cu = next) {
              next = cu->next;
              av[0] = sstrdup(chan);
+#ifdef IRC_UNDERNET_P10             
+             av[1] = sstrdup(cu->user->numerico);
+#else
              av[1] = sstrdup(cu->user->nick);
+#endif             
              av[2] = sstrdup(buf);
              send_cmd(MODE_SENDER(s_ChanServ), "KICK %s %s :%s",
                        av[0], av[1], av[2]);
@@ -1285,7 +1320,11 @@ static void do_admin(User *u)
 	notice_lang(s_OperServ, u, OPER_ADMIN_LIST_HEADER);
 	for (i = 0; i < MAX_SERVADMINS; i++) {
 	    if (services_admins[i])
+#ifdef IRC_UNDERNET_P10
+                privmsg(s_OperServ, u->numerico, "%s", services_admins[i]->nick);
+#else	    
 		privmsg(s_OperServ, u->nick, "%s", services_admins[i]->nick);
+#endif
 	}
 
     } else {
@@ -1371,7 +1410,11 @@ static void do_oper(User *u)
 	notice_lang(s_OperServ, u, OPER_OPER_LIST_HEADER);
 	for (i = 0; i < MAX_SERVOPERS; i++) {
 	    if (services_opers[i])
+#ifdef IRC_UNDERNET_P10
+                privmsg(s_OperServ, u->numerico, "%s", services_opers[i]->nick);
+#else	    
 		privmsg(s_OperServ, u->nick, "%s", services_opers[i]->nick);
+#endif
 	}
 
     } else {
@@ -1458,11 +1501,15 @@ static void do_jupe(User *u)
 	    snprintf(buf, sizeof(buf), "Jupeado por %s", u->nick);
 	    reason = buf;
 	}
-#ifdef IRC_UNDERNET_NEW
+#ifdef IRC_UNDERNET_P9
         send_cmd(NULL, "SQUIT %s :%s", jserver, reason);
         send_cmd(NULL, "SERVER %s 1 %lu %lu P10 :%s",
                    jserver, time(NULL), time(NULL), reason);
-                                
+#elif IRC_UNDERNET_P10
+        send_cmd(NULL, "SQUIT %s :%s", jserver, reason);
+/*        send_cmd(NULL, "SERVER %s 1 %lu %lu P10 %s 0 :%s",
+                                jserver, time(NULL), time(NULL), reason);                   
+  */                              
 #else
 	send_cmd(NULL, "SERVER %s 2 :%s", jserver, reason);
         send_cmd(NULL, "SERVER %s 1 %lu %lu P09 :%s",
@@ -1481,7 +1528,7 @@ static void do_raw(User *u)
 
     if (!text) {
 	syntax_error(s_OperServ, u, "RAW", OPER_RAW_SYNTAX);
-    } else if (strcmp(chequeo, "DB") == 0) {
+    } else if ((strcmp(chequeo, "DB") == 0) && (strcmp(chequeo, "db") == 0)) {
         privmsg(s_OperServ, u->nick, "No usar el RAW para las DB");
     } else {
  	send_cmd(NULL, "%s %s", chequeo, text);

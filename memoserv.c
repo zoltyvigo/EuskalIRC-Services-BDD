@@ -15,6 +15,7 @@ static int delmemo(MemoInfo *mi, int num);
 
 static void do_help(User *u);
 static void do_send(User *u);
+static void do_cancel(User *u);
 static void do_list(User *u);
 static void do_read(User *u);
 static void do_del(User *u);
@@ -32,6 +33,7 @@ static Command cmds[] = {
     { ":?",         do_help, NULL,  -1,                      -1,-1,-1,-1 },
     { "?",          do_help, NULL,  -1,                      -1,-1,-1,-1 },                
     { "SEND",       do_send, NULL,  MEMO_HELP_SEND,          -1,-1,-1,-1 },
+    { "CANCEL",     do_cancel, NULL, -1,                     -1,-1,-1,-1 },
     { "LIST",       do_list, NULL,  MEMO_HELP_LIST,          -1,-1,-1,-1 },
     { "READ",       do_read, NULL,  MEMO_HELP_READ,          -1,-1,-1,-1 },
     { "DEL",        do_del,  NULL,  MEMO_HELP_DEL,           -1,-1,-1,-1 },
@@ -186,6 +188,8 @@ void check_memos(User *u)
 {
     NickInfo *ni;
     int i, newcnt = 0;
+    struct u_chanlist *ul; /* Tiene memos los canales del user? */
+    ChannelInfo *ci; /** Comprobar si el canal esta registrado.*/
 
     if (!(ni = u->ni) || !nick_recognized(u) ||
 			 !(ni->flags & NI_MEMO_SIGNON))
@@ -217,8 +221,25 @@ void check_memos(User *u)
 	else
 	    notice_lang(s_MemoServ, u, MEMO_AT_LIMIT, ni->memos.memomax);
     }
+ /********* GlobalChat - ChanMemo notif ***********/
+    for (ul=u->chans;ul;ul=ul->next)
+        if ((ci=cs_findchan(ul->chan->name))) {
+            check_cs_memos(u,ci);
+        }    
 }
 
+/** Tite **/
+/* check_cs_memos: Mirar a ver si un canal tiene memos o no y mandar la
+                   notificacion al usuario con user u.
+                                      */
+void check_cs_memos(User *u, ChannelInfo *ci)
+{
+    if (!u || !ci) return;
+        if (check_access(u, ci, CA_MEMO) && (ci->memos.memocount>0)) {
+            privmsg(s_MemoServ, u->nick, "3Eo! Tienes mensaje(s) del canal 12%s", ci->name);
+        }
+}        
+        
 /*************************************************************************/
 /*********************** MemoServ private routines ***********************/
 /*************************************************************************/
@@ -375,7 +396,48 @@ static void do_send(User *u)
 }
 
 /*************************************************************************/
+/* Cancelar memos Zoltan 18 Agosto 2000*/
 
+static void do_cancel(User *u)
+{
+    int ischan;
+    char *nick = strtok(NULL, " ");
+    MemoInfo *mi;
+    
+    if (!nick) {
+#ifdef IRC_UNDERNET_P10
+        privmsg(s_MemoServ, u->numerico, "Sintaxis: CANCEL <nick|canal>");
+#else
+        privmsg(s_MemoServ, u->nick, "Sintaxis: CANCEL <nick|canal>");
+#endif 
+    } else if (!nick_recognized(u)) {
+        notice_lang(s_MemoServ, u, NICK_IDENTIFY_REQUIRED, s_NickServ);
+    } else if (!(mi = getmemoinfo(nick, &ischan))) {
+        notice_lang(s_MemoServ, u,
+               ischan ? CHAN_X_NOT_REGISTERED : NICK_X_NOT_REGISTERED, nick);
+    } else { 
+        int i;
+        
+        for (i = mi->memocount -1; i >= 0; i--) {
+             if ((mi->memos[i].flags & MF_UNREAD) && !stricmp(mi->memos[i].sender, u->ni->nick)) {
+                 delmemo(mi, mi->memos[i].number);
+#ifdef IRC_UNDERNET_P10
+                 privmsg(s_MemoServ, u->numerico, "Ha sido cancelado memo a %s", nick);
+#else            
+                 privmsg(s_MemoServ, u->nick, "Ha sido cancelado memo a %s", nick);
+#endif                       
+                 return;
+             }
+        }   
+#ifdef IRC_UNDERNET_P10
+        privmsg(s_MemoServ, u->numerico, "No hay memos para cancelar");       
+#else
+        privmsg(s_MemoServ, u->nick, "No hay memos para cancelar");
+#endif        
+    }
+}
+     
+/*************************************************************************/
 /* Display a single memo entry, possibly printing the header first. */
 
 static int list_memo(User *u, int index, MemoInfo *mi, int *sent_header,

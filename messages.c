@@ -59,6 +59,7 @@ static void m_squit(char *source, int ac, char **av)
 }
 
 /*************************************************************************/
+#ifdef DB_HISPANO
 static void m_db(char *source, int ac, char **av)
 {
 /*
@@ -103,7 +104,7 @@ static void m_db(char *source, int ac, char **av)
 //        canalopers(s_OperServ, "Tabla V  Serie: %lu", DB[7].registros);
     }
 } 
-
+#endif
 
 /*************************************************************************/
 
@@ -159,16 +160,31 @@ static void m_kill(char *source, int ac, char **av)
     if (ac != 2)
 	return;
     /* Recover if someone kills us. */
+#ifdef IRC_UNDERNET_P10
+    if (stricmp(av[0], s_OperServP10) == 0 ||
+        stricmp(av[0], s_NickServP10) == 0 ||
+        stricmp(av[0], s_ChanServP10) == 0 ||
+        stricmp(av[0], s_CregServP10) == 0 ||        
+        stricmp(av[0], s_CyberServP10) == 0 ||
+        stricmp(av[0], s_MemoServP10) == 0 ||
+        stricmp(av[0], s_HelpServP10) == 0 ||
+        stricmp(av[0], s_NewsServP10) == 0 ||        
+        (s_IrcIIHelp && stricmp(av[0], s_IrcIIHelpP10) == 0) ||
+        (s_DevNull && stricmp(av[0], s_DevNullP10) == 0) ||
+        stricmp(av[0], s_GlobalNoticerP10) == 0
+#else
     if (stricmp(av[0], s_OperServ) == 0 ||
         stricmp(av[0], s_NickServ) == 0 ||
         stricmp(av[0], s_ChanServ) == 0 ||
-        stricmp(av[0], s_CregServ) == 0 ||        
+        stricmp(av[0], s_CregServ) == 0 ||
+        stricmp(av[0], s_CyberServ) == 0 ||
         stricmp(av[0], s_MemoServ) == 0 ||
         stricmp(av[0], s_HelpServ) == 0 ||
-        stricmp(av[0], s_NewsServ) == 0 ||        
+        stricmp(av[0], s_NewsServ) == 0 ||
         (s_IrcIIHelp && stricmp(av[0], s_IrcIIHelp) == 0) ||
         (s_DevNull && stricmp(av[0], s_DevNull) == 0) ||
         stricmp(av[0], s_GlobalNoticer) == 0
+#endif        
     ) {
 	if (!readonly && !skeleton)
 	    introduce_user(av[0]);
@@ -244,13 +260,23 @@ static void m_nick(char *source, int ac, char **av)
 	ac--;
     }
 # endif
-    if ((!*source && ac != 7) || (*source && ac != 2)) {
+# ifdef IRC_UNDERNET_P10
+    if ((ac != 8) && (ac != 9) && (ac != 2)) {
 	if (debug) {
-	    log("debug: NICK message: expecting 2 or 7 parameters after "
+	    log("debug: NICK message: expecting 2, 8 or 9 parameters after "
 	        "parsing; got %d, source=`%s'", ac, source);
 	}
 	return;
     }
+# else
+    if ((!*source && ac != 7) || (*source && ac != 2)) {
+        if (debug) {
+            log("debug: NICK message: expecting 2 or 7 parameters after "
+                "parsing; got %d, source=%s'", ac, source);
+        }
+        return;
+    }
+# endif    
     do_nick(source, ac, av);
 #else	/* !IRC_UNDERNET && !IRC_DALNET */
     /* Nothing to do yet; information comes from USER command. */
@@ -296,7 +322,11 @@ static void m_privmsg(char *source, int ac, char **av)
 
     starttime = time(NULL);
 
+#ifdef IRC_UNDERNET_P10
+    if (stricmp(av[0], s_OperServP10) == 0) {
+#else
     if (stricmp(av[0], s_OperServ) == 0) {
+#endif
 	if (is_oper(source)) {
 	    operserv(source, av[1]);
 	} else {
@@ -305,15 +335,31 @@ static void m_privmsg(char *source, int ac, char **av)
 		notice_lang(s_OperServ, u, ACCESS_DENIED);
 	    else
 		privmsg(s_OperServ, source, "4Acceso denegado.");
-            canalopers(s_OperServ, "Denegando el acceso a %s desde %s (No es OPER)",
+            canalopers(s_OperServ, "Denegando el acceso a 12%s desde %s (No es OPER)",
                         s_OperServ, source);                                      
-	    if (WallBadOS)
-		wallops(s_OperServ, "Denegando el acceso a %s desde %s (No es OPER)",
-			s_OperServ, source);
 	}
-	/* Servicio de compatiblidad */
+                                                                                               
+     
+#ifdef IRC_UNDERNET_P10
+    } else if (stricmp(av[0], s_NickServP10) == 0) {
+        nickserv(source, av[1]);
+    } else if (stricmp(av[0], s_ChanServP10) == 0) {
+        chanserv(source, av[1]);
+    } else if (stricmp(av[0], s_CregServP10) == 0) {
+        cregserv(source, av[1]);
+    } else if (stricmp(av[0], s_CyberServP10) == 0) {
+        cyberserv(source, av[1]);        
+    } else if (stricmp(av[0], s_MemoServP10) == 0) {
+        memoserv(source, av[1]);
+    } else if (stricmp(av[0], s_HelpServP10) == 0) {
+        helpserv(s_HelpServ, source, av[1]);
+/***    } else if (stricmp(av[0], s_NewsServP10) == 0) {
+        newsserv(sourde, av[1]); *****/
+    } else if (s_IrcIIHelp && stricmp(av[0], s_IrcIIHelpP10) == 0) {
+#else
+	/* Servicio de compatiblidad */ /*
     } else if (stricmp(av[0], "NickServ") ==0) {
-      nickserv(source, av[1]);      
+        nickserv(source, av[1]);      
     } else if (stricmp(av[0], "ChanServ") == 0) {
         chanserv(source, av[1]);
     } else if (stricmp(av[0], "MemoServ") == 0) {
@@ -327,7 +373,7 @@ static void m_privmsg(char *source, int ac, char **av)
     } else if (stricmp(av[0], "Scytale") == 0) {
         chanserv(source, av[1]);
     } else if (stricmp(av[0], "KaOs") == 0) {
-        chanserv(source, av[1]);
+        chanserv(source, av[1]); */
      /** fin servicio de compatiblidad **/                           
                                           	
     } else if (stricmp(av[0], s_NickServ) == 0) {
@@ -336,6 +382,8 @@ static void m_privmsg(char *source, int ac, char **av)
 	chanserv(source, av[1]);
     } else if (stricmp(av[0], s_CregServ) == 0) {
         cregserv(source, av[1]);            	
+    } else if (stricmp(av[0], s_CyberServ) == 0) {
+        cyberserv(source, av[1]);     
     } else if (stricmp(av[0], s_MemoServ) == 0) {
 	memoserv(source, av[1]);
     } else if (stricmp(av[0], s_HelpServ) == 0) {
@@ -343,6 +391,8 @@ static void m_privmsg(char *source, int ac, char **av)
 /***    } else if (stricmp(av[0], s_NewsServ) == 0) {
         newsserv(sourde, av[1]); *****/        
     } else if (s_IrcIIHelp && stricmp(av[0], s_IrcIIHelp) == 0) {
+
+#endif    
 	char buf[BUFSIZE];
 	snprintf(buf, sizeof(buf), "ircII %s", av[1]);
 	helpserv(s_IrcIIHelp, source, buf);
@@ -424,7 +474,11 @@ static void m_time(char *source, int ac, char **av)
 
 static void m_topic(char *source, int ac, char **av)
 {
+#ifdef IRC_UNDERNET
+    if (ac != 2)
+#else
     if (ac != 4)
+#endif        
 	return;
     do_topic(source, ac, av);
 }
@@ -547,14 +601,50 @@ Message messages[] = {
 
 #ifdef IRC_UNDERNET
     { "GLINE",     NULL }, 
+    { "y",         NULL },
 #endif
 
-#ifdef ESNET_HISPANO
-/*    { "219",       NULL },
-    { "249",       m_bdd }, */
+#ifdef IRC_UNDERNET_P10
+    { "A",                m_away },
+    { "J",                m_join },
+    { "K",                m_kick },
+    { "D",                m_kill },
+    { "M",                m_mode },            
+    { "MO",               m_motd },
+    { "N",                m_nick },
+    { "O",                NULL },    
+    { "L",                m_part },
+    { "PA",               NULL },
+    { "SE",               NULL },        
+    { "G",                m_ping },
+    { "P",                m_privmsg },
+    { "Q",                m_quit },
+    { "S",                m_server },
+    { "SQ",               m_squit },
+    { "T",                m_topic },
+    { "R",                m_stats },
+    { "TI",               m_time },               
+    { "V",                m_version },    
+    { "WA",               NULL },
+    { "W",                m_whois },
+    { "GL",               NULL },
+    { "END_OF_BURST",     m_end_of_burst },
+    { "EB",               m_end_of_burst },
+    { "EOB_ACK",          m_eob_ack },
+    { "EA",               m_eob_ack },
+    { "CREATE",           m_create },
+    { "C",                m_create },
+    { "B",                m_burst },
+    { "BURST",            m_burst },
+#endif
+
+#ifdef DB_HISPANO
+/*    { "BMODE",     m_bmode }, */
     { "DB",        m_db }, 
+    { "DBQ",       NULL },
+    { "DBH",       NULL },        
     { "CONFIG",    NULL }, 
-    { "z",         m_db },      
+//    { "y",         m_db },      
 #endif
 
     { NULL }

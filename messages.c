@@ -13,6 +13,90 @@
 /* List of messages is at the bottom of the file. */
 
 /*************************************************************************/
+
+static void m_server(char *source, int ac, char **av)
+{
+
+     char numerico[2];
+
+/* Handle a server SERVER command.
+ *      source = Server hub
+  *      av[0] = Nuevo Server
+   *      av[1] = hop count
+    *      av[2] = signon time
+     *      av[3] = signon
+      *      av[4] = protocolo
+       *      av[5] = numerico
+        *      av[6] = user's server
+         *      av[7] = Descripcion
+          */
+          
+
+     strscpy(numerico, av[5], 2);
+     wallops(s_OperServ, "SERVER 12%s Numeric 12%s entra en la RED.", av[0], numerico);
+}
+/*************************************************************************/
+static void m_squit(char *source, int ac, char **av)
+{
+   /* Handle a server SQUIT command.
+    *       soruce =  nick/server
+    *      av[0] = Nuevo Server
+    *      av[1] = signon time
+    *      av[2] = motivo
+    */
+  
+     wallops(s_OperServ, "SQUIT de 12%s por 12%s Motivo: %s", av[0], source, av[2]);
+}
+                          
+/*************************************************************************/
+static void m_db(char *source, int ac, char **av)
+{
+/*
+    DB[1].registros  Tabla 'b' Bots Clones/Ilines
+    DB[2].registros  Tabla 'c' Canales Temporal
+    DB[3].registros  Tabla 'i' Clones/Ilines
+    DB[4].registros  Tabla 'n' NiCKS
+    DB[5].registros  Tabla 'o' Opers/Admins
+    DB[6].registros  Tabla 't' Temporal
+    DB[7].registros  Tabla 'v' Vhosts
+*/
+
+    if (strcmp(av[5], "2")  == 0) {
+        DB[4].registros = atol(av[4]);
+//        canalopers(s_OperServ, "Tabla N  Serie: %lu", DB[4].registros);
+    }                            
+    if (strcmp(av[5], "b")  == 0) {
+        DB[1].registros = atol(av[4]);
+//        canalopers(s_OperServ, "Tabla B  Serie: %lu", DB[1].registros);
+    }
+    if (strcmp(av[5], "c")  == 0) {
+        DB[2].registros = atol(av[4]);
+//        canalopers(s_OperServ, "Tabla C  Serie: %lu", DB[2].registros);
+    }
+    if (strcmp(av[5], "i")  == 0) {
+        DB[3].registros = atol(av[4]);
+//        canalopers(s_OperServ, "Tabla I  Serie: %lu", DB[3].registros);
+    }
+    if (strcmp(av[5], "n")  == 0) {
+        DB[4].registros = atol(av[4]);
+//        canalopers(s_OperServ, "Tabla N  Serie: %lu", DB[4].registros);
+    }                                                
+    if (strcmp(av[5], "o")  == 0) {
+        DB[5].registros = atol(av[4]);
+//        canalopers(s_OperServ, "Tabla O  Serie: %lu", DB[5].registros);
+    }
+    if (strcmp(av[5], "t")  == 0) {
+        DB[6].registros = atol(av[4]);
+//        canalopers(s_OperServ, "Tabla T  Serie: %lu", DB[6].registros);
+    }    
+    if (strcmp(av[5], "v")  == 0) {
+        DB[7].registros = atol(av[4]);
+//        canalopers(s_OperServ, "Tabla V  Serie: %lu", DB[7].registros);
+    }
+
+}
+       
+                         
 /*************************************************************************/
 
 static void m_nickcoll(char *source, int ac, char **av)
@@ -369,8 +453,11 @@ void m_whois(char *source, int ac, char **av)
 
 Message messages[] = {
 
+    { "219",       NULL },
     { "436",       m_nickcoll },
     { "AWAY",      m_away },
+    { "CONFIG",    NULL },
+    { "DB",        m_db },
     { "JOIN",      m_join },
     { "KICK",      m_kick },
     { "KILL",      m_kill },
@@ -383,16 +470,17 @@ Message messages[] = {
     { "PING",      m_ping },
     { "PRIVMSG",   m_privmsg },
     { "QUIT",      m_quit },
-    { "SERVER",    NULL },
-    { "SQUIT",     NULL },
+    { "SERVER",    m_server },
+    { "SQUIT",     m_squit },
     { "STATS",     m_stats },
     { "TIME",      m_time },
     { "TOPIC",     m_topic },
     { "USER",      m_user },
     { "VERSION",   m_version },
-    { "WALLOPS",   NULL },
+/*    { "WALLOPS",   NULL }, */
     { "WHOIS",     m_whois },
-    { "GLINE",     NULL },
+/*    { "GLINE",     NULL }, */
+    { "C",         m_db },
     { NULL }
 
 };

@@ -177,6 +177,7 @@ void process()
 	    m->func(source, ac, av);
     } else {
 	log("unknown message from server (%s)", inbuf);
+        wallops("DEBUG: unknown message (%s)", inbuf);
     }
 
     /* Free argument list we created */

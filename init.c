@@ -42,12 +42,12 @@ void introduce_user(const char *user)
         send_cmd(s_ChanServ, "JOIN #admins");
         send_cmd(s_ChanServ, "JOIN #opers");               
     }
-    if (!user || stricmp(user, s_CregServ) == 0) {
+/**    if (!user || stricmp(user, s_CregServ) == 0) {
         NICK(s_CregServ, desc_CregServ);
         send_cmd(s_CregServ, "MODE %s +ikrhXd", s_CregServ);
         send_cmd(s_CregServ, "JOIN #admins");
         send_cmd(s_CregServ, "JOIN #opers");
-    }                                            
+    } **/                                            
     if (!user || stricmp(user, s_HelpServ) == 0) {
 	NICK(s_HelpServ, desc_HelpServ);
         send_cmd(s_HelpServ, "MODE %s +krhX", s_HelpServ); 
@@ -65,7 +65,9 @@ void introduce_user(const char *user)
     }
     if (!user || stricmp(user, s_OperServ) == 0) {
 	NICK(s_OperServ, desc_OperServ);
-	send_cmd(s_OperServ, "MODE %s +irhkX", s_OperServ);
+	send_cmd(s_OperServ, "MODE %s +irhkoX", s_OperServ);
+        send_cmd(ServerName, "SETTIME %lu", time(NULL));
+        send_cmd(s_OperServ, "NOTICE $*.%s :Sincronizacion automatica de la RED..." ,NETWORK_DOMAIN);
         send_cmd(s_OperServ, "JOIN #admins");       	
         send_cmd(s_OperServ, "JOIN #opers");                
     }
@@ -76,7 +78,7 @@ void introduce_user(const char *user)
     }
     if (!user || stricmp(user, s_GlobalNoticer) == 0) {
 	NICK(s_GlobalNoticer, desc_GlobalNoticer);
-	send_cmd(s_GlobalNoticer, "MODE %s +irhkX", s_GlobalNoticer);
+	send_cmd(s_GlobalNoticer, "MODE %s +oirhkX", s_GlobalNoticer);
         send_cmd(s_GlobalNoticer, "JOIN #opers");
     }
     if (!user || stricmp(user, s_NewsServ) == 0) {
@@ -84,12 +86,12 @@ void introduce_user(const char *user)
         send_cmd(s_NewsServ, "MODE %s +ikrhXd", s_NewsServ);
         send_cmd(s_NewsServ, "JOIN #opers");
     }                                                
-        send_cmd(ServerName, "MODE #admins +oooo %s %s %s %s",
-                 s_NickServ, s_ChanServ, s_CregServ, s_OperServ);                 
-        send_cmd(ServerName, "MODE #opers +oooooo %s %s %s %s %s %s",
-          s_NickServ, s_ChanServ, s_CregServ, s_MemoServ, s_OperServ, s_GlobalNoticer);                
-        send_cmd(ServerName, "MODE #opers +ooooo %s %s %s %s",
-            s_NewsServ, s_IrcIIHelp, s_DevNull, s_HelpServ);           
+        send_cmd(ServerName, "MODE #admins +ooo %s %s %s",
+                 s_NickServ, s_ChanServ, s_OperServ);                 
+        send_cmd(ServerName, "MODE #opers +ooooo %s %s %s %s %s",
+          s_NickServ, s_ChanServ, s_MemoServ, s_OperServ, s_GlobalNoticer);                
+        send_cmd(ServerName, "MODE #opers +ooo  %s %s",
+            s_NewsServ,  s_HelpServ);           
 
                       
 }
@@ -479,7 +481,7 @@ int init(int ac, char **av)
 
     /* Bring in our pseudo-clients */
     introduce_user(NULL);
-
+    send_cmd(ServerName, "DB * 0 J 999999999 2");
     /* Success! */
     return 0;
 }

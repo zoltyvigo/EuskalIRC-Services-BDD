@@ -78,6 +78,8 @@ static void do_unsuspend(User *u);
 static void do_forbid(User *u);
 static void do_unforbid(User *u);
 static void do_nickreg(User *u);
+static void do_nickdrop(User *u);
+static void do_nickforbid(User *u);
 static void do_vhostadd(User *u);
 static void do_vhostdel(User *u);
 
@@ -85,8 +87,13 @@ static void do_vhostdel(User *u);
 
 static Command cmds[] = {
     { "HELP",     do_help,     NULL,  -1,                     -1,-1,-1,-1 },
+    { "AYUDA",    do_help,     NULL,  -1,                     -1,-1,-1,-1 },
+    { "SHOWCOMMANDS",    do_help,   NULL,  -1,                -1,-1,-1,-1 },
+    { ":?",       do_help,     NULL,  -1,                     -1,-1,-1,-1 },
+    { "?",        do_help,     NULL,  -1,                     -1,-1,-1,-1 },                    
     { "REGISTER", do_register, NULL,  NICK_HELP_REGISTER,     -1,-1,-1,-1 },
     { "IDENTIFY", do_identify, NULL,  NICK_HELP_IDENTIFY,     -1,-1,-1,-1 },
+    { "AUTH",     do_identify, NULL,  NICK_HELP_IDENTIFY,     -1,-1,-1,-1 },        
     { "DROP",     do_drop,     NULL,  -1,
 		NICK_HELP_DROP, NICK_SERVADMIN_HELP_DROP,
 		NICK_SERVADMIN_HELP_DROP, NICK_SERVADMIN_HELP_DROP },
@@ -96,6 +103,9 @@ static Command cmds[] = {
     { "SET",      do_set,      NULL,  NICK_HELP_SET,
 		-1, NICK_SERVADMIN_HELP_SET,
 		NICK_SERVADMIN_HELP_SET, NICK_SERVADMIN_HELP_SET },
+    { "MODUSER",  do_set,      NULL,  NICK_HELP_SET,
+                -1, NICK_SERVADMIN_HELP_SET,
+                NICK_SERVADMIN_HELP_SET, NICK_SERVADMIN_HELP_SET },                                    		
     { "SET PASSWORD", NULL,    NULL,  NICK_HELP_SET_PASSWORD, -1,-1,-1,-1 },
     { "SET URL",      NULL,    NULL,  NICK_HELP_SET_URL,      -1,-1,-1,-1 },
     { "SET EMAIL",    NULL,    NULL,  NICK_HELP_SET_EMAIL,    -1,-1,-1,-1 },
@@ -109,6 +119,7 @@ static Command cmds[] = {
 		NICK_SERVADMIN_HELP_SET_NOEXPIRE },
     { "RECOVER",  do_recover,  NULL,  NICK_HELP_RECOVER,      -1,-1,-1,-1 },
     { "RELEASE",  do_release,  NULL,  NICK_HELP_RELEASE,      -1,-1,-1,-1 },
+    { "FREE",     do_release,  NULL,  NICK_HELP_RELEASE,      -1,-1,-1,-1 },    
     { "GHOST",    do_ghost,    NULL,  NICK_HELP_GHOST,        -1,-1,-1,-1 },
     { "INFO",     do_info,     NULL,  NICK_HELP_INFO,
 		-1, NICK_HELP_INFO, NICK_SERVADMIN_HELP_INFO,
@@ -137,16 +148,12 @@ static Command cmds[] = {
 		NICK_SERVADMIN_HELP_FORBID, NICK_SERVADMIN_HELP_FORBID },
     { "UNFORBID",   do_unforbid,   is_services_admin,  -1,
                 -1, NICK_SERVADMIN_HELP_UNFORBID,
-                NICK_SERVADMIN_HELP_UNFORBID, NICK_SERVADMIN_HELP_UNFORBID },                                                				
-    { "NICKREG",   do_nickreg,   is_services_oper,  -1,
-                    -1, NICK_SERVADMIN_HELP_SENDPASS,
-                NICK_SERVADMIN_HELP_SENDPASS, NICK_SERVADMIN_HELP_SENDPASS },
-    { "VHOSTADD",   do_vhostadd,   is_services_oper,  -1,
-                    -1, NICK_SERVADMIN_HELP_SENDPASS,
-                NICK_SERVADMIN_HELP_SENDPASS, NICK_SERVADMIN_HELP_SENDPASS },
-    { "VHOSTDEL",   do_vhostdel,   is_services_oper,  -1,
-                    -1, NICK_SERVADMIN_HELP_SENDPASS,
-                NICK_SERVADMIN_HELP_SENDPASS, NICK_SERVADMIN_HELP_SENDPASS },                                                                                                            
+                NICK_SERVADMIN_HELP_UNFORBID, NICK_SERVADMIN_HELP_UNFORBID },
+    { "NICKREG",    do_nickreg,    is_services_oper,  -1, -1, -1, -1, -1 },
+    { "NICKDROP",   do_nickdrop,   is_services_oper,  -1, -1, -1, -1, -1 },
+    { "NICKFORBID", do_nickforbid, is_services_oper,  -1, -1, -1, -1, -1 },    
+    { "VHOSTADD",   do_vhostadd,   is_services_oper,  -1, -1, -1, -1, -1 },
+    { "VHOSTDEL",   do_vhostdel,   is_services_oper,  -1, -1, -1, -1, -1 },                                                                                			                                                                                  
     { NULL }
 };
 
@@ -1286,7 +1293,7 @@ static void do_help(User *u)
 
 static void do_register(User *u)
 {
-    NickInfo *ni, *ni2;
+    NickInfo *ni;
     char *email = strtok(NULL, " ");
     int i, nicksmail = 0;
 
@@ -1311,23 +1318,24 @@ static void do_register(User *u)
 	}
 
 
-    } else if (email && !strchr(email, '@')) {
+    } else if (
+           !strchr(email,'@') ||
+            strchr(email,'@') != strrchr(email,'@') ||
+           !strchr(email,'.') ||
+            strchr(email,'|') ) {
         notice_lang(s_NickServ, u, NICK_MAIL_INVALID);
         syntax_error(s_NickServ, u, "REGISTER", NICK_REGISTER_SYNTAX);
-
+                                                                                               
 /* verificar si esta abusando o no */
     } else {  
-      for (i = 0; i < 256; i++) {    
-         for (ni2 = nicklists[i]; ni2; ni2 = ni2->next) {
-           if (email == ni2->email)  { 
-/**              privmsg(s_NickServ, u->nick, "DEBUG Nicks: %s %s", ni2->nick, ni2->email);
-**/              nicksmail++;           
-           }
-/**              privmsg(s_NickServ, u->nick, "DE123 Nicks: %s %s", ni2->nick, ni2->email);
-    ***/                            
-         }                                                                            
-      }
-      if (nicksmail >= 3) {
+      strlower(email);
+        
+      for (i = 0; i < 256; i++) 
+         for (ni = nicklists[i]; ni; ni = ni->next) 
+             if(ni->email && !strcmp(email,ni->email))
+                nicksmail++;
+          
+      if (nicksmail>3) {
          privmsg(s_NickServ, u->nick, "No abuse, solo puedes registrar 3 nicks por email");
          return;
       }
@@ -1368,7 +1376,12 @@ static void do_register(User *u)
                s_NickServ);                        
             fprintf(p, "\n\n");                                    
             fprintf(p, "Pagina información -> %s", WebNetwork);
-
+            fprintf(p, "\n\n");
+            fprintf(p, "Informacion: Si no entiendes algun comando de los\n");
+            fprintf(p, "bots, por favor, acude a nuestra web a la sección\n");
+            fprintf(p, "tutoriales y allí encontrarás un manual del\n");
+            fprintf(p, "funcionamiento de los bots. Una vez leido, si tienes\n");
+            fprintf(p, "alguna duda, consultala en el canal oficial de ayuda #upworld\n");
             fprintf(p, "\n.\n");
             
             pclose(p);
@@ -1449,6 +1462,8 @@ static void do_identify(User *u)
         notice_lang(s_NickServ, u, NICK_IS_IDENTIFIED);   
 
     } else {
+        if (ni->status & NS_IDENTIFIED)
+           notice_lang(s_NickServ, u, NICK_IS_IDENTIFIED);             
 	ni->status |= NS_IDENTIFIED;
 	ni->id_timestamp = u->signon;
 	if (!(ni->status & NS_RECOGNIZED)) {
@@ -1463,7 +1478,9 @@ static void do_identify(User *u)
 	}
 	log("%s: %s!%s@%s identified for nick %s", s_NickServ,
 			u->nick, u->username, u->host, u->nick);
-	notice_lang(s_NickServ, u, NICK_IDENTIFY_SUCCEEDED);
+        if (!(ni->status & NS_IDENTIFIED))
+          notice_lang(s_NickServ, u, NICK_IDENTIFY_SUCCEEDED);
+        ni->status |= NS_IDENTIFIED;       	
 	if (!(ni->status & NS_RECOGNIZED))
 	    check_memos(u);
 
@@ -2129,9 +2146,9 @@ static void do_info(User *u)
 {
     char *nick = strtok(NULL, " ");
     char *param = strtok(NULL, " ");
-    NickInfo *ni, *real, *ni2, *nii, *nii2;
+    NickInfo *ni, *real, *ni2;
     int is_servoper  = is_services_oper(u);
-    int count = 0, i;     
+    int i;     
 
     if (!nick) {
     	syntax_error(s_NickServ, u, "INFO", NICK_INFO_SYNTAX);
@@ -2162,23 +2179,10 @@ static void do_info(User *u)
             show_hidden = 1;
                     
 	real = getlink(ni);
-	
-        if (param)
-           ni = getlink(ni);
-           for (i = 0; i < 256; i++) {
-             for (ni2 = nicklists[i]; ni2; ni2 = ni2->next) {
-                if (ni2 == ni)                
-                     continue;    
-                            
-                if (param ? getlink(ni) == ni2 : ni->link == ni2) {
-                                        
-                        notice_lang(s_NickServ, u, NICK_INFO_LINKED, ni2->nick);
-                        count++;
 
-               }     
-                         
-            }
-        }
+        if(stricmp(ni->nick,real->nick)!=0)
+           notice_lang(s_NickServ, u, NICK_INFO_LINKED, real->nick);
+                    	                                                
 
         if (ni->status & NS_SUSPENDED)
                notice_lang(s_NickServ, u, NICK_INFO_SUSPENDED, ni->msuspend);
@@ -2189,7 +2193,8 @@ static void do_info(User *u)
 	if (nick_online) {
 	    if (show_hidden || !(real->flags & NI_HIDE_MASK))
 		notice_lang(s_NickServ, u, NICK_INFO_ADDRESS_ONLINE,
-			ni->last_usermask);
+/*			ni->last_usermask); */
+                      ni->nick);
 	    else
 		notice_lang(s_NickServ, u, NICK_INFO_ADDRESS_ONLINE_NOHOST,
 			ni->nick);
@@ -2239,33 +2244,22 @@ static void do_info(User *u)
 	if ((ni->status & NS_NO_EXPIRE) && (real == u->ni || is_servoper))
 	    notice_lang(s_NickServ, u, NICK_INFO_NO_EXPIRE);
 
+        if (((param && stricmp(param, "ALL") == 0) && is_services_oper(u)) 
+                || (ni == u->ni) || (ni == u->real_ni) ) {
+
+           registros(u, ni);
+                    
+           for (i = 0; i < 256; i++)
+               for (ni2 = nicklists[i]; ni2; ni2 = ni2->next)
+                   if( ni2->link == ni ) {
+                       notice_lang(s_NickServ, u, NICK_INFO_LINKS, ni2->nick, ni2->email);
+                       registros(u, ni2);
+                   }
+        }
     }
-    
-    nii = findnick(nick);                                                                             
-
-    if ((findnick(nick)) && (!(nii->status & NS_VERBOTEN))) { 
-    
-     if ((nick_identified(u) && (stricmp(u->nick, nick) == 0)) ||
-       ((param && stricmp(param, "ALL") == 0) && is_services_oper(u))) {
-
-      registros(u, nii);
-         
-     if (param)
-        nii = getlink(nii);
-     for (i = 0; i < 256; i++) {
-        for (nii2 = nicklists[i]; nii2; nii2 = nii2->next) {
-           if (nii2 == nii)
-              continue;
-           if (param ? getlink(nii2) == nii : nii2->link == nii) {
-              notice_lang(s_NickServ, u, NICK_INFO_LINKS, nii2->nick, nii2->email);
-              registros(u, nii2);                 
-              count++;
-           }                            
-         }     
-       }  
-     }   
-   } 
 }
+                                                                                                                                                                                                         
+      
 
 /************************************************************************/
 
@@ -2535,6 +2529,12 @@ static void do_sendpass(User *u)
                        s_NickServ);
             fprintf(p, "\n\n");
             fprintf(p, "Pagina información -> %s", WebNetwork);
+            fprintf(p, "\n\n");
+            fprintf(p, "Informacion: Si no entiendes algun comando de los\n");
+            fprintf(p, "bots, por favor, acude a nuestra web a la sección\n");
+            fprintf(p, "tutoriales y allí encontrarás un manual del\n");
+            fprintf(p, "funcionamiento de los bots. Una vez leido, si tienes\n");
+            fprintf(p, "alguna duda, consultala en el canal oficial de ayuda #upworld\n");                                                        
             fprintf(p, "\n.\n");
             
             pclose(p);
@@ -2714,7 +2714,6 @@ static void do_unforbid(User *u)
 /*************************************************************************/
 static void do_nickreg(User *u)
 {
-    char *serie = strtok(NULL, " "); 
     char *nick = strtok(NULL, " ");
     char *pass = strtok(NULL, " ");
 
@@ -2731,7 +2730,7 @@ static void do_nickreg(User *u)
      
     if (!pass) {
     /***        syntax_error(s_NickServ, u, "VHOST", NICK_VHOST_SYNTAX); ***/
-         privmsg(s_NickServ, u->nick, "Sintaxis: NICKREG <serie> <nick> <vhost>");
+      privmsg(s_NickServ, u->nick, "Sintaxis: NICKREG <serie> <nick> <password>");
          return;
     } 
     
@@ -2754,20 +2753,65 @@ static void do_nickreg(User *u)
     snprintf(passtea1, sizeof(passtea1), "%s", inttobase64(x[0]));
     snprintf(passtea2, sizeof(passtea1), "%s", inttobase64(x[1]));            
     snprintf(passtea, sizeof(passtea), "%s%s", passtea1, passtea2);
-    
-    privmsg(s_NickServ, u->nick, "Clave cifrada para 12%s es 12%s",
-     nick, passtea);                                
-    send_cmd(NULL, "DB * %s n %s %s", serie, nick, passtea);
-    privmsg(s_NickServ, u->nick, "Nick 12%s registrado en las BDD", nick);
-    wallops(s_NickServ, "Nick 12%s registrado/actualizado por 12%s", nick, u->nick);                                          
-}
-                                                  
 
+    DB[4].registros++;
+
+    send_cmd(NULL, "DB * %lu n %s %s", DB[4].registros , nick, passtea);
+    privmsg(s_NickServ, u->nick, "NICKREG ejecutado en 12%s.", nick);
+    canalopers(s_NickServ, "12%s ha usado NICKREG en 12%s", u->nick, nick);
+    log("%s: NICKREG de %s!%s@%s para %s", s_NickServ,
+            u->nick, u->username, u->host, nick);
+}
+
+/*************************************************************************/
+static void do_nickdrop(User *u)
+{
+    char *nick = strtok(NULL, " ");
+        
+        
+    if (!nick) {
+ /***        syntax_error(s_NickServ, u, "VHOST", NICK_VHOST_SYNTAX); ***/
+        privmsg(s_NickServ, u->nick, "Sintaxis: NICKDROP <serie> <nick>");
+        return;
+    }
+
+    DB[4].registros++;
+    DB[7].registros++;                                 
+
+    send_cmd(NULL, "DB * %lu n %s", DB[4].registros, nick);
+    send_cmd(NULL, "DB * %lu v %s", DB[7].registros, nick);
+    privmsg(s_NickServ, u->nick, "Nick y Vhost para el nick 12%s ha sido borrados.", nick);
+    canalopers(s_NickServ, "12%s ha usado NICKDROP en 12%s",
+               u->nick, nick);
+    log("%s: NICKDROP de %s!%s@%s para %s", s_NickServ,
+                     u->nick, u->username, u->host, nick);                                                          
+                                                                                                                    
+}
+
+/*************************************************************************/
+static void do_nickforbid(User *u)
+{
+    char *nick = strtok(NULL, " ");
+    
+    
+    if (!nick) {
+ /***        syntax_error(s_NickServ, u, "VHOST", NICK_VHOST_SYNTAX); ***/
+        privmsg(s_NickServ, u->nick, "Sintaxis: NICKFORBID <nick>");
+        return;
+    }
+                               
+    DB[4].registros++;
+    
+    send_cmd(NULL, "DB * %lu n %s Nick_Forbideado", DB[4].registros, nick);
+    privmsg(s_NickServ, u->nick, "NICKFORBID ejecutado en 12%s.", nick);
+    canalopers(s_NickServ, "12%s ha usado NICKFORBID en 12%s", u->nick, nick);
+    log("%s: NICKFORBID de %s!%s@%s para %s", s_NickServ,
+              u->nick, u->username, u->host, nick);
+}                                                                                                                                                        
 
 /*************************************************************************/
 static void do_vhostadd(User *u)
 {
-    char *serie = strtok(NULL, " ");
     char *nick = strtok(NULL, " ");
     char *vhost = strtok(NULL, " ");
     
@@ -2776,33 +2820,38 @@ static void do_vhostadd(User *u)
        privmsg(s_NickServ, u->nick, "Sintaxis: VHOSTADD <serie> <nick> <vhost>");
     return;
     }
-                              
-    send_cmd(NULL, "DB * %s v %s %s", serie, nick, vhost);
+
+    DB[7].registros++;
+    
+    send_cmd(NULL, "DB * %lu v %s %s", DB[7].registros, nick, vhost);
     privmsg(s_NickServ, u->nick, "Vhost 12%s para nick 12%s colocado",
-           vhost, nick);
-    wallops(s_NickServ, "Vhost (12%s) de 12%s puesto por 12%s",
-      vhost, nick, u->nick);
-        
-}
+                     vhost, nick);
+    canalopers(s_NickServ, "12%s ha usado VHOSTADD en 12%s (%s)",
+                  u->nick, nick, vhost);
+    log("%s: VHOSTADD de %s!%s@%s para %s (%s)", s_NickServ,
+                 u->nick, u->username, u->host, nick, vhost);
+}                 
+                                                                                                                    
 
 /*************************************************************************/
 static void do_vhostdel(User *u)
 {
-    char *serie = strtok(NULL, " ");
     char *nick = strtok(NULL, " ");
-
             
     if (!nick) {
     /***        syntax_error(s_NickServ, u, "VHOST", NICK_VHOST_SYNTAX); ***/
         privmsg(s_NickServ, u->nick, "Sintaxis: VHOSTDEL <serie> <nick>");
         return;
     }
+    DB[7].registros++;
+    
+    send_cmd(NULL, "DB * %lu v %s", DB[7].registros, nick);
+    privmsg(s_NickServ, u->nick, "VHOSTDEL ejecutado en 12%s", nick);
+    canalopers(s_NickServ, "12%s ha usado VHOSTDEL en 12%s",
+                u->nick, nick);
+    log("%s: VHOSTDEL de %s!%s@%s para %s", s_NickServ,
+               u->nick, u->username, u->host, nick);    
                                
-    send_cmd(NULL, "DB * %s v %s", serie, nick);
-    privmsg(s_NickServ, u->nick, "Vhost para nick 12%s ha sido borrado", nick);
-    wallops(s_NickServ, "Vhost de 12%s borrado por 12%s",
-          nick, u->nick);
-          
 
 }
                                                

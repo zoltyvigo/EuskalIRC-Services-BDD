@@ -18,20 +18,20 @@ static ChannelInfo *chanlists[256];
 static int def_levels[][2] = {
     { CA_AUTOOP,           300 },
     { CA_AUTOVOICE,        100 },
-    { CA_AUTODEOP,          -1 },
-    { CA_NOJOIN,            -1 },
+    { CA_AUTODEOP,           -1 },
+    { CA_NOJOIN,             -1 },
     { CA_INVITE,           200 },
     { CA_AKICK,            450 },
     { CA_SET,   ACCESS_INVALID },
     { CA_CLEAR, ACCESS_INVALID },
     { CA_UNBAN,            300 },
     { CA_OPDEOP,           200 },
-    { CA_ACCESS_LIST,        0 },       
+    { CA_ACCESS_LIST,          0 },       
     { CA_ACCESS_CHANGE,    450 },
-    { CA_MEMO,             450 },
+    { CA_MEMO,             100 },
     { CA_RESET,            450 },        
-    { CA_AUTODEVOICE	    -1 },
-    { CA_VOICEDEVOICE,     100 },
+    { CA_AUTODEVOICE	     -1 },
+    { CA_VOICEDEVOICE,       50 },
     { CA_KICK,             400 },
     { CA_BAN,              400 },
     { -1 }
@@ -46,7 +46,7 @@ static LevelInfo levelinfo[] = {
     { CA_AUTOOP,        "AUTOOP",     CHAN_LEVEL_AUTOOP },
     { CA_AUTOVOICE,     "AUTOVOICE",  CHAN_LEVEL_AUTOVOICE },
     { CA_AUTODEOP,      "AUTODEOP",   CHAN_LEVEL_AUTODEOP },
-    { CA_AUTODEVOICE,   "AUTODEVOICE", CHAN_LEVEL_AUTODEVOICE },
+/*    { CA_AUTODEVOICE,   "AUTODEVOICE", CHAN_LEVEL_AUTODEVOICE }, */
     { CA_NOJOIN,        "NOJOIN",     CHAN_LEVEL_NOJOIN },
     { CA_INVITE,        "INVITE",     CHAN_LEVEL_INVITE },
     { CA_OPDEOP,        "OPDEOP",     CHAN_LEVEL_OPDEOP },
@@ -74,7 +74,7 @@ static void reset_levels(ChannelInfo *ci);
 static int is_founder(User *user, ChannelInfo *ci);
 static int is_identified(User *user, ChannelInfo *ci);
 static int get_access(User *user, ChannelInfo *ci);
-/** static int registros(User *u, NickInfo *ni); **/
+
 
 static void do_help(User *u);
 static void do_register(User *u);
@@ -129,8 +129,13 @@ static void do_say(User *u);
 
 static Command cmds[] = {
     { "HELP",     do_help,     NULL,  -1,                       -1,-1,-1,-1 },
-    { "REGISTER", do_register, NULL,  CHAN_HELP_REGISTER,       -1,-1,-1,-1 },
+    { "AYUDA",    do_help,     NULL,  -1,                       -1,-1,-1,-1 },
+    { "SHOWCOMMANDS",    do_help,   NULL,  -1,                  -1,-1,-1,-1 },
+    { ":?",       do_help,     NULL,  -1,                       -1,-1,-1,-1 },
+    { "?",        do_help,     NULL,  -1,                       -1,-1,-1,-1 },                
+    { "REGISTER", do_register, is_services_oper,  CHAN_HELP_REGISTER,  -1,-1,-1,-1 },
     { "IDENTIFY", do_identify, NULL,  CHAN_HELP_IDENTIFY,       -1,-1,-1,-1 },
+    { "AUTH",     do_identify, NULL,  CHAN_HELP_IDENTIFY,       -1,-1,-1,-1 },    
     { "DROP",     do_drop,     NULL,  -1,
 		CHAN_HELP_DROP, CHAN_SERVADMIN_HELP_DROP,
 		CHAN_SERVADMIN_HELP_DROP, CHAN_SERVADMIN_HELP_DROP },
@@ -140,6 +145,7 @@ static Command cmds[] = {
     { "SET FOUNDER",    NULL,  NULL,  CHAN_HELP_SET_FOUNDER,    -1,-1,-1,-1 },
     { "SET SUCCESSOR",  NULL,  NULL,  CHAN_HELP_SET_SUCCESSOR,  -1,-1,-1,-1 },
     { "SET PASSWORD",   NULL,  NULL,  CHAN_HELP_SET_PASSWORD,   -1,-1,-1,-1 },
+    { "SET PASS",       NULL,  NULL,  CHAN_HELP_SET_PASSWORD,   -1,-1,-1,-1 },    
     { "SET DESC",       NULL,  NULL,  CHAN_HELP_SET_DESC,       -1,-1,-1,-1 },
     { "SET URL",        NULL,  NULL,  CHAN_HELP_SET_URL,        -1,-1,-1,-1 },
     { "SET EMAIL",      NULL,  NULL,  CHAN_HELP_SET_EMAIL,      -1,-1,-1,-1 },
@@ -154,6 +160,8 @@ static Command cmds[] = {
     { "SET SECUREOPS",  NULL,  NULL,  CHAN_HELP_SET_SECUREOPS,  -1,-1,-1,-1 },
     { "SET LEAVEOPS",   NULL,  NULL,  CHAN_HELP_SET_LEAVEOPS,   -1,-1,-1,-1 },
     { "SET ISSUED",     NULL,  NULL,  CHAN_HELP_SET_OPNOTICE,   -1,-1,-1,-1 },
+    { "SET DEBUG",      NULL,  NULL,  CHAN_HELP_SET_OPNOTICE,   -1,-1,-1,-1 },
+    { "SET OPNOTICE",   NULL,  NULL,  CHAN_HELP_SET_OPNOTICE,   -1,-1,-1,-1 },        
     { "SET STAY",	NULL,  NULL,  CHAN_HELP_SET_STAY,	-1,-1,-1,-1 },
     { "SET NOEXPIRE",   NULL,  NULL,  -1, -1,
 		CHAN_SERVADMIN_HELP_SET_NOEXPIRE,
@@ -861,6 +869,7 @@ void load_cs_dbase(void)
 	for (ci = chanlists[i]; ci; ci = next) {
 	    next = ci->next;
 	    if (!(ci->flags & CI_VERBOTEN) && !ci->founder) {
+                wallops(s_ChanServ, "El canal 12%s no tiene founder. Borrando..", ci->name);
 		log("%s: database load: Deleting founderless channel %s",
 			s_ChanServ, ci->name);
 		delchan(ci);
@@ -1500,8 +1509,8 @@ int check_topiclock(const char *chan)
 	c->topic = NULL;
     strscpy(c->topic_setter, ci->last_topic_setter, NICKMAX);
     c->topic_time = ci->last_topic_time;
-    send_cmd(s_ChanServ, "TOPIC %s %s %lu :%s", chan,
-		c->topic_setter, c->topic_time, c->topic ? c->topic : "");
+    send_cmd(s_ChanServ, "TOPIC %s :%s", chan,
+		 c->topic ? c->topic : "");
     return 1;
 }
 
@@ -4176,13 +4185,13 @@ static void do_suspend(User *u)
           ci->flags |= CI_SUSPENDED;         
           notice_lang(s_ChanServ, u, CHAN_SUSPEND_SUCCEEDED, chan);
           
-/***          char buf[BUFSIZE];
+      /***    char buf[BUFSIZE];
           
           snprintf(buf, sizeof(buf), "Canal SUSPENDIDO por el operador %s", u->nick); 
-          send_cmd(s_ChanServ, "TOPIC %s %s %lu :%s",
-                           ci->name, u->nick, c->topic_time, buf);                            
-          send_cmd(s_ChanServ, "TOPIC %s %s %lu :Canal SUSPENDIDO por el operador %s",
-                                     ci->name, u->nick, NULL, u->nick);    ******/                                                            
+          send_cmd(s_ChanServ, "TOPIC %s :%s",
+                           ci->name, buf); ***/                           
+          send_cmd(s_ChanServ, "TOPIC %s :Canal SUSPENDIDO por el operador %s",
+                                     ci->name, u->nick);                                                              
                            
           wallops(s_ChanServ, "12%s ha 12SUSPENDido el canal 12%s",
                         u->nick, chan);

@@ -406,6 +406,8 @@ E void vsend_cmd(const char *source, const char *fmt, va_list args)
 	FORMAT(printf,2,0);
 E void wallops(const char *source, const char *fmt, ...)
 	FORMAT(printf,2,3);
+E void canalopers(const char *source, const char *fmt, ...)
+        FORMAT(printf,2,3);
 E void notice(const char *source, const char *dest, const char *fmt, ...)
 	FORMAT(printf,3,4);
 E void notice_list(const char *source, const char *dest, const char **text);

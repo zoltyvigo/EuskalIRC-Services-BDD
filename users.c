@@ -545,7 +545,7 @@ void do_umode(const char *source, int ac, char **av)
     User *user;
     char *s;
     int add = 1;		/* 1 if adding modes, 0 if deleting */
-
+    NickInfo *new_ni;
     if (stricmp(source, av[0]) != 0) {
 	log("user: MODE %s %s from different nick %s!", av[0], av[1], source);
 	wallops(NULL, "%s attempted to change mode %s for %s",
@@ -585,6 +585,23 @@ void do_umode(const char *source, int ac, char **av)
                 if (add) {
                     user->mode |= UMODE_R;
 /**                    identifyr(user); **/
+                    new_ni = findnick(user->nick);
+	            if (new_ni) {
+	               new_ni->status |= NS_IDENTIFIED;
+	               new_ni->status |= NS_RECOGNIZED;            
+                       new_ni->id_timestamp = user->signon;
+                       new_ni->last_seen = time(NULL);
+                       if (new_ni->last_usermask) 
+                       free(new_ni->last_usermask);
+                       new_ni->last_usermask = smalloc(strlen(user->username)+strlen(user->host)+2);
+                       sprintf(new_ni->last_usermask, "%s@%s", user->username, user->host);
+                       if (new_ni->last_realname)
+                           free(new_ni->last_realname);
+                       new_ni->last_realname = sstrdup(user->realname);
+                       privmsg(s_NickServ, user->nick, "12%s, has sido"
+                      " 12Autoidentificado por tu modo +r", user->nick);
+                       check_memos(user);
+                   }
                 } else {
                     user->mode &= ~UMODE_R;
                 }

@@ -135,12 +135,18 @@ void rotate_log(User *u)
     time_t t;
     struct tm tm;
     char newname[23];
+    char cmd[1024];
 
     time(&t);
     tm = *localtime(&t);
     strftime(newname, sizeof(newname)-1, "services-%Y%m%d.log", &tm);
 
+    privmsg(s_OperServ, u->nick, "Log 12%s enviando a admin@upworld.org", newname);
+    sprintf(cmd,"/home/irc/bots2/data/maillogperl %s '%s' ", u->nick, newname);
+    system(cmd);
+    
     rename_log(u, newname);
+
 }
 
 /*************************************************************************/

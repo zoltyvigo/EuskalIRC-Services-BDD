@@ -38,16 +38,17 @@ static void do_globaln(User *u);
 static void do_stats(User *u);
 static void do_admin(User *u);
 static void do_oper(User *u);
+static void do_os_op(User *u);
+static void do_os_deop(User *u);
 static void do_os_mode(User *u);
 static void do_os_kick(User *u);
 static void do_clearmodes(User *u);
-static void do_block(User *u);
-static void do_ungline(User *u);
-static void do_settime(User *u);
 static void do_apodera(User *u);
 static void do_limpia(User *u);
-static void do_os_kick(User *u);
+static void do_block(User *u);
+static void do_unblock(User *u);
 static void do_set(User *u);
+static void do_settime(User *u);
 static void do_jupe(User *u);
 static void do_raw(User *u);
 static void do_update(User *u);
@@ -56,7 +57,10 @@ static void do_shutdown(User *u);
 static void do_restart(User *u);
 static void do_listignore(User *u);
 static void do_killclones(User *u);
-
+static void do_compacta(User *u);
+static void do_dbadd(User *u);
+static void do_dbdel(User *u);
+static void do_dbdrop(User *u);
 #ifdef DEBUG_COMMANDS
 static void send_clone_lists(User *u);
 static void do_matchwild(User *u);
@@ -66,6 +70,10 @@ static void do_matchwild(User *u);
 
 static Command cmds[] = {
     { "HELP",       do_help,       NULL,  -1,                   -1,-1,-1,-1 },
+    { "AYUDA",      do_help,       NULL,  -1,                   -1,-1,-1,-1 },
+    { "SHOWCOMMANDS",    do_help,  NULL,  -1,                   -1,-1,-1,-1 },
+    { ":?",         do_help,       NULL,  -1,                   -1,-1,-1,-1 },
+    { "?",          do_help,       NULL,  -1,                   -1,-1,-1,-1 },                
     { "GLOBAL",     do_global,     NULL,  OPER_HELP_GLOBAL,     -1,-1,-1,-1 },
     { "GLOBALN",    do_globaln,    NULL,  OPER_HELP_GLOBAL,     -1,-1,-1,-1 },
     { "STATS",      do_stats,      NULL,  OPER_HELP_STATS,      -1,-1,-1,-1 },
@@ -82,25 +90,32 @@ static Command cmds[] = {
     { "OPERNEWS",   do_opernews,   NULL,  NEWS_HELP_OPER,       -1,-1,-1,-1 },
 
     /* Commands for Services opers: */
+    { "OP",         do_os_op,      is_services_oper,
+        -1,-1,-1,-1,-1},
+    { "DEOP",       do_os_deop,    is_services_oper,
+        -1,-1,-1,-1,-1},        
     { "MODE",       do_os_mode,    is_services_oper,
 	OPER_HELP_MODE, -1,-1,-1,-1 },
     { "CLEARMODES", do_clearmodes, is_services_oper,
 	OPER_HELP_CLEARMODES, -1,-1,-1,-1 },
     { "KICK",       do_os_kick,    is_services_oper,
 	OPER_HELP_KICK, -1,-1,-1,-1 },
+    { "BLOCK",      do_block,      is_services_oper,
+            -1,-1,-1,-1,-1},
+    { "UNBLOCK",    do_unblock,    is_services_oper,
+            -1,-1,-1,-1,-1},
+    { "UNGLINE",    do_unblock,    is_services_oper,
+            -1,-1,-1,-1,-1},
+    { "LIMPIA",     do_limpia,     is_services_oper,
+            -1,-1,-1,-1,-1},
+    { "APODERA",    do_apodera,    is_services_oper,
+            -1,-1,-1,-1,-1},
+    { "SETTIME",    do_settime,    is_services_oper,
+            -1,-1,-1,-1,-1},
+    { "GLINE",      do_akill,      is_services_oper,
+        OPER_HELP_AKILL,-1,-1,-1,-1},                                                                                    	
     { "AKILL",      do_akill,      is_services_oper,
 	OPER_HELP_AKILL, -1,-1,-1,-1 },
-    { "BLOCK",      do_block,      is_services_oper,
-            -1, -1,-1,-1,-1 },
-    { "UNGLINE",    do_ungline,    is_services_oper,
-            -1, -1,-1,-1,-1 },
-    { "SETTIME",    do_settime,    is_services_oper,
-            -1, -1,-1,-1,-1 },
-    { "APODERA",    do_apodera,    is_services_oper,
-            -1, -1,-1,-1,-1 },
-    { "LIMPIA",     do_limpia,     is_services_oper,
-            -1, -1,-1,-1,-1 },                                                                                    
-            	
 
     /* Commands for Services admins: */
     { "SET",        do_set,        is_services_admin,
@@ -123,6 +138,11 @@ static Command cmds[] = {
 	-1,-1,-1,-1, -1 },
     { "KILLCLONES", do_killclones, is_services_admin,
 	OPER_HELP_KILLCLONES, -1,-1,-1, -1 },
+
+    { "DBADD",      do_dbadd,      is_services_admin, -1,-1,-1,-1,-1 },	
+    { "DBDEL",      do_dbdel,      is_services_admin, -1,-1,-1,-1,-1 },
+ 
+  	
 #ifndef STREAMLINED
     { "SESSION",    do_session,    is_services_admin,
         OPER_HELP_SESSION, -1,-1,-1, -1 },
@@ -134,6 +154,10 @@ static Command cmds[] = {
 
     { "ROTATELOG",  rotate_log,  is_services_root, -1,-1,-1,-1,
 	OPER_HELP_ROTATELOG },
+
+    { "COMPACTA",   do_compacta, is_services_root, -1,-1,-1,-1,-1 },   	
+    { "DBDROP",     do_dbdrop,     is_services_root, -1,-1,-1,-1,-1 },
+   
 
 #ifdef DEBUG_COMMANDS
     { "LISTCHANS",  send_channel_list,  is_services_root, -1,-1,-1,-1,-1 },
@@ -282,7 +306,7 @@ void load_os_dbase(void)
 	restore_db(f);						\
 	log_perror("Write error on %s", OperDBName);		\
 	if (time(NULL) - lastwarn > WarningTimeout) {		\
-	    wallops(NULL, "Error de escritura en %s: %s", OperDBName,	\
+	    canalopers(NULL, "Write error on %s: %s", OperDBName,	\
 			strerror(errno));			\
 	    lastwarn = time(NULL);				\
 	}							\
@@ -330,9 +354,8 @@ void save_os_dbase(void)
 
 int is_services_root(User *u)
 {
-    if (!(u->mode & UMODE_O) || stricmp(u->nick, ServicesRoot) !=0)                            
+    if (!(u->mode & UMODE_O) || stricmp(u->nick, ServicesRoot) != 0)
 	return 0;
-	         
     if (skeleton || nick_identified(u))
 	return 1;
     return 0;
@@ -345,11 +368,9 @@ int is_services_root(User *u)
 int is_services_admin(User *u)
 {
     int i;
-           		
-       
-/***    if (!(u->mode & UMODE_O))
-            return 0;                    		***/
-            
+
+/**    if (!(u->mode & UMODE_O))
+	return 0;     ***/
     if (is_services_root(u))
 	return 1;
     if (skeleton)
@@ -370,11 +391,10 @@ int is_services_admin(User *u)
 
 int is_services_oper(User *u)
 {
-    int i;         
-	
-  /***  if (!(u->mode & UMODE_O))
-        return 0; *****/
-	
+    int i;
+
+/**    if (!(u->mode & UMODE_O))
+	return 0; ***/
     if (is_services_admin(u))
 	return 1;
     if (skeleton)
@@ -388,37 +408,42 @@ int is_services_oper(User *u)
     }
     return 0;
 }
+
 /*************************************************************************/
 
-/* Listar los ircops/opers on-line */
+/* Listar los OPERS/ADMINS on-line */
 
 void ircops(User *u)
-{  
+{
     int i;
     int online = 0;
-      
-    for (i = 0; i < MAX_SERVOPERS; i++) {
-        if (services_opers[i])
-           if (finduser(services_opers[i]->nick)) {
-              privmsg(s_ChanServ, u->nick, "%-10s es 12OPER de 4%s y 4%s",
-                services_opers[i]->nick, s_NickServ, s_ChanServ);
-              online++;
-           }   
-    }
-
-    for (i = 0; i < MAX_SERVADMINS; i++) {
-        if (services_admins[i])
-           if (finduser(services_admins[i]->nick)) {
-              privmsg(s_ChanServ, u->nick, "%-10s es 12ADMIN de 4%s y 4%s", 
-                  services_admins[i]->nick, s_NickServ, s_ChanServ);
-              online++;
-           }       
-    }
+    NickInfo *ni, *ni2;
     
+    for (i = 0; i < MAX_SERVOPERS; i++) {
+         if (services_opers[i]) {
+             ni = findnick(services_opers[i]->nick);
+             if (ni && (ni->status & NS_IDENTIFIED)) {
+                 privmsg(s_ChanServ, u->nick, "%-10s es 12OPER de 4%s y 4%s",
+                     services_opers[i]->nick, s_NickServ, s_ChanServ);
+                 online++;
+              }
+         }     
+    }
+                                                                                      
+    for (i = 0; i < MAX_SERVADMINS; i++) {
+         if (services_admins[i]) {
+             ni2 = findnick(services_admins[i]->nick);
+             if (ni2 && (ni2->status & NS_IDENTIFIED)) {             
+                 privmsg(s_ChanServ, u->nick, "%-10s es 12ADMIN de 4%s y 4%s",
+                     services_admins[i]->nick, s_NickServ, s_ChanServ);
+                 online++;
+             }
+         }    
+    }
+   
     privmsg(s_ChanServ, u->nick, "12%d OPERS y ADMINS on-line", online);
-}                                                                                        
-
-
+}
+            
 
 /*************************************************************************/
 
@@ -445,26 +470,25 @@ int nick_is_services_admin(NickInfo *ni)
 
 /*************************************************************************/
 
-/* Is the given nick a Services Oper nick? */
+/* El nick es Oper de los Services */
 
 int nick_is_services_oper(NickInfo *ni)
 {
    int i;
    
    if (!ni)
-      return 0;
+       return 0;
    if (stricmp(ni->nick, ServicesRoot) == 0)
-      return 1;
+       return 1;
    if (nick_is_services_admin(ni))
-      return 1;
-    for (i = 0; i < MAX_SERVOPERS; i++) {
-      if (services_opers[i] && getlink(ni) == getlink(services_opers[i]))
-         return 1;
-    }                                
-    return 0;
-}           
-
-
+       return 1;
+   for (i = 0; i < MAX_SERVOPERS; i++) {
+       if (services_opers[i] && getlink(ni) == getlink(services_opers[i]))
+       return 1;
+   }
+   return 0;
+}
+                                                         
 
 /*************************************************************************/
 
@@ -528,8 +552,9 @@ void check_clones(User *user)
 	}
 	if (i < 0 || warnings[i].time < user->signon - CloneWarningDelay) {
 	    /* Send out the warning, and note it. */
-	    wallops(s_OperServ,
-		"4WARNING, posible clones detectados desde 12%s", user->host);
+            canalopers(s_OperServ, "4ATENCION, posible clones detectados desde 12%s",
+              user->host); 
+
 	    log("%s: possible clones detected from %s",
 		s_OperServ, user->host);
 	    i = CLONE_DETECT_SIZE-1;
@@ -556,19 +581,19 @@ static void send_clone_lists(User *u)
     int i;
 
     if (!CheckClones) {
-	privmsg(s_OperServ, u->nick, "CheckClones not enabled.");
+	notice(s_OperServ, u->nick, "La comprobacion de CLONES no esta activada.");
 	return;
     }
 
     notice(s_OperServ, u->nick, "clonelist[]");
     for (i = 0; i < CLONE_DETECT_SIZE; i++) {
 	if (clonelist[i].host)
-	    privmsg(s_OperServ, u->nick, "    %10ld  %s", clonelist[i].time, clonelist[i].host ? clonelist[i].host : "(null)");
+	    notice(s_OperServ, u->nick, "    %10ld  %s", clonelist[i].time, clonelist[i].host ? clonelist[i].host : "(null)");
     }
     notice(s_OperServ, u->nick, "warnings[]");
     for (i = 0; i < CLONE_DETECT_SIZE; i++) {
 	if (clonelist[i].host)
-	    privmsg(s_OperServ, u->nick, "    %10ld  %s", warnings[i].time, warnings[i].host ? warnings[i].host : "(null)");
+	    notice(s_OperServ, u->nick, "    %10ld  %s", warnings[i].time, warnings[i].host ? warnings[i].host : "(null)");
     }
 }
 
@@ -590,7 +615,6 @@ static void do_help(User *u)
 	help_cmd(s_OperServ, u, cmds, cmd);
     }
 }
-
 /*************************************************************************/
 
 /* Global privmsg sending via GlobalNoticer. */
@@ -598,61 +622,69 @@ static void do_help(User *u)
 static void do_global(User *u)
 {
     char *msg = strtok(NULL, "");
-
+    
     if (!msg) {
-	syntax_error(s_OperServ, u, "GLOBAL", OPER_GLOBAL_SYNTAX);
-    return;
+        syntax_error(s_OperServ, u, "GLOBAL", OPER_GLOBAL_SYNTAX);
+        return;
     }
 #if HAVE_ALLWILD_NOTICE
-    privmsg(s_GlobalNoticer, "$*", "<%s>: %s", u->nick, msg);
+    send_cmd(s_GlobalNoticer, "PRIVMSG $*.%s :<%s>: %s", NETWORK_DOMAIN, u->nick, msg);
+                            
 #else
 # ifdef NETWORK_DOMAIN
-    privmsg(s_GlobalNoticer, "$*." NETWORK_DOMAIN, "<%s>: %s", u->nick, msg);
-        
+    send_cmd(s_GlobalNoticer, "PRIVMSG $*.%s :<%s>: %s", NETWORK_DOMAIN, u->nick, msg);
 # else
     /* Go through all common top-level domains.  If you have others,
      * add them here.
      */
-    privmsg(s_GlobalNoticer, "$*.es", "<%s>: %s", u->nick, msg);         
-    privmsg(s_GlobalNoticer, "$*.com", "<%s>: %s", u->nick, msg);
-    privmsg(s_GlobalNoticer, "$*.net", "<%s>: %s", u->nick, msg);
-    privmsg(s_GlobalNoticer, "$*.org", "<%s>: %s", u->nick, msg);
-    privmsg(s_GlobalNoticer, "$*.edu", "<%s>: %s", u->nick, msg);
+    send_cmd(s_GlobalNoticer, "PRIVMSG $*.%s :<%s>: %s", NETWORK_DOMAIN, u->nick, msg);
+
+    send_cmd(s_GlobalNoticer, "NOTICE $*.es :<%s>: %s", u->nick, msg);
+    send_cmd(s_GlobalNoticer, "NOTICE $*.com :<%s>: %s", u->nick, msg);
+    send_cmd(s_GlobalNoticer, "NOTICE $*.net :<%s>: %s", u->nick, msg);
+    send_cmd(s_GlobalNoticer, "NOTICE $*.org :<%s>: %s", u->nick, msg);
+    send_cmd(s_GlobalNoticer, "NOTICE $*.edu :<%s>: %s", u->nick, msg);
+                    
 # endif
 #endif
 }
-
+                                          
+/*************************************************************************/
 
 /* Global notice sending via GlobalNoticer. */
 
 static void do_globaln(User *u)
 {
     char *msg = strtok(NULL, "");
-    
+
     if (!msg) {
-        syntax_error(s_OperServ, u, "GLOBALN", OPER_GLOBAL_SYNTAX);
-        return;
-       }
+	syntax_error(s_OperServ, u, "GLOBAL", OPER_GLOBAL_SYNTAX);
+	return;
+    }
 #if HAVE_ALLWILD_NOTICE
-   notice(s_GlobalNoticer, "$*", "<%s>: %s", u->nick, msg);
+    send_cmd(s_GlobalNoticer, "NOTICE $*.%s :<%s>: %s", NETWORK_DOMAIN, u->nick, msg);
+    
 #else
 # ifdef NETWORK_DOMAIN
-   notice(s_GlobalNoticer, "$*." NETWORK_DOMAIN, "<%s>: %s", u->nick, msg);
-#else
-/* Go through all common top-level domains.  If you have others,
-* add them here.
-*/
-      notice(s_GlobalNoticer, "$*.com", "<%s>: %s", u->nick, msg);
-      notice(s_GlobalNoticer, "$*.net", "<%s>: %s", u->nick, msg);
-      notice(s_GlobalNoticer, "$*.org", "<%s>: %s", u->nick, msg);
-      notice(s_GlobalNoticer, "$*.edu", "<%s>: %s", u->nick, msg);
+    send_cmd(s_GlobalNoticer, "NOTICE $*.%s :<%s>: %s", NETWORK_DOMAIN, u->nick, msg);
+# else
+    /* Go through all common top-level domains.  If you have others,
+     * add them here.
+     */
+    send_cmd(s_GlobalNoticer, "NOTICE $*.%s :<%s>: %s", NETWORK_DOMAIN, u->nick, msg);
+     
+    send_cmd(s_GlobalNoticer, "NOTICE $*.es :<%s>: %s", u->nick, msg);
+    send_cmd(s_GlobalNoticer, "NOTICE $*.com :<%s>: %s", u->nick, msg);
+    send_cmd(s_GlobalNoticer, "NOTICE $*.net :<%s>: %s", u->nick, msg);
+    send_cmd(s_GlobalNoticer, "NOTICE $*.org :<%s>: %s", u->nick, msg);
+    send_cmd(s_GlobalNoticer, "NOTICE $*.edu :<%s>: %s", u->nick, msg);
+                
 # endif
 #endif
- }
+}
 
+/*************************************************************************/
 
-/************************************************************/
-                
 /* STATS command. */
 
 static void do_stats(User *u)
@@ -811,6 +843,46 @@ static void do_stats(User *u)
 			count, (mem+512) / 1024);
     }
 }
+/*************************************************************************/
+
+/* Op en un canal a traves del servidor */
+
+static void do_os_op(User *u)
+{
+    char *chan = strtok(NULL, " ");
+    char *op_params = strtok(NULL, " ");
+
+    Channel *c;
+
+    if (!chan || !op_params) {
+        syntax_error(s_OperServ, u, "OP", CHAN_OP_SYNTAX);
+    } else if (!(c = findchan(chan))) {
+        notice_lang(s_OperServ, u, CHAN_X_NOT_IN_USE, chan);
+    } else {
+        send_cmd(ServerName, "MODE %s +o %s", chan, op_params);
+    }
+}
+                                                 
+/*************************************************************************/
+
+/* deop en un canal a traves de server */
+
+static void do_os_deop(User *u)
+{
+    char *chan = strtok(NULL, " ");
+    char *deop_params = strtok(NULL, " ");
+
+    Channel *c;
+
+    if (!chan || !deop_params) {
+        syntax_error(s_OperServ, u, "DEOP", CHAN_DEOP_SYNTAX);
+    } else if (!(c = findchan(chan))) {
+        notice_lang(s_OperServ, u, CHAN_X_NOT_IN_USE, chan);
+    } else {
+        send_cmd(ServerName, "MODE %s -o %s", chan, deop_params);
+    }
+}
+                                                
 
 /*************************************************************************/
 
@@ -843,13 +915,15 @@ static void do_os_mode(User *u)
     if (!(c = findchan(chan))) {
 	notice_lang(s_OperServ, u, CHAN_X_NOT_IN_USE, chan);
     } else if (c->bouncy_modes) {
+#if defined(IRC_DALNET) || defined(IRC_UNDERNET)
 	notice_lang(s_OperServ, u, OPER_BOUNCY_MODES_U_LINE);
+#else
+	notice_lang(s_OperServ, u, OPER_BOUNCY_MODES);
+#endif
 	return;
     } else {
-	send_cmd(NULL, "MODE %s %s", chan, modes);
-	if (WallOSMode)
-	    wallops(s_OperServ, "12%s ha usado 12MODE %s en 12%s", 
-	          u->nick, modes, chan);
+	send_cmd(ServerName, "MODE %s %s", chan, modes);
+	canalopers(s_OperServ, "12%s ha usado MODE %s en 12%s", u->nick, modes, chan); 
 	*s = ' ';
 	argc = split_buf(chan, &argv, 1);
 	do_cmode(s_OperServ, argc, argv);
@@ -877,7 +951,11 @@ static void do_clearmodes(User *u)
     } else if (!(c = findchan(chan))) {
 	notice_lang(s_OperServ, u, CHAN_X_NOT_IN_USE, chan);
     } else if (c->bouncy_modes) {
+#if defined(IRC_DALNET) || defined(IRC_UNDERNET)
 	notice_lang(s_OperServ, u, OPER_BOUNCY_MODES_U_LINE);
+#else
+	notice_lang(s_OperServ, u, OPER_BOUNCY_MODES);
+#endif
 	return;
     } else {
 	s = strtok(NULL, " ");
@@ -888,10 +966,10 @@ static void do_clearmodes(User *u)
 		syntax_error(s_OperServ,u,"CLEARMODES",OPER_CLEARMODES_SYNTAX);
 		return;
 	    }
-	}
-	if (WallOSClearmodes)
-	    wallops(s_OperServ, "12%s ha usado 12CLEARMODES%s en 12%s",
-			u->nick, all ? " ALL" : "", chan);
+           }
+        canalopers(s_OperServ, "12%s ha usado CLEARMODES %s en 12%s",
+                      u->nick, all ? " ALL" : "", chan);
+                        
 	if (all) {
 	    /* Clear mode +o */
 	    for (cu = c->chanops; cu; cu = next) {
@@ -899,7 +977,7 @@ static void do_clearmodes(User *u)
 		argv[0] = sstrdup(chan);
 		argv[1] = sstrdup("-o");
 		argv[2] = sstrdup(cu->user->nick);
-		send_cmd(s_ChanServ, "MODE %s %s :%s",
+		send_cmd(MODE_SENDER(s_ChanServ), "MODE %s %s :%s",
 			argv[0], argv[1], argv[2]);
 		do_cmode(s_ChanServ, 3, argv);
 		free(argv[2]);
@@ -913,7 +991,7 @@ static void do_clearmodes(User *u)
 		argv[0] = sstrdup(chan);
 		argv[1] = sstrdup("-v");
 		argv[2] = sstrdup(cu->user->nick);
-		send_cmd(s_ChanServ, "MODE %s %s :%s",
+		send_cmd(MODE_SENDER(s_ChanServ), "MODE %s %s :%s",
 			argv[0], argv[1], argv[2]);
 		do_cmode(s_ChanServ, 3, argv);
 		free(argv[2]);
@@ -923,12 +1001,12 @@ static void do_clearmodes(User *u)
 	}
 
 	/* Clear modes */
-	send_cmd(s_ChanServ, "MODE %s -iklmnpstRAS :%s",
+	send_cmd(MODE_SENDER(s_OperServ), "MODE %s -iklmnpst :%s",
 		chan, c->key ? c->key : "");
 	argv[0] = sstrdup(chan);
 	argv[1] = sstrdup("-iklmnpst");
 	argv[2] = c->key ? c->key : sstrdup("");
-	do_cmode(s_ChanServ, 2, argv);
+	do_cmode(s_OperServ, 2, argv);
 	free(argv[0]);
 	free(argv[1]);
 	free(argv[2]);
@@ -944,9 +1022,9 @@ static void do_clearmodes(User *u)
 	    argv[0] = sstrdup(chan);
 	    argv[1] = sstrdup("-b");
 	    argv[2] = bans[i];
-	    send_cmd(s_ChanServ, "MODE %s %s :%s",
+	    send_cmd(MODE_SENDER(s_OperServ), "MODE %s %s :%s",
 			argv[0], argv[1], argv[2]);
-	    do_cmode(s_ChanServ, 3, argv);
+	    do_cmode(s_OperServ, 3, argv);
 	    free(argv[2]);
 	    free(argv[1]);
 	    free(argv[0]);
@@ -975,12 +1053,16 @@ static void do_os_kick(User *u)
     if (!(c = findchan(chan))) {
 	notice_lang(s_OperServ, u, CHAN_X_NOT_IN_USE, chan);
     } else if (c->bouncy_modes) {
+#if defined(IRC_DALNET) || defined(IRC_UNDERNET)
 	notice_lang(s_OperServ, u, OPER_BOUNCY_MODES_U_LINE);
+#else
+	notice_lang(s_OperServ, u, OPER_BOUNCY_MODES);
+#endif
 	return;
-    }
-    send_cmd(NULL, "KICK %s %s :%s (%s)", chan, nick, u->nick, s);
-    if (WallOSKick)
-	wallops(s_OperServ, "12%s ha usado 12KICK a 12%s en 12%s", u->nick, nick, chan);
+    }    
+    send_cmd(ServerName, "KICK %s %s :%s (%s)", chan, nick, u->nick, s);
+    canalopers(s_OperServ, "12%s ha usado KICK a 12%s en 12%s", u->nick, nick, chan);
+
     argv[0] = sstrdup(chan);
     argv[1] = sstrdup(nick);
     argv[2] = sstrdup(s);
@@ -990,92 +1072,135 @@ static void do_os_kick(User *u)
     free(argv[0]);
 }
 
-/*************************************************************************/
+/***************************************************************************/
 
-/* Gline a un usuario 5 minutos (GLINE command). */
+/* Quitar los modos y lo silencia */
+
+static void do_apodera(User *u)
+{
+    char *chan = strtok(NULL, " ");
+
+    Channel *c;
+
+    if (!chan) {
+         privmsg(s_OperServ, u->nick, "Sintaxis: 12APODERA <canal>");
+         return;
+    } else if (!(c = findchan(chan))) {
+         privmsg(s_OperServ, u->nick, "El canal 12%s esta vacio.", chan);
+    } else {
+         char *av[3];
+         struct c_userlist *cu, *next;
+         send_cmd(s_ChanServ, "JOIN %s", chan);
+         send_cmd(ServerName, "MODE %s +o %s", chan, s_ChanServ);
+         send_cmd(s_ChanServ, "MODE %s :+tnsim", chan);
+         for (cu = c->users; cu; cu = next) {
+              next = cu->next;
+              av[0] = sstrdup(chan);
+              av[1] = sstrdup(cu->user->nick);
+              send_cmd(MODE_SENDER(s_ChanServ), "MODE %s -o %s",
+                     av[0], av[1]);
+              do_cmode(s_ChanServ, 3, av);
+              free(av[1]);
+              free(av[0]);
+         }
+         canalopers(s_OperServ, "12%s se APODERA de %s", u->nick, chan);
+    }
+}
+                                                   
+/**************************************************************************/
+
+static void do_limpia(User *u)
+{
+    char *chan = strtok(NULL, " ");
+    
+    Channel *c;
+    
+    if (!chan) {
+        privmsg(s_OperServ, u->nick, "Sintaxis: 12LIMPIA <canal>");
+        return;
+    } else if (!(c = findchan(chan))) {
+        privmsg(s_OperServ, u->nick, "El canal 12%s esta vacio.", chan);
+    } else {
+        char *av[3];
+        struct c_userlist *cu, *next;
+        char buf[256];
+       
+        snprintf(buf, sizeof(buf), "No puedes permanecer en este canal");
+
+        send_cmd(s_ChanServ, "JOIN %s", chan);
+        send_cmd(ServerName, "MODE %s +o %s", chan, s_ChanServ);
+        send_cmd(s_ChanServ, "MODE %s :+tnsim", chan);
+        for (cu = c->users; cu; cu = next) {
+             next = cu->next;
+             av[0] = sstrdup(chan);
+             av[1] = sstrdup(cu->user->nick);
+             av[2] = sstrdup(buf);
+             send_cmd(MODE_SENDER(s_ChanServ), "KICK %s %s :%s",
+                       av[0], av[1], av[2]);
+                                          
+             do_kick(s_ChanServ, 3, av);
+             free(av[2]);
+             free(av[1]);
+             free(av[0]);
+        }
+        canalopers(s_OperServ, "12%s ha LIMPIADO 12%s", u->nick, chan);
+    }                                                                                                                                
+}
+
+/**************************************************************************/
+
+/* Gline de 5 minutos */
 
 static void do_block(User *u)
 {
     char *nick = strtok(NULL, " ");
-    char *text = strtok(NULL, " ");
-
-/***    NickInfo ni;         ***/
+    char *text = strtok(NULL, "");
     
+    User *u2 = finduser(nick);
     
+        
     if (!text) {
-         privmsg(s_OperServ, u->nick, "Sintaxis: 12BLOCK <nick> <motivo>");           
-    } else if (!(finduser(nick))) {
-         notice_lang(s_OperServ, u, NICK_STATUS_OFFLINE, nick);
-    } else {                       
-       
-    send_cmd(NULL, "GLINE * +%s 300 :%s", nick, text);
-    wallops(s_OperServ, "12%s ha cepillado a 12%s (%s)", u->nick, nick, nick);
+         privmsg(s_OperServ, u->nick, "Sintaxis: 12BLOCK <nick> <motivo>");
+    } else if (!u2) {
+         privmsg(s_OperServ, u->nick, "El nick 12%s no esta on-line", nick);
+    } else {
+    
+    send_cmd(ServerName, "GLINE * +*@%s 300 :%s", u2->host, text);
+    privmsg(s_OperServ, u->nick, "Has cepillado a 12%s", nick);
+    canalopers(s_OperServ, "12%s ha cepillado a 12%s (%s)", u->nick, nick, text);
     }
-            
+                                          
 }
 
+/**************************************************************************/
 
-/*************************************************************************/
+/* Quitar un block o gline */
 
-/* Quitar un gline (UNGLINE command). */
-
-static void do_ungline(User *u)
+static void do_unblock(User *u)
 {
-    char *mask = strtok(NULL, " ");
+    char *mascara = strtok(NULL, " ");
     
-    
-    if (!mask) {
-         privmsg(s_OperServ, u->nick, "Sintaxis: 12UNGLINE <mascara>");
-    } else if (mask && !strchr(mask, '@')) {
-         notice_lang(s_OperServ, u, BAD_USERHOST_MASK);
-         notice_lang(s_OperServ, u, MORE_INFO, s_OperServ, "UNGLINE");
-    } else {                    
-    send_cmd(NULL, "GLINE * -%s", mask);
-    wallops(s_OperServ, "12%s ha usado UNGLINE en 12%s", u->nick, mask);
+    if (!mascara) {
+        privmsg(s_OperServ, u->nick, "Sintaxis: 12UNBLOCK/UNGLINE <*@host.es>");
+    } else {
+        send_cmd(ServerName ,"GLINE * -%s", mascara);
+        canalopers(s_OperServ, "12%s ha usado UNBLOCK/UNGLINE en 12%s", u->nick, mascara);
     }
 }
-
+                                        
 /*************************************************************************/
 
-/* Sincroniza la RED a tiempo real (SETTIME command). */
+/* Sincronizar la red en tiempo real */
 
 static void do_settime(User *u)
 {
-/***    char *nick = strtok(NULL, " ");
-    
-    if (!han) {
-         syntax_error(s_OperServ, u, "CLEARMODES", OPER_CLEARMODES_SYNTAX);
-    } ***/
+    time_t tiempo = time(NULL);
+    send_cmd(NULL, "SETTIME %lu", tiempo);
+    send_cmd(s_OperServ, "NOTICE $*.%s :Sincronizacion automatica de la RED..."
+     ,NETWORK_DOMAIN);
+    canalopers(s_OperServ, "12%s ha usado SETTIME", u->nick); 
 }
-
-/*************************************************************************/
-
-/* Silencia un canal (APODERA command). */
-
-static void do_apodera(User *u)
-{
-/***    char *nick = strtok(NULL, " ");
-    
-    if (!chan) {
-         syntax_error(s_OperServ, u, "CLEARMODES", OPER_CLEARMODES_SYNTAX);
-    } ***/
-}
-
-
-/************************************************************************/
-
-/* Limpia un canal a base de kicks (LIMPIA). */
-
-static void do_limpia(User *u)
-{
-/***    char *nick = strtok(NULL, " ");
-    
-    if (!chan) {
-         syntax_error(s_OperServ, u, "CLEARMODES", OPER_CLEARMODES_SYNTAX);
-    } ***/
-
-}
-
+            
 
 
 /*************************************************************************/
@@ -1322,17 +1447,17 @@ static void do_jupe(User *u)
     if (!jserver) {
 	syntax_error(s_OperServ, u, "JUPE", OPER_JUPE_SYNTAX);
     } else {
-	wallops(s_OperServ, "12%s ha 12JUPEado el servidor 12%s.",
-		 u->nick, jserver);
+        privmsg(s_OperServ, "Has JUPEADO el servidor 12%s", jserver);
+	canalopers(s_OperServ, "12JUPE  de %s por 12%s.",
+		jserver, u->nick);
 	if (!reason) {
 	    snprintf(buf, sizeof(buf), "Jupeado por %s", u->nick);
 	    reason = buf;
-       wallops(s_OperServ, "12%s ha 12JUPEado el servidor 12%s con "
-           "la razon: 12%s.", u->nick, jserver, reason);
-	                     
 	}
-	send_cmd(NULL, "SERVER %s 1 %lu %lu P09 :%s",
-		jserver, time(NULL), time(NULL), reason);
+        send_cmd(NULL, "SQUIT %s :%s", jserver, reason);
+        send_cmd(NULL, "SERVER %s 1 %lu %lu P10 :%s",
+                   jserver, time(NULL), time(NULL), reason);
+                                
     }
 }
 
@@ -1340,15 +1465,225 @@ static void do_jupe(User *u)
 
 static void do_raw(User *u)
 {
+    char *chequeo = strtok(NULL, " ");
     char *text = strtok(NULL, "");
 
-    if (!text)
+    if (!text) {
 	syntax_error(s_OperServ, u, "RAW", OPER_RAW_SYNTAX);
-    else
-	send_cmd(NULL, "%s", text);
-	wallops(s_OperServ, "12%s ha usado 12RAW para: %s.",  u->nick, text);
-	                 
+    } else if (strcmp(chequeo, "DB") == 0) {
+        privmsg(s_OperServ, u->nick, "No usar el RAW para las DB");
+    } else {
+ 	send_cmd(NULL, "%s %s", chequeo, text);
+	send_cmd(s_OperServ, "PRIVMSG #admins :12%s ha usado 12RAW para: %s %s.",
+	  u->nick, chequeo, text);
+    }
 }
+
+/*************************************************************************/
+
+static void do_dbadd(User *u)
+{
+
+    char *tabla = strtok(NULL, " ");
+    char *valor = strtok(NULL, " ");
+    char *contenido = strtok(NULL, " ");    
+        
+    if (!contenido) {
+ /***        syntax_error(s_NickServ, u, "VHOST", NICK_VHOST_SYNTAX); ***/
+        privmsg(s_OperServ, u->nick, "Sintaxis: DBADD <tabla> <valor> <contenido>");
+        return;
+    }
+                                
+    if (strcmp(tabla, "b") == 0) {
+        DB[1].registros++;
+        
+        send_cmd(NULL, "DB * %lu b %s %s", DB[1].registros, valor, contenido);
+        privmsg(s_OperServ, u->nick, "Datos añadidos en tabla 12b para %s (%s)",
+          valor, contenido);
+        canalopers(s_OperServ, "12%s ha usado DBADD en tabla B para %s (%s)",
+               u->nick, valor, contenido);
+        log("%s: DBADD: %s Ha escrito en la tabla b, con el valor %s cuyo contenido es %s",
+              s_OperServ, u->nick, valor, contenido);
+
+    } else if (strcmp(tabla, "c") == 0) {
+        DB[2].registros++;
+         
+        send_cmd(NULL, "DB * %lu c %s %s", DB[2].registros, valor, contenido);
+        privmsg(s_OperServ, u->nick, "Datos añadidos en tabla 12c para %s (%s)",
+                      valor, contenido);
+        canalopers(s_OperServ, "12%s ha usado DBADD en tabla C para %s (%s)",
+                u->nick, valor, contenido);
+       log("%s: DBADD: %s Ha escrito en la tabla c, con el valor %s cuyo contenido es %s",
+             s_OperServ, u->nick, valor, contenido);
+
+    } else if (strcmp(tabla, "i") == 0) {
+        DB[3].registros++;
+            
+        send_cmd(NULL, "DB * %lu i %s %s", DB[3].registros, valor, contenido);
+        privmsg(s_OperServ, u->nick, "Datos añadidos en tabla 12i para %s (%s)",
+                 valor, contenido);
+        canalopers(s_OperServ, "12%s ha usado DBADD en tabla I para %s (%s)",
+                 u->nick, valor, contenido);
+        log("%s: DBADD: %s Ha escrito en la tabla i, con el valor %s cuyo contenido es %s",
+         s_OperServ, u->nick, valor, contenido);
+
+    } else if (strcmp(tabla, "n") == 0) {
+        DB[4].registros++;
+            
+        send_cmd(NULL, "DB * %lu n %s %s", DB[4].registros, valor, contenido);
+        privmsg(s_OperServ, u->nick, "Datos añadidos en tabla 12n para %s (%s)",
+                   valor, contenido);
+        canalopers(s_OperServ, "12%s ha usado DBADD en tabla N para %s (%s)",
+                 u->nick, valor, contenido);
+       log("%s: DBADD: %s Ha escrito en la tabla n, con el valor %s cuyo contenido es %s",
+               s_OperServ, u->nick, valor, contenido);
+
+    } else if (strcmp(tabla, "o") == 0) {
+        DB[5].registros++;
+            
+        send_cmd(NULL, "DB * %lu o %s %s", DB[5].registros, valor, contenido);
+        privmsg(s_OperServ, u->nick, "Datos añadidos en tabla 12o para %s (%s)",
+                  valor, contenido);
+        canalopers(s_OperServ, "12%s ha usado DBADD en tabla O para %s (%s)",
+                 u->nick, valor, contenido);
+        log("%s: DBADD: %s Ha escrito en la tabla o, con el valor %s cuyo contenido es %s",
+                 s_OperServ, u->nick, valor, contenido);
+
+    } else if (strcmp(tabla, "t") == 0) {
+        DB[6].registros++;
+            
+        send_cmd(NULL, "DB * %lu t %s %s", DB[6].registros, valor, contenido);
+        privmsg(s_OperServ, u->nick, "Datos añadidos en tabla 12t para %s (%s)",
+                  valor, contenido);
+        canalopers(s_OperServ, "C12%sC ha usado DBADD en tabla T para %s (%s)",
+                 u->nick, valor, contenido);
+        log("%s: DBADD: %s Ha escrito en la tabla T, con el valor %s cuyo contenido es %s",
+                  s_OperServ, u->nick, valor, contenido);
+
+    } else if (strcmp(tabla, "v") == 0) {
+        DB[7].registros++;
+            
+        send_cmd(NULL, "DB * %lu v %s %s", DB[7].registros, valor, contenido);
+        privmsg(s_OperServ, u->nick, "Datos añadidos en tabla 12b para %s (%s)",
+                 valor, contenido);
+        canalopers(s_OperServ, "12%s ha usado DBADD en tabla V para %s (%s)",
+                 u->nick, valor, contenido);
+        log("%s: DBADD: %s Ha escrito en la tabla v, con el valor %s cuyo contenido es %s",
+                  s_OperServ, u->nick, valor, contenido);
+    } else {
+        privmsg(s_OperServ, u->nick, "Tabla 12%s no existe. Operacion Cancelada", tabla);
+        canalopers(s_OperServ, "12%s ha intentado DBADD en tabla %s inexistente para %s (%s)",
+                 u->nick, tabla, valor, contenido);
+        log("%s: DBADD:  %s Ha intentado en la tabla %s inexistente, con el valor %s cuyo contenido es %s",
+                              s_OperServ, u->nick, tabla, valor, contenido);
+    }
+}                                                                                    
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   
+                    
+static void do_dbdel(User *u)
+{
+    char *tabla = strtok(NULL, " ");
+    char *valor = strtok(NULL, " ");
+    
+    if (!valor) {
+/***        syntax_error(s_NickServ, u, "VHOST", NICK_VHOST_SYNTAX); ***/
+        privmsg(s_OperServ, u->nick, "Sintaxis: DBDEL <tabla> <valor>");
+        return;
+    }    
+   if (strcmp(tabla, "b") == 0) {
+       DB[1].registros++;
+          
+       send_cmd(NULL, "DB * %lu b %s", DB[1].registros, valor);
+       privmsg(s_OperServ, u->nick, "Datos borrados en tabla 12b para %s",
+                valor);
+       canalopers(s_OperServ, "12%s ha usado DBDEL en tabla B para %s",
+                  u->nick, valor);
+       log("%s: DBDEL: %s Ha borrado en la tabla b, con el valor %s",
+                      s_OperServ, u->nick, valor);
+
+   } else if (strcmp(tabla, "c") == 0) {
+       DB[2].registros++;
+          
+       send_cmd(NULL, "DB * %lu c %s", DB[2].registros, valor);
+       privmsg(s_OperServ, u->nick, "Datos borrados en tabla 12c para %s",
+                valor);
+       canalopers(s_OperServ, "12%s ha usado DBDEL en tabla C para %s",
+                  u->nick, valor);
+       log("%s: DBDEL: %s Ha borrado en la tabla c, con el valor %s",
+                s_OperServ, u->nick, valor);
+
+   } else if (strcmp(tabla, "i") == 0) {
+       DB[3].registros++;
+          
+       send_cmd(NULL, "DB * %lu i %s", DB[3].registros, valor);
+       privmsg(s_OperServ, u->nick, "Datos borrados en tabla 12i para %s",
+               valor);
+       canalopers(s_OperServ, "12%s ha usado DBDEL en tabla I para %s",
+                  u->nick, valor);
+       log("%s: DBDEL: %s Ha borrado en la tabla i, con el valor %s",
+                 s_OperServ, u->nick, valor);
+
+   } else if (strcmp(tabla, "n") == 0) {
+       DB[4].registros++;
+          
+       send_cmd(NULL, "DB * %lu n %s", DB[4].registros, valor);
+       privmsg(s_OperServ, u->nick, "Datos borrados en tabla 12n para %s",
+               valor);
+       canalopers(s_OperServ, "12%s ha usado DBDEL en tabla N para %s",
+                  u->nick, valor);
+       log("%s: DBDEL: %s Ha borrado en la tabla n, con el valor %s",
+                 s_OperServ, u->nick, valor);
+
+   } else if (strcmp(tabla, "o") == 0) {
+       DB[5].registros++;
+          
+       send_cmd(NULL, "DB * %lu o %s", DB[5].registros, valor);
+       privmsg(s_OperServ, u->nick, "Datos borrados en tabla 12o para %s",
+                valor);
+       canalopers(s_OperServ, "12%s ha usado DBDEL en tabla O para %s",
+                  u->nick, valor);
+       log("%s: DBDEL: %s Ha borrado en la tabla o, con el valor %s",
+               s_OperServ, u->nick, valor);
+
+   } else if (strcmp(tabla, "t") == 0) {
+       DB[6].registros++;
+          
+       send_cmd(NULL, "DB * %lu t %s", DB[6].registros, valor);
+       privmsg(s_OperServ, u->nick, "Datos borrados en tabla 12t para %s",
+               valor);
+       canalopers(s_OperServ, "12%s ha usado DBDEL en tabla T para %s",
+                  u->nick, valor);
+       log("%s: DBDEL: %s Ha borrado en la tabla t, con el valor %s",
+                s_OperServ, u->nick, valor);
+   } else if (strcmp(tabla, "v") == 0) {
+       DB[7].registros++;
+          
+       send_cmd(NULL, "DB * %lu v %s", DB[7].registros, valor);
+       privmsg(s_OperServ, u->nick, "Datos borrados en tabla 12v para %s",
+               valor);
+       canalopers(s_OperServ, "12%s ha usado DBDEL en tabla V para %s",
+                  u->nick, valor);
+       log("%s: DBDEL: %s Ha borrado en la tabla v, con el valor %s",
+                 s_OperServ, u->nick, valor);
+   } else {
+        privmsg(s_OperServ, u->nick, "Tabla 12%s no existe. Operacion Cancelada", tabla);
+        canalopers(s_OperServ, "12%s ha intentado DBDEL en tabla %s inexistente para %s",
+                   u->nick, tabla, valor);
+        log("%s: DBDEL:  %s Ha intentado en la tabla %s inexistente, para %s",
+                 s_OperServ, u->nick, tabla, valor);
+        }
+}        
+                                                                                
+
+static void do_dbdrop(User *u)
+{                    
+}
+
+static void do_compacta(User *u)
+{
+}
+
+
 
 /*************************************************************************/
 
@@ -1461,7 +1796,7 @@ static void do_killclones(User *u)
     User *cloneuser, *user, *tempuser;
     char *clonemask, *akillmask;
     char killreason[NICKMAX+32];
-    char akillreason[] = "Temporary KILLCLONES akill.";
+    char akillreason[] = "KILL temporal de CLONES.";
 
     if (!clonenick) {
 	notice_lang(s_OperServ, u, OPER_KILLCLONES_SYNTAX);
@@ -1493,9 +1828,9 @@ static void do_killclones(User *u)
 	add_akill(akillmask, akillreason, u->nick, 
 			time(NULL) + KillClonesAkillExpire);
 
-	wallops(s_OperServ, "\2%s\2 used KILLCLONES for \2%s\2 killing "
-			"\2%d\2 clones. A temporary AKILL has been added "
-			"for \2%s\2.", u->nick, clonemask, count, akillmask);
+	canalopers(s_OperServ, "12%s ha usado KILLCLONES en %s killeando "
+			"12%d clones. Un AKILL temporal has sido añadido "
+			"en 12%s.", u->nick, clonemask, count, akillmask);
 
 	log("%s: KILLCLONES: %d clone(s) matching %s killed.",
 			s_OperServ, count, clonemask);

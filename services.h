@@ -461,8 +461,7 @@ struct channel_ {
 
 
 /* Who sends channel MODE (and KICK) commands? */
-#define MODE_SENDER(service) ServerName
-
+#define MODE_SENDER(service) service
 
 /*************************************************************************/
 
@@ -481,6 +480,11 @@ typedef struct ignore_data {
     time_t time;	/* When do we stop ignoring them? */
 } IgnoreData;
 
+/********* Protocolo DB *********/
+struct DB {
+     long registros;   // Numero de registro por el ke van
+} DB[7];
+     
 /*************************************************************************/
 
 #include "extern.h"

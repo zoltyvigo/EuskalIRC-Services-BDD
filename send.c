@@ -55,7 +55,15 @@ void wallops(const char *source, const char *fmt, ...)
     vsend_cmd(source ? source : ServerName, buf, args);
 }
                        
-                        
+void canalopers(const char *source, const char *fmt, ...)
+{
+    va_list args;
+    char buf[BUFSIZE];
+      
+    va_start(args, fmt);
+    snprintf(buf, sizeof(buf), "PRIVMSG #admins :%s", fmt);
+    vsend_cmd(source ? source : ServerName, buf, args);
+}                        
 
 
 /*************************************************************************/

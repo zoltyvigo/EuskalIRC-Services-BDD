@@ -1,5 +1,12 @@
 ChangeLog
 
+
+ircservices-4.3.3+Upworld-1.1+BDD-1.2rc5p1 equis@fuckmicrosoft.com
+--------------------------------------------------------------------
+-Pequeño parche de la versión 5 para "ajustar" modos de los services
+
+
+
 ircservices-4.3.3+Upworld-1.1+BDD-1.2rc5   equis@fuckmicrosoft.com
 --------------------------------------------------------------------
 -Bug en ShadowServ (desde rc4), no +d

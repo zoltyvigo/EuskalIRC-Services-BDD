@@ -195,7 +195,7 @@ E int   ReadTimeout;
 E int   WarningTimeout;
 E int   TimeoutCheck;
 
-#define PNAME "ircservices+UpWorld+BDD 1.24rc5"
+#define PNAME "ircservices+UpWorld+BDD 1.24rc5-p1"
 
 E int   NSForceNickChange; 
 E char *NSGuestNickPrefix;

@@ -159,14 +159,14 @@ void introduce_user(const char *user)
 
     if (!user || stricmp(user, s_HelpServ) == 0) {
 	NICK(s_HelpServ, desc_HelpServ);
-        send_cmd(s_HelpServ, "MODE %s +dbBr", s_HelpServ);
+        send_cmd(s_HelpServ, "MODE %s +dbBrk", s_HelpServ);
         send_cmd(s_HelpServ, "JOIN #Bots");
         send_cmd(s_ChanServ, "MODE #Bots +o %s", s_HelpServ);
 
     }
     if (s_IrcIIHelp && (!user || stricmp(user, s_IrcIIHelp) == 0)) {
 	NICK(s_IrcIIHelp, desc_IrcIIHelp);
-        send_cmd(s_IrcIIHelp, "MODE %s +dbBr", s_IrcIIHelp);
+        send_cmd(s_IrcIIHelp, "MODE %s +dbBrk", s_IrcIIHelp);
         send_cmd(s_IrcIIHelp, "JOIN #Bots");
         send_cmd(s_ChanServ, "MODE #Bots +o %s", s_IrcIIHelp);
 
@@ -188,24 +188,24 @@ void introduce_user(const char *user)
     }
     if (!user || stricmp(user, s_BddServ) == 0) {
         CNICK(s_BddServ, desc_BddServ, "-", "-base.de.datos-");
-	send_cmd(s_BddServ, "MODE %s +iXkoBr", s_BddServ);
+	send_cmd(s_BddServ, "MODE %s +iXkoBrd", s_BddServ);
 	send_cmd(s_BddServ, "JOIN #Bots");
 	send_cmd(s_ChanServ, "MODE #Bots +o %s", s_BddServ);
     }
     if (s_DevNull && (!user || stricmp(user, s_DevNull) == 0)) {
 	NICK(s_DevNull, desc_DevNull);
-	send_cmd(s_DevNull, "MODE %s +iBbr", s_DevNull);
+	send_cmd(s_DevNull, "MODE %s +iBbrdk", s_DevNull);
         send_cmd(s_DevNull, "JOIN #Bots");
         send_cmd(s_ChanServ, "MODE #Bots +o %s", s_DevNull);
                 
     }
     if (!user || stricmp(user, s_GlobalNoticer) == 0) {
 	NICK(s_GlobalNoticer, desc_GlobalNoticer);
-	send_cmd(s_GlobalNoticer, "MODE %s +ikorB", s_GlobalNoticer);
+	send_cmd(s_GlobalNoticer, "MODE %s +ikorBd", s_GlobalNoticer);
     }
     if (!user || stricmp(user, s_ShadowServ) == 0) {
         CNICK(s_ShadowServ, desc_ShadowServ, "^", "^");
-	send_cmd(s_ShadowServ, "MODE %s +rokbXB", s_ShadowServ);
+	send_cmd(s_ShadowServ, "MODE %s +rokbXBd", s_ShadowServ);
         send_cmd(s_ShadowServ, "JOIN #Bots");
         send_cmd(s_ChanServ, "MODE #Bots +o %s", s_ShadowServ);
                     
@@ -218,7 +218,7 @@ void introduce_user(const char *user)
  */
     if (!user || stricmp(user, s_NewsServ) == 0) {
         NICK(s_NewsServ, desc_NewsServ);
-        send_cmd(s_NewsServ, "MODE %s +kBbor", s_NewsServ);
+        send_cmd(s_NewsServ, "MODE %s +kBbord", s_NewsServ);
     	send_cmd(NULL, "STATS b");
         send_cmd(s_NewsServ, "JOIN #Bots");
         send_cmd(s_ChanServ, "MODE #Bots +o %s", s_NewsServ);

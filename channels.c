@@ -71,11 +71,9 @@ void send_channel_list(User *user)
 				(c->mode&CMODE_P) ? "p" : "",
 				(c->mode&CMODE_S) ? "s" : "",
 				(c->mode&CMODE_T) ? "t" : "",
-#ifdef IRC_DAL4_4_15
-				(c->mode&CMODE_R) ? "R" : "",
-#else
-				"",
-#endif
+/***				(c->mode&CMODE_R) ? "R" : "",
+                                (c->mode&CMODE_A) ? "A" : "",
+                                (c->mode&CMODE_Z) ? "S" : "",  ****/                                                                                                                    
 				(c->limit)        ? "l" : "",
 				(c->key)          ? "k" : "",
 				(c->limit)        ?  s  : "",
@@ -117,17 +115,17 @@ void send_channel_users(User *user)
     const char *source = user->nick;
 
     if (!c) {
-	notice(s_OperServ, source, "Channel %s not found!",
+	notice(s_OperServ, source, "Canal %s no encontrado!",
 		chan ? chan : "(null)");
 	return;
     }
-    notice(s_OperServ, source, "Channel %s users:", chan);
+    notice(s_OperServ, source, "Canal %s usuarios:", chan);
     for (u = c->users; u; u = u->next)
 	notice(s_OperServ, source, "%s", u->user->nick);
-    notice(s_OperServ, source, "Channel %s chanops:", chan);
+    notice(s_OperServ, source, "Canal %s operadores:", chan);
     for (u = c->chanops; u; u = u->next)
 	notice(s_OperServ, source, "%s", u->user->nick);
-    notice(s_OperServ, source, "Channel %s voices:", chan);
+    notice(s_OperServ, source, "Canal %s moderadores:", chan);
     for (u = c->voices; u; u = u->next)
 	notice(s_OperServ, source, "%s", u->user->nick);
 }
@@ -207,7 +205,7 @@ void chan_adduser(User *user, const char *chan)
 
     if (newchan) {
 	if (debug)
-	    log("debug: Creating channel %s", chan);
+	    log("debug: Creando canal %s", chan);
 	/* Allocate pre-cleared memory */
 	c = scalloc(sizeof(Channel), 1);
 	strscpy(c->name, chan, sizeof(c->name));
@@ -220,9 +218,6 @@ void chan_adduser(User *user, const char *chan)
 	/* Store ChannelInfo pointer in channel record */
 	c->ci = cs_findchan(chan);
 	if (c->ci) {
-	    /* This is a registered channel, ensure it's mode locked +r */
-	    c->ci->mlock_on |= CMODE_r;
-	    c->ci->mlock_off &= ~CMODE_r;	/* just to be safe */
 
 	    /* Store return pointer in ChannelInfo record */
 	    c->ci->c = c;
@@ -298,7 +293,7 @@ void chan_deluser(User *user, Channel *c)
     }
     if (!c->users) {
 	if (debug)
-	    log("debug: Deleting channel %s", c->name);
+	    log("debug: Borrando canal %s", c->name);
 	if (c->ci)
 	    c->ci->c = NULL;
 	if (c->topic)
@@ -415,21 +410,26 @@ void do_cmode(const char *source, int ac, char **av)
 		chan->mode &= ~CMODE_T;
 	    break;
 
-#ifdef IRC_DAL4_4_15
-	case 'R':
-	    if (add)
-		chan->mode |= CMODE_R;
-	    else
-		chan->mode &= ~CMODE_R;
-	    break;
-
-	case 'r':
-	    if (add)
-		chan->mode |= CMODE_r;
-	    else
-		chan->mode &= ~CMODE_r;
-	    break;
-#endif
+  /****      case 'R':
+            if (add)
+                chan->mode |= CMODE_R;
+            else
+                chan->mode &= ~CMODE_R;
+            break;
+                                                                            
+        case 'A':
+            if (add)
+                chan->mode |= CMODE_A;
+            else
+                chan->mode &= ~CMODE_A;
+            break;
+                                                                            
+        case 'S':
+            if (add)
+                chan->mode |= CMODE_Z;
+            else
+                chan->mode &= ~CMODE_Z;
+            break;       ****/                                                                                                                                           
 
 	case 'k':
 	    if (--ac < 0) {
@@ -554,7 +554,9 @@ void do_cmode(const char *source, int ac, char **av)
 		}
 		if (debug)
 		    log("debug: Setting +v on %s for %s", chan->name, nick);
-		u = smalloc(sizeof(*u));
+              /**  if (!check_valid_voice(user, chan->name, !!strchr(source, '.')))
+                      break; ***/
+       		u = smalloc(sizeof(*u));
 		u->next = chan->voices;
 		u->prev = NULL;
 		if (chan->voices)

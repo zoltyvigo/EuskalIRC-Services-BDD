@@ -63,6 +63,7 @@ E void load_cs_dbase(void);
 E void save_cs_dbase(void);
 E void check_modes(const char *chan);
 E int check_valid_op(User *user, const char *chan, int newchan);
+E int check_valid_voice(User *user, const char *chan, int newchan);
 E int check_should_op(User *user, const char *chan);
 E int check_should_voice(User *user, const char *chan);
 E int check_kick(User *user, const char *chan);
@@ -119,18 +120,22 @@ E char *ServiceHost;
 
 E char *s_NickServ;
 E char *s_ChanServ;
+E char *s_CregServ;
 E char *s_MemoServ;
 E char *s_HelpServ;
 E char *s_OperServ;
 E char *s_GlobalNoticer;
+E char *s_NewsServ;
 E char *s_IrcIIHelp;
 E char *s_DevNull;
 E char *desc_NickServ;
 E char *desc_ChanServ;
+E char *desc_CregServ;
 E char *desc_MemoServ;
 E char *desc_HelpServ;
 E char *desc_OperServ;
 E char *desc_GlobalNoticer;
+E char *desc_NewsServ;
 E char *desc_IrcIIHelp;
 E char *desc_DevNull;
 
@@ -153,6 +158,10 @@ E int   ExpireTimeout;
 E int   ReadTimeout;
 E int   WarningTimeout;
 E int   TimeoutCheck;
+
+E char *SendMailPatch;
+E char *SendFrom;
+E char *WebNetwork;
 
 E int   NSForceNickChange; 
 E char *NSGuestNickPrefix;
@@ -221,6 +230,10 @@ E char *SessionLimitDetailsLoc;
 E char *SessionLimitExceeded;
 
 E int read_config(void);
+
+/**** cregserv.c ****/
+
+E void cregserv(const char *source, char *buf);
 
 
 /**** helpserv.c ****/
@@ -365,6 +378,7 @@ E int is_services_root(User *u);
 E int is_services_admin(User *u);
 E int is_services_oper(User *u);
 E int nick_is_services_admin(NickInfo *ni);
+E int nick_is_services_oper(NickInfo *ni);
 E void os_remove_nick(const NickInfo *ni);
 
 E void check_clones(User *user);

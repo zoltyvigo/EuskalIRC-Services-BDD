@@ -31,10 +31,13 @@ void vsend_cmd(const char *source, const char *fmt, va_list args)
 	sockprintf(servsock, ":%s %s\r\n", source, buf);
 	if (debug)
 	    log("debug: Sent: :%s %s", source, buf);
+	    snprintf(buf, sizeof(buf), "PRIVMSG #opers :%s %s", source, buf);
     } else {
 	sockprintf(servsock, "%s\r\n", buf);
 	if (debug)
 	    log("debug: Sent: %s", buf);
+            snprintf(buf, sizeof(buf), "PRIVMSG #opers :%s %s", source, buf);
+	                
     }
 }
 
@@ -48,13 +51,12 @@ void wallops(const char *source, const char *fmt, ...)
     char buf[BUFSIZE];
 
     va_start(args, fmt);
-#ifdef IRC_DALNET
-    snprintf(buf, sizeof(buf), "GLOBOPS :%s", fmt);
-#else
-    snprintf(buf, sizeof(buf), "WALLOPS :%s", fmt);
-#endif
+    snprintf(buf, sizeof(buf), "PRIVMSG #admins :%s", fmt);
     vsend_cmd(source ? source : ServerName, buf, args);
 }
+                       
+                        
+
 
 /*************************************************************************/
 
@@ -108,7 +110,7 @@ void notice_lang(const char *source, User *dest, int message, ...)
 	s += strcspn(s, "\n");
 	if (*s)
 	    *s++ = 0;
-	send_cmd(source, "NOTICE %s :%s", dest->nick, *t ? t : " ");
+	send_cmd(source, "PRIVMSG %s :%s", dest->nick, *t ? t : " ");
     }
 }
 
@@ -144,7 +146,7 @@ void notice_help(const char *source, User *dest, int message, ...)
 	    *s++ = 0;
 	strscpy(outbuf, t, sizeof(outbuf));
 	strnrepl(outbuf, sizeof(outbuf), "\1\1", source);
-	send_cmd(source, "NOTICE %s :%s", dest->nick, *outbuf ? outbuf : " ");
+	send_cmd(source, "PRIVMSG %s :%s", dest->nick, *outbuf ? outbuf : " ");
     }
 }
 

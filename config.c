@@ -26,18 +26,22 @@ static char *temp_userhost;
 
 char *s_NickServ;
 char *s_ChanServ;
+char *s_CregServ;
 char *s_MemoServ;
 char *s_HelpServ;
 char *s_OperServ;
 char *s_GlobalNoticer;
+char *s_NewsServ;
 char *s_IrcIIHelp;
 char *s_DevNull;
 char *desc_NickServ;
 char *desc_ChanServ;
+char *desc_CregServ;
 char *desc_MemoServ;
 char *desc_HelpServ;
 char *desc_OperServ;
 char *desc_GlobalNoticer;
+char *desc_NewsServ;
 char *desc_IrcIIHelp;
 char *desc_DevNull;
 
@@ -60,6 +64,10 @@ int   ExpireTimeout;
 int   ReadTimeout;
 int   WarningTimeout;
 int   TimeoutCheck;
+
+char *SendMailPatch;
+char *SendFrom;
+char *WebNetwork;
 
 static int NSDefNone;
 int   NSForceNickChange;
@@ -181,6 +189,8 @@ Directive directives[] = {
                             { PARAM_POSINT, 0, &CloneMinUsers },
                             { PARAM_TIME, 0, &CloneMaxDelay },
                             { PARAM_TIME, 0, &CloneWarningDelay } } },
+    { "CregServName",     { { PARAM_STRING, 0, &s_CregServ },
+                            { PARAM_STRING, 0, &desc_CregServ } } },                                                                
     { "CSAccessMax",      { { PARAM_POSINT, 0, &CSAccessMax } } },
     { "CSAutokickMax",    { { PARAM_POSINT, 0, &CSAutokickMax } } },
     { "CSAutokickReason", { { PARAM_STRING, 0, &CSAutokickReason } } },
@@ -218,6 +228,8 @@ Directive directives[] = {
     { "MSNotifyAll",      { { PARAM_SET, 0, &MSNotifyAll } } },
     { "MSSendDelay",      { { PARAM_TIME, 0, &MSSendDelay } } },
     { "NewsDB",           { { PARAM_STRING, 0, &NewsDBName } } },
+    { "NewsServName",     { { PARAM_STRING, 0, &s_NewsServ },
+                            { PARAM_STRING, 0, &desc_NewsServ } } },                                    
     { "NickservDB",       { { PARAM_STRING, 0, &NickDBName } } },
     { "NickServName",     { { PARAM_STRING, 0, &s_NickServ },
                             { PARAM_STRING, 0, &desc_NickServ } } },
@@ -259,6 +271,9 @@ Directive directives[] = {
     { "ServiceUser",      { { PARAM_STRING, 0, &temp_userhost } } },
     { "SessionLimitDetailsLoc",{{PARAM_STRING, 0, &SessionLimitDetailsLoc}}},
     { "SessionLimitExceeded",{{PARAM_STRING, 0, &SessionLimitExceeded}}},
+    { "SendMailPatch",	  { { PARAM_STRING, 0, &SendMailPatch } } },
+    { "SendFrom",         { { PARAM_STRING, 0, &SendFrom } } },
+    { "WebNetwork",	  { { PARAM_STRING, 0, &WebNetwork } } },
     { "StrictPasswords",  { { PARAM_SET, 0, &StrictPasswords } } },
     { "TimeoutCheck",     { { PARAM_TIME, 0, &TimeoutCheck } } },
     { "UpdateTimeout",    { { PARAM_TIME, 0, &UpdateTimeout } } },
@@ -512,10 +527,12 @@ int read_config()
     CHEK2(temp_userhost, ServiceUser);
     CHEK2(s_NickServ, NickServName);
     CHEK2(s_ChanServ, ChanServName);
+    CHEK2(s_CregServ, CregServName);
     CHEK2(s_MemoServ, MemoServName);
     CHEK2(s_HelpServ, HelpServName);
     CHEK2(s_OperServ, OperServName);
     CHEK2(s_GlobalNoticer, GlobalName);
+    CHEK2(s_NewsServ, NewsServName);
     CHEK2(PIDFilename, PIDFile);
     CHEK2(MOTDFilename, MOTDFile);
     CHECK(HelpDir);
@@ -539,6 +556,9 @@ int read_config()
     CHECK(CSAutokickReason);
     CHECK(CSInhabit);
     CHECK(CSListMax);
+    CHECK(SendMailPatch);
+    CHECK(SendFrom);
+    CHECK(WebNetwork);
     CHECK(ServicesRoot);
     CHECK(AutokillExpiry);
 

@@ -1,0 +1,18 @@
+En esta red tiene en servicio varios bots cuya finalidad es la siguiente:
+ 		
+    4CHaN        Servicio de mantenimiento de canales
+    4ReG         Servicio de preregistro de canales
+    4NiCK        Servicio de registro y manteniment de Nicks
+    4MeMO        Servicio de mensajería entre usuarios
+    4HeLP        Servicio de ayuda on-line
+    4GLoBaL      Servicio de mensajería global
+    4NeWS        Servicio de noticias on-line
+ 
+
+Bots de acceso restringido:
+
+    4BReI	   Servicio de recogida de estadísticas
+    4OPeR        Servicio sólo para OPERS/IRCOPS
+
+
+Para ver la ayuda de cada bot, escriba 12/msg BOT HELP.

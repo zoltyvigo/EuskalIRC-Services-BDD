@@ -1,0 +1,16 @@
+La red GlobalChat esta formada por los siguientes servidores:
+
+    12nebula.globalchat.org       Via NetWorks (irc.elcano.com)
+    12fagorn.globalchat.org       Arrakis S.L (irc.scytale.org)
+    12legolas.globalchat.org      IslaWEB S.L (irc.islaweb.com)
+    12rhun.globalchat.org         Nexus S.A HUB (irc.globalchat.org)
+    12la-comarca.globalchat.org   Nexus S.A  (irc.ncsa.es)
+    12neter.globalchat.org        Green Comunicaciones HUB (favila.greencom.net)
+    12rivendel.globalchat.org     Green Comunicaciones (pelayo.greencom.net)
+    12legolas.globalchat.org      IslaWEB S.L (irc.islaweb.com)
+    12galadriel.globalchat.org    Universidad de Granada (hound.ugr.es)
+    12lenin.globalchat.org        Listin (irc.listin.com)
+    12ainur.globalchat.org        Hispalab (irc.hispalab.com)
+    12arwen.globalchat.org        CERT Perú (207.17.220.111)
+
+Para conectar a un servidor de GlobalChat, escriba 12/server Servidor red

@@ -13,41 +13,11 @@
 /* Send a NICK command for the given pseudo-client.  If `user' is NULL,
  * send NICK commands for all the pseudo-clients. */
 
-#if defined(IRC_DALNET)
-# ifdef IRC_DAL4_4_15
-#  define NICK(nick,name) \
-    do { \
-	send_cmd(NULL, "NICK %s 1 %ld %s %s %s 0 :%s", (nick), time(NULL), \
-		ServiceUser, ServiceHost, ServerName, (name)); \
-    } while (0)
-# else
-#  define NICK(nick,name) \
-    do { \
-	send_cmd(NULL, "NICK %s 1 %ld %s %s %s :%s", (nick), time(NULL), \
-		ServiceUser, ServiceHost, ServerName, (name)); \
-    } while (0)
-# endif
-#elif defined(IRC_UNDERNET)
 # define NICK(nick,name) \
     do { \
 	send_cmd(ServerName, "NICK %s 1 %ld %s %s %s :%s", (nick), time(NULL),\
 		ServiceUser, ServiceHost, ServerName, (name)); \
     } while (0)
-#elif defined(IRC_TS8)
-# define NICK(nick,name) \
-    do { \
-	send_cmd(NULL, "NICK %s :1", (nick)); \
-	send_cmd((nick), "USER %ld %s %s %s :%s", time(NULL), \
-		ServiceUser, ServiceHost, ServerName, (name)); \
-    } while (0)
-#else
-# define NICK(nick,name) \
-    do { \
-	send_cmd(NULL, "NICK %s :1", (nick)); \
-	send_cmd((nick), "USER %s %s %s :%s", \
-		ServiceUser, ServiceHost, ServerName, (name)); \
-    } while (0)
-#endif
 
 void introduce_user(const char *user)
 {
@@ -62,34 +32,66 @@ void introduce_user(const char *user)
 
     if (!user || stricmp(user, s_NickServ) == 0) {
 	NICK(s_NickServ, desc_NickServ);
-	send_cmd(s_NickServ, "MODE %s +o", s_NickServ);
+	send_cmd(s_NickServ, "MODE %s +okrhX", s_NickServ);
+        send_cmd(s_NickServ, "JOIN #admins");        	
+        send_cmd(s_NickServ, "JOIN #opers");                
     }
     if (!user || stricmp(user, s_ChanServ) == 0) {
 	NICK(s_ChanServ, desc_ChanServ);
-	send_cmd(s_ChanServ, "MODE %s +o", s_ChanServ);
+	send_cmd(s_ChanServ, "MODE %s +BokrhXd", s_ChanServ);
+        send_cmd(s_ChanServ, "JOIN #admins");
+        send_cmd(s_ChanServ, "JOIN #opers");               
     }
+    if (!user || stricmp(user, s_CregServ) == 0) {
+        NICK(s_CregServ, desc_CregServ);
+        send_cmd(s_CregServ, "MODE %s +okrhXd", s_CregServ);
+        send_cmd(s_CregServ, "JOIN #admins");
+        send_cmd(s_CregServ, "JOIN #opers");
+    }                                            
     if (!user || stricmp(user, s_HelpServ) == 0) {
 	NICK(s_HelpServ, desc_HelpServ);
+        send_cmd(s_HelpServ, "MODE %s +okrhX", s_HelpServ); 
+        send_cmd(s_HelpServ, "JOIN #opers");                        
     }
     if (s_IrcIIHelp && (!user || stricmp(user, s_IrcIIHelp) == 0)) {
 	NICK(s_IrcIIHelp, desc_IrcIIHelp);
+	send_cmd(s_IrcIIHelp, "MODE %s +okrhX", s_IrcIIHelp);
+        send_cmd(s_IrcIIHelp, "JOIN #opers");              	        
     }
     if (!user || stricmp(user, s_MemoServ) == 0) {
 	NICK(s_MemoServ, desc_MemoServ);
-	send_cmd(s_MemoServ, "MODE %s +o", s_MemoServ);
+	send_cmd(s_MemoServ, "MODE %s +orhkX", s_MemoServ);
+        send_cmd(s_MemoServ, "JOIN #opers");        	
     }
     if (!user || stricmp(user, s_OperServ) == 0) {
 	NICK(s_OperServ, desc_OperServ);
-	send_cmd(s_OperServ, "MODE %s +oi", s_OperServ);
+	send_cmd(s_OperServ, "MODE %s +orhkX", s_OperServ);
+        send_cmd(s_OperServ, "JOIN #admins");       	
+        send_cmd(s_OperServ, "JOIN #opers");                
     }
     if (s_DevNull && (!user || stricmp(user, s_DevNull) == 0)) {
 	NICK(s_DevNull, desc_DevNull);
-	send_cmd(s_DevNull, "MODE %s +i", s_DevNull);
+	send_cmd(s_DevNull, "MODE %s +iokrh", s_DevNull);
+        send_cmd(s_DevNull, "JOIN #opers"); 	
     }
     if (!user || stricmp(user, s_GlobalNoticer) == 0) {
 	NICK(s_GlobalNoticer, desc_GlobalNoticer);
-	send_cmd(s_GlobalNoticer, "MODE %s +oi", s_GlobalNoticer);
+	send_cmd(s_GlobalNoticer, "MODE %s +orhkX", s_GlobalNoticer);
+        send_cmd(s_GlobalNoticer, "JOIN #opers");
     }
+    if (!user || stricmp(user, s_NewsServ) == 0) {
+        NICK(s_NewsServ, desc_NewsServ);
+        send_cmd(s_NewsServ, "MODE %s +okrhXd", s_NewsServ);
+        send_cmd(s_NewsServ, "JOIN #opers");
+    }                                                
+        send_cmd(ServerName, "MODE #admins +oooo %s %s %s %s",
+                 s_NickServ, s_ChanServ, s_CregServ, s_OperServ);                 
+        send_cmd(ServerName, "MODE #opers +oooooo %s %s %s %s %s %s",
+          s_NickServ, s_ChanServ, s_CregServ, s_MemoServ, s_OperServ, s_GlobalNoticer);                
+        send_cmd(ServerName, "MODE #opers +ooooo %s %s %s %s",
+            s_NewsServ, s_IrcIIHelp, s_DevNull, s_HelpServ);           
+
+                      
 }
 
 #undef NICK
@@ -458,12 +460,8 @@ int init(int ac, char **av)
     if (servsock < 0)
 	fatal_perror("Can't connect to server");
     send_cmd(NULL, "PASS :%s", RemotePassword);
-#ifdef IRC_UNDERNET_NEW
     send_cmd(NULL, "SERVER %s 1 %lu %lu P09 :%s",
 		ServerName, start_time, start_time, ServerDesc);
-#else
-    send_cmd(NULL, "SERVER %s 1 :%s", ServerName, ServerDesc);
-#endif
     sgets2(inbuf, sizeof(inbuf), servsock);
     if (strnicmp(inbuf, "ERROR", 5) == 0) {
 	/* Close server socket first to stop wallops, since the other

@@ -1,0 +1,89 @@
+¿Que es un 12BOT?
+
+Llamaremos BOT a cualquier software que ofrezca una serie de servicios a los
+usuarios de una red y que este permamentemente conectado a la red. Para ver
+los bots disponibles en la red GlobalChat escriba 12BOTS
+
+
+¿Que es un 12CLON?:
+
+Un CLON es una conexion al IRC de un usuario usando una conexion ya abierta,
+misma IP. Para crear un CLON solo tienes que abrir otro mirc y conectar al
+mismo servidor o red en la que estas.
+
+
+¿Que es un  12FIREWALL?:
+
+Software instalado en nuestro ordenador (generalmente) que "filtra" la 
+informaci¢ón que dejamos que nos llegue, dividiendola en los respectivos
+protocolos.
+
+
+¿Que es 12FLOOD?:
+
+Envio masivo de información a otro usuario(generalmente por CTCP) que, al ser
+contestada con más información, desconecta a este usuario, ya que si mandamos
+demasiada información, el server nos desconecta con el mensaje Excess Flood.
+
+
+¿Que es un 12GLINE?:
+
+Prohibición del acceso a todos los servidores de una red. Normalmente los g-lines
+tiene una duracion de 5 minutos. 
+
+
+¿Que es un 12KLINE?:
+
+Prohibición del acceso a un servidor de una red.
+
+
+¿Que es un 12IDENT?:
+
+Una identidad (es una palabra) que concreta una maskara (sobretodo cuando hay
+clones). Va despues del nick en una mask.
+
+
+¿Que es un 12IRCOP?:
+
+Es un colaborador de un servidor, su mision es controlar el buen funcionamiento
+del IRC, solucionando posibles fallos de los bots,abusos de algunos usuarios...
+Para ver los IRCOPS on-line, escriba 12IRCOPS
+
+
+¿Que es un 12OPER?:
+
+Son parecidos a los IRCop pero no estan asociado a ningun servidor, su funcion
+es basicamente la misma, ayudar y mantener la red.
+Para ver los OPERS on-line, escriba 12IRCOPS
+
+
+¿Que es un 12SPLIT?:
+
+Es la separación de un servidor de la red, desconectando a los usuarios que esten
+conectados al servidor que se separa, del resto de usuarios. No podemos verlos.
+
+
+¿Que es el 12LAG?:
+
+Es el retraso en enviar/recibir los datos por el irc. Para medir el lag se usa el
+comando 12/ctcp <nick> ping eso devuelve el tiempo que tardó en devolver una
+información el nick.
+
+
+¿Que es un 12SCRIPT?:
+
+Un Script es un programa que guia las instrucciones del mIRC, con el realizamos
+acciones automatizadas o muy complejas, podemos usarlas incluso sin saber su
+sintaxis. Son mejoras a nuestro cliente de Irc.
+
+
+¿Que es un 12NUKE?:
+
+Lo primero decir que el uso de Nukes esta totalmente prohibido en esta red,
+por lo que no se dará ayuda a nadie para aprender a usarlos, si ha defenderse
+de ellos. Un nuke es un "paquete" que se nos envia haciendo que de un error en
+nuestro ordenador, o haciendo creer al servidor que nos hemos caido.
+
+
+Para cualquier otra duda acuda al canal #ayuda_irc o hable con un operador de 
+la red. gracias :)

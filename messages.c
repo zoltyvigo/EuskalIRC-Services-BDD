@@ -70,8 +70,10 @@ static void m_kill(char *source, int ac, char **av)
     if (stricmp(av[0], s_OperServ) == 0 ||
         stricmp(av[0], s_NickServ) == 0 ||
         stricmp(av[0], s_ChanServ) == 0 ||
+        stricmp(av[0], s_CregServ) == 0 ||
         stricmp(av[0], s_MemoServ) == 0 ||
         stricmp(av[0], s_HelpServ) == 0 ||
+        stricmp(av[0], s_NewsServ) == 0 ||
         (s_IrcIIHelp && stricmp(av[0], s_IrcIIHelp) == 0) ||
         (s_DevNull && stricmp(av[0], s_DevNull) == 0) ||
         stricmp(av[0], s_GlobalNoticer) == 0
@@ -106,7 +108,7 @@ static void m_motd(char *source, int ac, char **av)
     char buf[BUFSIZE];
 
     f = fopen(MOTDFilename, "r");
-    send_cmd(ServerName, "375 %s :- %s Message of the Day",
+    send_cmd(ServerName, "375 %s :- %s Mensaje del Dia",
 		source, ServerName);
    if (f) {
 	while (fgets(buf, sizeof(buf), f)) {
@@ -115,8 +117,8 @@ static void m_motd(char *source, int ac, char **av)
 	}
 	fclose(f);
     } else {
-	send_cmd(ServerName, "372 %s :- MOTD file not found!  Please "
-			"contact your IRC administrator.", source);
+	send_cmd(ServerName, "372 %s :- Archivo MOTD no ha sido encontrado!  Por favor"
+			" contacta con tu IRC Administrador.", source);
     }
 
     /* Look, people.  I'm not asking for payment, praise, or anything like
@@ -126,8 +128,10 @@ static void m_motd(char *source, int ac, char **av)
      */
 
     send_cmd(ServerName, "372 %s :-", source);
-    send_cmd(ServerName, "372 %s :- Services is copyright (c) "
+    send_cmd(ServerName, "372 %s :- Services está en copyright (c) "
 		"1996-1999 Andy Church.", source);
+    send_cmd(ServerName, "372 %s :- 2000, Toni García, ZoLtan. Proyecto GNU ", source);
+                    		
     send_cmd(ServerName, "376 %s :End of /MOTD command.", source);
 }
 
@@ -135,20 +139,12 @@ static void m_motd(char *source, int ac, char **av)
 
 static void m_nick(char *source, int ac, char **av)
 {
-#if defined(IRC_DALNET) || defined(IRC_UNDERNET)
-# ifdef IRC_UNDERNET
+
     /* ircu sends the server as the source for a NICK message for a new
      * user. */
     if (strchr(source, '.'))
 	*source = 0;
-# endif
-# ifdef IRC_DAL4_4_15
-    if (ac == 8) {
-	/* Get rid of the useless extra parameter. */
-	av[6] = av[7];
-	ac--;
-    }
-# endif
+
     if ((!*source && ac != 7) || (*source && ac != 2)) {
 	if (debug) {
 	    log("debug: NICK message: expecting 2 or 7 parameters after "
@@ -157,9 +153,9 @@ static void m_nick(char *source, int ac, char **av)
 	return;
     }
     do_nick(source, ac, av);
-#else	/* !IRC_UNDERNET && !IRC_DALNET */
+
     /* Nothing to do yet; information comes from USER command. */
-#endif
+
 }
 
 /*************************************************************************/
@@ -211,17 +207,21 @@ static void m_privmsg(char *source, int ac, char **av)
 	    else
 		notice(s_OperServ, source, "Access denied.");
 	    if (WallBadOS)
-		wallops(s_OperServ, "Denied access to %s from %s (non-oper)",
+		wallops(s_OperServ, "Denegando el acceso a %s desde %s (No es OPER)",
 			s_OperServ, source);
 	}
     } else if (stricmp(av[0], s_NickServ) == 0) {
 	nickserv(source, av[1]);
     } else if (stricmp(av[0], s_ChanServ) == 0) {
 	chanserv(source, av[1]);
+    } else if (stricmp(av[0], s_CregServ) == 0) {
+        cregserv(source, av[1]);
     } else if (stricmp(av[0], s_MemoServ) == 0) {
 	memoserv(source, av[1]);
     } else if (stricmp(av[0], s_HelpServ) == 0) {
 	helpserv(s_HelpServ, source, av[1]);
+/***    } else if (stricmp(av[0], s_NewsServ) == 0) {
+        newsserv(sourde, av[1]); *****/
     } else if (s_IrcIIHelp && stricmp(av[0], s_IrcIIHelp) == 0) {
 	char buf[BUFSIZE];
 	snprintf(buf, sizeof(buf), "ircII %s", av[1]);
@@ -313,31 +313,7 @@ static void m_topic(char *source, int ac, char **av)
 
 static void m_user(char *source, int ac, char **av)
 {
-#if defined(IRC_CLASSIC) || defined(IRC_TS8)
-    char *new_av[7];
-
-#ifdef IRC_TS8
-    if (ac != 5)
-#else
-    if (ac != 4)
-#endif
-	return;
-    new_av[0] = source;	/* Nickname */
-    new_av[1] = sstrdup("0");	/* # of hops (was in NICK command... we lose) */
-#ifdef IRC_TS8
-    new_av[2] = av[0];	/* Timestamp */
-    av++;
-#else
-    new_av[2] = sstrdup("0");
-#endif
-    new_av[3] = av[0];	/* Username */
-    new_av[4] = av[1];	/* Hostname */
-    new_av[5] = av[2];	/* Server */
-    new_av[6] = av[3];	/* Real name */
-    do_nick(source, 7, new_av);
-#else	/* !IRC_CLASSIC && !IRC_TS8 */
     /* Do nothing - we get everything we need from the NICK command. */
-#endif
 }
 
 /*************************************************************************/
@@ -360,10 +336,14 @@ void m_whois(char *source, int ac, char **av)
 	    clientdesc = desc_NickServ;
 	else if (stricmp(av[0], s_ChanServ) == 0)
 	    clientdesc = desc_ChanServ;
+        else if (stricmp(av[0], s_CregServ) == 0)
+            clientdesc = desc_CregServ;                    	    
 	else if (stricmp(av[0], s_MemoServ) == 0)
 	    clientdesc = desc_MemoServ;
 	else if (stricmp(av[0], s_HelpServ) == 0)
 	    clientdesc = desc_HelpServ;
+	else if (stricmp(av[0], s_NewsServ) == 0)
+	    clientdesc = desc_NewsServ;	                        
 	else if (s_IrcIIHelp && stricmp(av[0], s_IrcIIHelp) == 0)
 	    clientdesc = desc_IrcIIHelp;
 	else if (stricmp(av[0], s_OperServ) == 0)
@@ -379,8 +359,8 @@ void m_whois(char *source, int ac, char **av)
 	send_cmd(ServerName, "311 %s %s %s %s :%s", source, av[0],
 		ServiceUser, ServiceHost, clientdesc);
 	send_cmd(ServerName, "312 %s %s %s :%s", source, av[0],
-		ServerName, ServerDesc);
-	send_cmd(ServerName, "318 End of /WHOIS response.");
+		ServerName, ServerDesc);           
+        send_cmd(ServerName, "318 End of /WHOIS response.");
     }
 }
 
@@ -412,19 +392,7 @@ Message messages[] = {
     { "VERSION",   m_version },
     { "WALLOPS",   NULL },
     { "WHOIS",     m_whois },
-
-#ifdef IRC_DALNET
-    { "AKILL",     NULL },
-    { "GLOBOPS",   NULL },
-    { "GNOTICE",   NULL },
-    { "GOPER",     NULL },
-    { "RAKILL",    NULL },
-#endif
-
-#ifdef IRC_UNDERNET
     { "GLINE",     NULL },
-#endif
-
     { NULL }
 
 };

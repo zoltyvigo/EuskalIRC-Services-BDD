@@ -182,11 +182,14 @@ void send_user_list(User *user)
 	struct u_chanlist *c;
 	struct u_chaninfolist *ci;
 
-	notice(s_OperServ, source, "%s!%s@%s +%s%s%s%s%s %ld %s :%s",
+	notice(s_OperServ, source, "%s!%s@%s +%s%s%s%s%s%s%s%s%s%s %ld %s :%s",
 		u->nick, u->username, u->host,
 		(u->mode&UMODE_G)?"g":"", (u->mode&UMODE_I)?"i":"",
 		(u->mode&UMODE_O)?"o":"", (u->mode&UMODE_S)?"s":"",
-		(u->mode&UMODE_W)?"w":"", u->signon, u->server, u->realname);
+                (u->mode&UMODE_R)?"r":"", (u->mode&UMODE_X)?"x":"",
+                (u->mode&UMODE_H)?"h":"", (u->mode&UMODE_Z)?"X":"",	                                 		
+		(u->mode&UMODE_W)?"w":"", (u->mode&UMODE_K)?"k":"",
+		 u->signon, u->server, u->realname);
 	buf[0] = 0;
 	s = buf;
 	for (c = u->chans; c; c = c->next)
@@ -218,11 +221,14 @@ void send_user_info(User *user)
 		nick ? nick : "(null)");
 	return;
     }
-    notice(s_OperServ, source, "%s!%s@%s +%s%s%s%s%s %ld %s :%s",
+    notice(s_OperServ, source, "%s!%s@%s +%s%s%s%s%s%s%s%s%s%s %ld %s :%s",
 		u->nick, u->username, u->host,
 		(u->mode&UMODE_G)?"g":"", (u->mode&UMODE_I)?"i":"",
 		(u->mode&UMODE_O)?"o":"", (u->mode&UMODE_S)?"s":"",
-		(u->mode&UMODE_W)?"w":"", u->signon, u->server, u->realname);
+		(u->mode&UMODE_R)?"r":"", (u->mode&UMODE_X)?"x":"", 
+                (u->mode&UMODE_H)?"h":"", (u->mode&UMODE_Z)?"X":"",                
+		(u->mode&UMODE_W)?"w":"", (u->mode&UMODE_K)?"k":"",		
+		u->signon, u->server, u->realname);
     buf[0] = 0;
     s = buf;
     for (c = u->chans; c; c = c->next)
@@ -379,11 +385,6 @@ void do_nick(const char *source, int ac, char **av)
     if (ni_changed) {
 	if (validate_user(user))
 	    check_memos(user);
-#ifdef IRC_DAL4_4_15
-	if (nick_identified(user)) {
-	    send_cmd(ServerName, "SVSMODE %s +r", av[0]);
-	}
-#endif
     }
 }
 
@@ -564,13 +565,6 @@ void do_umode(const char *source, int ac, char **av)
 	switch (*s++) {
 	    case '+': add = 1; break;
 	    case '-': add = 0; break;
-#ifdef IRC_DAL4_4_15
-	    case 'r': 
-	    	if (add && !nick_identified(user)) {
-		    send_cmd(ServerName, "SVSMODE %s -r", av[0]);
-		}
-		break;
-#endif
 	    case 'i': add ? (user->mode |= UMODE_I) : (user->mode &= ~UMODE_I);
 	              break;
 	    case 'w': add ? (user->mode |= UMODE_W) : (user->mode &= ~UMODE_W);
@@ -579,22 +573,44 @@ void do_umode(const char *source, int ac, char **av)
 	              break;
 	    case 's': add ? (user->mode |= UMODE_S) : (user->mode &= ~UMODE_S);
 	              break;
+            case 'r': add ? (user->mode |= UMODE_R) : (user->mode &= ~UMODE_R);            
+                      break; 
+            case 'x': add ? (user->mode |= UMODE_X) : (user->mode &= ~UMODE_X);
+                      break;
+            case 'X': add ? (user->mode |= UMODE_Z) : (user->mode &= ~UMODE_Z);
+                      break;
+            case 'k': add ? (user->mode |= UMODE_K) : (user->mode &= ~UMODE_K);
+                      break;                                                                                                                                                                                                                                  
+                                  
 	    case 'o':
 		if (add) {
 		    user->mode |= UMODE_O;
 		    if (WallOper) {
-			wallops(s_OperServ, "\2%s\2 is now an IRC operator.",
+			wallops(s_OperServ, "12%s es ahora un 12IRCOP.",
 				user->nick);
 		    }
-		    display_news(user, NEWS_OPER);
+/***		    display_news(user, NEWS_OPER); ***/
 		    opcnt++;
 		} else {
 		    user->mode &= ~UMODE_O;
 		    opcnt--;
 		}
 		break;
-	}
-    }
+		
+           case 'h':
+                if (add) {
+                   user->mode |= UMODE_H;
+                   if (WallOper) {
+                       wallops(s_OperServ, "12%s es ahora un 12OPERador.",
+                                 user->nick);
+	            }
+	            display_news(user, NEWS_OPER);
+	      } else {
+	           user->mode &= ~UMODE_H;
+              }
+              break;
+         }
+     }
 }
 
 /*************************************************************************/
@@ -612,10 +628,8 @@ void do_quit(const char *source, int ac, char **av)
     if (!user) {
 	/* Reportedly Undernet IRC servers will sometimes send duplicate
 	 * QUIT messages for quitting users, so suppress the log warning. */
-#ifndef IRC_UNDERNET
 	log("user: QUIT from nonexistent user %s: %s", source,
 							merge_args(ac, av));
-#endif
 	return;
     }
     if (debug)
@@ -676,7 +690,7 @@ void do_kill(const char *source, int ac, char **av)
 int is_oper(const char *nick)
 {
     User *user = finduser(nick);
-    return user && (user->mode & UMODE_O);
+    return user && ((user->mode & UMODE_O) || (user->mode & UMODE_H));
 }
 
 /*************************************************************************/

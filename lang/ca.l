@@ -35,7 +35,7 @@
 # For example, "Español (Spanish)" or "Français (French)".
 
 LANG_NAME
-	Castellano (Spanish)
+	Catalán (En construcción, traduccion pendiente)
 
 ###########################################################################
 #
@@ -388,8 +388,6 @@ NICK_ACCESS_LIST_X
 # LINK responses
 NICK_LINK_SYNTAX
 	12LINK <nick> <password>
-NICK_LINK_DISABLED
-	EL comando 12LINK no está disponible.
 NICK_LINK_FAILED
 	Lo siento, el link ha fallado.
 NICK_NO_LINK_SAME
@@ -854,8 +852,6 @@ CHAN_ACCESS_NO_SUCH_ENTRY
 	Entrada desconocida (12#%d) en la lista de acceso de 12%s.
 CHAN_ACCESS_NOT_FOUND
 	12%s no fue encontrado en la lista de acceso de 12%s.
-CHAN_ACCESS_NO_MATCH
-	No se han encontrado entradas en la lista de acceso de 12%s12.
 CHAN_ACCESS_DELETED
 	12%s borrado de la lista de acceso de 12%s.
 CHAN_ACCESS_DELETED_ONE
@@ -1217,8 +1213,6 @@ MEMO_UNSET_LIMIT
 # INFO responses
 MEMO_INFO_SYNTAX
 	12INFO [canal]
-MEMO_INFO_SERVADMIN_SYNTAX
-	12INFO [nick | canal]
 MEMO_INFO_NO_MEMOS
 	No tienes mensajes.
 MEMO_INFO_MEMO
@@ -2763,11 +2757,6 @@ CHAN_SERVADMIN_HELP_SET_NOEXPIRE
 
 	Limitado a 4Administradores de Services.
 
-CHAN_SERVADMIN_HELP_INFO
-	
-	4Operadores de Services pueden usar el parametro 12ALL con
-	algun canal.
-
 CHAN_SERVADMIN_HELP_LIST
 	Sintaxis: 12LIST <especificación>
 	
@@ -3350,188 +3339,3 @@ OPER_HELP_SESSION
 	hosts and groups thereof.
 	
 	Limitado a 4Administradores de Servicios.
-
-#######################################################################
-#
-# CReG SERVER
-#
-########################################################################
-
-CREG_HELP
-	4%S le permite realizar una petición de registro de un canal
-	e introducir a éste en la fase de registro. Para poder registrar
-	un canal, necesita el apoyo de12 3 personas. Los siguientes comandos
-	le permiten manejar el pre-registro de un canal; para utilizarlos,
-	escriba 12/msg %S comando. Para más información sobre un comando
-	específico, escriba 12/msg %S HELP comando.
-	
-	   12REGISTRA   Realiza una petición de registro de un canal.
-	   12APOYA      Muestra su apoyo al registro de un canal.
-	   12CANCELA    Cancela una petición de registro de un canal.
-	   12ESTADO     Permite consultar el estado de un canal.
-	   12APOYOS     Lista los apoyos recibidos por un canal o
-	              los registros/apoyos emitidos por un usuario.
-	 
-	4AVISO: 12%S realiza únicamente funciones de pre-registro de
-	un canal, siendo cada petición revisada por la administración
-	de la red. La red se reserva el derecho a denegar el registro a
-	cualquier canal si sus usuarios se comportan indebidamente o si
-	el canal no se ajusta a las normas de registro para los canales
-	disponibles en http://www.upworld.org/canales/normas.html
-
-
-CREG_HELP_REGISTRA
-	Sintaxis: REGISTRA <canal> <contraseña> <descripción>
-	
-	Realiza una petición de registro de un nuevo canal.
-	
-	El canal que intenta registrar no puede estar ya previamente
-	registrado con el bot 4%s. Consulte el comando 12ESTADO para
-	obtener información sobre como conocer el estado actual de un
-	canal. La contraseña que proporcione servirá para que pueda
-	identificarse como fundador del canal sin estar con su nick
-	habitual. El último parámetro debe ser una descripción delión
-	 propósito del canal.
-	
-	Para realizar una petición de registro, el nick desde el que la
-	ha hecho debe estar registrado, y si el registro es aceptado, ese
-	nick pasará a ser el fundador del canal.
-	
-	Para que una petición de registro sea válida, necesita el apoyo de
-	al menos 12%s personas en un plazo de siete días, no contando
-	como apoyos válidos distintos nicks registrados con el mismo email.
-	Si en ese plazo no recibe los apoyos necesarios, el canal expirará.
-	y será necesaria la intervenci¢n de un administrador de la red para
-	que se pueda proceder a una petición de registro de nuevo. Consulte
-	el comando APOYA (12/msg %S HELP APOYA) para obtener
-	información sobre como se puede apoyar el registro de un canal.
-	
-	4NOTA: Sólo puede realizar UNA operación sobre canales al día. Esto
-	es, únicamente puede utilizar el comando 12REGISTRA una vez cada
-	veinticuatro horas. Antes de utilizarlo, piense sabiamente y
-	no lo u en vano, ya que no existen excepciones posibles a esta
-	limitación.
-
-
-CREG_HELP_APOYA
-	Sintaxis: 12APOYA <canal> [contraseña]
-	
-	Muestra su apoyo a la petición de registro de un canal.
-	
-	El canal que introduzca no puede estar ya registrado, sino que debe
-	estar en un estado de registro pendiente en el bot 4%S. (Debe haber
-	utilizado el comando REGISTRA para iniciar este proceso) Consulte el
-	comando ESTADO (/msg CReG AYUDA estado) para obtener información
-	sobre como conocer el estado de un canal.
-	
-	La contraseña que introduzca no debe ser la contraseña del canal,
-	sino la contraseña que 4%S le proporcionará cuando ejecute
-	12/msg %S APOYA #canal, con el propósito de verificar su aprobación
-	al registro del canal.
-	
-	Para que un apoyo sea válido, su nick debe estar registrado y no
-	puede haber apoyado ese canal previamente desde ese nico desde
-	cualquier otro nick que posea. Además, no se permiten apyos que
-	provengan de nicks registrados con emails anónimos.
-	Tenga en cuenta que para evitar abusos por parte de los usuarios,
-	el máximo número de apoyos que un canal puede recibir es uno por
-	minuto. De esta manera, 4%S le informará de si su apoyo ha sido
-	procesado o de si por lo contrario, ha de esperar a que haya
-	transcurrido cierto periodo de tiempo.
-	
-	4NOTA: Sólo puede realizar UNA operación sobre canales al día. Esto
-	es, únicamente puede utilizar el comando 12APOYA una vez cada
-	veinticuatro horas. Antes de utilizarlo, piense sabiamente y
-	no lo use en vano, ya que no existen excepciones posibles a esta
-	limitación.
-
-
-CREG_HELP_CANCELA
-	Sintaxis: 12CANCELA <canal>
-	
-	Cancela la peticion de un registro de canal. Solo el founder (el que
-	ha hecho la peticion de registro) puede ejecutar este comando.
-
-
-
-CREG_HELP_ESTADO
-	Sintaxis: 12ESTADO <canal>
-	
-	Muestra el estado actual del canal que especifique.
-	
-	Los posibles estados de un canal son los siguientes:
-	
-	    12PENDIENTE    El canal no ha obtenido todavía el numero
-	                 necesario de apoyos para que pueda ser procesada
-	                 la petición.
-	    12ENREGISTRO   La petición de registro del canal está siendo
-	                 revisada por la administración de canales de la
-	                 red.
-	    12ACEPTADO     La petición de registro ha sido aprobada.
-	    12DENEGADO     La petición de registro ha sido denegada.
-	    12REGISTRADO   El canal ya está actualmente registrado.
-	    12SUSPENDIDO   El registro del canal ha sido suspendido.
-	    12COMERCIAL    Es un canal comercial.
-	    12DROPADO      El registro del canal ha sido elminado por la
-	                 administración de la red.
-
-
-CREG_HELP_APOYOS
-	Sintaxis: 12APOYOS {canal|nick|email}
-	
-	Lista los nicks de las personas que apoyan la petición de
-	registro de un canal si especificamos el nombre de un canal, o
-	los registros y/o apoyos que ha emitido un/os usuario si
-	especificamos un nick/email.
-	
-	4NOTA: Sólo es posible listar los nicks de las personas que apoyan
-	el canal si se está utilizando el nick que env¡o la petición de
-	registro (el futuro fundador del canal), y solo es posible
-	listar los apoyos/registros del nick que estamos utilizando.
-
-
-CREG_SERVADMIN_HELP
-	Los siguientes comandos están disponibles para los Operadores
-	de services:
-	
-	Información sobre Canales:
-	    INFO      Devuelve información ampliada sobre un canal.
-	    LISTA     Lista los canales pendientes, denegados, prohibidos,
-	              expirados, enregistro, aceptados, suspendidos,
-	              comerciales o dropados.
-	Administración de Peticiones de Registro:
-	    ACEPTA    Acepta la petici¢n de registro de un canal
-	              y lo registra en el bot CHaN. (Admins)
-	    RESTAURA  Re-registra un canal eT CHaN. (Admins)
-	 REGCOMERCIAL Registra un canal comercial (Restringido)
-	    ANULA     Anula la petici¢n de registro de un canal.
-	    DENIEGA   Deniega la petición de registro de un canal. (Admins)
-	    PROHIBE   Prohibe el registro de un canal. (Admins)
-	    RECHAZA   Rechaza el registro de un canal. (Admins)
-	    PERMITE   Levanta la prohibición de registro de un canal.
-	
-	Administración de Canales:
-	    SUSPEND   Suspende cautelarmente un canal registrado.
-	    UNSUSPEND Levanta la suspensión de un canal registrado.
-	    DROP      Borra el registro de un canal registrado.
-	    LIMPIA    Glinea a todos los miembros de un canal. (Admins)
-	    APODERA   Se apodera de un canal y lo silencia.
-	    MARCA     Añade un comentario al histórico de un canal.
-	
-	Funciones de Control:
-	    ILIST     Administra la lista de nicks de los cuales se
-	              ignorarán las peticiones de registro.
-	    DNICK     Administra la lista de nicks dropados automáticamente
-	              por estar registrados com mail an¢nimo.
-	    ACTIVA    Activa el registro/apoyo de canales. (Admins)
-	    DESACTIVA Desactiva el registro/apoyo de canales. (Admins)
-	    REFRESCA  Actualiza la lista de nicks con acceso de
-	              operadores/administradores de services a CReG.
-	    REINICIA  Reinicia el bot CReG.
-	Comandos varios:
-	    ILINE     Consulta la DB de ilines.
-	    TESTMAIL  Consulta la DB de dominios an¢nimos.
-	
-	Operadores de services pueden también listar los apoyos que ha
-	recibido un canal sin ser el fundador del mismo y los apoyos y
-	registros de cualquier usuario.

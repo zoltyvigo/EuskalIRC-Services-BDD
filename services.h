@@ -166,6 +166,7 @@ struct nickinfo_ {
     time_t time_registered;
     time_t last_seen;
     int16 status;	/* See NS_* below */
+    char *msuspend;   /* Motivo del nick suspendido */         
 
     NickInfo *link;	/* If non-NULL, nick to which this one is linked */
     int16 linkcount;	/* Number of links to this nick */
@@ -187,13 +188,16 @@ struct nickinfo_ {
     uint16 language;	/* Language selected by nickname owner (LANG_*) */
 
     time_t id_timestamp;/* TS8 timestamp of user who last ID'd for nick */
+    
+        
 };
 
 
 /* Nickname status flags: */
-#define NS_ENCRYPTEDPW	0x0001      /* Nickname password is encrypted */
+#define NS_ENCRYPTEDPW	0x0001      /* Nick Suspendido */
 #define NS_VERBOTEN	0x0002      /* Nick may not be registered or used */
 #define NS_NO_EXPIRE	0x0004      /* Nick never expires */
+#define NS_SUSPENDED    0x0008
 
 #define NS_IDENTIFIED	0x8000      /* User has IDENTIFY'd */
 #define NS_RECOGNIZED	0x4000      /* ON_ACCESS true && SECURE flag not set */
@@ -223,17 +227,19 @@ struct nickinfo_ {
  * the order the languages are displayed in for NickServ HELP SET LANGUAGE,
  * do it in language.c.
  */
-#define LANG_EN_US	0	/* United States English */
-#define LANG_JA_JIS	1	/* Japanese (JIS encoding) */
-#define LANG_JA_EUC	2	/* Japanese (EUC encoding) */
-#define LANG_JA_SJIS	3	/* Japanese (SJIS encoding) */
-#define LANG_ES		4	/* Spanish */
-#define LANG_PT		5	/* Portugese */
-#define LANG_FR		6	/* French */
-#define LANG_TR		7	/* Turkish */
-#define LANG_IT		8	/* Italian */
+#define LANG_ES 	0	/* Spanish */
+#define LANG_CA		1	/* Catalan */ 
+#define LANG_EN_US	2	/* United States English */
+#define LANG_JA_JIS	3	/* Japanese (JIS encoding) */
+#define LANG_JA_EUC	4	/* Japanese (EUC encoding) */
+#define LANG_JA_SJIS	5	/* Japanese (SJIS encoding) */
+#define LANG_PT		6	/* Portugese */
+#define LANG_FR		7	/* French */
+#define LANG_TR		8	/* Turkish */
+#define LANG_IT		9	/* Italian */
+#define LANG_GA		10	/* Gallego */
 
-#define NUM_LANGS	9	/* Number of languages */
+#define NUM_LANGS	11	/* Number of languages */
 
 /* Sanity-check on default language value */
 #if DEF_LANGUAGE < 0 || DEF_LANGUAGE >= NUM_LANGS
@@ -259,8 +265,8 @@ typedef struct {
  * than any valid access level, and ACCESS_INVALID may be assumed to be
  * strictly less than any valid access level.
  */
-#define ACCESS_FOUNDER	10000	/* Numeric level indicating founder access */
-#define ACCESS_INVALID	-10000	/* Used in levels[] for disabled settings */
+#define ACCESS_FOUNDER	500	/* Numeric level indicating founder access */
+#define ACCESS_INVALID	-2	/* Used in levels[] for disabled settings */
 
 /* AutoKick data. */
 typedef struct {
@@ -330,13 +336,19 @@ struct chaninfo_ {
 /* Don't allow the channel to be registered or used */
 #define CI_VERBOTEN	0x00000080
 /* Channel password is encrypted */
-#define CI_ENCRYPTEDPW	0x00000100
+#define CI_ENCRYPTEDPWD	0x00000100
 /* Channel does not expire */
 #define CI_NO_EXPIRE	0x00000200
 /* Channel memo limit may not be changed */
 #define CI_MEMO_HARDMAX	0x00000400
 /* Send notice to channel on use of OP/DEOP */
 #define CI_OPNOTICE	0x00000800
+/* Chanserv dentro o fuera del canal */
+#define CI_STAY		0x00001600
+/* Canal Suspendido */
+#define CI_SECUREVOICES	0x00003200
+/* No registrados no pueden tener voz */
+#define CI_SUSPENDED	0x00006400
 
 /* Indices for cmd_access[]: */
 #define CA_INVITE	0
@@ -352,8 +364,13 @@ struct chaninfo_ {
 #define CA_NOJOIN	10	/* Maximum */
 #define CA_ACCESS_CHANGE 11
 #define CA_MEMO		12
+#define CA_VOICEDEVOICE 13
+#define CA_AUTODEVOICE  14
+#define CA_KICK		15
+#define CA_BAN		16
+#define CA_RESET	17
 
-#define CA_SIZE		13
+#define CA_SIZE		18
 
 /*************************************************************************/
 
@@ -379,7 +396,7 @@ struct user_ {
 	Channel *chan;
     } *chans;				/* Channels user has joined */
     struct u_chaninfolist {
-	struct u_chaninfolist *next, *prev;
+      	struct u_chaninfolist *next, *prev;
 	ChannelInfo *chan;
     } *founder_chans;			/* Channels user has identified for */
     short invalid_pw_count;		/* # of invalid password attempts */
@@ -394,6 +411,10 @@ struct user_ {
 #define UMODE_W 0x00000008
 #define UMODE_G 0x00000010
 #define UMODE_H 0x00000020
+#define UMODE_R 0x00000040
+#define UMODE_X 0x00000080
+#define UMODE_Z 0x00000160
+#define UMODE_K 0x00000320
 
 
 struct channel_ {
@@ -433,18 +454,15 @@ struct channel_ {
 #define CMODE_T 0x00000020
 #define CMODE_K 0x00000040		/* These two used only by ChanServ */
 #define CMODE_L 0x00000080
-
-/* The two modes below are for IRC_DAL4_4_15 servers only. */
-#define CMODE_R 0x00000100		/* Only identified users can join */
-#define CMODE_r 0x00000200		/* Set for all registered channels */
+#define CMODE_r 0x00000160
+#define CMODE_R 0x00000320
+#define CMODE_A 0x00000640
+#define CMODE_Z 0x00001280
 
 
 /* Who sends channel MODE (and KICK) commands? */
-#if defined(IRC_DALNET) || (defined(IRC_UNDERNET) && !defined(IRC_UNDERNET_NEW))
-# define MODE_SENDER(service) service
-#else
-# define MODE_SENDER(service) ServerName
-#endif
+#define MODE_SENDER(service) ServerName
+
 
 /*************************************************************************/
 

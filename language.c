@@ -22,14 +22,16 @@ int langlist[NUM_LANGS];
 
 /* Order in which languages should be displayed: (alphabetical) */
 static int langorder[NUM_LANGS] = {
+    LANG_ES,		/* Castellano */
+    LANG_CA, 		/* Catalán */
     LANG_EN_US,		/* English (US) */
     LANG_FR,		/* French */
+    LANG_GA,		/* Gallego */	
     LANG_IT,		/* Italian */
     LANG_JA_JIS,	/* Japanese (JIS encoding) */
     LANG_JA_EUC,	/* Japanese (EUC encoding) */
     LANG_JA_SJIS,	/* Japanese (SJIS encoding) */
     LANG_PT,		/* Portugese */
-    LANG_ES,		/* Spanish */
     LANG_TR,		/* Turkish */
 };
 
@@ -138,12 +140,14 @@ void lang_init()
 {
     int i, j, n = 0;
 
+    load_lang(LANG_ES, "es");
+    load_lang(LANG_CA, "ca");
     load_lang(LANG_EN_US, "en_us");
+    load_lang(LANG_GA, "ga");
     load_lang(LANG_IT, "it");
     load_lang(LANG_JA_JIS, "ja_jis");
     load_lang(LANG_JA_EUC, "ja_euc");
     load_lang(LANG_JA_SJIS, "ja_sjis");
-    load_lang(LANG_ES, "es");
     load_lang(LANG_PT, "pt");
     load_lang(LANG_TR, "tr");
 
@@ -158,7 +162,7 @@ void lang_init()
 		}
 		if (!langtexts[langorder[i]][j]) {
 		    langtexts[langorder[i]][j] =
-				langtexts[langorder[LANG_EN_US]][j];
+				langtexts[langorder[LANG_ES]][j];
 		}
 	    }
 	}

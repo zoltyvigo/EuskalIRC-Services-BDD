@@ -419,9 +419,6 @@ struct user_ {
     char *server;			/* Name of server user is on */
     time_t signon;			/* Time of signon (NOT nick change) */
     time_t my_signon;			/* When did _we_ see the user? */
-#if defined (IRC_DAL4_4_15) || defined (IRC_BAHAMUT)
-    uint32 servicestamp;                /* Our UNIQUE id for the user */ 
-#endif    
     int32 mode;				/* See below */
     struct u_chanlist {
 	struct u_chanlist *next, *prev;
@@ -487,22 +484,16 @@ struct channel_ {
 #define CMODE_K 0x00000040		/* These two used only by ChanServ */
 #define CMODE_L 0x00000080
 
-/* The two modes below are for IRC_DAL4_4_15 and IRC_BAHAMUT servers only. */
-/* Tambien Modos DB_HISPANO */
+/* Tambien Modos Hispano y Terra */
 #define CMODE_R 0x00000100		/* Only identified users can join */
 #define CMODE_r 0x00000200		/* Set for all registered channels */
-/* Solo BAHAMUT */
-#ifdef IRC_BAHAMUT
-#define CMODE_C 0x00000400              /* No mIRC/ANSI colours in channel */
-#endif
-/* Solo DB_HISPANO */
-// #ifdef DB_NETWORKS
+/* Modos hispano */
 #define CMODE_A 0x00000400		/* Modo AutoOP */
 #define CMODE_S 0x00000800		/* Modo +S SecureOps */
-// #endif
+
 
 /* Who sends channel MODE (and KICK) commands? */
-#if defined(IRC_DALNET) || defined(IRC_UNDERNET)
+#if defined(IRC_HISPANO) || defined(IRC_TERRA)
 # define MODE_SENDER(service) service
 #else
 # define MODE_SENDER(service) ServerName
@@ -514,39 +505,22 @@ struct channel_ {
 #define NUMNICKMAXCHAR 'z'
 
 /*************************************************************************/
-/* CyberServ, Control de clones y ilines */
-
-typedef struct clones_ Clones;
-struct clones_ {
-    Clones *prev, *next;
-    char *host;
-    int numeroclones;                  /* Numero de clones del host */
-};
-
-typedef struct ilineinfo_ IlineInfo;
-struct ilineinfo_ {
-    char *ip;
-    NickInfo *admin;    
-    char operwho[NICKMAX];
-    char *motivo;
-    int16 limite;
-    time_t time_concesion;
-    time_t time_expiracion;
-    int16 record_clones;
-    time_t time_record;
-    int16 estado;   
-    int num;
-};
 
 /* Soporte P10 */
 
 #define NUMNICKBASE 64
 #define NUMNICKMAXCHAR 'z'
 
-#ifdef IRC_UNDERNET
 #define toLower(c)      (NTL_tolower_tab[(c)-CHAR_MIN])
 #define toUpper(c)      (NTL_toupper_tab[(c)-CHAR_MIN])
-#endif
+
+/* Usamos nuestras propias versiones de strtTok y strToken */
+#undef strtok
+#undef strtoken
+
+#define strtok strTok
+#define strtoken strToken
+
 /*************************************************************************/
 
 /* Constants for news types. */

@@ -2,7 +2,7 @@
 #
 # Increment Services build number
 
-VERSION=1.2
+VERSION=4.3.3
 
 if [ -f version.h ] ; then
 	BUILD=`fgrep '#define BUILD' version.h | sed 's/^#define BUILD.*"\([0-9]*\)".*$/\1/'`
@@ -28,26 +28,19 @@ const char version_number[] = "$VERSION";
 const char version_build[] =
 	"build #" BUILD ", compilado " __DATE__ " " __TIME__;
 const char version_protocol[] =
-#if defined(IRC_BAHAMUT)
-	"ircd.dal Bahamut"
-#elif defined(IRC_DAL4_4_15)
-        "ircd.dal 4.4.15+"
-#elif defined(IRC_DALNET)
-	"ircd.dal 4.4.13-"
-#elif defined(DB_NETWORKS)
-	"ircu 2.10.x P10 con soporte BDD"
+#if defined(IRC_UNDERNET_P09)
+        "ircu 2.10.01 - 2.10.07 Soporte P9"
 #elif defined(IRC_UNDERNET_P10)
-	"ircu 2.10.x P10"
-#elif defined(IRC_UNDERNET_P09)
-	"ircu 2.10.01 a 2.10.07 P09"
+	"ircu 2.10.x Soporte P10"
 #elif defined(IRC_UNDERNET)
-	"ircu 2.9.32-"
-#elif defined(IRC_TS8)
-	"RFC1459 + TS8"
-#elif defined(IRC_CLASSIC)
-	"RFC1459"
+        "ircu 2.9.3 o inferior"
 #else
-	"desconocido"
+        "desconocido"
+#endif
+#ifdef IRC_HISPANO
+	"con soporte para ESNET-Hispano"
+#elif defined (IRC_TERRA)
+	"con soporte para TerraIrcu"
 #endif
 	;
 EOF

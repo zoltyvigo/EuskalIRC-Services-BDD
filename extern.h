@@ -130,8 +130,6 @@ E char *ServiceHost;
 
 E char *s_NickServ;
 E char *s_ChanServ;
-E char *s_CregServ;
-E char *s_CyberServ;
 E char *s_MemoServ;
 E char *s_HelpServ;
 E char *s_OperServ;
@@ -143,8 +141,6 @@ E char *s_DevNull;
 #ifdef IRC_UNDERNET_P10
 E char s_NickServP10[4];
 E char s_ChanServP10[4];
-E char s_CregServP10[4];
-E char s_CyberServP10[4];
 E char s_MemoServP10[4];
 E char s_HelpServP10[4];
 E char s_OperServP10[4];
@@ -155,8 +151,6 @@ E char s_DevNullP10[4];
 #endif
 E char *desc_NickServ;
 E char *desc_ChanServ;
-E char *desc_CregServ;
-E char *desc_CyberServ;
 E char *desc_MemoServ;
 E char *desc_HelpServ;
 E char *desc_OperServ;
@@ -170,7 +164,6 @@ E char *MOTDFilename;
 E char *HelpDir;
 E char *NickDBName;
 E char *ChanDBName;
-E char *CregDBName;
 E char *OperDBName;
 E char *AutokillDBName;
 E char *NewsDBName;
@@ -237,58 +230,17 @@ E int   MSNotifyAll;
 
 E char *CanalAdmins;
 E char *CanalOpers;
-E char *CanalCybers;
 E char *ServicesRoot;
 E int   LogMaxUsers;
 E int   AutokillExpiry;
 
 E int   KillClonesAkillExpire;
 
-E int   ControlClones;
-E int   LimiteClones;
-E int   ExpIlineDefault;
-E int   MaximoClones;
-E char *IlineDBName;
-E char *MensajeClones;
-E char *WebClones;
-
 E int read_config(void);
 
 /**** correo.c ****/
 
 E int enviar_correo(const char * destino, const char *subject, const char *body);
-
-
-/**** cregserv.c ****/
-#ifdef CREGSERV
-
-E void listcregs(int count_only, const char *chan);
-E void get_cregserv_stats(long *nrec, long *memuse);
-
-E void cr_init(void);
-E void cregserv(const char *source, char *buf);
-E void load_cr_dbase(void);
-E void save_cr_dbase(void);
-#endif /* CREGSERV  * Migrar a Cregserv.h */
-
-/**** cyberserv.c ****/
-
-E void get_clones_stats(long *nrec, long *memuse);
-E void get_iline_stats(long *nrec, long *memuse);
-
-E void iline_init(void);
-E void cyberserv(const char *source, char *buf);
-E void load_iline_dbase(void);
-E void save_iline_dbase(void);
-E void expire_ilines(void);
-E void iline_remove_nick(const NickInfo *ni);
-E int add_clones(const char *nick, const char *host);
-E void del_clones(const char *host);
-E int exception_del(const int index);
-
-E IlineInfo *iline_find_host(const char *host);
-E IlineInfo *iline_find_admin(const char *nick);
-E int is_cyber_admin(User *u);
 
 
 /**** helpserv.c ****/
@@ -387,11 +339,11 @@ E char *strlower(char *s);
 E char *strnrepl(char *s, int32 size, const char *old, const char *new);
 #ifdef IRC_UNDERNET
 E int strCasecmp(const char *a, const char *b);
-E const char NTL_tolower_tab[];
-E const char NTL_toupper_tab[];
-# ifdef IRC_UNDERNET_P10
-E char *strtoken(char **save, char *str, char *fs);
-# endif
+E int NTL_tolower_tab[];
+E int NTL_toupper_tab[];
+E char *strToken(char **save, char *str, char *fs);
+E char *strTok(char *str, char *fs);
+
 #endif /* IRC_UNDERNET */
 
 E char *merge_args(int argc, char **argv);
@@ -543,9 +495,6 @@ E User *nextuser(void);
 
 E void do_nick(const char *source, int ac, char **av);
 E void do_join(const char *source, int ac, char **av);
-#ifdef IRC_BAHAMUT
-E void do_sjoin(const char *source, int ac, char **av);
-#endif
 E void do_part(const char *source, int ac, char **av);
 E void do_kick(const char *source, int ac, char **av);
 E void do_umode(const char *source, int ac, char **av);

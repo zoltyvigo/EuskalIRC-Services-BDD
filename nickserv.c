@@ -744,7 +744,7 @@ int validate_user(User *u)
 
     if (ni->status & NS_VERBOTEN) {
 	notice_lang(s_NickServ, u, NICK_MAY_NOT_BE_USED);
-#if defined (IRC_DAL4_4_15) || defined (IRC_BAHAMUT) || defined (DB_NETWORKS)
+#if defined (IRC_HISPANO) || defined (IRC_TERRA)
 	if (NSForceNickChange)
 	    notice_lang(s_NickServ, u, FORCENICKCHANGE_IN_1_MINUTE);
 	else
@@ -758,20 +758,18 @@ int validate_user(User *u)
         notice_lang(s_NickServ, u, NICK_SUSPENDED, ni->suspendreason);
         return 0;
     }
-#ifdef OBSOLETO
-#ifndef IRC_BAHAMUT                        
+#ifdef OBSOLETO                      
     if (!NoSplitRecovery) {
 	/* XXX: This code should be checked to ensure it can't be fooled */
 	if (ni->id_timestamp != 0 && u->signon == ni->id_timestamp) {
 	    char buf[256];
 	    snprintf(buf, sizeof(buf), "%s@%s", u->username, u->host);
 	    if (strcmp(buf, ni->last_usermask) == 0) {
-//		ni->status |= NS_IDENTIFIED;
+		ni->status |= NS_IDENTIFIED;
 		return 1;
 	    }
 	}
-    }
-#endif    
+    }   
 #endif
 
     on_access = is_on_access(u, u->ni);
@@ -802,7 +800,7 @@ int validate_user(User *u)
 	if (u->ni->flags & NI_KILL_IMMED) {
 	    collide(ni, 0);
 	} else if (u->ni->flags & NI_KILL_QUICK) {
-#if defined (IRC_DAL4_4_15) || defined (IRC_BAHAMUT) || defined (DB_NETWORKS)
+#if defined (IRC_HISPANO) || defined (IRC_TERRA)
 	    if (NSForceNickChange)
 	    	notice_lang(s_NickServ, u, FORCENICKCHANGE_IN_20_SECONDS);
 	    else
@@ -810,7 +808,7 @@ int validate_user(User *u)
 	    	notice_lang(s_NickServ, u, DISCONNECT_IN_20_SECONDS);
 	    add_ns_timeout(ni, TO_COLLIDE, 20);
 	} else {
-#if defined (IRC_DAL4_4_15) || defined (IRC_BAHAMUT) || defined (DB_NETWORKS)
+#if defined (IRC_HISPANO) || defined (IRC_TERRA)
 	    if (NSForceNickChange)
 	    	notice_lang(s_NickServ, u, FORCENICKCHANGE_IN_1_MINUTE);
 	    else
@@ -833,7 +831,7 @@ void cancel_user(User *u)
     NickInfo *ni = u->real_ni;
     if (ni) {
 
-#if defined (IRC_DAL4_4_15) || defined (IRC_BAHAMUT)
+#ifdef IRC_TERRA
 	if (ni->status & NS_GUESTED) {
 	    send_cmd(NULL, "NICK %s %ld 1 %s %s %s :%s Enforcement",
 			u->nick, time(NULL), NSEnforcerUser, NSEnforcerHost, 
@@ -844,7 +842,7 @@ void cancel_user(User *u)
 	} else {
 #endif
 	    ni->status &= ~NS_TEMPORARY;
-#if defined (IRC_DAL4_4_15) || defined (IRC_BAHAMUT)
+#ifdef IRC_TERRA
 	}
 #endif
 	del_ns_timeout(ni, TO_COLLIDE);
@@ -1211,7 +1209,7 @@ static void collide(NickInfo *ni, int from_timeout)
     if (!from_timeout)
 	del_ns_timeout(ni, TO_COLLIDE);
 
-#if defined (IRC_DAL4_4_15) || defined (IRC_BAHAMUT)
+#ifdef IRC_TERRA
     if (NSForceNickChange) {
 	struct timeval tv;
 	char guestnick[NICKMAX];
@@ -1225,8 +1223,7 @@ static void collide(NickInfo *ni, int from_timeout)
 	send_cmd(NULL, "SVSNICK %s %s :%ld", ni->nick, guestnick, time(NULL));
 	ni->status |= NS_GUESTED;
     } else {
-#endif
-#ifdef DB_NETWORKS
+#elif defined (IRC_HISPANO)
     if (NSForceNickChange) {
         send_cmd(ServerName, "RENAME %s", ni->nick);
     } else {
@@ -1247,7 +1244,7 @@ static void collide(NickInfo *ni, int from_timeout)
 #endif		
 	ni->status |= NS_KILL_HELD;
 	add_ns_timeout(ni, TO_RELEASE, NSReleaseTimeout);
-#if defined (IRC_DAL4_4_15) || defined (IRC_BAHAMUT) || defined (DB_NETWORKS)
+#if defined (IRC_TERRA) || defined (IRC_HISPANO)
     }
 #endif
 }
@@ -1451,7 +1448,7 @@ static void do_register(User *u)
 	return;
     }
 
-#if defined (IRC_DAL4_4_15) || defined (IRC_BAHAMUT)
+#if defined (IRC_HISPANO) || defined (IRC_TERRA)
     /* Prevent "Guest" nicks from being registered. -TheShadow */
     if (NSForceNickChange) {
 	int prefixlen = strlen(NSGuestNickPrefix);
@@ -1672,7 +1669,7 @@ static void do_identify(User *u)
 		free(ni->last_realname);
 	    ni->last_realname = sstrdup(u->realname);
 	}
-#if defined (IRC_DAL4_4_15) || defined (IRC_BAHAMUT)
+#if defined (IRC_TERRA)
 	send_cmd(ServerName, "SVSMODE %s +r", u->nick);
 #endif
 	log("%s: %s!%s@%s identified for nick %s", s_NickServ,
@@ -1723,7 +1720,7 @@ static void do_drop(User *u)
     } else {
 	if (readonly)
 	    notice_lang(s_NickServ, u, READ_ONLY_MODE);
-#if defined (IRC_DAL4_4_15) || defined (IRC_BAHAMUT)
+#if defined (IRC_TERRA)
 	send_cmd(ServerName, "SVSMODE %s -r", ni->nick);
 #endif
 	delnick(ni);

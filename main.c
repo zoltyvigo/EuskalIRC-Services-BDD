@@ -108,10 +108,6 @@ void sighandler(int signum)
 		          break;
 		case -12: snprintf(buf, sizeof(buf), "saving %s", ChanDBName);
 		          break;
-#ifdef CREGSERV
-                case -13: snprintf(buf, sizeof(buf), "saving %s", CregDBName);
-                          break;
-#endif                          
 		case -14: snprintf(buf, sizeof(buf), "saving %s", OperDBName);
 		          break;
 		case -15: snprintf(buf, sizeof(buf), "saving %s", AutokillDBName);
@@ -122,10 +118,6 @@ void sighandler(int signum)
 		          break;
 		case -22: snprintf(buf, sizeof(buf), "expiring channels");
 		          break;
-#ifdef CREGSERV
-		case -23: snprintf(buf, sizeof(buf), "espiring peticiones");
-		          break;          
-#endif		          
 		case -25: snprintf(buf, sizeof(buf), "expiring autokills");
 		          break;
 		default : snprintf(buf, sizeof(buf), "waiting=%d", waiting);
@@ -219,19 +211,12 @@ int main(int ac, char **av, char **envp)
 //            canalopers(ServerName, "Ejecutando rutinas de expiracion");
 	    if (!skeleton) {
 		waiting = -21;
-//		expire_nicks();
+		expire_nicks();
 		waiting = -22;
 		expire_chans();
-#ifdef CREGSERV
-                waiting = -23;
-                expire_creg();
-#endif                		
 	    }
 	    waiting = -25;
 	    expire_akills();
-#ifndef STREAMLINED
-//	    expire_ilines();
-#endif
 	    last_expire = t;
 	}
 	if (!readonly && (save_data || t-last_update >= UpdateTimeout)) {
@@ -244,10 +229,6 @@ int main(int ac, char **av, char **envp)
 		save_ns_dbase();
 		waiting = -12;
 		save_cs_dbase();
-#ifdef CREGSERV
-		waiting = -13;
-		save_cr_dbase();
-#endif		
 	    }
 	    waiting = -14;
 	    save_os_dbase();
@@ -255,8 +236,6 @@ int main(int ac, char **av, char **envp)
 	    save_akill();
 	    waiting = -16;
 	    save_news();
-            waiting = -17;
-  //          save_iline_dbase();
 	    if (save_data < 0)
 		break;	/* out of main loop */
 
@@ -296,11 +275,7 @@ int main(int ac, char **av, char **envp)
 	log("Reiniciando");
 	if (!quitmsg)
 	    quitmsg = "Reiniciando";
-#ifdef IRC_UNDERNET
 	send_cmd(ServerName, "SQUIT %s 0 :%s", ServerName, quitmsg);
-#else
-        send_cmd(ServerName, "SQUIT %s :s", ServerName, quitmsg);
-#endif	
 	disconn(servsock);
 	close_log();
 	execve(SERVICES_BIN, av, envp);
@@ -320,11 +295,7 @@ int main(int ac, char **av, char **envp)
 	quitmsg = "Services ha terminado, razón desconocida";
     log("%s", quitmsg);
     if (started)
-#ifdef IRC_UNDERNET
         send_cmd(ServerName, "SQUIT %s 0 :%s", ServerName, quitmsg);
-#else
-        send_cmd(ServerName, "SQUIT %s :%s", ServerName, quitmsg);
-#endif 
     disconn(servsock);
     return 0;
 }

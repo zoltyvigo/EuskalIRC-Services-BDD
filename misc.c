@@ -27,7 +27,7 @@ int toupper(char c)
  * zoltan  1/11/2000
  */
   
-const char NTL_toupper_tab[] = {
+int NTL_toupper_tab[] = {
 #if (CHAR_MIN<0)
 /* x80-x87 */ '\x80', '\x81', '\x82', '\x83', '\x84', '\x85', '\x86', '\x87',
 /* x88-x8f */ '\x88', '\x89', '\x8a', '\x8b', '\x8c', '\x8d', '\x8e', '\x8f',
@@ -98,7 +98,7 @@ int tolower(char c)
  * zoltan  1/11/2000
  */
  
-const char NTL_tolower_tab[] = {
+int NTL_tolower_tab[] = {
 #if (CHAR_MIN<0)
 /* x80-x87 */ '\x80', '\x81', '\x82', '\x83', '\x84', '\x85', '\x86', '\x87',
 /* x88-x8f */ '\x88', '\x89', '\x8a', '\x8b', '\x8c', '\x8d', '\x8e', '\x8f',
@@ -238,14 +238,13 @@ int strCasecmp(const char *a, const char *b)
 #endif
 /*************************************************************************/
     
-#ifdef IRC_UNDERNET_P10
 /*
  * strtoken.c
  *
  * Walk through a string of tokens, using a set of separators.
  */
 
-char *strtoken(char **save, char *str, char *fs)
+char *strToken(char **save, char *str, char *fs)
 {
   char *pos = *save;            /* keep last position across calls */
   register char *tmp;
@@ -272,7 +271,20 @@ char *strtoken(char **save, char *str, char *fs)
   *save = pos;
   return (tmp);
 }                  
-#endif /* IRC_UNDERNET_P10 */
+
+/*
+ * * NOT encouraged to use!
+  */
+  
+char *strTok(char *str, char *fs)
+{
+  
+   static char *pos;
+     
+   return strtoken(&pos, str, fs);
+        
+}
+        
                                    
 /*************************************************************************/
 
@@ -402,18 +414,24 @@ int match_wild_nocase(const char *pattern, const char *str)
 int process_numlist(const char *numstr, int *count_ret,
 		range_callback_t callback, User *u, ...)
 {
-    int n1, n2, i;
-    int res = 0, retval = 0, count = 0;
+
+    int n1, n2, min, max, i;
+    int retval = 0;
+    int numcount = 0;
     va_list args;
-
+    static char numflag[65537];
+                    
+    memset(numflag, 0, sizeof(numflag));
+    min = 65536;
+    max = 0;
     va_start(args, u);
-
+    
     /*
      * This algorithm ignores invalid characters, ignores a dash
      * when it precedes a comma, and ignores everything from the
      * end of a valid number or range to the next comma or null.
      */
-    for (;;) {
+    while (*numstr) {
 	n1 = n2 = strtol(numstr, (char **)&numstr, 10);
 	numstr += strcspn(numstr, "0123456789,-");
 	if (*numstr == '-') {
@@ -424,25 +442,43 @@ int process_numlist(const char *numstr, int *count_ret,
 		numstr += strcspn(numstr, "0123456789,-");
 	    }
 	}
-	for (i = n1; i <= n2 && i >= 0; i++) {
-	    int res = callback(u, i, args);
-	    count++;
-	    if (res < 0)
-		break;
-	    retval += res;
-	}
-	if (res < -1)
-	    break;
-	numstr += strcspn(numstr, ",");
-	if (*numstr)
-	    numstr++;
-	else
-	    break;
+        if (n1 < 0)
+            n1 = 0;
+        if (n2 > 65536)
+            n2 = 65536;
+        if (n1 < min)
+            min = n1;
+        if (n2 > max)
+            max = n2;
+        while (n1 <= n2) {
+            numflag[n1] = 1;
+            n1++;
+        }                                                                                	
+        numstr += strcspn(numstr, ",");
+        if (*numstr)
+            numstr++;
     }
+    
+    /* Now call the callback routine for each index. */
+    numcount = 0;
+    for (i = min; i <= max; i++) {
+        int res;
+        if (!numflag[i])
+            continue;
+        numcount++;
+        res = callback(u, i, args);
+        if (debug)
+            log("debug: process_numlist: tried to do %d; result = %d", i, res);
+        if (res < 0)
+            break;
+        retval += res;
+    }
+    
+    va_end(args);
     if (count_ret)
-	*count_ret = count;
+        *count_ret = numcount;
     return retval;
-}
+}                                                                                
 
 /*************************************************************************/
 

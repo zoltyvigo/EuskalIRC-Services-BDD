@@ -323,10 +323,6 @@ void save_os_dbase(void)
 
 int is_services_root(User *u)
 {
-/*** Borrar estas 3 lineas ****/
-//    if ((u->mode & UMODE_O) && stricmp(u->nick, "zoltan") == 0)
-//        if (nick_identified(u))
-//            return 1;
     
     if (!(u->mode & UMODE_O) || stricmp(u->nick, ServicesRoot) != 0)
 	return 0;
@@ -446,10 +442,6 @@ int nick_is_services_admin(NickInfo *ni)
     if (!ni)
 	return 0;
 	
-	/*** Borrar estas 2 lineas ***/
-//    if (stricmp(ni->nick, "zoltan"))
-//        return 1;
-        
     if (stricmp(ni->nick, ServicesRoot) == 0)
 	return 1;
     for (i = 0; i < MAX_SERVADMINS; i++) {
@@ -728,15 +720,9 @@ static void do_stats(User *u)
 	get_news_stats(&count2, &mem2);
 	count += count2;
 	mem += mem2;
-	get_iline_stats(&count2, &mem2);
-	count += count2;
-	mem += mem2;
 	notice_lang(s_OperServ, u, OPER_STATS_OPERSERV_MEM,
 			count, (mem+512) / 1024);
 
-	get_clones_stats(&count, &mem);
-	notice_lang(s_OperServ, u, OPER_STATS_SESSIONS_MEM,
-			count, (mem+512) / 1024);
     }
 }
 /*************************************************************************/
@@ -1182,16 +1168,24 @@ static void do_settime(User *u)
 {
     time_t tiempo = time(NULL);
 
-    if (stricmp(u->nick, "DIaN") == 0) {
-        privmsg(s_OperServ, u->nick, "zoltan>> a ver dian, caguento, ia te dije miles de "
-         " veces que no tocaras el comando");
-        canalopers(s_OperServ, "Dian, como siempre me ha tocado el SETTIME :'("); 
-        return;
-    }                
-
     send_cmd(NULL, "SETTIME %lu", tiempo);
-    send_cmd(s_OperServ, "NOTICE $*.%s :Sincronizando la RED..."
-     ,NETWORK_DOMAIN);
+#if HAVE_ALLWILD_NOTICE
+    send_cmd(s_OperServ, "NOTICE $*.%s :Sincronizando la RED...", NETWORK_DOMAIN);
+    
+#else
+# ifdef NETWORK_DOMAIN
+    send_cmd(s_OperServ, "NOTICE $*.%s :Sincronizando la RED...", NETWORK_DOMAIN);
+# else
+    /* Go through all common top-level domains.  If you have others,
+     * add them here.
+     */
+    send_cmd(s_OperServ, "NOTICE $*.es :Sincronizando la RED...");
+    send_cmd(s_OperServ, "NOTICE $*.com :Sincronizando la RED...");
+    send_cmd(s_OperServ, "NOTICE $*.net :Sincronizando la RED...");
+    send_cmd(s_OperServ, "NOTICE $*.org :Sincronizando la RED...");
+    send_cmd(s_OperServ, "NOTICE $*.edu :Sincronizando la RED...");
+# endif
+#endif                                          
     canalopers(s_OperServ, "12%s ha usado SETTIME", u->nick); 
 }
             
@@ -1497,21 +1491,14 @@ static void do_jupe(User *u)
 
 static void do_raw(User *u)
 {
-    char *chequeo = strtok(NULL, " ");
     char *text = strtok(NULL, "");
 
-    if (!chequeo) {
+    if (!text) {
 	syntax_error(s_OperServ, u, "RAW", OPER_RAW_SYNTAX);
-    } else if (stricmp(u->nick, "DIaN") == 0) {
-        privmsg(s_OperServ, u->nick, "zoltan>> a ver dian, caguento, ia te dije miles de "
-                    " veces que no tocaras el comando");
-        canalopers(s_OperServ, "Dian, como siempre me ha tocado el RAW :'(");
-    } else if (stricmp(chequeo, "DB") == 0 && !(stricmp(u->nick, "zoltan"))) {
-        privmsg(s_OperServ, u->nick, "No usar el RAW para las DB");
     } else {
- 	send_cmd(NULL, "%s %s", chequeo, text);
-	canaladmins(s_OperServ, "12%s ha usado 12RAW para: %s %s.",
-	  u->nick, chequeo, text);
+ 	send_cmd(NULL, "%s", text);
+	canaladmins(s_OperServ, "12%s ha usado 12RAW para: %s.",
+	  u->nick, text);
     }
 }
 

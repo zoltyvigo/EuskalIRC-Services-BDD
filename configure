@@ -158,8 +158,8 @@ IRCTYPE_DEF=
 IRCTYPE_DEF2=
 NETWORK=
 ENCRYPTION=
-REG_NICK_MAIL=
-SENDMAIL=
+REG_NICK_MAIL="REG_NICK_MAIL"
+SENDMAIL="SENDMAIL"
 
 INSTALL=
 CP_ALL=
@@ -419,8 +419,8 @@ echo ""
 echo "Si todos tus servidores corren bajo un nombre de dominio comun,"
 echo "cual es su nombre de dominio?"
 echo "(Por ejemplo:  Todos los servidores de UpWorld.Org tienen sus"
-echo "nombres acabados en \`.globalchat.org\', en este caso,"
-echo "debes introducir \`globalchat.org\'.) Si tus servidores"
+echo "nombres acabados en \`.upworld.org\', en este caso,"
+echo "debes introducir \`upworld.org\'.) Si tus servidores"
 echo "no comparten un nombre de dominio comun, presiona Enter."
 echo2 "[$NETWORK_DOMAIN] "
 if read INPUT ; then : ; else echo "" ; exit 1 ; fi
@@ -435,14 +435,13 @@ echo ""
 ok=0
 echo "Cual de los siguientes es el tipo de los servidores de tu red de irc?"
 echo " "
-echo "     1) Base irc2 distribucion (RFC 1459 compliant)"
-echo "     2) irc2 con protocolo TS8"
-echo "    11) Undernet (ircu) 2.9.32 o inferior"
-echo "    12) Undernet (ircu) 2.10.01 - 2.10.07 (requiere soporte P9)"
-# echo "    13) Undernet (ircu) 2.10.x (Soporte P10 COMPLETO)  EXPERIMENTAL!!"
-echo "    21) DALnet (ircd.dal) DreamForge anterior a 4.4.15"
-echo "    22) DALnet (ircd.dal) DreamForge 4.4.15 o superior"
-echo "    23) DALnet (ircd.dal) Bahamut 1.2.1 to 1.4.0"
+#echo "    10) Undernet (ircu) 2.9.32 o inferior"
+echo "    11) Undernet (ircu) 2.10.01 - 2.10.07 (requiere soporte P9)"
+#echo "    12) Undernet (ircu) 2.10.x (Soporte P10 COMPLETO) EXPERIMENTAL!!"
+#echo "    20)  TerraIrcu 2.23 o superior Soporte P9"
+#echo "    21)  TerraIrcu 2.23 o superior Soporte P10"
+echo "    30) ESNET-Hispano 2.10.H.02.50 o superior, Soporte P9"
+#echo "    31) ESNET-Hispano 2.10.H.02.50 o superior, Soporte P10"
 while [ $ok -eq 0 ] ; do
 	echo2 "[$IRCTYPE] "
 	if read INPUT ; then : ; else echo "" ; exit 1 ; fi
@@ -454,41 +453,43 @@ while [ $ok -eq 0 ] ; do
 			echo "Debes especificar el tipo de tu servidor IRC"
 			echo "funcionen correctamente los Servicies."
 			;;
-		1)
-			IRCTYPE_DEF="IRC_CLASSIC"
-			ok=1
-			;;
-		2)
-			IRCTYPE_DEF="IRC_TS8"
+		10)
+			IRCTYPE_DEF="IRC_UNDERNET"
 			ok=1
 			;;
 		11)
 			IRCTYPE_DEF="IRC_UNDERNET"
+                        IRCTYPE_DEF2="IRC_UNDERNET_P09"
 			ok=1
 			;;
 		12)
 			IRCTYPE_DEF="IRC_UNDERNET"
-			IRCTYPE_DEF2="IRC_UNDERNET_P09"
+			IRCTYPE_DEF2="IRC_UNDERNET_P10"
 			ok=1
 			;;
-                13)
+                20)
                         IRCTYPE_DEF="IRC_UNDERNET"
-                        IRCTYPE_DEF2="IRC_UNDERNET_P10"
+                        IRCTYPE_DEF2="IRC_UNDERNET_P09"
+                        NETWORK="IRC_TERRA"
                         ok=1
                         ;;
 
 		21)
-			IRCTYPE_DEF="IRC_DALNET"
+                        IRCTYPE_DEF="IRC_UNDERNET"
+                        IRCTYPE_DEF2="IRC_UNDERNET_P10"
+                        NETWORK="IRC_TERRA"
 			ok=1
 			;;
-		22)
-			IRCTYPE_DEF="IRC_DALNET"
-			IRCTYPE_DEF2="IRC_DAL4_4_15"
+		30)
+                        IRCTYPE_DEF="IRC_UNDERNET"
+                        IRCTYPE_DEF2="IRC_UNDERNET_P09"
+                        NETWORK="IRC_HISPANO"
 			ok=1
 			;;
-                23)
-                        IRCTYPE_DEF="IRC_DALNET"
-                        IRCTYPE_DEF2="IRC_BAHAMUT"
+                31)
+                        IRCTYPE_DEF="IRC_UNDERNET"
+                        IRCTYPE_DEF2="IRC_UNDERNET_P10"
+                        NETWORK="IRC_HISPANO"
                         ok=1
                         ;;
 		*)
@@ -498,41 +499,6 @@ while [ $ok -eq 0 ] ; do
 done
 IRCTYPE=$INPUT
 echo ""
-
-####
-if [ "$IRCTYPE_DEF2" = "IRC_UNDERNET_P10" ]; then
-   if [ "$NETWORK" = "DB_NETWORKS" ] ; then
-        DEF=y
-   else
-        DEF=n
-   fi
-   ok=0
-   echo "Quieres activar el soporte de Bases de Datos Distribuidas"
-   echo "originario de ESNET_HISPANO?"
-   echo " "
-   echo "Yes para activarlo y No para deshabilitar"
-   while [ $ok -eq 0 ] ; do
-        echo2 "[$DEF] "
-        if read INPUT ; then : ; else echo "" ; exit 1 ; fi
-        if [ ! "$INPUT" ] ; then
-                INPUT=$DEF
-        fi
-        case $INPUT in
-                n*|N*)
-                        NETWORK=
-                        ok=1
-                        ;;
-                y*|Y*)
-                        NETWORK=DB_NETWORKS
-                        ok=1
-                        ;;
-                *)
-                        echo "Por favor, presione 'y' o 'n'."
-                        ;;
-        esac
-done
-echo ""
-fi
 
 ####
 

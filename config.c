@@ -30,8 +30,6 @@ static char *temp_userhost;
 
 char *s_NickServ;
 char *s_ChanServ;
-char *s_CregServ;
-char *s_CyberServ;
 char *s_MemoServ;
 char *s_HelpServ;
 char *s_OperServ;
@@ -42,8 +40,6 @@ char *s_DevNull;
 #ifdef IRC_UNDERNET_P10
 char s_NickServP10[4];
 char s_ChanServP10[4];
-char s_CregServP10[4];
-char s_CyberServP10[4];
 char s_MemoServP10[4];
 char s_HelpServP10[4];
 char s_OperServP10[4];
@@ -54,8 +50,6 @@ char s_DevNullP10[4];
 #endif
 char *desc_NickServ;
 char *desc_ChanServ;
-char *desc_CregServ;
-char *desc_CyberServ;
 char *desc_MemoServ;
 char *desc_HelpServ;
 char *desc_OperServ;
@@ -148,13 +142,6 @@ int   AutokillExpiry;
 
 int   KillClonesAkillExpire;
 
-int   ControlClones;
-int   LimiteClones;
-int   ExpIlineDefault;
-int   MaximoClones;
-char *IlineDBName;
-char *MensajeClones;
-char *WebClones;
 
 /*************************************************************************/
 
@@ -204,9 +191,6 @@ Directive directives[] = {
     { "ChanServDB",       { { PARAM_STRING, 0, &ChanDBName } } },
     { "ChanServName",     { { PARAM_STRING, 0, &s_ChanServ },
                             { PARAM_STRING, 0, &desc_ChanServ } } },
-    { "CregServDB",       { { PARAM_STRING, 0, &CregDBName } } },    
-    { "CregServName",     { { PARAM_STRING, 0, &s_CregServ },
-                            { PARAM_STRING, 0, &desc_CregServ } } },                                
     { "CSAccessMax",      { { PARAM_POSINT, 0, &CSAccessMax } } },
     { "CSAutokickMax",    { { PARAM_POSINT, 0, &CSAutokickMax } } },
     { "CSAutokickReason", { { PARAM_STRING, 0, &CSAutokickReason } } },
@@ -216,13 +200,8 @@ Directive directives[] = {
     { "CSListOpersOnly",  { { PARAM_SET, 0, &CSListOpersOnly } } },
     { "CSMaxReg",         { { PARAM_POSINT, 0, &CSMaxReg } } },
     { "CSRestrictDelay",  { { PARAM_TIME, 0, &CSRestrictDelay } } },
-    { "CyberServName",    { { PARAM_STRING, 0, &s_CyberServ },
-                            { PARAM_STRING, 0, &desc_CyberServ } } },
-    { "LimiteClones",     { { PARAM_POSINT, 0, &LimiteClones } } },
     { "DevNullName",      { { PARAM_STRING, 0, &s_DevNull },
                             { PARAM_STRING, 0, &desc_DevNull } } },
-    { "IlineDB",	  { { PARAM_STRING, 0, &IlineDBName } } },
-    { "ExpIlineDefault",  { { PARAM_TIME, 0, &ExpIlineDefault } } },
     { "ExpireTimeout",    { { PARAM_TIME, 0, &ExpireTimeout } } },
     { "GlobalName",       { { PARAM_STRING, 0, &s_GlobalNoticer },
                             { PARAM_STRING, 0, &desc_GlobalNoticer } } },
@@ -232,12 +211,10 @@ Directive directives[] = {
     { "IrcIIHelpName",    { { PARAM_STRING, 0, &s_IrcIIHelp },
                             { PARAM_STRING, 0, &desc_IrcIIHelp } } },
     { "KillClonesAkillExpire",{{PARAM_TIME, 0, &KillClonesAkillExpire } } },
-    { "ControlClones",    { { PARAM_SET, PARAM_FULLONLY, &ControlClones } } },
     { "ListOpersOnly",    { { PARAM_DEPRECATED, 0, dep_ListOpersOnly } } },
     { "LocalAddress",     { { PARAM_STRING, 0, &LocalHost },
                             { PARAM_PORT, PARAM_OPTIONAL, &LocalPort } } },
     { "LogMaxUsers",      { { PARAM_SET, 0, &LogMaxUsers } } },
-    { "MaximoClones",     { { PARAM_POSINT, 0, &MaximoClones } } },
     { "MemoServName",     { { PARAM_STRING, 0, &s_MemoServ },
                             { PARAM_STRING, 0, &desc_MemoServ } } },
     { "MOTDFile",         { { PARAM_STRING, 0, &MOTDFilename } } },
@@ -287,11 +264,8 @@ Directive directives[] = {
 #ifdef IRC_UNDERNET_P10
     { "ServerNumerico",   { { PARAM_INT, 0, &ServerNumerico } } },
 #endif        
-    { "ServerHUB",        { { PARAM_STRING, 0, &ServerHUB } } },
     { "ServicesRoot",     { { PARAM_STRING, 0, &ServicesRoot } } },
     { "ServiceUser",      { { PARAM_STRING, 0, &temp_userhost } } },
-    { "WebClones",        { { PARAM_STRING, 0, &WebClones } } },
-    { "MensajeClones",    { { PARAM_STRING, 0, &MensajeClones } } },
 #ifdef REG_NICK_MAIL   
 #ifdef SENDMAIL
     { "SendMailPatch",    { { PARAM_STRING, 0, &SendMailPatch } } },
@@ -308,7 +282,6 @@ Directive directives[] = {
     { "NickShadow",       { { PARAM_STRING, 0, &NickShadow } } },    
     { "CanalAdmins",      { { PARAM_STRING, 0, &CanalAdmins } } },
     { "CanalOpers",       { { PARAM_STRING, 0, &CanalOpers } } },            
-    { "CanalCybers",      { { PARAM_STRING, 0, &CanalCybers } } },
     { "StrictPasswords",  { { PARAM_SET, 0, &StrictPasswords } } },
     { "TimeoutCheck",     { { PARAM_TIME, 0, &TimeoutCheck } } },
     { "UpdateTimeout",    { { PARAM_TIME, 0, &UpdateTimeout } } },
@@ -551,13 +524,10 @@ int read_config()
 #ifdef IRC_UNDERNET_P10
     CHECK(ServerNumerico);
 #endif    
-    CHECK(ServerDesc);
-    CHECK(ServerHUB);    
+    CHECK(ServerDesc);  
     CHEK2(temp_userhost, ServiceUser);
     CHEK2(s_NickServ, NickServName);
     CHEK2(s_ChanServ, ChanServName);
-    CHEK2(s_CregServ, CregServName);
-    CHEK2(s_CyberServ, CyberServName);    
     CHEK2(s_MemoServ, MemoServName);
     CHEK2(s_HelpServ, HelpServName);
     CHEK2(s_OperServ, OperServName);
@@ -568,11 +538,9 @@ int read_config()
     CHECK(HelpDir);
     CHEK2(NickDBName, NickServDB);
     CHEK2(ChanDBName, ChanServDB);
-    CHEK2(CregDBName, CregServDB);    
     CHEK2(OperDBName, OperServDB);
     CHEK2(AutokillDBName, AutokillDB);
     CHEK2(NewsDBName, NewsDB);
-    CHEK2(IlineDBName, IlineDB);
     CHECK(UpdateTimeout);
     CHECK(ExpireTimeout);
     CHECK(ReadTimeout);
@@ -589,7 +557,6 @@ int read_config()
     CHECK(CSListMax);
     CHECK(CanalAdmins);
     CHECK(CanalOpers);
-    CHECK(CanalCybers);        
     CHECK(ServicesRoot);
     CHECK(AutokillExpiry);
 #ifdef REG_NICK_MAIL
@@ -643,11 +610,6 @@ int read_config()
 	NSDefMemoReceive = 1;
     }
     
-    if (ControlClones) {
-	CHECK(LimiteClones);
-	CHECK(MaximoClones);
-	CHECK(ExpIlineDefault);
-    }
     
     if (ShadowServ) 
         CHECK(NickShadow);

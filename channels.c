@@ -67,7 +67,7 @@ void send_channel_list(User *user)
 
     for (c = firstchan(); c; c = nextchan()) {
 	snprintf(s, sizeof(s), " %d", c->limit);
-	privmsg(s_OperServ, source, "%s %lu +%s%s%s%s%s%s%s%s%s%s%s%s %s",
+	privmsg(s_OperServ, source, "%s %lu +%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s %s",
 				c->name, c->creation_time,
 				(c->mode&CMODE_I) ? "i" : "",
 				(c->mode&CMODE_M) ? "m" : "",
@@ -75,17 +75,20 @@ void send_channel_list(User *user)
 				(c->mode&CMODE_P) ? "p" : "",
 				(c->mode&CMODE_s) ? "s" : "",
 				(c->mode&CMODE_T) ? "t" : "",
-#ifdef IRC_BAHAMUT
-                                (c->mode&CMODE_C) ? "c" : "",
-#else
-                                "";
-#endif                                
                                 				
-#if defined (IRC_DAL4_4_15) || defined (IRC_BAHAMUT)
-/* Hay que meter aqui nuevos modos de BAHAMUT cuando los implemente */
-				(c->mode&CMODE_R) ? "R" : "",
+#if defined (IRC_TERRA) || defined (IRC_HISPANO)
+				(c->mode&CMODE_r) ? "r" : "",
+                                (c->mode&CMODE_R) ? "R" : "",				
 #else
 				"",
+				"",
+#endif
+#ifdef IRC_HISPANO
+                                (c->mode&CMODE_A) ? "A" : "",
+                                (c->mode&CMODE_S) ? "S" : "",                                
+#else
+                                "",
+                                "",                                
 #endif
 				(c->limit)        ? "l" : "",
 				(c->key)          ? "k" : "",
@@ -235,7 +238,7 @@ void chan_adduser(User *user, const char *chan)
 	/* Store ChannelInfo pointer in channel record */
 	c->ci = cs_findchan(chan);
 	if (c->ci) {
-#if defined (IRC_DAL4_4_15) || defined (IRC_BAHAMUT)
+#ifdef IRC_TERRA
 	    /* This is a registered channel, ensure it's mode locked +r */
 	    c->ci->mlock_on |= CMODE_r;
 	    c->ci->mlock_off &= ~CMODE_r;	/* just to be safe */
@@ -576,7 +579,6 @@ void do_cmode(const char *source, int ac, char **av)
 	case '-':
 	    add = 0; break;
                                                                                     
-/* Añadir los nuevos modos para BAHAMUT cuando los implemente */                
 	case 'i':
 	    if (add)
 		chan->mode |= CMODE_I;
@@ -618,16 +620,9 @@ void do_cmode(const char *source, int ac, char **av)
 	    else
 		chan->mode &= ~CMODE_T;
 	    break;
-#ifdef IRC_BAHAMUT
-        case 'c':
-            if (add)
-                chan->mode |= CMODE_T;
-            else
-                chan->mode &= ~CMODE_T;
-            break;
-#endif	    
 
-#if defined (IRC_DAL4_4_15) || defined (IRC_BAHAMUT) || defined (DB_NETWORKS)
+#if defined (IRC_HISPANO) || defined (IRC_TERRA)
+/* Soporte para redes con BDD como Hispano, Globalchat o Upworld */
 	case 'R':
 	    if (add)
 		chan->mode |= CMODE_R;
@@ -641,9 +636,10 @@ void do_cmode(const char *source, int ac, char **av)
 	    else
 		chan->mode &= ~CMODE_r;
 	    break;
-#endif
+#endif	    
+#ifdef IRC_HISPANO
 /* Soporte para redes con BDD como Hispano, Globalchat o Upworld */
-#ifdef DB_NETWORKS
+	    
         case 'A':
             if (add)
                 chan->mode |= CMODE_A;
@@ -859,24 +855,14 @@ void do_topic(const char *source, int ac, char **av)
     }
     if (check_topiclock(av[0]))
 	return;
-#ifdef IRC_UNDERNET	
     strscpy(c->topic_setter, source, sizeof(c->topic_setter));
     c->topic_time = time(NULL);    
-#else
-    strscpy(c->topic_setter, av[1], sizeof(c->topic_setter));
-    c->topic_time = atol(av[2]);
-#endif    
     if (c->topic) {
 	free(c->topic);
 	c->topic = NULL;
     }
-#ifdef IRC_UNDERNET
     if (ac > 1 && *av[1])
         c->topic = sstrdup(av[1]);
-#else
-    if (ac > 3 && *av[3])
-	c->topic = sstrdup(av[3]);
-#endif	
     record_topic(av[0]);
 }
 

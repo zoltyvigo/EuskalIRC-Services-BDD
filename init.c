@@ -13,30 +13,6 @@
 /* Send a NICK command for the given pseudo-client.  If `user' is NULL,
  * send NICK commands for all the pseudo-clients. */
 
-#if defined(IRC_DALNET)
-# ifdef IRC_DAL4_4_15
-#  define NICK(nick,name) \
-    do { \
-	send_cmd(NULL, "NICK %s 1 %ld %s %s %s 0 :%s", (nick), time(NULL), \
-		ServiceUser, ServiceHost, ServerName, (name)); \
-    } while (0)
-# elif defined (IRC_BAHAMUT)
-/*
- * NICK <nick> <hops> <TS> <umode> <user> <host> <server> <svsid> :<ircname>
- */
-#  define NICK(nick,name) \
-    do { \
-         send_cmd(NULL, "NICK %s 1 %ld + %s %s %s 0 :%s", (nick), time(NULL), \
-                 ServiceUser, ServiceHost, ServerName, (name)); \
-    } while (0) 
-# else
-#  define NICK(nick,name) \
-    do { \
-	send_cmd(NULL, "NICK %s 1 %ld %s %s %s :%s", (nick), time(NULL), \
-		ServiceUser, ServiceHost, ServerName, (name)); \
-    } while (0)
-# endif
-#elif defined(IRC_UNDERNET)
 #ifdef IRC_UNDERNET_P10
 #  define NICK(nick,modos,numerico,name) \
     do { \
@@ -50,21 +26,6 @@
                 ServiceUser, ServiceHost, ServerName, (name)); \
     } while (0)
 # endif    
-#elif defined(IRC_TS8)
-# define NICK(nick,name) \
-    do { \
-	send_cmd(NULL, "NICK %s :1", (nick)); \
-	send_cmd((nick), "USER %ld %s %s %s :%s", time(NULL), \
-		ServiceUser, ServiceHost, ServerName, (name)); \
-    } while (0)
-#else
-# define NICK(nick,name) \
-    do { \
-	send_cmd(NULL, "NICK %s :1", (nick)); \
-	send_cmd((nick), "USER %s %s %s :%s", \
-		ServiceUser, ServiceHost, ServerName, (name)); \
-    } while (0)
-#endif
 
 void introduce_user(const char *user)
 {
@@ -101,28 +62,6 @@ void introduce_user(const char *user)
         send_cmd(s_ChanServ, "J #%s", CanalOpers);
         send_cmd(ServerName, "M #%s +o %s", CanalOpers, s_ChanServP10);
     }    
-#ifdef CREGSERV
-    if (!user || stricmp(user, s_CregServ) == 0 || stricmp(user, s_CregServP10) == 0) {    
-        s_CregServP10[0]=convert2y[ServerNumerico];
-        s_CregServP10[1]='\0';
-        strcat(s_CregServP10, "AC");
-        modos="+krhd";
-        NICK(s_CregServ, modos, s_CregServP10, desc_CregServ);
-        send_cmd(s_CregServ, "J #%s", CanalOpers);
-        send_cmd(ServerName, "M #%s +o %s", CanalOpers, s_CregServP10);
-    }
-#endif    
-    if (!user || stricmp(user, s_CyberServ) == 0 || stricmp(user, s_CyberServP10) == 0) {  
-        s_CyberServP10[0]=convert2y[ServerNumerico];
-        s_CyberServP10[1]='\0';
-        strcat(s_CyberServP10, "AD");
-        modos="+krhd";
-        NICK(s_CyberServ, modos, s_CyberServP10, desc_CyberServ);
-        send_cmd(s_CyberServ, "J #%s", CanalOpers);
-        send_cmd(ServerName, "M #%s +o %s", CanalOpers, s_CyberServP10);
-        send_cmd(s_CyberServ, "J #%s", CanalCybers);
-        send_cmd(ServerName, "M #%s +o %s", CanalCybers, s_CyberServP10);
-    }                                                            
     if (!user || stricmp(user, s_MemoServ) == 0 || stricmp(user, s_MemoServP10) == 0) {    
         s_MemoServP10[0]=convert2y[ServerNumerico];
         s_MemoServP10[1]='\0';
@@ -191,7 +130,7 @@ void introduce_user(const char *user)
 #else
     if (!user || stricmp(user, s_NickServ) == 0) {
 	NICK(s_NickServ, desc_NickServ);
-	send_cmd(s_NickServ, "MODE %s +krhd", s_NickServ);
+	send_cmd(s_NickServ, "MODE %s +kdb", s_NickServ);
         send_cmd(s_NickServ, "JOIN #%s", CanalOpers);
         send_cmd(ServerName, "MODE #%s +o %s", CanalOpers, s_NickServ);                
         send_cmd(s_NickServ, "JOIN #Bots");
@@ -200,53 +139,37 @@ void introduce_user(const char *user)
     }    
     if (!user || stricmp(user, s_ChanServ) == 0) {
 	NICK(s_ChanServ, desc_ChanServ);                       	
-        send_cmd(s_ChanServ, "MODE %s +Bikrdho", s_ChanServ);
+        send_cmd(s_ChanServ, "MODE %s +Bbikdo", s_ChanServ);
         send_cmd(s_ChanServ, "JOIN #%s", CanalOpers);
         send_cmd(ServerName, "MODE #%s +o %s", CanalOpers, s_ChanServ);                	
         send_cmd(s_ChanServ, "JOIN #Bots");
         send_cmd(ServerName, "MODE #Bots +o %s", s_ChanServ);
                 
     }
-#ifdef CREGSERV    
-    if (!user || stricmp(user, s_CregServ) == 0) {
-        NICK(s_CregServ, desc_CregServ);
-        send_cmd(s_CregServ, "MODE %s +ikrhd", s_CregServ);
-        send_cmd(s_CregServ, "JOIN #%s", CanalOpers);
-        send_cmd(ServerName, "MODE #%s +o %s", CanalOpers, s_CregServ);
-    }                                        
-#endif
-    if (!user || stricmp(user, s_CyberServ) == 0) {
-        NICK(s_CyberServ, desc_CyberServ);
-        send_cmd(s_CyberServ, "MODE %s +ikrhd", s_CyberServ);
-        send_cmd(s_CyberServ, "JOIN #%s", CanalOpers);
-        send_cmd(ServerName, "MODE #%s +o %s", CanalOpers, s_CyberServ);
-        send_cmd(s_CyberServ, "JOIN #%s", CanalCybers);
-        send_cmd(ServerName, "MODE #%s +o %s", CanalCybers, s_CyberServ);        
-    }    
 
     if (!user || stricmp(user, s_HelpServ) == 0) {
 	NICK(s_HelpServ, desc_HelpServ);
-        send_cmd(s_HelpServ, "MODE %s +d", s_HelpServ);	
+        send_cmd(s_HelpServ, "MODE %s +db", s_HelpServ);	
         send_cmd(s_HelpServ, "JOIN #Bots");
         send_cmd(ServerName, "MODE #Bots +o %s", s_HelpServ);
               	
     }
     if (s_IrcIIHelp && (!user || stricmp(user, s_IrcIIHelp) == 0)) {
 	NICK(s_IrcIIHelp, desc_IrcIIHelp);
-        send_cmd(s_IrcIIHelp, "MODE %s +d", s_IrcIIHelp);
+        send_cmd(s_IrcIIHelp, "MODE %s +db", s_IrcIIHelp);
         send_cmd(s_IrcIIHelp, "JOIN #Bots");
         send_cmd(ServerName, "MODE #Bots +o %s", s_IrcIIHelp);
                 	
     }
     if (!user || stricmp(user, s_MemoServ) == 0) {
 	NICK(s_MemoServ, desc_MemoServ);
-	send_cmd(s_MemoServ, "MODE %s +krhd", s_MemoServ);
+	send_cmd(s_MemoServ, "MODE %s +krbd", s_MemoServ);
         send_cmd(s_MemoServ, "JOIN #Bots");
         send_cmd(ServerName, "MODE #Bots +o %s", s_MemoServ);                	
     }
     if (!user || stricmp(user, s_OperServ) == 0) {      
 	NICK(s_OperServ, desc_OperServ);
-        send_cmd(s_OperServ, "MODE %s +Bikrdho", s_OperServ);             
+        send_cmd(s_OperServ, "MODE %s +Bbikdo", s_OperServ);             
         send_cmd(s_OperServ, "JOIN #%s", CanalAdmins);
         send_cmd(ServerName, "MODE #%s +o %s", CanalAdmins, s_OperServ);
         send_cmd(s_OperServ, "JOIN #%s", CanalOpers);
@@ -262,7 +185,7 @@ void introduce_user(const char *user)
     }
     if (!user || stricmp(user, s_NewsServ) == 0) {
         NICK(s_NewsServ, desc_NewsServ);
-        send_cmd(s_NewsServ, "MODE %s +krho", s_NewsServ);
+        send_cmd(s_NewsServ, "MODE %s +kbo", s_NewsServ);
     }                                  
 #endif    
 }
@@ -616,11 +539,6 @@ int init(int ac, char **av)
 	load_cs_dbase();
 	if (debug)
 	    log("debug: Cargando la DB de %s (2/7)", s_ChanServ);
-#ifdef CREGSERV
-        load_cr_dbase();
-        if (debug)
-            log("debug: Cargando la DB de %s (3/7)", s_CregServ);
-#endif            
     }
     load_os_dbase();
     if (debug)
@@ -631,28 +549,19 @@ int init(int ac, char **av)
     load_news();
     if (debug)
 	log("debug: Cargando la DB de NOTICIAS (6/7)");
-//    load_iline_dbase();	
-    if (debug)
-        log("debug: Cargando la DB de CLONES (7/7)");
     log("Cargadas las bases de datos");
 
     /* Connect to the remote server */
     servsock = conn(RemoteServer, RemotePort, LocalHost, LocalPort);
     if (servsock < 0)
 	fatal_perror("No puedo conectar al servidor");
-#ifdef IRC_BAHAMUT
-    send_cmd(NULL, "PASS %s :TS", RemotePassword);
-#else
     send_cmd(NULL, "PASS :%s", RemotePassword);
-#endif    
 #ifdef IRC_UNDERNET_P09
     send_cmd(NULL, "SERVER %s 1 %lu %lu P09 :%s",
              ServerName, start_time, start_time, ServerDesc);
-#elif defined (IRC_UNDERNET_P10)
+#else /* IRC_UNDERNET_P10 */
     send_cmd(NULL, "SERVER %s %d 0 %ld J10 %cD] :%s",
              ServerName, 2, start_time, convert2y[ServerNumerico], ServerDesc); 
-#else
-    send_cmd(NULL, "SERVER %s 1 :%s", ServerName, ServerDesc);
 #endif
     sgets2(inbuf, sizeof(inbuf), servsock);
     if (strnicmp(inbuf, "ERROR", 5) == 0) {
@@ -663,10 +572,6 @@ int init(int ac, char **av)
 	fatal("El servidor ha devuelto: %s", inbuf);
     }
 
-#ifdef IRC_BAHAMUT
-    send_cmd(NULL, "SVINFO 3 3 0 :%ld", time(NULL));
-    send_cmd(NULL, "CAPAB: TS3");
-#endif
 
     /* Announce a logfile error if there was one */
     if (openlog_failed) {
@@ -678,7 +583,23 @@ int init(int ac, char **av)
     introduce_user(NULL);
 
     send_cmd(ServerName, "SETTIME %lu", time(NULL));
+#if HAVE_ALLWILD_NOTICE
     send_cmd(s_OperServ, "NOTICE $*.%s :Establecidos los servicios de la RED.", NETWORK_DOMAIN);
+    
+#else
+# ifdef NETWORK_DOMAIN
+    send_cmd(s_OperServ, "NOTICE $*.%s :Establecidos los servicios de la RED.", NETWORK_DOMAIN);
+# else
+    /* Go through all common top-level domains.  If you have others,
+     * add them here.
+     */
+    send_cmd(s_OperServ, "NOTICE $*.es :Establecidos los servicios de la RED.");
+    send_cmd(s_OperServ, "NOTICE $*.com :Establecidos los servicios de la RED.");
+    send_cmd(s_OperServ, "NOTICE $*.net :Establecidos los servicios de la RED.");
+    send_cmd(s_OperServ, "NOTICE $*.org :Establecidos los servicios de la RED.");    
+    send_cmd(s_OperServ, "NOTICE $*.edu :Establecidos los servicios de la RED.");
+# endif
+#endif
         
     join_chanserv();
       

@@ -320,7 +320,7 @@ void listchans(int count_only, const char *chan)
 	    }
 	    printf("Candado de modos: ");
 	    if (ci->mlock_on || ci->mlock_key || ci->mlock_limit) {
-		printf("+%s%s%s%s%s%s%s%s%s%s",
+		printf("+%s%s%s%s%s%s%s%s%s%s%s",
 			(ci->mlock_on & CMODE_I) ? "i" : "",
 			(ci->mlock_key         ) ? "k" : "",
 			(ci->mlock_limit       ) ? "l" : "",
@@ -329,20 +329,22 @@ void listchans(int count_only, const char *chan)
 			(ci->mlock_on & CMODE_P) ? "p" : "",
 			(ci->mlock_on & CMODE_s) ? "s" : "",
 			(ci->mlock_on & CMODE_T) ? "t" : "",
-/* Poner los nuevos modos cuando implemente el BAHAMUT */
-#ifdef IRC_BAHAMUT
-                        (ci->mlock_on & CMODE_C) ? "c" : "",                        
-#else
-                        "",                        
+#if defined (IRC_HISPANO) || defined (IRC_TERRA)
+			(ci->mlock_on & CMODE_R) ? "R" : ""		
+#else		
+			""
 #endif
-#if defined (IRC_DAL4_4_15) || defined (IRC_BAHAMUT)
-			(ci->mlock_on & CMODE_R) ? "R" : "");
+#ifdef IRC_HISPANO
+                       ,(ci->mlock_on & CMODE_A) ? "A" : "",
+                        (ci->mlock_on & CMODE_S) ? "S" : ""                        
 #else
-			"");
+                        ,"",
+                        ""
 #endif
+                        );
 	    }
 	    if (ci->mlock_off)
-		printf("-%s%s%s%s%s%s%s%s%s%s",
+		printf("-%s%s%s%s%s%s%s%s%s%s%s",
 			(ci->mlock_off & CMODE_I) ? "i" : "",
 			(ci->mlock_off & CMODE_K) ? "k" : "",
 			(ci->mlock_off & CMODE_L) ? "l" : "",
@@ -351,16 +353,21 @@ void listchans(int count_only, const char *chan)
 			(ci->mlock_off & CMODE_P) ? "p" : "",
 			(ci->mlock_off & CMODE_s) ? "s" : "",
 			(ci->mlock_off & CMODE_T) ? "t" : "",
-#ifdef IRC_BAHAMUT
-                        (ci->mlock_off & CMODE_C) ? "c" : "",
+#if defined (IRC_HISPANO) || defined (IRC_TERRA)
+                        (ci->mlock_off & CMODE_R) ? "R" : ""
 #else
-                        "",                        
-#endif                        			
-#if defined (IRC_DAL4_4_15) || defined (IRC_BAHAMUT)
-			(ci->mlock_off & CMODE_R) ? "R" : "");
-#else
-			"");
+                        ""
 #endif
+#ifdef IRC_HISPANO
+                        ,
+                        (ci->mlock_off & CMODE_A) ? "A" : "",
+                        (ci->mlock_off & CMODE_S) ? "S" : ""
+#else
+                        ,
+                        "",
+                        ""
+#endif
+                        );
 
 	    if (ci->mlock_key)
 		printf(" %s", ci->mlock_key);
@@ -1097,6 +1104,7 @@ void save_cs_dbase(void)
 
 void check_modes(const char *chan)
 {
+
     Channel *c = findchan(chan);
     ChannelInfo *ci;
     char newmodes[32], *newkey = NULL;
@@ -1116,14 +1124,8 @@ void check_modes(const char *chan)
 
     /* Check for mode bouncing */
     if (c->server_modecount >= 3 && c->chanserv_modecount >= 3) {
-#if defined(IRC_DALNET) || defined(IRC_UNDERNET)
 	canalopers(NULL, "Desincronizacion detectada en el canal %s. "
 		"Las U-Lines de los servidores tan bien configuradas?", chan);
-#else
-        canalopers(NULL, "Desincronizacion detectada en el canal %s. "
-                "Las U-Lines de los servidores tan bien configuradas?", chan);
-                        
-#endif
 	log("%s: Bouncy modes on channel %s", s_ChanServ, c->name);
 	c->bouncy_modes = 1;
 	return;
@@ -1136,7 +1138,7 @@ void check_modes(const char *chan)
     c->chanserv_modecount++;
 
     if (!(ci = c->ci)) {
-#if defined (IRC_DAL4_4_15) || defined (IRC_BAHAMUT)
+#ifdef IRC_TERRA
 	/* Services _always_ knows who should be +r. If a channel tries to be
 	 * +r and is not registered, send mode -r. This will compensate for
 	 * servers that are split when mode -r is initially sent and then try
@@ -1149,6 +1151,7 @@ void check_modes(const char *chan)
 #endif
 	return;
     }
+
 
     *end++ = '+';
     modes = ~c->mode & ci->mlock_on;
@@ -1176,13 +1179,7 @@ void check_modes(const char *chan)
 	*end++ = 't';
 	c->mode |= CMODE_T;
     }
-#ifdef IRC_BAHAMUT
-    if (modes & CMODE_C) {
-        *end++ = 'c';
-        c->mode |= CMODE_C;
-    }    
-#endif
-#if defined (IRC_DAL4_4_15) || defined (IRC_BAHAMUT)
+#if defined (IRC_HISPANO) || defined (IRC_TERRA)
     if (modes & CMODE_R) {
 	*end++ = 'R';
 	c->mode |= CMODE_R;
@@ -1191,6 +1188,16 @@ void check_modes(const char *chan)
 	*end++ = 'r';
 	c->mode |= CMODE_r;
     }
+#endif
+#ifdef IRC_HISPANO
+    if (modes & CMODE_A) {
+        *end++ = 'A';
+        c->mode |= CMODE_A;
+    }
+    if (modes & CMODE_S) {
+        *end++ = 'S';
+        c->mode |= CMODE_S;
+    }                        
 #endif
 
     if (ci->mlock_limit && ci->mlock_limit != c->limit) {
@@ -1253,18 +1260,26 @@ void check_modes(const char *chan)
     if (modes & CMODE_T) {
 	*end++ = 't';
 	c->mode &= ~CMODE_T;
-    }
-#ifdef IRC_BAHAMUT
-    if (modes & CMODE_C) {
-        *end++ = 'c';
-        c->mode &= ~CMODE_C;
-}
-#endif    
-#if defined (IRC_DAL4_4_15) || defined (IRC_BAHAMUT)
+    }	
+#if defined (IRC_HISPANO) || defined (IRC_TERRA)
     if (modes & CMODE_R) {
     	*end++ = 'R';
     	c->mode &= ~CMODE_R;
     }
+    if (modes & CMODE_r) {
+        *end++ = 'r';
+        c->mode &= ~CMODE_r;
+    }                           
+#endif
+#ifdef IRC_HISPANO
+    if (modes & CMODE_S) {
+        *end++ = 'S';
+        c->mode &= ~CMODE_S;
+    }
+    if (modes & CMODE_S) {
+        *end++ = 'S';
+        c->mode &= ~CMODE_S;
+    }                        
 #endif
 
     if (c->key && (ci->mlock_off & CMODE_K)) {
@@ -1278,11 +1293,9 @@ void check_modes(const char *chan)
 	*end++ = 'l';
 	c->limit = 0;
     }
-#ifdef DB_NETWORKS
-#ifdef DB_UPWORLD
+#ifdef IRC_HISPANO_NO_CHUTA
     if (!(c->mode & CMODE_r)) {
-#endif    
-#ifdef Nochuta
+  
        int hecho = 0;
    /* Elimino los modos +RAS */
        if (c->mode & CMODE_R) {
@@ -1304,11 +1317,8 @@ void check_modes(const char *chan)
            send_cmd(MODE_SENDER(s_ChanServ), "MODE %s -RAS", chan);
            notice(s_ChanServ, chan, "Modo de canal no permitido");
            hecho = 0;
-       }    
-#endif       
-#ifdef DB_UPWORLD
+       }          
     }
-#endif
 #endif                 
                                            
            
@@ -1320,6 +1330,7 @@ void check_modes(const char *chan)
  *
  * Zoltan - 12 Octubre 2000
  */
+
  
     if (ShadowServ) {
         u = finduser(NickShadow); /* Para verificar ke esta en la red :) */
@@ -1331,9 +1342,9 @@ void check_modes(const char *chan)
 #endif        
             if (c->key || c->limit ||
                   (c->mode & (CMODE_I | CMODE_M 
-#ifdef IRC_UNDERNET
+#ifdef IRC_HISPANO
                     | CMODE_R | CMODE_A | CMODE_S
-#elif defined (IRC_DAL4_4_15) || defined (IRC_BAHAMUT)
+#elif defined (IRC_TERRA)
                     | CMODE_R
 #endif
                     ))) {
@@ -1366,7 +1377,8 @@ void check_modes(const char *chan)
 	free(newkey);
 /* Activamos el Private
    if (ci->flags & CI_PRIVATE)
-       send_cmd(s_ChanServ, "MODE %s +p", ci->name); */
+       send_cmd(s_ChanServ, "MODE %s +p", ci->name); 
+*/       
 }
 
 /*************************************************************************/
@@ -1672,23 +1684,9 @@ kick:
      * yet, so we check whether the channel does not exist */
     stay = !findchan(chan);
     av[0] = sstrdup(chan);
-#if defined(IRC_DALNET) || defined(IRC_UNDERNET)
     if (stay) {
-#endif
 	send_cmd(s_ChanServ, "JOIN %s", chan);
-#if !defined(IRC_DALNET) && !defined(IRC_UNDERNET)
-	send_cmd(ServerName, "MODE %s +o %s  0", chan, s_ChanServ);
-	strcpy(av[0], chan);
-	av[1] = sstrdup("+o");
-	av[2] = sstrdup(s_ChanServ);
-	do_cmode(ServerName, 3, av);
-	free(av[1]);
-	free(av[2]);
-#endif
-	strcpy(av[0], chan);
-#if defined(IRC_DALNET) || defined(IRC_UNDERNET)
     }
-#endif
     strcpy(av[0], chan);
     av[1] = sstrdup("+b");
     av[2] = mask;
@@ -1705,10 +1703,6 @@ kick:
     if (stay) {
 	t = add_timeout(CSInhabit, timeout_leave, 0);
 	t->data = sstrdup(chan);
-#if !defined(IRC_DALNET) && !defined(IRC_UNDERNET)
-    } else {
-	send_cmd(s_ChanServ, "PART %s", chan);
-#endif
     }
     return 1;
 }
@@ -1758,17 +1752,8 @@ void restore_topic(const char *chan)
 	c->topic = NULL;
 	strscpy(c->topic_setter, s_ChanServ, NICKMAX);
     }
-#ifdef IRC_CLASSIC
-    send_cmd(MODE_SENDER(s_ChanServ), "TOPIC %s %s :%s", chan,
-		c->topic_setter, c->topic ? c->topic : "");
-
-#elif defined IRC_UNDERNET
     send_cmd(MODE_SENDER(s_ChanServ), "TOPIC %s :%s", chan,
                 c->topic ? c->topic : "");                   
-#else
-    send_cmd(MODE_SENDER(s_ChanServ), "TOPIC %s %s %lu :%s", chan,
-		c->topic_setter, c->topic_time, c->topic ? c->topic : "");
-#endif
 }
 
 /*************************************************************************/
@@ -1791,16 +1776,8 @@ int check_topiclock(const char *chan)
 	c->topic = NULL;
     strscpy(c->topic_setter, ci->last_topic_setter, NICKMAX);
     c->topic_time = ci->last_topic_time;
-#ifdef IRC_CLASSIC
-    send_cmd(MODE_SENDER(s_ChanServ), "TOPIC %s %s :%s", chan,
-		c->topic_setter, c->topic ? c->topic : "");
-#elif defined IRC_UNDERNET
     send_cmd(MODE_SENDER(s_ChanServ), "TOPIC %s :%s", chan,
                 c->topic ? c->topic : "");                    
-#else
-    send_cmd(MODE_SENDER(s_ChanServ), "TOPIC %s %s %lu :%s", chan,
-		c->topic_setter, c->topic_time, c->topic ? c->topic : "");
-#endif
     return 1;
 }
 
@@ -1811,7 +1788,7 @@ int check_topiclock(const char *chan)
 void expire_chans()
 {
     ChannelInfo *ci, *next;
-#if defined (IRC_DAL4_4_15) || defined (IRC_BAHAMUT)
+#ifdef IRC_TERRA
     Channel *c;
 #endif    
     int i;
@@ -1826,7 +1803,7 @@ void expire_chans()
 	    if (now - ci->last_used >= CSExpire
 			&& !(ci->flags & (CI_VERBOTEN | CI_NO_EXPIRE | CI_SUSPEND))) {
 		log("Expirando canal %s", ci->name);
-#if defined (IRC_DAL4_4_15) || defined (IRC_BAHAMUT)
+#ifdef IRC_TERRA
 		if ((c = findchan(ci->name))) {
 		    c->mode &= ~CMODE_r;
 		    send_cmd(s_ChanServ, "MODE %s -r", ci->name);
@@ -2063,9 +2040,9 @@ void join_shadow(void)
              if (c) {
                  if (c->key || c->limit ||
                               (c->mode & (CMODE_I | CMODE_M
-#ifdef IRC_UNDERNET
+#ifdef IRC_HISPANO
                               | CMODE_R | CMODE_A | CMODE_S
-#elif defined (IRC_DAL4_4_15) || defined (IRC_BAHAMUT)
+#elif defined (IRC_TERRA)
                               | CMODE_R
 #endif
                             ))) {                 
@@ -2381,7 +2358,7 @@ static void do_register(User *u)
 	c->ci = ci;
 	ci->c = c;
 	ci->flags = CI_KEEPTOPIC | CI_SECURE;
-#if defined (IRC_DAL4_4_15) || defined (IRC_BAHAMUT)
+#ifdef IRC_TERRA
 	ci->mlock_on = CMODE_N | CMODE_T | CMODE_r;
 #else
 	ci->mlock_on = CMODE_N | CMODE_T;
@@ -2490,7 +2467,7 @@ static void do_drop(User *u)
     char *chan = strtok(NULL, " ");
     ChannelInfo *ci;
     NickInfo *ni;
-#if defined  (IRC_DAL4_4_15) || defined (IRC_BAHAMUT)
+#ifdef IRC_TERRA
     Channel *c;
 #endif
     int is_servadmin = is_services_admin(u);
@@ -2525,7 +2502,7 @@ static void do_drop(User *u)
 	log("%s: Channel %s dropped by %s!%s@%s", s_ChanServ, ci->name,
 			u->nick, u->username, u->host);
 	delchan(ci);
-#if defined (IRC_DAL4_4_15) || defined (IRC_BAHAMUT)
+#ifdef IRC_TERRA
 	if ((c = findchan(chan))) {
 	    c->mode &= ~CMODE_r;
 	    send_cmd(s_ChanServ, "MODE %s -r", chan);
@@ -2824,16 +2801,8 @@ static void do_set_topic(User *u, ChannelInfo *ci, char *param)
     strscpy(ci->last_topic_setter, u->nick, NICKMAX);
     strscpy(c->topic_setter, u->nick, NICKMAX);
     ci->last_topic_time = c->topic_time;
-#ifdef IRC_CLASSIC
-    send_cmd(MODE_SENDER(s_ChanServ), "TOPIC %s %s :%s",
-		ci->name, u->nick, param);
-#elif defined IRC_UNDERNET
     send_cmd(MODE_SENDER(s_ChanServ), "TOPIC %s :%s",
                     ci->name, param);                    
-#else
-    send_cmd(MODE_SENDER(s_ChanServ), "TOPIC %s %s %lu :%s",
-		ci->name, u->nick, c->topic_time, param);
-#endif
 }
 
 /*************************************************************************/
@@ -2946,18 +2915,7 @@ static void do_set_mlock(User *u, ChannelInfo *ci, char *param)
 		newlock_on &= ~CMODE_T;
 	    }
 	    break;
-#ifdef IRC_BAHAMUT
-          case 'c':
-            if (add) {
-                newlock_on |= CMODE_C;
-                newlock_off &= ~CMODE_C;
-            } else {
-                newlock_off |= CMODE_C;
-                newlock_on &= ~CMODE_C;
-            }
-            break;
-#endif	    
-#if defined (IRC_DAL4_4_15) || defined (IRC_BAHAMUT)
+#if defined (IRC_HISPANO_NOCHUTA) || defined (IRC_TERRA)
 	  case 'R':
 	    if (add) {
 		newlock_on |= CMODE_R;
@@ -2967,6 +2925,28 @@ static void do_set_mlock(User *u, ChannelInfo *ci, char *param)
 	    	newlock_on &= ~CMODE_R;
 	    }
 	    break;
+#endif
+#ifdef IRC_HISPANO_NOCHUTA
+          case 'A':
+            if (add) {
+                newlock_on |= CMODE_A;
+                newlock_off &= ~CMODE_A;
+            } else {
+                newlock_off |= CMODE_A;
+                newlock_on &= ~CMODE_A;
+            }
+            break;
+                                                                                                                          
+          case 'S':
+            if (add) {
+                newlock_on |= CMODE_S;
+                newlock_off &= ~CMODE_S;
+            } else {
+                newlock_off |= CMODE_S;
+                newlock_on &= ~CMODE_S;
+            }
+            break;
+                                                                                                                                                                                                                                                    
 #endif
 	  default:
 	    notice_lang(s_ChanServ, u, CHAN_SET_MLOCK_UNKNOWN_CHAR, c);
@@ -2987,7 +2967,7 @@ static void do_set_mlock(User *u, ChannelInfo *ci, char *param)
     *end = 0;
     if (ci->mlock_on)
 	end += snprintf(end, sizeof(modebuf)-(end-modebuf), 
-			"+%s%s%s%s%s%s%s%s%s%s",
+			"+%s%s%s%s%s%s%s%s%s%s%s",
 				(ci->mlock_on & CMODE_I) ? "i" : "",
 				(ci->mlock_key         ) ? "k" : "",
 				(ci->mlock_limit       ) ? "l" : "",
@@ -2996,19 +2976,22 @@ static void do_set_mlock(User *u, ChannelInfo *ci, char *param)
 				(ci->mlock_on & CMODE_P) ? "p" : "",
 				(ci->mlock_on & CMODE_s) ? "s" : "",
 				(ci->mlock_on & CMODE_T) ? "t" : "",
-#ifdef IRC_BAHAMUT
-                                (ci->mlock_on & CMODE_C) ? "c" : "",
+#if defined (IRC_HISPANO_NOCHUTA) || defined (IRC_TERRA)
+				(ci->mlock_on & CMODE_R) ? "R" : ""
 #else
-                                "",
+				""
 #endif
-#if defined (IRC_DAL4_4_15) || defined (IRC_BAHAMUT)
-				(ci->mlock_on & CMODE_R) ? "R" : "");
+#ifdef IRC_HISPANO_NOCHUTA
+                               ,(ci->mlock_on & CMODE_A) ? "A" : "",
+                                (ci->mlock_on & CMODE_S) ? "S" : ""                                
 #else
-				"");
+			       ,"",
+			        ""	
 #endif
+                                );
     if (ci->mlock_off)
 	end += snprintf(end, sizeof(modebuf)-(end-modebuf), 
-			"-%s%s%s%s%s%s%s%s%s",
+			"-%s%s%s%s%s%s%s%s%s%s%s",
 				(ci->mlock_off & CMODE_I) ? "i" : "",
 				(ci->mlock_off & CMODE_K) ? "k" : "",
 				(ci->mlock_off & CMODE_L) ? "l" : "",
@@ -3017,17 +3000,19 @@ static void do_set_mlock(User *u, ChannelInfo *ci, char *param)
 				(ci->mlock_off & CMODE_P) ? "p" : "",
 				(ci->mlock_off & CMODE_s) ? "s" : "",
 				(ci->mlock_off & CMODE_T) ? "t" : "",
-#ifdef IRC_BAHAMUT
-                                (ci->mlock_off & CMODE_C) ? "c" : "",
+#if defined (IRC_HISPANO_NOCHUTA) || defined (IRC_TERRA)                                                              
+				(ci->mlock_off & CMODE_R) ? "R" : ""
 #else
-                                "",
+				""
 #endif
-#if defined (IRC_DAL4_4_15) || defined (IRC_BAHAMUT)                                                              
-				(ci->mlock_off & CMODE_R) ? "R" : "");
+#ifdef IRC_HISPANO_NOCHUTA
+                               ,(ci->mlock_off & CMODE_R) ? "A" : "",
+                                (ci->mlock_off & CMODE_R) ? "S" : ""
 #else
-				"");
+                               ,"",
+                                ""
 #endif
-
+                                );
     if (*modebuf) {
 	notice_lang(s_ChanServ, u, CHAN_MLOCK_CHANGED, ci->name, modebuf);
     } else {
@@ -3263,7 +3248,7 @@ static int access_list(User *u, int index, ChannelInfo *ci, int *sent_header)
 	notice_lang(s_ChanServ, u, CHAN_ACCESS_LIST_HEADER, ci->name);
 	*sent_header = 1;
     }
-#ifdef DB_NETWORKS
+#if defined (IRC_HISPANO) || defined (IRC_TERRA)
     if ((ni = findnick(access->ni->nick)) && is_services_oper(u))    
 #else    
     if ((ni = findnick(access->ni->nick))
@@ -3553,7 +3538,7 @@ static int akick_list(User *u, int index, ChannelInfo *ci, int *sent_header)
 	*sent_header = 1;
     }
     if (akick->is_nick) {
-#ifdef DB_NETWORKS
+#if defined (IRC_HISPANO) || defined (IRC_TERRA)
         if (is_services_oper(u))
 #else    
 	if (akick->u.ni->flags & NI_HIDE_MASK)
@@ -3984,7 +3969,11 @@ static void do_info(User *u)
             notice_lang(s_ChanServ, u, CHAN_INFO_ACTIVED);
         }                                                 
         ni = ci->founder;
+#if defined (IRC_HISPANO) || defined (IRC_TERRA)
+        if (ni->last_usermask && is_servoper)        
+#else        
         if (ni->last_usermask && (is_servoper || !(ni->flags & NI_HIDE_MASK)))
+#endif
         {
             notice_lang(s_ChanServ, u, CHAN_INFO_FOUNDER, ni->nick,
                         ni->last_usermask);
@@ -3995,8 +3984,12 @@ static void do_info(User *u)
 	if (show_all) {
 	    ni = ci->successor;
 	    if (ni) {
+#if defined (IRC_HISPANO) || defined (IRC_TERRA)
+               if (ni->last_usermask && is_servoper) {
+#else	    
 		if (ni->last_usermask && (is_servoper ||
 				!(ni->flags & NI_HIDE_MASK))) {
+#endif				
 		    notice_lang(s_ChanServ, u, CHAN_INFO_SUCCESSOR, ni->nick, 
 				ni->last_usermask);
 		} else {
@@ -4079,7 +4072,7 @@ static void do_info(User *u)
 	end = buf;
 	*end = 0;
 	if (ci->mlock_on || ci->mlock_key || ci->mlock_limit)
-	    end += snprintf(end, sizeof(buf)-(end-buf), "+%s%s%s%s%s%s%s%s%s%s",
+	    end += snprintf(end, sizeof(buf)-(end-buf), "+%s%s%s%s%s%s%s%s%s%s%s",
 				(ci->mlock_on & CMODE_I) ? "i" : "",
 				(ci->mlock_key         ) ? "k" : "",
 				(ci->mlock_limit       ) ? "l" : "",
@@ -4088,18 +4081,23 @@ static void do_info(User *u)
 				(ci->mlock_on & CMODE_P) ? "p" : "",
 				(ci->mlock_on & CMODE_s) ? "s" : "",
 				(ci->mlock_on & CMODE_T) ? "t" : "",
-#ifdef IRC_BAHAMUT
-                                (ci->mlock_on & CMODE_C) ? "c" : "",
+#if defined (IRC_HISPANO) || defined (IRC_TERRA)
+	    			(ci->mlock_on & CMODE_R) ? "R" : ""
 #else
-                                "",
-#endif				
-#if defined (IRC_DAL4_4_15) || defined (IRC_BAHAMUT)
-	    			(ci->mlock_on & CMODE_R) ? "R" : "");
-#else
-	    			"");
+	    			""
 #endif
+#ifdef IRC_HISPANO
+                                ,
+                                (ci->mlock_on & CMODE_A) ? "A" : "",
+                                (ci->mlock_on & CMODE_S) ? "S" : ""
+#else
+                                ,
+                                "",
+                                ""
+#endif
+                                );
 	if (ci->mlock_off)
-	    end += snprintf(end, sizeof(buf)-(end-buf), "-%s%s%s%s%s%s%s%s%s%s",
+	    end += snprintf(end, sizeof(buf)-(end-buf), "-%s%s%s%s%s%s%s%s%s%s%s",
 				(ci->mlock_off & CMODE_I) ? "i" : "",
 				(ci->mlock_off & CMODE_K) ? "k" : "",
 				(ci->mlock_off & CMODE_L) ? "l" : "",
@@ -4108,16 +4106,21 @@ static void do_info(User *u)
 				(ci->mlock_off & CMODE_P) ? "p" : "",
 				(ci->mlock_off & CMODE_s) ? "s" : "",
 				(ci->mlock_off & CMODE_T) ? "t" : "",
-#ifdef IRC_BAHAMUT
-                                (ci->mlock_on & CMODE_C) ? "c" : "",
+#if defined (IRC_HISPANO) || defined (IRC_TERRA)
+	    			(ci->mlock_off & CMODE_R) ? "R" : ""
 #else
+	    			""
+#endif
+#ifdef IRC_HISPANO
+                                ,
+                                (ci->mlock_off & CMODE_A) ? "A" : "",
+                                (ci->mlock_off & CMODE_S) ? "S" : ""
+#else
+                                ,
                                 "",
+                                ""
 #endif
-#if defined (IRC_DAL4_4_15) || defined (IRC_BAHAMUT)
-	    			(ci->mlock_off & CMODE_R) ? "R" : "");
-#else
-	    			"");
-#endif
+                                );
 	if (*buf)
 	    notice_lang(s_ChanServ, u, CHAN_INFO_MODE_LOCK, buf);
 
@@ -4849,18 +4852,14 @@ static void do_verify(User *u)
         privmsg(s_ChanServ, u->nick, "12%s es un BOT autorizado de la RED", s_HelpServ);
     else if (stricmp(nick, s_GlobalNoticer) == 0)
         privmsg(s_ChanServ, u->nick, "12%s es un BOT autorizado de la RED", s_GlobalNoticer);
-    else if (stricmp(nick, s_CregServ) == 0)
-        privmsg(s_ChanServ, u->nick, "12%s es un BOT autorizado de la RED", s_CregServ);
-    else if (stricmp(nick, s_CyberServ) == 0)
-        privmsg(s_ChanServ, u->nick, "12%s es un BOT autorizado de la RED", s_CyberServ);
             
 /****  Bots de upworld *****/
     else if (stricmp(nick, "SHaDoW") == 0)
         privmsg(s_ChanServ, u->nick, "12SHaDoW es un BOT autorizado de la RED"); 
     else if (stricmp(nick, "ToDo") == 0)
         privmsg(s_ChanServ, u->nick, "12ToDo es un BOT autorizado de la RED");
-    else if (stricmp(nick, "zoltan") ==0) {                                                                                                                                                                                                            
-        privmsg(s_ChanServ, u->nick, "12%s es el 12ROOT de la RED", ni->nick);
+    else if (stricmp(nick, ServicesRoot) ==0) {                                                                                                                                                                                                            
+        privmsg(s_ChanServ, u->nick, "12%s es el 12ROOT de la RED", ServicesRoot);
         return;
      } else if (nick_is_services_admin(ni)) {
         privmsg(s_ChanServ, u->nick, "12%s es un 12ADMINinstrador de la RED.", ni->nick);

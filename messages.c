@@ -35,7 +35,7 @@ static void m_away(char *source, int ac, char **av)
 
 /*************************************************************************/
 
-#ifdef DB_NETWORKS
+#ifdef IRC_HISPANO
 static void m_bmode(char *source, int ac, char **av)
 /* Parseo de los BMODES de services virtual
  * zoltan 24-09-2000 */
@@ -52,7 +52,7 @@ static void m_bmode(char *source, int ac, char **av)
 static void m_burst(char *source, int ac, char **av)
 {
 
-//     do_burst(source, ac, av);
+     do_burst(source, ac, av);
 
 }
 
@@ -126,10 +126,6 @@ static void m_kill(char *source, int ac, char **av)
     }
     if (stricmp(av[0], s_OperServP10) == 0 ||
         stricmp(av[0], s_NickServP10) == 0 ||
-#ifdef CREGSERV
-        stricmp(av[0], s_CregServP10) == 0 ||        
-#endif        
-        stricmp(av[0], s_CyberServP10) == 0 ||
         stricmp(av[0], s_MemoServP10) == 0 ||
         stricmp(av[0], s_HelpServP10) == 0 ||
         stricmp(av[0], s_NewsServP10) == 0 ||        
@@ -143,10 +139,6 @@ static void m_kill(char *source, int ac, char **av)
     }
     if (stricmp(av[0], s_OperServ) == 0 ||
         stricmp(av[0], s_NickServ) == 0 ||
-#ifdef CREGSERV
-        stricmp(av[0], s_CregServ) == 0 ||
-#endif        
-        stricmp(av[0], s_CyberServ) == 0 ||
         stricmp(av[0], s_MemoServ) == 0 ||
         stricmp(av[0], s_HelpServ) == 0 ||
         stricmp(av[0], s_NewsServ) == 0 ||
@@ -206,7 +198,7 @@ static void m_motd(char *source, int ac, char **av)
     send_cmd(ServerName, "372 %s :-", source);
     send_cmd(ServerName, "372 %s :- Services is copyright (c) "
 		"1996-1999 Andy Church.", source);
-    send_cmd(ServerName, "372 %s :- 2000, Toni García, Zoltan. Upworld ", source);
+    send_cmd(ServerName, "372 %s :- 2000-2001, Toni García, Zoltan. Upworld ", source);
     send_cmd(ServerName, "376 %s :End of /MOTD command.", source);
 }
 
@@ -214,21 +206,11 @@ static void m_motd(char *source, int ac, char **av)
 
 static void m_nick(char *source, int ac, char **av)
 {
-#if defined(IRC_DALNET) || defined(IRC_UNDERNET)
-# ifdef IRC_UNDERNET
     /* ircu sends the server as the source for a NICK message for a new
      * user. */
     if (strchr(source, '.'))
 	*source = 0;
-# endif
-# ifdef IRC_DAL4_4_15
-    if (ac == 8) {
-	/* Get rid of the useless extra parameter. */
-	av[6] = av[7];
-	ac--;
-    }
-# endif
-# ifdef IRC_UNDERNET_P10
+#ifdef IRC_UNDERNET_P10
   /* En P10, el comando nick es mas largo de en otras redes :) */
     if ((ac != 8) && (ac != 9) && (ac != 2)) {
 	if (debug) {
@@ -236,14 +218,6 @@ static void m_nick(char *source, int ac, char **av)
 	        "parsing; got %d, source=`%s'", ac, source);
 	}
 	return;
-    }
-#elif defined (IRC_BAHAMUT)
-    if ((!*source && ac != 9) || (*source && ac != 2)) {
-        if (debug) {
-            log("debug: NICK message: expecting 2 or 9 parameters after "
-                "parsing; got %d, source=%s'", ac, source);
-        }
-        return;
     }
 #else
     if ((!*source && ac != 7) || (*source && ac != 2)) {
@@ -253,11 +227,8 @@ static void m_nick(char *source, int ac, char **av)
         }
         return;
     }
-# endif    
+#endif    
     do_nick(source, ac, av);
-#else	/* !IRC_UNDERNET && !IRC_DALNET */
-    /* Nothing to do yet; information comes from USER command. */
-#endif
 }
 
 /*************************************************************************/
@@ -330,12 +301,6 @@ static void m_privmsg(char *source, int ac, char **av)
         nickserv(source, av[1]);
     } else if (stricmp(av[0], s_ChanServP10) == 0) {
         chanserv(source, av[1]);
-#ifdef CREGSERV
-    } else if (stricmp(av[0], s_CregServP10) == 0) {
-        cregserv(source, av[1]);
-#endif        
-    } else if (stricmp(av[0], s_CyberServP10) == 0) {
-//        cyberserv(source, av[1]);        
     } else if (stricmp(av[0], s_MemoServP10) == 0) {
         memoserv(source, av[1]);
     } else if (stricmp(av[0], s_HelpServP10) == 0) {
@@ -348,12 +313,6 @@ static void m_privmsg(char *source, int ac, char **av)
 	nickserv(source, av[1]);
     } else if (stricmp(av[0], s_ChanServ) == 0) {
 	chanserv(source, av[1]);
-#ifdef CREGSERV
-    } else if (stricmp(av[0], s_CregServ) == 0) {
-        cregserv(source, av[1]);            	
-#endif        
-    } else if (stricmp(av[0], s_CyberServ) == 0) {
-//        cyberserv(source, av[1]);     
     } else if (stricmp(av[0], s_MemoServ) == 0) {
 	memoserv(source, av[1]);
     } else if (stricmp(av[0], s_HelpServ) == 0) {
@@ -392,20 +351,6 @@ static void m_server(char *source, int ac, char **av)
     do_server(source, ac, av);
 }
 
-/*************************************************************************/
-#ifdef IRC_BAHAMUT
-static void m_sjoin(char *source, int ac, char **av)
-{
-    /* FIXME: this checking is an attempt to decipher SJOIN semantics. */
-    if (ac < 5) {
-        canalopers(NULL, "SJOIN error, wrong number of params! See log file.");
-        log("SJOIN: expected atleast 5 params, got %d: %s",
-                        ac, strtok(NULL, ""));
-        return;
-    }
-    do_sjoin(source, ac, av);
-}                         
-#endif /* IRC_BAHAMUT */
 /*************************************************************************/
 
 static void m_squit(char *source, int ac, char **av)
@@ -482,11 +427,8 @@ static void m_time(char *source, int ac, char **av)
 
 static void m_topic(char *source, int ac, char **av)
 {
-#ifdef IRC_UNDERNET
+
     if (ac != 2)
-#else
-    if (ac != 4)
-#endif        
 	return;
     do_topic(source, ac, av);
 }
@@ -495,31 +437,7 @@ static void m_topic(char *source, int ac, char **av)
 
 static void m_user(char *source, int ac, char **av)
 {
-#if defined(IRC_CLASSIC) || defined(IRC_TS8)
-    char *new_av[7];
-
-#ifdef IRC_TS8
-    if (ac != 5)
-#else
-    if (ac != 4)
-#endif
-	return;
-    new_av[0] = source;	/* Nickname */
-    new_av[1] = sstrdup("0");	/* # of hops (was in NICK command... we lose) */
-#ifdef IRC_TS8
-    new_av[2] = av[0];	/* Timestamp */
-    av++;
-#else
-    new_av[2] = sstrdup("0");
-#endif
-    new_av[3] = av[0];	/* Username */
-    new_av[4] = av[1];	/* Hostname */
-    new_av[5] = av[2];	/* Server */
-    new_av[6] = av[3];	/* Real name */
-    do_nick(source, 7, new_av);
-#else	/* !IRC_CLASSIC && !IRC_TS8 */
     /* Do nothing - we get everything we need from the NICK command. */
-#endif
 }
 
 /*************************************************************************/
@@ -527,7 +445,7 @@ static void m_user(char *source, int ac, char **av)
 void m_version(char *source, int ac, char **av)
 {
     if (source)
-	send_cmd(ServerName, "351 %s Services-%s+UpWorld-1.0 %s :-- %s",
+	send_cmd(ServerName, "351 %s Services-%s+UpWorld-1.1 %s :-- %s",
 			source, version_number, ServerName, version_build);
 }
 
@@ -542,10 +460,6 @@ void m_whois(char *source, int ac, char **av)
 	    clientdesc = desc_NickServ;
 	else if (stricmp(av[0], s_ChanServ) == 0)
 	    clientdesc = desc_ChanServ;
-#ifdef CREGSERV
-        else if (stricmp(av[0], s_CregServ) == 0)
-            clientdesc = desc_CregServ;                    
-#endif            
 	else if (stricmp(av[0], s_MemoServ) == 0)
 	    clientdesc = desc_MemoServ;
 	else if (stricmp(av[0], s_HelpServ) == 0)
@@ -599,25 +513,7 @@ Message messages[] = {
     { "VERSION",   m_version },
     { "WALLOPS",   NULL }, 
     { "WHOIS",     m_whois },
-
-#ifdef IRC_DALNET
-    { "AKILL",     NULL },
-    { "GLOBOPS",   NULL },
-    { "GNOTICE",   NULL },
-    { "GOPER",     NULL },
-    { "SQLINE",    NULL },
-    { "RAKILL",    NULL },
-#endif
-
-#ifdef IRC_BAHAMUT
-    { "CAPAB",     NULL },
-    { "SVINFO",    NULL },
-    { "SJOIN",     m_sjoin },
-#endif    
-
-#ifdef IRC_UNDERNET
     { "GLINE",     NULL }, 
-#endif
 
 #ifdef IRC_UNDERNET_P10
     { "A",                m_away },
@@ -653,12 +549,19 @@ Message messages[] = {
     { "BURST",            m_burst }, 
 #endif
 
-#ifdef DB_NETWORKS
+#ifdef IRC_HISPANO
     { "BMODE",     m_bmode }, 
     { "DB",        NULL }, 
     { "DBQ",       NULL },
     { "DBH",       NULL },        
     { "CONFIG",    NULL },
+#endif
+#ifdef IRC_TERRA
+    { "SVSNICK",        NULL },
+    { "SVSMODE",        NULL },
+    { "SVSVHOST",       NULL },
+    { "SAMODE",         m_mode },
+    { "KEY",            NULL },                    
 #endif
     { NULL }
 

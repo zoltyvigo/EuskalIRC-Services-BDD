@@ -228,9 +228,7 @@ int check_akill(const char *nick, const char *username, const char *host)
     strlower(strscpy(buf+i, host, sizeof(buf)-i));
     for (i = 0; i < nakill; i++) {
 	if (match_wild_nocase(akills[i].mask, buf)) {
-#ifndef IRC_DALNET
 	    time_t now = time(NULL);
-#endif
 	    /* Don't use kill_user(); that's for people who have already
 	     * signed on.  This is called before the User structure is
 	     * created.
@@ -258,12 +256,8 @@ int check_akill(const char *nick, const char *username, const char *host)
 		log("Encontrado @ en el AKILL: %s", akills[i].mask);		continue;
 	    }
 	    *host2++ = 0;
-#ifdef IRC_DALNET
-	    send_cmd(ServerName,
-		    "AKILL %s %s :Estas Baneado de esta RED",
-		    host2, username2);
 		    
-#elif defined (IRC_UNDERNET_P10)
+#ifdef IRC_UNDERNET_P10
             send_cmd(NULL, 
                     "%c GL * +%s@%s %ld :Estas Baneado de esta RED",
                     convert2y[ServerNumerico], username2, host2,
@@ -293,27 +287,16 @@ void expire_akills(void)
 {
     int i;
     time_t now = time(NULL);
-#ifdef IRC_DALNET
-    char *s;
-#endif
 
     for (i = 0; i < nakill; i++) {
 	if (akills[i].expires == 0 || akills[i].expires > now)
 	    continue;
 	    canalopers(s_OperServ, "AKILL en %s ha expirado", akills[i].mask);
-#ifdef IRC_DALNET
-	s = strchr(akills[i].mask, '@');
-	if (s) {
-	    *s++ = 0;
-	    strlower(s);
-	    send_cmd(ServerName, "RAKILL %s %s", s, akills[i].mask);
-	}
-#elif defined (IRC_UNDERNET)
-# ifdef IRC_UNDERNET_P10
+
+#ifdef IRC_UNDERNET_P10
         send_cmd(NULL,"%c GL * -%s", convert2y[ServerNumerico], akills[i].mask);        	
-# else
+#else
         send_cmd(ServerName, "GLINE * -%s", akills[i].mask);
-# endif        
 #endif        
         free(akills[i].mask);
         free(akills[i].reason);
@@ -451,13 +434,11 @@ void do_akill(User *u)
                  return;
             }     	    
 	    add_akill(mask, reason, u->nick, expires);
-#ifdef IRC_UNDERNET
-# ifdef IRC_UNDERNET_P10
+#ifdef IRC_UNDERNET_P10
             send_cmd(NULL,"%c GL * +%s %lu :%s", convert2y[ServerNumerico],
                              mask, expires-time(NULL), reason);
-# else
+#else
             send_cmd(ServerName, "GLINE * +%s %lu :%s", mask, expires-time(NULL), reason);
-# endif            
 #endif            
 	    notice_lang(s_OperServ, u, OPER_AKILL_ADDED, mask);
 /*
@@ -496,28 +477,12 @@ void do_akill(User *u)
     } else if (stricmp(cmd, "DEL") == 0) {
 	mask = strtok(NULL, " ");
 	if (mask) {
-#ifdef IRC_DALNET
-	    s = strchr(mask, '@');
-	    if (s)
-		strlower(s);
-#endif
 	    if (del_akill(mask)) {           	                  
 		notice_lang(s_OperServ, u, OPER_AKILL_REMOVED, mask);
-#ifdef IRC_DALNET
-		if (s) {
-		    *s++ = 0;
-		    send_cmd(ServerName, "RAKILL %s %s", s, mask);
-		} else {
-		    /* We lose... can't figure out what's a username and what's
-		     * a hostname.  Ah well.
-		     */
-		}
-#elif defined (IRC_UNDERNET)
-# ifdef IRC_UNDERNET_P10
+#ifdef IRC_UNDERNET_P10
                 send_cmd(NULL,"%c GL * -%s", convert2y[ServerNumerico], mask);
-# else
+#else
                 send_cmd(ServerName, "GLINE * -%s", mask);
-# endif
 #endif
 
 		if (readonly)

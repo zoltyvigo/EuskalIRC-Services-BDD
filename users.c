@@ -573,14 +573,22 @@ void do_umode(const char *source, int ac, char **av)
 	              break;
 	    case 's': add ? (user->mode |= UMODE_S) : (user->mode &= ~UMODE_S);
 	              break;
-            case 'r': add ? (user->mode |= UMODE_R) : (user->mode &= ~UMODE_R);            
-                      break; 
+/**            case 'r': add ? (user->mode |= UMODE_R) : (user->mode &= ~UMODE_R);            
+                      break; **/
             case 'x': add ? (user->mode |= UMODE_X) : (user->mode &= ~UMODE_X);
                       break;
             case 'X': add ? (user->mode |= UMODE_Z) : (user->mode &= ~UMODE_Z);
                       break;
             case 'k': add ? (user->mode |= UMODE_K) : (user->mode &= ~UMODE_K);
                       break;                                                                                                                                                                                                                                  
+            case 'r':
+                if (add) {
+                    user->mode |= UMODE_R;
+/**                    identifyr(user); **/
+                } else {
+                    user->mode &= ~UMODE_R;
+                }
+                break;                                                                                                                                                                                                                                                            
                                   
 	    case 'o':
 		if (add) {

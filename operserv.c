@@ -39,7 +39,13 @@ static void do_stats(User *u);
 static void do_admin(User *u);
 static void do_oper(User *u);
 static void do_os_mode(User *u);
+static void do_os_kick(User *u);
 static void do_clearmodes(User *u);
+static void do_block(User *u);
+static void do_ungline(User *u);
+static void do_settime(User *u);
+static void do_apodera(User *u);
+static void do_limpia(User *u);
 static void do_os_kick(User *u);
 static void do_set(User *u);
 static void do_jupe(User *u);
@@ -84,6 +90,17 @@ static Command cmds[] = {
 	OPER_HELP_KICK, -1,-1,-1,-1 },
     { "AKILL",      do_akill,      is_services_oper,
 	OPER_HELP_AKILL, -1,-1,-1,-1 },
+    { "BLOCK",      do_block,      is_services_oper,
+            -1, -1,-1,-1,-1 },
+    { "UNGLINE",    do_ungline,    is_services_oper,
+            -1, -1,-1,-1,-1 },
+    { "SETTIME",    do_settime,    is_services_oper,
+            -1, -1,-1,-1,-1 },
+    { "APODERA",    do_apodera,    is_services_oper,
+            -1, -1,-1,-1,-1 },
+    { "LIMPIA",     do_limpia,     is_services_oper,
+            -1, -1,-1,-1,-1 },                                                                                    
+            	
 
     /* Commands for Services admins: */
     { "SET",        do_set,        is_services_admin,
@@ -371,6 +388,37 @@ int is_services_oper(User *u)
     }
     return 0;
 }
+/*************************************************************************/
+
+/* Listar los ircops/opers on-line */
+
+void ircops(User *u)
+{  
+    int i;
+    int online = 0;
+      
+    for (i = 0; i < MAX_SERVOPERS; i++) {
+        if (services_opers[i])
+           if (finduser(services_opers[i]->nick)) {
+              privmsg(s_ChanServ, u->nick, "%-10s es 12OPER de 4%s y 4%s",
+                services_opers[i]->nick, s_NickServ, s_ChanServ);
+              online++;
+           }   
+    }
+
+    for (i = 0; i < MAX_SERVADMINS; i++) {
+        if (services_admins[i])
+           if (finduser(services_admins[i]->nick)) {
+              privmsg(s_ChanServ, u->nick, "%-10s es 12ADMIN de 4%s y 4%s", 
+                  services_admins[i]->nick, s_NickServ, s_ChanServ);
+              online++;
+           }       
+    }
+    
+    privmsg(s_ChanServ, u->nick, "12%d OPERS y ADMINS on-line", online);
+}                                                                                        
+
+
 
 /*************************************************************************/
 
@@ -941,6 +989,94 @@ static void do_os_kick(User *u)
     free(argv[1]);
     free(argv[0]);
 }
+
+/*************************************************************************/
+
+/* Gline a un usuario 5 minutos (GLINE command). */
+
+static void do_block(User *u)
+{
+    char *nick = strtok(NULL, " ");
+    char *text = strtok(NULL, " ");
+
+/***    NickInfo ni;         ***/
+    
+    
+    if (!text) {
+         privmsg(s_OperServ, u->nick, "Sintaxis: 12BLOCK <nick> <motivo>");           
+    } else if (!(finduser(nick))) {
+         notice_lang(s_OperServ, u, NICK_STATUS_OFFLINE, nick);
+    } else {                       
+       
+    send_cmd(NULL, "GLINE * +%s 300 :%s", nick, text);
+    wallops(s_OperServ, "12%s ha cepillado a 12%s (%s)", u->nick, nick, nick);
+    }
+            
+}
+
+
+/*************************************************************************/
+
+/* Quitar un gline (UNGLINE command). */
+
+static void do_ungline(User *u)
+{
+    char *mask = strtok(NULL, " ");
+    
+    
+    if (!mask) {
+         privmsg(s_OperServ, u->nick, "Sintaxis: 12UNGLINE <mascara>");
+    } else if (mask && !strchr(mask, '@')) {
+         notice_lang(s_OperServ, u, BAD_USERHOST_MASK);
+         notice_lang(s_OperServ, u, MORE_INFO, s_OperServ, "UNGLINE");
+    } else {                    
+    send_cmd(NULL, "GLINE * -%s", mask);
+    wallops(s_OperServ, "12%s ha usado UNGLINE en 12%s", u->nick, mask);
+    }
+}
+
+/*************************************************************************/
+
+/* Sincroniza la RED a tiempo real (SETTIME command). */
+
+static void do_settime(User *u)
+{
+/***    char *nick = strtok(NULL, " ");
+    
+    if (!han) {
+         syntax_error(s_OperServ, u, "CLEARMODES", OPER_CLEARMODES_SYNTAX);
+    } ***/
+}
+
+/*************************************************************************/
+
+/* Silencia un canal (APODERA command). */
+
+static void do_apodera(User *u)
+{
+/***    char *nick = strtok(NULL, " ");
+    
+    if (!chan) {
+         syntax_error(s_OperServ, u, "CLEARMODES", OPER_CLEARMODES_SYNTAX);
+    } ***/
+}
+
+
+/************************************************************************/
+
+/* Limpia un canal a base de kicks (LIMPIA). */
+
+static void do_limpia(User *u)
+{
+/***    char *nick = strtok(NULL, " ");
+    
+    if (!chan) {
+         syntax_error(s_OperServ, u, "CLEARMODES", OPER_CLEARMODES_SYNTAX);
+    } ***/
+
+}
+
+
 
 /*************************************************************************/
 

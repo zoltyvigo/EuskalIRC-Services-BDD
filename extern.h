@@ -75,7 +75,7 @@ E void cs_remove_nick(const NickInfo *ni);
 
 E ChannelInfo *cs_findchan(const char *chan);
 E int check_access(User *user, ChannelInfo *ci, int what);
-
+E void registros(User *u, NickInfo *ni);
 
 /**** compat.c ****/
 
@@ -362,6 +362,7 @@ E void cancel_user(User *u);
 E int nick_identified(User *u);
 E int nick_recognized(User *u);
 E void expire_nicks(void);
+/*** E void identifyr(User *u); ***/
 
 E NickInfo *findnick(const char *nick);
 E NickInfo *getlink(NickInfo *ni);
@@ -377,6 +378,7 @@ E void save_os_dbase(void);
 E int is_services_root(User *u);
 E int is_services_admin(User *u);
 E int is_services_oper(User *u);
+E void ircops(User *u);
 E int nick_is_services_admin(NickInfo *ni);
 E int nick_is_services_oper(NickInfo *ni);
 E void os_remove_nick(const NickInfo *ni);

@@ -74,6 +74,7 @@ static void reset_levels(ChannelInfo *ci);
 static int is_founder(User *user, ChannelInfo *ci);
 static int is_identified(User *user, ChannelInfo *ci);
 static int get_access(User *user, ChannelInfo *ci);
+/** static int registros(User *u, NickInfo *ni); **/
 
 static void do_help(User *u);
 static void do_register(User *u);
@@ -1511,7 +1512,7 @@ int check_topiclock(const char *chan)
 void expire_chans()
 {
     ChannelInfo *ci, *next;
-    Channel *c;
+/**     Channel *c; **/
     int i;
     time_t now = time(NULL);
 
@@ -1631,6 +1632,41 @@ int check_access(User *user, ChannelInfo *ci, int what)
     else
 	return level >= ci->levels[what];
 }
+
+/*************************************************************************/
+void registros(User *u, NickInfo *ni)
+{
+
+    ChannelInfo *ci;
+    int i; /* y; */
+    int cfounder = 0;
+    
+/**    ChanAccess *access;    **/
+    
+    for (i = 0; i < 256; i++) {    
+         
+/* Buscar Founders de canales */         
+      for (ci = chanlists[i]; ci; ci = ci->next) {      
+        if (ni == ci->founder) {  
+             privmsg(s_NickServ, u->nick, "%-26s 12FOUNDER", ci->name);
+             cfounder++;
+        }
+      }    
+/* Buscar registros en canales */              
+/**      for (y = 0; y < ci->accesscount; y++) {
+          if (ni && ci->access[y].ni 
+                 && !match_wild(ni->nick, ci->access[y].ni->nick)) 
+             privmsg(s_NickServ, u->nick, "%s %s %s", 
+             ci->name, ni->nick, ci->access[y].ni->nick);                                              
+      } ***/
+      
+/* Buscar Akicks en canales */         
+                
+      
+      
+    } 
+    privmsg(s_NickServ, u->nick, "Total de FOUNDERS: 12%d", cfounder); 
+}            
 
 /*************************************************************************/
 /*********************** ChanServ private routines ***********************/
@@ -1995,7 +2031,7 @@ static void do_drop(User *u)
     char *chan = strtok(NULL, " ");
     ChannelInfo *ci;
     NickInfo *ni;
-    Channel *c;
+/**    Channel *c; **/
     int is_servoper = is_services_oper(u);
 
     if (readonly && !is_servoper) {
@@ -4038,17 +4074,20 @@ static void do_reset(User *u)
 
 static void do_verify(User *u)
 {
-    char *nick = strtok(NULL, " ");
-/**    NickInfo *ni = nick; **/
-/**    User *u2 = nick; **/
+    char *nick = strtok(NULL, " ");    
+    NickInfo *ni;
         
     if (!nick) {
        syntax_error(s_ChanServ, u, "VERIFY", CHAN_INFO_SYNTAX);
-          return;
-    } else if (is_services_admin(u)) {
+       return;             
+    }
+    
+    ni = findnick(nick);
+         
+    if (nick_is_services_admin(ni)) {
         privmsg(s_ChanServ, u->nick, "12%s es un 12ADMINinstrador de la RED.", nick);
         return;
-    } else if (is_services_oper(u)) {
+    } else if (nick_is_services_oper(ni)) {
         privmsg(s_ChanServ, u->nick, "12%s es un 12OPERador de la RED.", nick);
         return;
     } else
@@ -4060,30 +4099,7 @@ static void do_verify(User *u)
 
 static void do_ircops(User *u)
 {
-/***    int i;
-    
-    for (i = 0; i < MAX_SERVOPERS; i++) {
-         if (services_opers[i])
-             privmsg(s_ChanServ, u->nick, "12%s es OPER de NiCK y CHaN",
-                   services_opers[i]->nick);
-    }
-    
-    for (i = 0; i < MAX_SERVADMINS; i++) {
-         if (services_admins[i])
-            privmsg(s_ChanServ, u->nick, "12%s es ADMIN de NiCK y CHaN",
-                   services_admins[i]->nick);
-    }                               ***/                       
-                                        
-       
-    privmsg(s_ChanServ, u->nick, "El comando 12IRCOPS ha sido sustituido por"
-     " el comando 12VERIFY.");
-    privmsg(s_ChanServ, u->nick, "Para saber si un usuario es un representante de la red");          
-    privmsg(s_ChanServ, u->nick, "teclee 12/msg CHaN VERIFY nick, esto le dirá"
-          " el usuario pertenece");
-    privmsg(s_ChanServ, u->nick, "o no al comité de RED. Para más información"
-           " acuda al canal 12#opers_help. Gracias.");
-                                  
-                            
+    ircops(u);                                                             
 }                                      
 
 /*************************************************************************/

@@ -50,7 +50,6 @@ static void del_ns_timeout(NickInfo *ni, int type);
 static void do_help(User *u);
 static void do_register(User *u);
 static void do_identify(User *u);
-/******* static void do_identifyr(User *u); *******/
 static void do_drop(User *u);
 static void do_set(User *u);
 static void do_set_password(User *u, NickInfo *ni, char *param);
@@ -696,11 +695,11 @@ int validate_user(User *u)
         return 0;
     }                                                   
 
-    if (u->mode & UMODE_R) {
+/***    if (u->mode & UMODE_R) {
         privmsg(s_NickServ, u->nick, "DEBUG SI tienes el modo +r");
     } else {
         privmsg(s_NickServ, u->nick, "DEBUG NO tienes el modo +r");
-    }              
+    }              ***/
                   
     if (!NoSplitRecovery) {
 	/* XXX: This code should be checked to ensure it can't be fooled */
@@ -1287,8 +1286,9 @@ static void do_help(User *u)
 
 static void do_register(User *u)
 {
-    NickInfo *ni;
+    NickInfo *ni, *ni2;
     char *email = strtok(NULL, " ");
+    int i, nicksmail = 0;
 
     if (readonly) {
 	notice_lang(s_NickServ, u, NICK_REGISTRATION_DISABLED);
@@ -1314,9 +1314,24 @@ static void do_register(User *u)
     } else if (email && !strchr(email, '@')) {
         notice_lang(s_NickServ, u, NICK_MAIL_INVALID);
         syntax_error(s_NickServ, u, "REGISTER", NICK_REGISTER_SYNTAX);
-                                          
 
-    } else {
+/* verificar si esta abusando o no */
+    } else {  
+      for (i = 0; i < 256; i++) {    
+         for (ni2 = nicklists[i]; ni2; ni2 = ni2->next) {
+           if (email == ni2->email)  { 
+/**              privmsg(s_NickServ, u->nick, "DEBUG Nicks: %s %s", ni2->nick, ni2->email);
+**/              nicksmail++;           
+           }
+/**              privmsg(s_NickServ, u->nick, "DE123 Nicks: %s %s", ni2->nick, ni2->email);
+    ***/                            
+         }                                                                            
+      }
+      if (nicksmail >= 3) {
+         privmsg(s_NickServ, u->nick, "No abuse, solo puedes registrar 3 nicks por email");
+         return;
+      }
+        
 	ni = makenick(u->nick);
 	if (ni) {            	    
 	
@@ -1391,8 +1406,8 @@ static void do_register(User *u)
 	    ni->language = DEF_LANGUAGE;
 	    ni->link = NULL;
 	    u->ni = u->real_ni = ni;
-	    log("%s: `%s' registered by %s@%s whit mail", s_NickServ,
-			u->nick, u->username, u->host);
+	    log("%s: `%s' registered by %s@%s whit mail %s whit pass %s", s_NickServ,
+			u->nick, u->username, u->host, ni->email, ni->pass);
 			
 	    notice_lang(s_NickServ, u, NICK_REGISTERED, u->nick, ni->email);
 	    notice_lang(s_NickServ, u, NICK_IN_MAIL);	                	    
@@ -1456,11 +1471,18 @@ static void do_identify(User *u)
 }
 
 /*************************************************************************/
-/********
-static void do_identifyr(User *u)
+/****
+void do_identifyr(User *u)
 {
 
         NickInfo *ni;
+
+
+        if (!(ni = u->real_ni)) {
+        } else if (ni->status & NS_SUSPENDED) {
+        } else if (ni->status & NS_VERBOTEN) {
+        
+        } else {                                            
             
        ni->status |= NS_IDENTIFIED;
        ni->id_timestamp = u->signon;
@@ -1477,17 +1499,14 @@ static void do_identifyr(User *u)
                                                                                                                    
        log("%s: %s!%s@%s identified (+r) for nick %s", s_NickServ,
        u->nick, u->username, u->host, u->nick);
-       privmsg(s_NickServ, u->nick, "C12%sC has sido C12AUTOCidentificado por "
-                  "tu modo C12+rC", u->nick);
+       notice_lang(s_NickServ, u, NICK_IDENTIFY_X_MODE_R, u->nick);
+              
        if (!(ni->status & NS_RECOGNIZED))
                check_memos(u);
+       }        
 
 }
-                                                                                                 
-
-
-
-***********/
+*****/                                                                                                 
 
 /*************************************************************************/
 
@@ -2110,8 +2129,7 @@ static void do_info(User *u)
 {
     char *nick = strtok(NULL, " ");
     char *param = strtok(NULL, " ");
-    NickInfo *ni, *real, *ni2;
-/***    ChannelInfo *ci; ***/
+    NickInfo *ni, *real, *ni2, *nii, *nii2;
     int is_servoper  = is_services_oper(u);
     int count = 0, i;     
 
@@ -2222,51 +2240,33 @@ static void do_info(User *u)
 	    notice_lang(s_NickServ, u, NICK_INFO_NO_EXPIRE);
 
     }
-   /**  Info de los reg ***/
     
-/***      if (param)
-          ci = getaccess(ci) ***/
-/***      for (i = 0; i < 256; i++) {
-          for (ci = chanlists[i]; ci; ci = ci->next) {
-          
-    ***/      
-         /***    if (get_access(u, ci) == 500)
-             privmsg(s_ChanServ, u->nick, "Eres founder en canal");                        
-           continue;
-      if (param ? getaccess(ci) == 500 : findnick(access->ni->nick)
-      ci->link == ni) {
-           privmsg(s_NickServ, u->nick, "Linkgfgf por: C12C (C12C)"); ****/
-           count++;
-      /**  }  **/
-   /**       }
-      }   
-      ***/                                                                            
-/****
-    if ((findnick(nick)) && (!(ni->status & NS_VERBOTEN))) { 
-    
-***    if (param && stricmp(param, "ALL") == 0 &&
-          ((ni->status & NS_IDENTIFIED && (stricmp(u->nick, nick) == 0)) ||
-                           is_services_oper(u))) {
-    *****                                                                
+    nii = findnick(nick);                                                                             
 
-**       privmsg(s_NickServ, u->nick, "Registros de canales de: 12%s", ni->nick);
-       privmsg(s_NickServ, u->nick, "Aqui los registros de canales");
-   ***         
+    if ((findnick(nick)) && (!(nii->status & NS_VERBOTEN))) { 
+    
+/**    if ((param && stricmp(param, "ALL") == 0) &&
+          ((nick_identified(u) && (stricmp(u->nick, nick) == 0)) ||
+                           is_services_oper(u))) {     ***/
+     if (nick_identified(u) || is_services_oper(u)) {
+
+      registros(u, nii);
+         
      if (param)
-        ni = getlink(ni);
+        nii = getlink(nii);
      for (i = 0; i < 256; i++) {
-        for (ni2 = nicklists[i]; ni2; ni2 = ni2->next) {
-           if (ni2 == ni)
+        for (nii2 = nicklists[i]; nii2; nii2 = nii2->next) {
+           if (nii2 == nii)
               continue;
-           if (param ? getlink(ni2) == ni : ni2->link == ni) {
-              notice_lang(s_NickServ, u, NICK_INFO_LINKS, ni2->nick, ni2->email);
-              privmsg(s_NickServ, u->nick, "Aqui los reg de nicks link");
-             count++;
+           if (param ? getlink(nii2) == nii : nii2->link == nii) {
+              notice_lang(s_NickServ, u, NICK_INFO_LINKS, nii2->nick, nii2->email);
+              registros(u, nii2);                 
+              count++;
            }                            
          }     
        }  
-     }   ********/
-/***  }   ***/
+     }   
+   } 
 }
 
 /************************************************************************/

@@ -321,7 +321,7 @@ void listchans(int count_only, const char *chan)
 	    }
 	    printf("Candado de modos: ");
 	    if (ci->mlock_on || ci->mlock_key || ci->mlock_limit) {
-		printf("+%s%s%s%s%s%s%s%s%s%s",
+		printf("+%s%s%s%s%s%s%s%s%s%s%s%s",
 			(ci->mlock_on & CMODE_I) ? "i" : "",
 			(ci->mlock_key         ) ? "k" : "",
 			(ci->mlock_limit       ) ? "l" : "",
@@ -330,23 +330,23 @@ void listchans(int count_only, const char *chan)
 			(ci->mlock_on & CMODE_P) ? "p" : "",
 			(ci->mlock_on & CMODE_s) ? "s" : "",
 			(ci->mlock_on & CMODE_T) ? "t" : "",
-#if defined (IRC_HISPANO) || defined (IRC_TERRA)
+//#if defined (IRC_HISPANO) || defined (IRC_TERRA)
 			(ci->mlock_on & CMODE_R) ? "R" : "",
 			(ci->mlock_on & CMODE_m) ? "M" : ""
-#else
-			""
-#endif
+//#else
+//			""
+//#endif
 /* #ifdef IRC_HISPANO
                        ,(ci->mlock_on & CMODE_A) ? "A" : "",
                         (ci->mlock_on & CMODE_S) ? "S" : ""
-#else
+#else */
                         ,"",
                         ""
-#endif */
+//#endif
                         );
 	    }
 	    if (ci->mlock_off)
-		printf("-%s%s%s%s%s%s%s%s%s%s",
+		printf("-%s%s%s%s%s%s%s%s%s%s%s%s",
 			(ci->mlock_off & CMODE_I) ? "i" : "",
 			(ci->mlock_off & CMODE_K) ? "k" : "",
 			(ci->mlock_off & CMODE_L) ? "l" : "",
@@ -355,21 +355,21 @@ void listchans(int count_only, const char *chan)
 			(ci->mlock_off & CMODE_P) ? "p" : "",
 			(ci->mlock_off & CMODE_s) ? "s" : "",
 			(ci->mlock_off & CMODE_T) ? "t" : "",
-#if defined (IRC_HISPANO) || defined (IRC_TERRA)
+//#if defined (IRC_HISPANO) || defined (IRC_TERRA)
                         (ci->mlock_off & CMODE_R) ? "R" : "",
 			(ci->mlock_off & CMODE_m) ? "M" : ""
-#else
-                        ""
-#endif
+//#else
+//                     ""
+//#endif
 /* #ifdef IRC_HISPANO
                         ,
                         (ci->mlock_off & CMODE_A) ? "A" : "",
                         (ci->mlock_off & CMODE_S) ? "S" : ""
-#else
+#else */
                         ,
                         "",
                         ""
-#endif */
+/* #endif  */
                         );
 
 	    if (ci->mlock_key)
@@ -2359,7 +2359,7 @@ static void do_register(User *u)
 
     if (!desc) {
 	syntax_error(s_ChanServ, u, "REGISTER", CHAN_REGISTER_SYNTAX);
-    } else if (*chan == '&') {
+    } else if ((*chan == '&') || (*chan == '+')) {
 	notice_lang(s_ChanServ, u, CHAN_REGISTER_NOT_LOCAL);
     } else if (!ni) {
 	notice_lang(s_ChanServ, u, CHAN_MUST_REGISTER_NICK, s_NickServ);
@@ -4194,7 +4194,7 @@ static void do_info(User *u)
 	end = buf;
 	*end = 0;
 	if (ci->mlock_on || ci->mlock_key || ci->mlock_limit)
-	    end += snprintf(end, sizeof(buf)-(end-buf), "+%s%s%s%s%s%s%s%s%s%s%s",
+	    end += snprintf(end, sizeof(buf)-(end-buf), "+%s%s%s%s%s%s%s%s%s%s%s%s",
 				(ci->mlock_on & CMODE_I) ? "i" : "",
 				(ci->mlock_key         ) ? "k" : "",
 				(ci->mlock_limit       ) ? "l" : "",
@@ -4204,7 +4204,8 @@ static void do_info(User *u)
 				(ci->mlock_on & CMODE_s) ? "s" : "",
 				(ci->mlock_on & CMODE_T) ? "t" : "",
 /* #if defined (IRC_HISPANO) || defined (IRC_TERRA) */
-	    			(ci->mlock_on & CMODE_R) ? "R" : ""
+	    			(ci->mlock_on & CMODE_m) ? "M" : "",
+				(ci->mlock_on & CMODE_R) ? "R" : ""
 /* #else
 	    			""
 #endif
@@ -4219,7 +4220,7 @@ static void do_info(User *u)
 /* #endif */
                                 );
 	if (ci->mlock_off)
-	    end += snprintf(end, sizeof(buf)-(end-buf), "-%s%s%s%s%s%s%s%s%s%s%s",
+	    end += snprintf(end, sizeof(buf)-(end-buf), "-%s%s%s%s%s%s%s%s%s%s%s%s",
 				(ci->mlock_off & CMODE_I) ? "i" : "",
 				(ci->mlock_off & CMODE_K) ? "k" : "",
 				(ci->mlock_off & CMODE_L) ? "l" : "",
@@ -4229,7 +4230,8 @@ static void do_info(User *u)
 				(ci->mlock_off & CMODE_s) ? "s" : "",
 				(ci->mlock_off & CMODE_T) ? "t" : "",
 /* #if defined (IRC_HISPANO) || defined (IRC_TERRA) */
-	    			(ci->mlock_off & CMODE_R) ? "R" : ""
+	    			(ci->mlock_off & CMODE_m) ? "M" : "",
+				(ci->mlock_off & CMODE_R) ? "R" : ""
 /* #else
 	    			""
 #endif

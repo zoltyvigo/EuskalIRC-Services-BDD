@@ -26,7 +26,7 @@ int toupper(char c)
 /* toUpper , Compatiblidad Undernet
  * zoltan  1/11/2000
  */
-  
+
 int NTL_toupper_tab[] = {
 #if (CHAR_MIN<0)
 /* x80-x87 */ '\x80', '\x81', '\x82', '\x83', '\x84', '\x85', '\x86', '\x87',
@@ -206,16 +206,20 @@ char *stristr(char *s1, char *s2)
 char *strupper(char *s)
 {
     char *t = s;
-    while (*t)
-	*t++ = toupper(*t);
+    while (*t) {
+	*t = toupper(*t);
+	t++;
+    }
     return s;
 }
 
 char *strlower(char *s)
 {
     char *t = s;
-    while (*t)
-	*t++ = tolower(*t);
+    while (*t) {
+	*t = tolower(*t);
+	t++;
+    }
     return s;
 }
 
@@ -237,7 +241,7 @@ int strCasecmp(const char *a, const char *b)
 }
 #endif
 /*************************************************************************/
-    
+
 /*
  * strtoken.c
  *

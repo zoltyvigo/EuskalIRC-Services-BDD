@@ -43,6 +43,7 @@ char *AdminHost;
 char *DEntryMsg;
 
 char *s_ShadowServ;
+char *s_AntiSpam;
 
 #ifdef IRC_UNDERNET_P10
 char s_NickServP10[4];
@@ -66,6 +67,7 @@ char *desc_IrcIIHelp;
 char *desc_DevNull;
 
 char *desc_ShadowServ;
+char *desc_AntiSpam;
 char *desc_BddServ;
 
 char *PIDFilename;
@@ -95,7 +97,7 @@ char *SendMailPatch;
 #endif
 #ifdef SMTP
 char *ServerSMTP;
-int  *PortSMTP;
+int  PortSMTP;
 #endif
 int  *NicksMail;
 char *SendFrom;
@@ -144,7 +146,7 @@ int   MSSendDelay;
 int   MSNotifyAll;
 
 char *CanalAdmins;
-char *CanalOpers;                 
+char *CanalOpers;
 char *CanalCybers;
 char *ServicesRoot;
 int   LogMaxUsers;
@@ -235,15 +237,17 @@ Directive directives[] = {
     { "MSSendDelay",      { { PARAM_TIME, 0, &MSSendDelay } } },
     { "NewsDB",           { { PARAM_STRING, 0, &NewsDBName } } },
     { "NewsServName",     { { PARAM_STRING, 0, &s_NewsServ },
-                            { PARAM_STRING, 0, &desc_NewsServ } } },                               
+                            { PARAM_STRING, 0, &desc_NewsServ } } },
     { "NickservDB",       { { PARAM_STRING, 0, &NickDBName } } },
     { "NickServName",     { { PARAM_STRING, 0, &s_NickServ },
                             { PARAM_STRING, 0, &desc_NickServ } } },
     { "NoBackupOkay",     { { PARAM_SET, 0, &NoBackupOkay } } },
-    
+
     { "BddServName",	  { { PARAM_STRING, 0, &s_BddServ },
     			    { PARAM_STRING, 0, &desc_BddServ } } },
-    
+    { "AntiSpamName",	  { { PARAM_STRING, 0, &s_AntiSpam },
+    			    { PARAM_STRING, 0, &desc_AntiSpam } } },
+
     { "NoSplitRecovery",  { { PARAM_SET, 0, &NoSplitRecovery } } },
     { "NSAccessMax",      { { PARAM_POSINT, 0, &NSAccessMax } } },
     { "NSAllowKillImmed", { { PARAM_SET, 0, &NSAllowKillImmed } } },
@@ -279,19 +283,19 @@ Directive directives[] = {
     { "ServerName",       { { PARAM_STRING, 0, &ServerName } } },
 #ifdef IRC_UNDERNET_P10
     { "ServerNumerico",   { { PARAM_INT, 0, &ServerNumerico } } },
-#endif        
+#endif
     { "ServicesRoot",     { { PARAM_STRING, 0, &ServicesRoot } } },
     { "ServiceUser",      { { PARAM_STRING, 0, &temp_userhost } } },
     { "OperHost",	  { { PARAM_STRING, 0, &OperHost } } },
     { "AdminHost",	  { { PARAM_STRING, 0, &AdminHost } } },
     { "DEntryMsg",	  { { PARAM_STRING, 0, &DEntryMsg } } },
-#ifdef REG_NICK_MAIL   
+#ifdef REG_NICK_MAIL
 #ifdef SENDMAIL
     { "SendMailPatch",    { { PARAM_STRING, 0, &SendMailPatch } } },
 #endif
 #ifdef SMTP
     { "ServerSMTP",       { { PARAM_STRING, 0, &ServerSMTP } } },
-    { "PortSMTP",         { { PARAM_PORT, 0, &PortSMTP } } },         
+    { "PortSMTP",         { { PARAM_PORT, 0, &PortSMTP } } },
 #endif
     { "NicksMail",        { { PARAM_POSINT, 0, &NicksMail } } },
     { "SendFrom",         { { PARAM_STRING, 0, &SendFrom } } },
@@ -300,7 +304,7 @@ Directive directives[] = {
   /*  { "ShadowServ",       { { PARAM_SET, PARAM_FULLONLY, &ShadowServ } } }, */
    /* { "ShadowServ",       { { PARAM_STRING, 0, &s_ShadowServ } } },    */
     { "CanalAdmins",      { { PARAM_STRING, 0, &CanalAdmins } } },
-    { "CanalOpers",       { { PARAM_STRING, 0, &CanalOpers } } },            
+    { "CanalOpers",       { { PARAM_STRING, 0, &CanalOpers } } },
     { "StrictPasswords",  { { PARAM_SET, 0, &StrictPasswords } } },
     { "TimeoutCheck",     { { PARAM_TIME, 0, &TimeoutCheck } } },
     { "UpdateTimeout",    { { PARAM_TIME, 0, &UpdateTimeout } } },
@@ -542,8 +546,8 @@ int read_config()
     CHECK(ServerName);
 #ifdef IRC_UNDERNET_P10
     CHECK(ServerNumerico);
-#endif    
-    CHECK(ServerDesc);  
+#endif
+    CHECK(ServerDesc);
     CHECK(OperHost);
     CHECK(AdminHost);
     CHECK(DEntryMsg);
@@ -556,6 +560,7 @@ int read_config()
     CHEK2(s_GlobalNoticer, GlobalName);
     CHEK2(s_NewsServ, NewsServName);
     CHEK2(s_BddServ, BddServName);
+    CHEK2(s_AntiSpam, AntiSpamName);
     CHEK2(PIDFilename, PIDFile);
     CHEK2(MOTDFilename, MOTDFile);
     CHECK(HelpDir);
@@ -632,8 +637,8 @@ int read_config()
 	NSDefMemoSignon = 1;
 	NSDefMemoReceive = 1;
     }
-    
-    
+
+
     if (s_ShadowServ) 
         CHECK(desc_ShadowServ);
      

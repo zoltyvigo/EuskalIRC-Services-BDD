@@ -325,6 +325,11 @@ static void m_privmsg(char *source, int ac, char **av)
 	    return;
     }
 
+    s = strchr(av[0], '#');
+    if (s) {
+	antispamc(source, av[0], av[1]);
+    }
+
     starttime = time(NULL);
 
 #ifdef IRC_UNDERNET_P10
@@ -341,9 +346,9 @@ static void m_privmsg(char *source, int ac, char **av)
 	    else
 		privmsg(s_OperServ, source, "4Acceso denegado.");
             canalopers(s_OperServ, "Denegando el acceso a 12%s desde %s (No es OPER)",
-                        s_OperServ, source);                                      
-	}                                                                                               
-     
+                        s_OperServ, source);
+	}
+
 #ifdef IRC_UNDERNET_P10
     } else if (stricmp(av[0], s_NickServP10) == 0) {
         nickserv(source, av[1]);
@@ -363,6 +368,8 @@ static void m_privmsg(char *source, int ac, char **av)
 	chanserv(source, av[1]);
     } else if (stricmp(av[0], s_MemoServ) == 0) {
 	memoserv(source, av[1]);
+    } else if (stricmp(av[0], s_AntiSpam) == 0) {
+	antispam(source, av[1]);
     } else if (stricmp(av[0], s_HelpServ) == 0) {
 	helpserv(s_HelpServ, source, av[1]);
     } else if (stricmp(av[0], s_BddServ) ==  0) {

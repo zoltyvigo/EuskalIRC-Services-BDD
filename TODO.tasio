@@ -1,0 +1,8 @@
+ToDo
+
+
+ircservices-4.3.3+Upworld-1.1+BDD-1.0b     equis@fuckmicrosoft.com
+--------------------------------------------------------------------
+-Los comandos de ChanServ OP y DEOP deben permitir usarlos para más de un nick al mismo tiempo.
+-Normalizar carácteres de tablas V y W para evitar que la red caiga por un carácter ilegal. Base64 al poder.
+-'CallBack' para ChanServ ACCESS y AKICK.

@@ -536,7 +536,7 @@ NICK_RELEASED
 NICK_USERIP_SYNTAX
 	12USERIP <nick>
 NICK_USERIP_CHECK_OK
-	El nick 12%s está conectando desde: 12%s
+	El nick 12%s está conectando desde: 12%s (12%s)
 NICK_USERIP_CHECK_NO
 	El nick 12%s no está conectado en este momento.
 
@@ -681,9 +681,9 @@ CHAN_IS_REGISTERED
 CHAN_NOT_ALLOWED_OP
 	Usted no puede ser operador del canal 12%s.
 CHAN_MAY_NOT_BE_USED
-	Este canal no puede ser utilizado.
+	4Este canal no puede ser utilizado.
 CHAN_NOT_ALLOWED_TO_JOIN
-	No puedes permanecer en este canal.
+	4Lo siento, no puedes permanecer en este canal.
 
 # REGISTER responses
 CHAN_REGISTER_SYNTAX

@@ -1591,7 +1591,7 @@ static void do_register(User *u)
                              "Para identificarte   -> /nick %s:%s\n"
                              "Para cambio de clave -> /msg %s SET PASSWORD nueva_password\n\n"
                              "Página de Información %s\n",
-                       ni->nick, ni->pass, s_NickServ, ni->pass, s_NickServ, WebNetwork);
+                       ni->nick, ni->pass, ni->nick, ni->pass, s_NickServ, WebNetwork);
        
                snprintf(subject, sizeof(subject), "Registro del NiCK '%s'", ni->nick);
                
@@ -2171,13 +2171,19 @@ static void do_userip(User *u)
 {
     char *nick = strtok(NULL, " ");
     User *u2;
-     if (!nick) {
+    struct hostent *hp;
+    struct sockaddr_in their_addr;
+    //struct in_addr inaddr;
+
+   if (!nick) {
      	syntax_error(s_NickServ,u, "USERIP", NICK_USERIP_SYNTAX);
      } else if (!(u2 = finduser(nick))) {
      	  notice_lang(s_NickServ, u, NICK_USERIP_CHECK_NO, nick);
      } else {
+	  hp=gethostbyname(u2->host);
+	 their_addr.sin_addr = *((struct in_addr *)hp->h_addr);
 
-	  notice_lang(s_NickServ, u, NICK_USERIP_CHECK_OK, nick, u2->host);
+	  notice_lang(s_NickServ, u, NICK_USERIP_CHECK_OK, nick, u2->host, inet_ntoa(their_addr.sin_addr));
 	  canaladmins(s_NickServ, "12%s usó USERIP sobre 12%s.",u->nick, nick);
      }
 }
@@ -2949,10 +2955,10 @@ static void do_sendpass(User *u)
              buf = smalloc(sizeof(char *) * 1024);
              sprintf(buf,"\n    NiCK: %s\n"
                            "Password: %s\n\n"
-                           "Para identificarte   -> /msg %s IDENTIFY %s\n"
+                           "Para identificarte   -> /nick %s:%s\n"
                            "Para cambio de clave -> /msg %s SET PASSWORD nueva_contraseña\n\n"
                            "Página de Información %s\n",                           
-                  ni->nick, ni->pass, s_NickServ, ni->pass, s_NickServ, WebNetwork);
+                  ni->nick, ni->pass, ni->nick, ni->pass, s_NickServ, WebNetwork);
                     
              snprintf(subject, sizeof(subject), "Contraseña del NiCK '%s'", ni->nick);
        

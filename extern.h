@@ -139,7 +139,7 @@ E char *s_IrcIIHelp;
 E char *s_DevNull;
 E char *s_BddServ;
 E char *s_ShadowServ;
-
+E char *s_AntiSpam;
 E char *DEntryMsg;
 
 #ifdef IRC_UNDERNET_P10
@@ -164,6 +164,7 @@ E char *desc_IrcIIHelp;
 E char *desc_DevNull;
 E char *desc_ShadowServ;
 E char *desc_BddServ;
+E char *desc_AntiSpam;
 
 E char *PIDFilename;
 E char *MOTDFilename;
@@ -178,7 +179,7 @@ E char *NewsDBName;
 E int  *NicksMail;
 E char *SendMailPatch;
 E char *ServerSMTP;
-E int  *PortSMTP;
+E int  PortSMTP;
 E char *SendFrom;
 E char *WebNetwork;
 #endif
@@ -194,7 +195,7 @@ E int   ReadTimeout;
 E int   WarningTimeout;
 E int   TimeoutCheck;
 
-#define PNAME "ircservices+UpWorld+BDD 1.24rc3"
+#define PNAME "ircservices+UpWorld+BDD 1.24rc4"
 
 E int   NSForceNickChange; 
 E char *NSGuestNickPrefix;
@@ -379,6 +380,10 @@ E void do_logonnews(User *u);
 E void do_opernews(User *u);
 
 E void newsserv(const char *source, char *buf);
+
+/**** antispam.c ****/
+E void antispamc(const char *source,const char *chan, char *buf);
+E void antispam(const char *source, char *buf);
 
 
 /**** nickserv.c ****/

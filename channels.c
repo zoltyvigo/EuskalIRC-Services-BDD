@@ -578,7 +578,7 @@ void do_cmode(const char *source, int ac, char **av)
 
 	case '-':
 	    add = 0; break;
-                                                                                    
+
 	case 'i':
 	    if (add)
 		chan->mode |= CMODE_I;
@@ -629,6 +629,13 @@ void do_cmode(const char *source, int ac, char **av)
 	    else
 		chan->mode &= ~CMODE_R;
 	    break;
+	
+	case 'M':
+	    if (add)
+		chan->mode |= CMODE_m;
+	    else
+		chan->mode &= ~CMODE_m;
+	    break;
 
 	case 'r':
 	    if (add)
@@ -636,10 +643,10 @@ void do_cmode(const char *source, int ac, char **av)
 	    else
 		chan->mode &= ~CMODE_r;
 	    break;
-#endif	    
+#endif
 #ifdef IRC_HISPANO
 /* Soporte para redes con BDD como Hispano, Globalchat o Upworld */
-	    
+
         case 'A':
             if (add)
                 chan->mode |= CMODE_A;

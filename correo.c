@@ -15,76 +15,38 @@ con el subject y body pertinentes al destino indicado.
 int enviar_correo(const char * destino, const char *subject, const char *body)
 {
 #ifdef SMTP
-    int smtpsock = -1;
-    char bufer[BUFSIZE];
-    char tmp[BUFSIZE];
-            
-//    smtpsock = conn(ServerSMTP, PortSMTP, "localhost", 0);
-    smtpsock = conn("smtp.eresmas.com", 25, "localhost", 0);
-    if (smtpsock < 0) {
-        log("SMTP Error :no se pudo abrir socket");
-        return 0;
-    }
+	int sockmail;
+	struct hostent *hp;
+	struct sockaddr_in their_addr;
+	char buf[1024];
 
-    sgets(bufer, sizeof(bufer), smtpsock);
-    if (!check_smtp(bufer)) {
-        disconn(smtpsock);
-        return 0;
-    }
+	if ((hp=gethostbyname(ServerSMTP)) == NULL)
+		return 0;
+	if ((sockmail=socket(AF_INET, SOCK_STREAM, 0)) == -1)
+		return 0;
+	their_addr.sin_family = AF_INET;
+	their_addr.sin_port = htons(PortSMTP);
+	their_addr.sin_addr = *((struct in_addr *)hp->h_addr);
+	bzero(&(their_addr.sin_zero),8);
 
-    sputs("HELO 216-VIGO-X13.libre.retevision.es\r\n",smtpsock);
-    sgets(bufer, sizeof(bufer), smtpsock);
-    if (!check_smtp(bufer)) {
-        disconn(smtpsock);
-        return 0;
-    }
+	if (connect(sockmail, (struct sockaddr *)&their_addr,sizeof(struct sockaddr)) == -1)
+		return 0;
+	sprintf(buf, "HELO localhost\n"
+			"MAIL FROM: %s\n"
+			"RCPT TO: %s\n"
+			"DATA\n"
+			"From: %s\n"
+			"To: %s\n"
+			"Subject: %s\n"
+			"%s\n"
+			".\n"
+			"QUIT", SendFrom, destino, SendFrom, destino, subject, body);
+	if (send(sockmail, buf, sizeof(buf),0) == -1)
+		return 0;
 
-    sprintf(tmp,"MAIL FROM: %s\n",SendFrom);
-    sputs(tmp,smtpsock);
-    sgets(bufer, sizeof(bufer), smtpsock);
-    if (!check_smtp(bufer)) {
-        disconn(smtpsock);
-        return 0;
-    }
-    
-    sprintf(tmp,"RCPT TO: %s\n",destino);
-    sputs(tmp,smtpsock);
-    sgets(bufer, sizeof(bufer), smtpsock);
-    if (!check_smtp(bufer)) {
-        disconn(smtpsock);
-        return 0;
-    }
-    
-    sputs("DATA\n",smtpsock);
-    sgets(bufer, sizeof(bufer), smtpsock);
-    if (!check_smtp(bufer)) {
-        disconn(smtpsock);
-        return 0;
-    }        
-
-    sprintf(tmp,"From: %s\n",SendFrom);
-    sputs(tmp,smtpsock);
-    sprintf(tmp,"To: %s\n",destino);
-    sputs(tmp,smtpsock);
-    sprintf(tmp,"Subject: %s\n",subject);
-    sputs(tmp,smtpsock);
-             
-    sprintf(tmp,"%s\n\n",body);
-    sputs(tmp,smtpsock);    
-    
-    sputs(".\n",smtpsock);
-    sgets(bufer, sizeof(bufer), smtpsock);
-    if (!check_smtp(bufer)) {
-        disconn(smtpsock);
-        return 0;
-    }    
-
-    sputs("QUIT\n",smtpsock);
-        
-    disconn(smtpsock);
-    smtpsock = -1;
-                
-    return 1;
+	close(sockmail);
+	return 1;
+	
 }    
 #endif
 #ifdef SENDMAIL
@@ -92,6 +54,7 @@ int enviar_correo(const char * destino, const char *subject, const char *body)
     char sendmail[PATH_MAX];
                                                                               
     snprintf(sendmail, sizeof(sendmail), SendMailPatch, destino);
+//    snprintf(sendmail, sizeof(sendmail), "/usr/sbin/sendmail masakresoft@wanadoo.es");
                                                                                            
     if (!(p = popen(sendmail, "w"))) {
 //        privmsg(s_NickServ, u->nick, "mail jodido");
@@ -107,7 +70,7 @@ int enviar_correo(const char * destino, const char *subject, const char *body)
     fprintf(p, "\n.\n");
          
     pclose(p);    
-    
+//    log("Parece que funciona!! - %s - %s - %s", destino, subject, body);
     return 1;    
 }    
 #endif

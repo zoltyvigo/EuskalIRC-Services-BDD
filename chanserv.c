@@ -1609,7 +1609,7 @@ int check_should_voice(User *user, const char *chan)
 static void timeout_leave(Timeout *to)
 {
     char *chan = to->data;
-    send_cmd(s_ChanServ, "PART %s", chan);
+    send_cmd(s_ShadowServ, "PART %s", chan);
     free(to->data);
 }
 
@@ -1631,8 +1631,8 @@ int check_kick(User *user, const char *chan)
     const char *reason;
     Timeout *t;
     int stay;
-    
-/* Por si se quiere desactivar el akick, quitar los // de abajo */    
+
+/* Por si se quiere desactivar el akick, quitar los // de abajo */
     //  return 0;
 
 #ifdef NO_USAR
@@ -1642,7 +1642,7 @@ int check_kick(User *user, const char *chan)
         if (!is_services_admin(user)) {
             mask = create_mask(user);
             reason = getstring(user->ni, CHAN_NOT_ALLOWED_TO_JOIN);
-            goto kick;        
+            goto kick;
         }
     }
 /* Los usuarios normales no pueden entrar en el canal de opers */
@@ -1653,14 +1653,20 @@ int check_kick(User *user, const char *chan)
             reason = getstring(user->ni, CHAN_NOT_ALLOWED_TO_JOIN);
             goto kick;
         }
-    }        
-#endif    
+    }
+#endif
+    if ((ni = findnick(user->nick)) && (ni->status & NS_SUSPENDED)) {
+       mask = create_mask(user);
+       reason = getstring(user->ni,CHAN_NOT_ALLOWED_TO_JOIN);
+       goto kick;
+    }
+
     if (!ci)
 	return 0;
 
     if (is_oper(user->nick) || is_services_oper(user))
 	return 0;
-	
+
 /* Si el canal esta suspendido, no deberia rular los akicks
  * por esto lo desactivo
  */
@@ -1673,10 +1679,13 @@ int check_kick(User *user, const char *chan)
 	goto kick;
     }
 
+
     if (nick_recognized(user))
 	ni = user->ni;
     else
 	ni = NULL;
+
+
 
     for (akick = ci->akick, i = 0; i < ci->akickcount; akick++, i++) {
 	if (!akick->in_use)
@@ -1688,7 +1697,8 @@ int check_kick(User *user, const char *chan)
 		log("debug: %s matched akick %s", user->nick,
 			akick->is_nick ? akick->u.ni->nick : akick->u.mask);
 	    }
-	    mask = akick->is_nick ? create_mask(user) : sstrdup(akick->u.mask);
+	    //mask = akick->is_nick ? create_mask(user) : sstrdup(akick->u.mask);
+	    mask = create_mask(user);
 	    reason = akick->reason ? akick->reason : CSAutokickReason;
 	    goto kick;
 	}
@@ -1700,6 +1710,8 @@ int check_kick(User *user, const char *chan)
 	reason = getstring(user->ni, CHAN_NOT_ALLOWED_TO_JOIN);
 	goto kick;
     }
+
+
 
     return 0;
 
@@ -1713,7 +1725,7 @@ kick:
     stay = !findchan(chan);
     av[0] = sstrdup(chan);
     if (stay) {
-	send_cmd(s_ChanServ, "JOIN %s", chan);
+	send_cmd(s_ShadowServ, "JOIN %s", chan);
     }
     strcpy(av[0], chan);
     av[1] = sstrdup("+b");
@@ -1725,7 +1737,7 @@ kick:
     free(av[2]);
 #ifdef IRC_UNDERNET_P10
     send_cmd(s_ChanServ, "K %s %s :%s", chan, user->numerico, reason);
-#else     
+#else
     send_cmd(s_ChanServ, "KICK %s %s :%s", chan, user->nick, reason);
 #endif
     if (stay) {
@@ -2036,7 +2048,7 @@ void join_chanserv(void)
              send_cmd(s_ChanServ, "J %s", ci->name);
              send_cmd(MODE_SENDER(s_ChanServ), "M %s +o %s", ci->name, s_ChanServP10);
 #else
-             send_cmd(s_ChanServ, "JOIN %s", ci->name);
+             send_cmd(s_ShadowServ, "JOIN %s", ci->name);
              send_cmd(MODE_SENDER(s_ChanServ), "MODE %s +o %s", ci->name, s_ChanServ);
 #endif
              check_modes(ci->name);
@@ -3331,7 +3343,7 @@ static void do_delaccess(User *u)
 	NickInfo *ni;
 	int i;
 	ChanAccess *access;
-	
+
 	if (!chan) {
 		syntax_error(s_ChanServ, u, "DELACCESS", CHAN_SYNTAX_DELACCESS);
 	} else if (!(ni = findnick(u->nick))) {
@@ -3340,22 +3352,22 @@ static void do_delaccess(User *u)
 		notice_lang(s_ChanServ, u, CHAN_X_NOT_REGISTERED, chan);
 	} else if (ci->flags & CI_VERBOTEN) {
 		notice_lang(s_ChanServ, u, CHAN_X_FORBIDDEN, chan);
-	} else if (get_access(u, ci) <= 0) {
-		notice_lang(s_ChanServ, u, CHAN_MSG_DELACCESS_NEG, chan); 
+	} else if ((get_access(u, ci) <= 0) || (check_access(u, ci, CA_NOJOIN))) {
+		notice_lang(s_ChanServ, u, CHAN_MSG_DELACCESS_NEG, chan);
 	} else {
-	
+
 	for (i = 0; i < ci->accesscount; i++) {
 		if (ci->access[i].ni == ni)
 		    break;
 	 }
-		 
+
 		access = &ci->access[i];
 		access->ni = NULL;
 		access->in_use = 0;
 		if (ci->flags & CI_OPNOTICE) {
                     notice(s_ChanServ, chan, "%s borra de %s a %s.",
                     u->nick, chan, u->nick);
-                }   
+                }
 		notice_lang(s_ChanServ, u, CHAN_MSG_DELACCESS_SUCCESS, chan);
 	}
 }
@@ -3439,7 +3451,10 @@ static void do_access(User *u)
 		access->level = level;
 		notice_lang(s_ChanServ, u, CHAN_ACCESS_LEVEL_CHANGED,
 			access->ni->nick, chan, level);
-                if (ci->flags & CI_OPNOTICE) {
+                if (!(stricmp(u->nick, ni->nick) == 0) && (ni->status & NS_IDENTIFIED)) 
+	          privmsg(s_ChanServ, ni->nick, "%s cambia tu nivel de %s a %d.", u->nick, chan, level);
+		
+		if (ci->flags & CI_OPNOTICE) {
                     notice(s_ChanServ, chan, "%s cambia en %s nivel de %s a %d.",
                                   u->nick, chan, access->ni->nick, level);
                 }                                                           
@@ -3467,6 +3482,10 @@ static void do_access(User *u)
 	access->level = level;
 	notice_lang(s_ChanServ, u, CHAN_ACCESS_ADDED,
 		access->ni->nick, chan, level);
+	if (!(stricmp(u->nick, ni->nick) == 0) && (ni->status & NS_IDENTIFIED)) 
+	          privmsg(s_ChanServ, ni->nick, "%s te registra en %s con nivel %d.", u->nick, chan, level);
+	
+
        if (ci->flags & CI_OPNOTICE) {
            notice(s_ChanServ, chan, "%s registra en %s a %s con nivel %d.",
                       u->nick, chan, access->ni->nick, level);
@@ -3521,7 +3540,11 @@ static void do_access(User *u)
 	    } else {
 		notice_lang(s_ChanServ, u, CHAN_ACCESS_DELETED,
 				access->ni->nick, ci->name);
-                if (ci->flags & CI_OPNOTICE) {
+               
+	       if (!(stricmp(u->nick, ni->nick) == 0) && (ni->status & NS_IDENTIFIED)) 
+	          privmsg(s_ChanServ, ni->nick, "%s elimina tu registro de %s.", u->nick, chan);
+	       
+	        if (ci->flags & CI_OPNOTICE) {
                     notice(s_ChanServ, chan, "%s borra de %s a %s.",
                     u->nick, chan, access->ni->nick);
                 }                                                                   
@@ -3582,6 +3605,7 @@ static void do_access(User *u)
 	syntax_error(s_ChanServ, u, "ACCESS", CHAN_ACCESS_SYNTAX);
     }
 }
+
 
 /*************************************************************************/
 

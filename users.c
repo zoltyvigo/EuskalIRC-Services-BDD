@@ -795,7 +795,38 @@ void do_umode(const char *source, int ac, char **av)
                       break;
             case 'k': add ? (user->mode |= UMODE_K) : (user->mode &= ~UMODE_K);
                       break;       
-            case 'r':
+            case 'S':
+                if (add) {
+                    user->mode |= UMODE_R;
+		    new_ni = findnick(user->nick);
+			if (new_ni && !(new_ni->status & NS_SUSPENDED
+                            || new_ni->status & NS_VERBOTEN)) {
+                        new_ni->status |= NS_IDENTIFIED;
+                        new_ni->id_timestamp = user->signon;
+                        if (!(new_ni->status & NS_RECOGNIZED)) {
+                            new_ni->last_seen = time(NULL);
+                            if (new_ni->last_usermask);
+                                free(new_ni->last_usermask);
+                            new_ni->last_usermask = smalloc(strlen(user->username)+strlen(user->host)+2);
+                            sprintf(new_ni->last_usermask, "%s@%s", user->username, user->host);
+                            if (new_ni->last_realname)
+                                free(new_ni->last_realname);
+                            new_ni->last_realname = sstrdup(user->realname);
+                        }
+                        log("%s: %s!%s@%s AUTO-identified for nick %s", s_NickServ,
+                        user->nick, user->username, user->host, user->nick);
+                        /* notice_lang(s_NickServ, user, NICK_IDENTIFY_X_MODE_R);*/
+                        if (!(new_ni->status & NS_RECOGNIZED))
+                            check_memos(user);
+                        strcpy(new_ni->nick, user->nick);
+                    }
+                } else {
+                    user->mode &= ~UMODE_R;
+//                        new_ni->status &= ~NS_IDENTIFIED;
+                }
+                break;
+	    
+	    case 'r':
                 if (add) {
                     user->mode |= UMODE_R;
                     new_ni = findnick(user->nick);
@@ -807,30 +838,30 @@ void do_umode(const char *source, int ac, char **av)
                             new_ni->last_seen = time(NULL);
                             if (new_ni->last_usermask);
                                 free(new_ni->last_usermask);
-                            new_ni->last_usermask = smalloc(strlen(user->username)+strlen(user->host)+2);    
+                            new_ni->last_usermask = smalloc(strlen(user->username)+strlen(user->host)+2);
                             sprintf(new_ni->last_usermask, "%s@%s", user->username, user->host);
                             if (new_ni->last_realname)
                                 free(new_ni->last_realname);
                             new_ni->last_realname = sstrdup(user->realname);
-                        }      
+                        }
                         log("%s: %s!%s@%s AUTO-identified for nick %s", s_NickServ,
                         user->nick, user->username, user->host, user->nick);
                         /* notice_lang(s_NickServ, user, NICK_IDENTIFY_X_MODE_R);*/
-                        if (!(new_ni->status & NS_RECOGNIZED))                    
-                            check_memos(user); 
+                        if (!(new_ni->status & NS_RECOGNIZED))
+                            check_memos(user);
                         strcpy(new_ni->nick, user->nick);
-                    } 
+                    }
                 } else {
                     user->mode &= ~UMODE_R;
 //                        new_ni->status &= ~NS_IDENTIFIED;
-                }    
+                }
                 break;
-#endif                                                                                                                                                                                                                                                                                                  
+#endif
 	    case 'o':
 		if (add) {
 		    user->mode |= UMODE_O;
 		    canaladmins(s_OperServ, "12%s es ahora un 12IRCOP.",user->nick);
-//		    display_news(user, NEWS_OPER); 
+//		    display_news(user, NEWS_OPER);
 		    opcnt++;
 		} else {
 		    user->mode &= ~UMODE_O;

@@ -360,53 +360,9 @@ static void tocar_tablas(User *u)
 		}
 
 	notice_lang(s_BddServ, u, BDD_SEQ_OK);
-	
+
 	}
 
 }
 
-/* int main(char *randkey)*/
-
-/* {
-  static char saltChars[] = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-  char salt[3];
-  char * plaintext;
-
-    srandom(time(0));
-    salt[0] = saltChars[random() % 64];
-    salt[1] = saltChars[random() % 64];
-    salt[2] = 0;
-
-  else {
-    salt[0] = argv[1][0];
-    salt[1] = argv[1][1];
-    salt[2] = '\0';
-    if ((strchr(saltChars, salt[0]) == NULL) || (strchr(saltChars, salt[1]) == NULL))
-      fprintf(stderr, "illegal salt %s\n", salt), exit(1);
-  }
-
-  plaintext = randkey;
-
-  ni->pass = crypt(plaintext, salt));
-  return 0;
-}
-*/
-/* char *gen_nice_key(unsigned int ilevel)
-{
-            static char saltChars[] = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789[]";
-            unsigned long long xi;
-	    char salt[ilevel + 2];
-	    char *salt;
-	    salt = (char *) malloc((ilevel+1)*sizeof(char));
-	    int cnt = 0;
-	    salt[ilevel + 1] = '\0';
-            __asm__ volatile (".byte 0x0f, 0x31" : "=A" (xi));
-	    srandom(xi);
-
-	        for(cnt = 0; cnt < (ilevel); ++cnt)
-		  salt[cnt] = saltChars[random() % 64];
-
-	   return salt;
-}
-*/
 

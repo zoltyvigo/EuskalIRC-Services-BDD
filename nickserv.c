@@ -2171,18 +2171,18 @@ static void do_userip(User *u)
 {
     char *nick = strtok(NULL, " ");
     User *u2;
-
      if (!nick) {
      	syntax_error(s_NickServ,u, "USERIP", NICK_USERIP_SYNTAX);
      } else if (!(u2 = finduser(nick))) {
      	  notice_lang(s_NickServ, u, NICK_USERIP_CHECK_NO, nick);
      } else {
-     	  notice_lang(s_NickServ, u, NICK_USERIP_CHECK_OK, nick, u2->host);
+
+	  notice_lang(s_NickServ, u, NICK_USERIP_CHECK_OK, nick, u2->host);
 	  canaladmins(s_NickServ, "12%s usó USERIP sobre 12%s.",u->nick, nick);
      }
 }
 
-     
+
 /**************************************************************************/ 
       
 

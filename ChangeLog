@@ -1,5 +1,18 @@
 ChangeLog
 
+
+ircservices-4.3.3+Upworld-1.1+BDD-1.2rc3   equis@fuckmicrosoft.com
+--------------------------------------------------------------------
+-Nicks SUSPENDidos no pueden entrar en _ningun_ canal
+-Bug en DELACCESS que permitía qutarse un registro positivo si el nivel
+del usuario estaba bajo influencia del NOJOIN (p.ej, NOJOIN a 300, level
+del user 200)
+-Feature de ChanServ para depurar los registros en canales al propio usuario al momento.
+-Auto-idenficación con flag +S
+-ChanServ no entra ya en ningún canal (no siendo los de debug). Los "stay" en canales FORBIDeados pasan a ser de ShadowServ.
+-Ajustes en el AKICK
+
+
 ircservices-4.3.3+Upworld-1.1+BDD-1.2rc2   equis@fuckmicrosoft.com
 --------------------------------------------------------------------
 -Añadida nueva orden de NickServ: USERIP <nick>. Devuelve la IP de <nick>.
@@ -9,6 +22,7 @@ ircservices-4.3.3+Upworld-1.1+BDD-1.2rc2   equis@fuckmicrosoft.com
 -Limpieza de 'warnings' en bdd.c
 -Limpieza de multitud de bugs considerados IMPORTANTES
 -Limpieza del es.l
+
 
 ircservices-4.3.3+Upworld-1.1+BDD-1.2rc1   equis@fuckmicrosoft.com
 --------------------------------------------------------------------

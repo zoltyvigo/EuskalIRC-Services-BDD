@@ -28,7 +28,7 @@
 #define LOG_FILENAME	"services.log"
 
 /* Maximum amount of data from/to the network to buffer (bytes). */
-#define NET_BUFSIZE	65536
+#define NET_BUFSIZE	4096
 
 
 /******* NickServ configuration *******/
@@ -37,7 +37,7 @@
  * old databases); see services.h for available languages (search for
  * "LANG_").  Unless you're running a regional network, you should probably
  * leave this at LANG_EN_US. */
-#define DEF_LANGUAGE	LANG_EN_US
+#define DEF_LANGUAGE	LANG_ES
 
 
 /******* OperServ configuration *******/
@@ -64,7 +64,7 @@
 /* Size of input buffer (note: this is different from BUFSIZ)
  * This must be big enough to hold at least one full IRC message, or messy
  * things will happen. */
-#define BUFSIZE		1024
+#define BUFSIZE		512
 
 
 /* Extra warning:  If you change these, your data files will be unusable! */
@@ -72,7 +72,7 @@
 /* Maximum length of a channel name, including the trailing null.  Any
  * channels with a length longer than (CHANMAX-1) including the leading #
  * will not be usable with ChanServ. */
-#define CHANMAX		64
+#define CHANMAX		255
 
 /* Maximum length of a nickname, including the trailing null.  This MUST be
  * at least one greater than the maximum allowable nickname length on your

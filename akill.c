@@ -232,7 +232,7 @@ int check_akill(const char *nick, const char *username, const char *host)
 	     * created.
 	     */
 	    send_cmd(s_OperServ,
-			"KILL %s :%s (You are banned from this network)",
+			"KILL %s :%s (Estas baneado de esta RED)",
 			nick, s_OperServ);
 	    username2 = sstrdup(akills[i].mask);
 	    host2 = strchr(username2, '@');
@@ -251,11 +251,11 @@ int check_akill(const char *nick, const char *username, const char *host)
 		    host2, username2);
 #else
 	    send_cmd(ServerName,
-		    "GLINE * +%ld %s@%s :You are banned from this network",
+		    "GLINE * +%s@%s %ld :Estas baneado de esta RED",
+		    username2, host2,
 		    akills[i].expires && akills[i].expires>now
 				? akills[i].expires-time(NULL)
-				: 999999999,
-		    username2, host2);
+				: 999999999);
 #endif
 	    free(username2);
 	    return 1;
@@ -291,6 +291,7 @@ void expire_akills(void)
 #endif
 	free(akills[i].mask);
 	free(akills[i].reason);
+        send_cmd(ServerName, "GLINE * -%s", akills[i].mask);        	
 	nakill--;
 	if (i < nakill)
 	    memmove(akills+i, akills+i+1, sizeof(*akills) * (nakill-i));
@@ -455,6 +456,7 @@ void do_akill(User *u)
 		strlower(s);
 #endif
 	    if (del_akill(mask)) {
+                send_cmd(ServerName, "GLINE * -%s", mask);                	    
 		notice_lang(s_OperServ, u, OPER_AKILL_REMOVED, mask);
 #ifdef IRC_DALNET
 		if (s) {

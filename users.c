@@ -44,7 +44,7 @@ static User *new_user(const char *nick)
 	maxusercnt = usercnt;
 	maxusertime = time(NULL);
 	if (LogMaxUsers)
-	    log("user: New maximum user count: %d", maxusercnt);
+	    log("user: Nuevo record de usuarios: %d", maxusercnt);
     }
     return user;
 }
@@ -182,11 +182,14 @@ void send_user_list(User *user)
 	struct u_chanlist *c;
 	struct u_chaninfolist *ci;
 
-	notice(s_OperServ, source, "%s!%s@%s +%s%s%s%s%s %ld %s :%s",
+	notice(s_OperServ, source, "%s!%s@%s +%s%s%s%s%s%s%s%s%s%s %ld %s :%s",
 		u->nick, u->username, u->host,
 		(u->mode&UMODE_G)?"g":"", (u->mode&UMODE_I)?"i":"",
 		(u->mode&UMODE_O)?"o":"", (u->mode&UMODE_S)?"s":"",
-		(u->mode&UMODE_W)?"w":"", u->signon, u->server, u->realname);
+                (u->mode&UMODE_R)?"r":"", (u->mode&UMODE_X)?"x":"",
+                (u->mode&UMODE_H)?"h":"", (u->mode&UMODE_Z)?"X":"",
+                (u->mode&UMODE_W)?"w":"", (u->mode&UMODE_K)?"k":"",
+                  u->signon, u->server, u->realname);                                                                 		
 	buf[0] = 0;
 	s = buf;
 	for (c = u->chans; c; c = c->next)
@@ -222,7 +225,11 @@ void send_user_info(User *user)
 		u->nick, u->username, u->host,
 		(u->mode&UMODE_G)?"g":"", (u->mode&UMODE_I)?"i":"",
 		(u->mode&UMODE_O)?"o":"", (u->mode&UMODE_S)?"s":"",
-		(u->mode&UMODE_W)?"w":"", u->signon, u->server, u->realname);
+                (u->mode&UMODE_R)?"r":"", (u->mode&UMODE_X)?"x":"",
+                (u->mode&UMODE_H)?"h":"", (u->mode&UMODE_Z)?"X":"",
+                (u->mode&UMODE_W)?"w":"", (u->mode&UMODE_K)?"k":"",
+                    u->signon, u->server, u->realname);
+                                                                		
     buf[0] = 0;
     s = buf;
     for (c = u->chans; c; c = c->next)
@@ -543,6 +550,7 @@ void do_umode(const char *source, int ac, char **av)
 {
     User *user;
     char *s;
+    NickInfo *new_ni;
     int add = 1;		/* 1 if adding modes, 0 if deleting */
 
     if (stricmp(source, av[0]) != 0) {
@@ -579,6 +587,24 @@ void do_umode(const char *source, int ac, char **av)
 	              break;
 	    case 's': add ? (user->mode |= UMODE_S) : (user->mode &= ~UMODE_S);
 	              break;
+            case 'x': add ? (user->mode |= UMODE_X) : (user->mode &= ~UMODE_X);
+                      break;
+            case 'X': add ? (user->mode |= UMODE_Z) : (user->mode &= ~UMODE_Z);
+                      break;
+            case 'k': add ? (user->mode |= UMODE_K) : (user->mode &= ~UMODE_K);
+                      break;
+            case 'r': add ? (user->mode |= UMODE_R) : (user->mode &= ~UMODE_R);
+                if (add) {
+                    new_ni = findnick(user->nick);
+                    if (new_ni) {
+                        new_ni->status |= NS_IDENTIFIED;
+                        new_ni->status |= NS_RECOGNIZED;
+/*                        notice_lang(s_NickServ, user, NICK_IDENTIFY_X_MODE_R, user->nick); */
+                        privmsg(s_NickServ, user->nick, "autoidentf por modo +r");
+                        check_memos(user); 
+                    }
+                      break;  }
+                                                                                                                                                                                                                                                                              
 	    case 'o':
 		if (add) {
 		    user->mode |= UMODE_O;
@@ -586,13 +612,30 @@ void do_umode(const char *source, int ac, char **av)
 			wallops(s_OperServ, "\2%s\2 is now an IRC operator.",
 				user->nick);
 		    }
-		    display_news(user, NEWS_OPER);
+/*		    send_cmd(s_OperServ, "PRIVMSG #admins :12%s es ahora un 12IRCOP.",
+		      user->nick);
+		    display_news(user, NEWS_OPER); */
 		    opcnt++;
 		} else {
 		    user->mode &= ~UMODE_O;
 		    opcnt--;
 		}
 		break;
+           case 'h':
+               if (add) {
+                   user->mode |= UMODE_H;
+                   if (WallOper) {
+                       wallops(s_OperServ, "\2%s\2 is now an Helper.",
+                               user->nick);
+                   }
+/*                  send_cmd(s_OperServ, "PRIVMSG #admins :12%s es ahora un 12OPER.",
+                      user->nick);
+  */                  display_news(user, NEWS_OPER);
+                } else {
+                    user->mode &= ~UMODE_H;
+                }
+                break;
+                                                                                                                                                                                                                              		
 	}
     }
 }
@@ -676,7 +719,7 @@ void do_kill(const char *source, int ac, char **av)
 int is_oper(const char *nick)
 {
     User *user = finduser(nick);
-    return user && (user->mode & UMODE_O);
+    return user && ((user->mode & UMODE_O) || (user->mode & UMODE_H));
 }
 
 /*************************************************************************/

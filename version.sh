@@ -2,7 +2,7 @@
 #
 # Increment Services build number
 
-VERSION=4.3.2
+VERSION=4.3.3
 
 if [ -f version.h ] ; then
 	BUILD=`fgrep '#define BUILD' version.h | sed 's/^#define BUILD.*"\([0-9]*\)".*$/\1/'`
@@ -32,6 +32,8 @@ const char version_protocol[] =
 	"ircd.dal 4.4.15+"
 #elif defined(IRC_DALNET)
 	"ircd.dal 4.4.13-"
+#elif defined(ESNET_HISPANO)
+	"ircu 2.10.x P9 BDD support"
 #elif defined(IRC_UNDERNET_NEW)
 	"ircu 2.10+"
 #elif defined(IRC_UNDERNET)

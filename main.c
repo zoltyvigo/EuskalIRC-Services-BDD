@@ -97,7 +97,7 @@ void sighandler(int signum)
 		inbuf[447] = '>';
 		inbuf[448] = 0;
 	    }
-	    wallops(NULL, "PANIC! buffer = %s\r\n", inbuf);
+	    canalopers(NULL, "PANIC! buffer = %s\r\n", inbuf);
 	} else if (waiting < 0) {
 	    /* This is static on the off-chance we run low on stack */
 	    static char buf[BUFSIZE];
@@ -108,6 +108,8 @@ void sighandler(int signum)
 		          break;
 		case -12: snprintf(buf, sizeof(buf), "saving %s", ChanDBName);
 		          break;
+                case -13: snprintf(buf, sizeof(buf), "saving %s", CregDBName);
+                          break;
 		case -14: snprintf(buf, sizeof(buf), "saving %s", OperDBName);
 		          break;
 		case -15: snprintf(buf, sizeof(buf), "saving %s", AutokillDBName);
@@ -118,11 +120,13 @@ void sighandler(int signum)
 		          break;
 		case -22: snprintf(buf, sizeof(buf), "expiring channels");
 		          break;
+		case -23: snprintf(buf, sizeof(buf), "espiring peticiones");
+		          break;          
 		case -25: snprintf(buf, sizeof(buf), "expiring autokills");
 		          break;
 		default : snprintf(buf, sizeof(buf), "waiting=%d", waiting);
 	    }
-	    wallops(NULL, "PANIC! %s (%s)", buf, strsignal(signum));
+	    canalopers(NULL, "PANIC! %s (%s)", buf, strsignal(signum));
 	    log("PANIC! %s (%s)", buf, strsignal(signum));
 	}
     }
@@ -230,6 +234,8 @@ int main(int ac, char **av, char **envp)
 		save_ns_dbase();
 		waiting = -12;
 		save_cs_dbase();
+		waiting = -13;
+		save_cr_dbase();
 	    }
 	    waiting = -14;
 	    save_os_dbase();

@@ -156,7 +156,10 @@ NETWORK_DOMAIN=
 IRCTYPE="no default"
 IRCTYPE_DEF=
 IRCTYPE_DEF2=
+IRCTYPE_DEF3=
 ENCRYPTION=
+REG_NICK_MAIL=
+SENDMAIL=
 
 INSTALL=
 CP_ALL=
@@ -256,7 +259,7 @@ done
 ###########################################################################
 
 echo ""
-echo "Beginning Services configuration."
+echo "Empezando la configuracion de los Services."
 echo ""
 
 ###########################################################################
@@ -431,7 +434,8 @@ echo "network?"
 echo "     1) Base irc2 distribution (RFC 1459 compliant)"
 echo "     2) irc2 with TS8 protocol"
 echo "    11) Undernet (ircu) 2.9.32 or earlier"
-#echo "    12) Undernet (ircu) 2.10.x (version 9 protocol support required)"
+echo "    12) Undernet (ircu) 2.10.x (version 9 protocol support required)"
+echo "    13) ESNET-HISPANO (ircu) 2.10.07 deep.space con BDD support)"
 echo "    21) DALnet (ircd.dal) prior to 4.4.15"
 echo "    22) DALnet (ircd.dal) 4.4.15 or later"
 while [ $ok -eq 0 ] ; do
@@ -457,11 +461,18 @@ while [ $ok -eq 0 ] ; do
 			IRCTYPE_DEF="IRC_UNDERNET"
 			ok=1
 			;;
-#		12)
-#			IRCTYPE_DEF="IRC_UNDERNET"
-#			IRCTYPE_DEF2="IRC_UNDERNET_NEW"
-#			ok=1
-#			;;
+		12)
+			IRCTYPE_DEF="IRC_UNDERNET"
+			IRCTYPE_DEF2="IRC_UNDERNET_NEW"
+			ok=1
+			;;
+                13)
+                        IRCTYPE_DEF="IRC_UNDERNET"
+                        IRCTYPE_DEF2="IRC_UNDERNET_NEW"
+                        IRCTYPE_DEF3="ESNET_HISPANO"
+                        ok=1
+                        ;;
+
 		21)
 			IRCTYPE_DEF="IRC_DALNET"
 			ok=1
@@ -516,6 +527,80 @@ done
 echo ""
 
 ####
+
+
+if [ "$REG_NICK_MAIL" = "REG_NICK_MAIL" ] ; then
+        DEF=y
+else
+        DEF=n
+fi
+
+ok=0
+echo "Quieres activar el registro de nicks por email?"
+echo " "
+echo "(Seleccionando "\"yes\"", activaras el registro de nicks por e-mail"
+echo "en caso contrario, "\"no"\", el registro de nicks, sera directamente"
+echo "metiendo la password.)"
+while [ $ok -eq 0 ] ; do
+        echo2 "[$DEF] "
+        if read INPUT ; then : ; else echo "" ; exit 1 ; fi
+        if [ ! "$INPUT" ] ; then
+                INPUT=$DEF
+        fi
+        case $INPUT in
+                n*|N*)
+                        REG_NICK_MAIL=
+                        ok=1
+                        ;;
+                y*|Y*)
+                        REG_NICK_MAIL=REG_NICK_MAIL
+                        ok=1
+                        ;;
+                *)
+                        echo "Please enter 'y' or 'n'."
+                        ;;
+        esac
+done
+echo ""
+
+####
+# if [ "$REG_NICK_MAIL" = "ACTIVADO" ] ; then
+     if [ "$SENDPASS" = "SENDPASS" ] ; then
+           DEF=y
+     else
+           DEF=n
+     fi
+     ok=0
+     echo "Quieres usar el sendmail en vez de un SMTP?"
+     echo " "
+     echo "(Seleccionando "\"yes\"", activaras el registro de nicks por e-mail"
+     echo "en caso contrario, "\"no"\", el registro de nicks, sera directamente"
+     echo "metiendo la password.)"
+     while [ $ok -eq 0 ] ; do
+        echo2 "[$DEF] "
+        if read INPUT ; then : ; else echo "" ; exit 1 ; fi
+        if [ ! "$INPUT" ] ; then
+                INPUT=$DEF
+        fi
+        case $INPUT in
+                n*|N*)
+                        SENDPASS=
+                        ok=1
+                        ;;
+                y*|Y*)
+                        SENDPASS=SENDPASS
+                        ok=1
+                        ;;
+                *)
+                        echo "Please enter 'y' or 'n'."
+                        ;;
+        esac
+
+done
+echo ""
+
+######
+
 
 echo "End of interactive configuration."
 echo ""
@@ -1166,6 +1251,17 @@ EOT
 if [ "$IRCTYPE_DEF2" ] ; then cat >>sysconf.h <<EOT ; fi
 #define $IRCTYPE_DEF2
 EOT
+if [ "$IRCTYPE_DEF3" ] ; then cat >>sysconf.h <<EOT ; fi
+#define $IRCTYPE_DEF3
+EOT
+
+if [ "$REG_NICK_MAIL" ] ; then cat >>sysconf.h <<EOT ; fi
+#define $REG_NICK_MAIL
+EOT
+if [ "$SENDPASS" ] ; then cat >>sysconf.h <<EOT ; fi
+#define $SENDPASS
+EOT
+
 if [ "$ENCRYPTION" ] ; then cat >>sysconf.h <<EOT ; fi
 
 #define USE_ENCRYPTION
@@ -1246,8 +1342,10 @@ NETWORK_DOMAIN="$NETWORK_DOMAIN"
 IRCTYPE=$IRCTYPE
 IRCTYPE_DEF="$IRCTYPE_DEF"
 IRCTYPE_DEF2="$IRCTYPE_DEF2"
+IRCTYPE_DEF3="$IRCTYPE_DEF3"
 ENCRYPTION="$ENCRYPTION"
-
+REG_NICK_MAIL="$REG_NICK_MAIL"
+SENDMAIL="$SENDMAIL"
 
 CC="$CC"
 CC_FLAGS="$CC_FLAGS"

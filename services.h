@@ -187,6 +187,7 @@ struct nickinfo_ {
     uint16 language;	/* Language selected by nickname owner (LANG_*) */
 
     time_t id_timestamp;/* TS8 timestamp of user who last ID'd for nick */
+    char *msuspend;
 };
 
 
@@ -194,6 +195,7 @@ struct nickinfo_ {
 #define NS_ENCRYPTEDPW	0x0001      /* Nickname password is encrypted */
 #define NS_VERBOTEN	0x0002      /* Nick may not be registered or used */
 #define NS_NO_EXPIRE	0x0004      /* Nick never expires */
+#define NS_SUSPENDED	0x0008      /* Nick suspendido */
 
 #define NS_IDENTIFIED	0x8000      /* User has IDENTIFY'd */
 #define NS_RECOGNIZED	0x4000      /* ON_ACCESS true && SECURE flag not set */
@@ -223,17 +225,19 @@ struct nickinfo_ {
  * the order the languages are displayed in for NickServ HELP SET LANGUAGE,
  * do it in language.c.
  */
-#define LANG_EN_US	0	/* United States English */
-#define LANG_JA_JIS	1	/* Japanese (JIS encoding) */
-#define LANG_JA_EUC	2	/* Japanese (EUC encoding) */
-#define LANG_JA_SJIS	3	/* Japanese (SJIS encoding) */
-#define LANG_ES		4	/* Spanish */
-#define LANG_PT		5	/* Portugese */
-#define LANG_FR		6	/* French */
-#define LANG_TR		7	/* Turkish */
-#define LANG_IT		8	/* Italian */
+#define LANG_ES		0	/* Español */
+#define LANG_CA		1	/* Catalan */
+#define LANG_EN_US	2	/* United States English */
+#define LANG_JA_JIS	3	/* Japanese (JIS encoding) */
+#define LANG_JA_EUC	4	/* Japanese (EUC encoding) */
+#define LANG_JA_SJIS	5	/* Japanese (SJIS encoding) */
+#define LANG_PT		6	/* Portugese */
+#define LANG_FR		7	/* French */
+#define LANG_TR		8	/* Turkish */
+#define LANG_IT		9	/* Italian */
+#define LANG_GA		10	/* Gallego */
 
-#define NUM_LANGS	9	/* Number of languages */
+#define NUM_LANGS	11	/* Number of languages */
 
 /* Sanity-check on default language value */
 #if DEF_LANGUAGE < 0 || DEF_LANGUAGE >= NUM_LANGS
@@ -259,8 +263,8 @@ typedef struct {
  * than any valid access level, and ACCESS_INVALID may be assumed to be
  * strictly less than any valid access level.
  */
-#define ACCESS_FOUNDER	10000	/* Numeric level indicating founder access */
-#define ACCESS_INVALID	-10000	/* Used in levels[] for disabled settings */
+#define ACCESS_FOUNDER	500	/* Numeric level indicating founder access */
+#define ACCESS_INVALID	-2	/* Used in levels[] for disabled settings */
 
 /* AutoKick data. */
 typedef struct {
@@ -337,6 +341,14 @@ struct chaninfo_ {
 #define CI_MEMO_HARDMAX	0x00000400
 /* Send notice to channel on use of OP/DEOP */
 #define CI_OPNOTICE	0x00000800
+/* Chanserv dentro o fuera del canal */
+#define CI_STAY         0x00001600
+/* Canal Suspendido */
+#define CI_SECUREVOICES 0x00003200
+/* No registrados no pueden tener voz */
+#define CI_SUSPEND      0x00006400
+ 
+
 
 /* Indices for cmd_access[]: */
 #define CA_INVITE	0
@@ -352,8 +364,86 @@ struct chaninfo_ {
 #define CA_NOJOIN	10	/* Maximum */
 #define CA_ACCESS_CHANGE 11
 #define CA_MEMO		12
+#define CA_VOICEDEVOICE 13
+#define CA_AUTODEVOICE  14
+#define CA_KICK         15
+#define CA_BAN          16
+#define CA_RESET        17
 
-#define CA_SIZE		13
+#define CA_SIZE         18
+
+/*************************************************************************/
+
+/* Estructura de peticiones de registro en canales en medio de CReG */
+
+typedef struct {
+    char *nickapoyo;
+    char *emailapoyo;
+    time_t time_apoyo;
+} ApoyosCreg;
+
+typedef struct {
+    char *nickoper;
+    char *marca;
+    time_t time_marca;
+} HistoryCreg;    
+      
+
+typedef struct creginfo_ CregInfo;
+
+struct creginfo_ {
+    CregInfo *next, *prev;
+    char name[CHANMAX];          /* Nombre del canal */
+    char *founder;               /* Nick del founder */
+    
+    char founderpass[PASSMAX];   /* Password de founder */
+    char *desc;                  /* Descripcion del canal */
+    char *email;                 /* Email del founder */
+    time_t time_peticion;        /* Hora de la peticion */    
+
+    char *nickoper;              /* Nick del OPER */
+    time_t time_motivo;          /* Hora del cambio de estado del canal */
+    char *motivo;                /* Motivo de la suspension, etc.. */
+
+    char passapoyo[PASSMAX];     /* Contraseña de apoyo */
+    time_t time_lastapoyo;       /* Hora del ultimo apoyo realizado */
+
+    int32 estado;                /* Estado del canal :) CR_* */
+
+    int16 apoyoscount;           /* Contador del numero de apoyos */
+    ApoyosCreg *apoyos;          /* Lista de los apoyos realizados */
+    
+    int16 historycount;          /* Contador de Históricos */    
+    HistoryCreg *history;        /* Lista historico del canal */
+
+};
+
+
+/* Estados de las peticiones del canal  */
+/* Canal en proceso de registro */
+#define CR_PROCESO_REG	0x00000001
+/* Canal ha expirado */
+#define CR_EXPIRADO	0x00000002
+/* Canal pendiente de aceptacion */
+#define CR_PENDIENTE	0x00000004
+/* Canal denegado */
+#define CR_DENEGADO	0x00000008
+/* Canal rechazado */
+#define CR_RECHAZADO	0x00000010
+/* Canal prohibido */
+#define CR_PROHIBIDO	0x00000020
+/* Canal dropado */
+#define CR_DROPADO	0x00000040
+/* Canal suspendido */
+#define CR_SUSPENDIDO	0x00000080
+/* Canal en estado desconocido */
+#define CR_DESCONOCIDO	0x00000100
+/* Canal aceptado y registrado en Chanserv */
+#define CR_ACEPTADO	0x00000200
+/* Canal registrado especial */
+#define CR_ESPECIAL	0x00000400
+/* Canal registrado sin usar a creg */
+#define CR_REGISTRADO	0x00000800
 
 /*************************************************************************/
 
@@ -394,6 +484,10 @@ struct user_ {
 #define UMODE_W 0x00000008
 #define UMODE_G 0x00000010
 #define UMODE_H 0x00000020
+#define UMODE_R 0x00000040
+#define UMODE_X 0x00000080
+#define UMODE_Z 0x00000160
+#define UMODE_K 0x00000320
 
 
 struct channel_ {
@@ -440,7 +534,7 @@ struct channel_ {
 
 
 /* Who sends channel MODE (and KICK) commands? */
-#if defined(IRC_DALNET) || (defined(IRC_UNDERNET) && !defined(IRC_UNDERNET_NEW))
+#if defined(IRC_DALNET) || defined(IRC_UNDERNET)
 # define MODE_SENDER(service) service
 #else
 # define MODE_SENDER(service) ServerName
@@ -462,6 +556,12 @@ typedef struct ignore_data {
     char who[NICKMAX];
     time_t time;	/* When do we stop ignoring them? */
 } IgnoreData;
+
+/*************************************************************************/
+/********* Protocolo DB *********/
+struct DB {
+     long registros;   // Numero de registro por el ke van
+} DB[7];
 
 /*************************************************************************/
 

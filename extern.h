@@ -74,7 +74,7 @@ E void cs_remove_nick(const NickInfo *ni);
 
 E ChannelInfo *cs_findchan(const char *chan);
 E int check_access(User *user, ChannelInfo *ci, int what);
-
+E void registros(User *u, NickInfo *ni);
 
 /**** compat.c ****/
 
@@ -119,18 +119,22 @@ E char *ServiceHost;
 
 E char *s_NickServ;
 E char *s_ChanServ;
+E char *s_CregServ;
 E char *s_MemoServ;
 E char *s_HelpServ;
 E char *s_OperServ;
 E char *s_GlobalNoticer;
+E char *s_NewsServ;
 E char *s_IrcIIHelp;
 E char *s_DevNull;
 E char *desc_NickServ;
 E char *desc_ChanServ;
+E char *desc_CregServ;
 E char *desc_MemoServ;
 E char *desc_HelpServ;
 E char *desc_OperServ;
 E char *desc_GlobalNoticer;
+E char *desc_NewsServ;
 E char *desc_IrcIIHelp;
 E char *desc_DevNull;
 
@@ -139,9 +143,19 @@ E char *MOTDFilename;
 E char *HelpDir;
 E char *NickDBName;
 E char *ChanDBName;
+E char *CregDBName;
 E char *OperDBName;
 E char *AutokillDBName;
 E char *NewsDBName;
+
+#ifdef REG_NICK_MAIL
+E char *NicksMail;
+E char *SendMailPatch;
+E char *ServerSMTP;
+E int  *PortSMTP;
+E char *SendFrom;
+E char *WebNetwork;
+#endif
 
 E int   NoBackupOkay;
 E int   NoSplitRecovery;
@@ -191,6 +205,7 @@ E int   MSMaxMemos;
 E int   MSSendDelay;
 E int   MSNotifyAll;
 
+E char *CanalOpers;
 E char *ServicesRoot;
 E int   LogMaxUsers;
 E int   AutokillExpiry;
@@ -221,6 +236,16 @@ E char *SessionLimitDetailsLoc;
 E char *SessionLimitExceeded;
 
 E int read_config(void);
+
+/**** cregserv.c ****/
+
+E void listcregs(int count_only, const char *chan);
+E void get_cregserv_stats(long *nrec, long *memuse);
+
+E void cr_init(void);
+E void cregserv(const char *source, char *buf);
+E void load_cr_dbase(void);
+E void save_cr_dbase(void);
 
 
 /**** helpserv.c ****/
@@ -306,6 +331,10 @@ E void load_old_ms_dbase(void);
 E void check_memos(User *u);
 
 
+/********** messages.c ********/
+
+
+
 /**** misc.c ****/
 
 E char *strscpy(char *d, const char *s, size_t len);
@@ -364,7 +393,9 @@ E void save_os_dbase(void);
 E int is_services_root(User *u);
 E int is_services_admin(User *u);
 E int is_services_oper(User *u);
+E void ircops(User *u);
 E int nick_is_services_admin(NickInfo *ni);
+E int nick_is_services_oper(NickInfo *ni);
 E void os_remove_nick(const NickInfo *ni);
 
 E void check_clones(User *user);
@@ -390,6 +421,8 @@ E void vsend_cmd(const char *source, const char *fmt, va_list args)
 	FORMAT(printf,2,0);
 E void wallops(const char *source, const char *fmt, ...)
 	FORMAT(printf,2,3);
+E void canalopers(const char *source, const char *fmt, ...)
+        FORMAT(printf,2,3);        	
 E void notice(const char *source, const char *dest, const char *fmt, ...)
 	FORMAT(printf,3,4);
 E void notice_list(const char *source, const char *dest, const char **text);

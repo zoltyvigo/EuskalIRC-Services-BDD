@@ -62,25 +62,47 @@ void introduce_user(const char *user)
 
     if (!user || stricmp(user, s_NickServ) == 0) {
 	NICK(s_NickServ, desc_NickServ);
-	send_cmd(s_NickServ, "MODE %s +o", s_NickServ);
+        NICK("NickServ", "Servicio de Compatibilidad");
+        NICK("Service", "Servicio de Compatibilidad");                
+	send_cmd(s_NickServ, "MODE %s +krhd", s_NickServ);
+        send_cmd(s_NickServ, "JOIN #%s", CanalOpers);
+        send_cmd(ServerName, "MODE #%s +o %s", CanalOpers, s_NickServ);                
     }
     if (!user || stricmp(user, s_ChanServ) == 0) {
 	NICK(s_ChanServ, desc_ChanServ);
-	send_cmd(s_ChanServ, "MODE %s +o", s_ChanServ);
+        NICK("ChanServ", "Servicio de compatibilidad");
+        NICK("Scytale", "Servicio de compatibilidad");
+        NICK("KaOs", "Servicio de compatibilidad");                        	
+	send_cmd(s_ChanServ, "MODE %s +Bkrdh", s_ChanServ);
+        send_cmd(s_ChanServ, "JOIN #%s", CanalOpers);
+        send_cmd(ServerName, "MODE #%s +o %s", CanalOpers, s_ChanServ);                	
     }
+    if (!user || stricmp(user, s_CregServ) == 0) {
+        NICK(s_CregServ, desc_CregServ);
+        send_cmd(s_CregServ, "MODE %s +ikrhd", s_CregServ);
+        send_cmd(s_CregServ, "JOIN #%s", CanalOpers);
+        send_cmd(ServerName, "MODE #%s +o %s", CanalOpers, s_CregServ);
+    }                                        
     if (!user || stricmp(user, s_HelpServ) == 0) {
+        NICK("HelpServ", "Servicio de compatibilidad");       
 	NICK(s_HelpServ, desc_HelpServ);
     }
     if (s_IrcIIHelp && (!user || stricmp(user, s_IrcIIHelp) == 0)) {
 	NICK(s_IrcIIHelp, desc_IrcIIHelp);
     }
     if (!user || stricmp(user, s_MemoServ) == 0) {
+        NICK("MemoServ", "Servicio de compatibilidad");        
 	NICK(s_MemoServ, desc_MemoServ);
-	send_cmd(s_MemoServ, "MODE %s +o", s_MemoServ);
+	send_cmd(s_MemoServ, "MODE %s +krh", s_MemoServ);
     }
     if (!user || stricmp(user, s_OperServ) == 0) {
+        NICK("OperServ", "Servicio de compatibilidad");        
 	NICK(s_OperServ, desc_OperServ);
-	send_cmd(s_OperServ, "MODE %s +oi", s_OperServ);
+        send_cmd(s_OperServ, "MODE %s +ikBrdh", s_OperServ);        
+        send_cmd(ServerName, "SETTIME %lu", time(NULL));
+        send_cmd(s_OperServ, "NOTICE $*.%s :Sincronizacion automatica de la RED..." ,NETWORK_DOMAIN);        
+        send_cmd(s_OperServ, "JOIN #%s", CanalOpers);
+        send_cmd(ServerName, "MODE #%s +o %s", CanalOpers, s_OperServ);
     }
     if (s_DevNull && (!user || stricmp(user, s_DevNull) == 0)) {
 	NICK(s_DevNull, desc_DevNull);
@@ -88,8 +110,12 @@ void introduce_user(const char *user)
     }
     if (!user || stricmp(user, s_GlobalNoticer) == 0) {
 	NICK(s_GlobalNoticer, desc_GlobalNoticer);
-	send_cmd(s_GlobalNoticer, "MODE %s +oi", s_GlobalNoticer);
+	send_cmd(s_GlobalNoticer, "MODE %s +ikrh", s_GlobalNoticer);
     }
+    if (!user || stricmp(user, s_NewsServ) == 0) {
+        NICK(s_NewsServ, desc_NewsServ);
+        send_cmd(s_NewsServ, "MODE %s +krh", s_NewsServ);
+    }                                  
 }
 
 #undef NICK
@@ -427,6 +453,7 @@ int init(int ac, char **av)
     /* Initialiize subservices */
     ns_init();
     cs_init();
+    cr_init();
     ms_init();
     os_init();
 
@@ -434,23 +461,26 @@ int init(int ac, char **av)
     if (!skeleton) {
 	load_ns_dbase();
 	if (debug)
-	    log("debug: Loaded %s database (1/6)", s_NickServ);
+	    log("debug: Loaded %s database (1/7)", s_NickServ);
 	load_cs_dbase();
 	if (debug)
-	    log("debug: Loaded %s database (2/6)", s_ChanServ);
+	    log("debug: Loaded %s database (2/7)", s_ChanServ);
+        load_cr_dbase();
+        if (debug)
+            log("debug: Loaded %s database (3/7)", s_CregServ);                            	    
     }
     load_os_dbase();
     if (debug)
-	log("debug: Loaded %s database (3/6)", s_OperServ);
+	log("debug: Loaded %s database (4/7)", s_OperServ);
     load_akill();
     if (debug)
-	log("debug: Loaded AKILL database (4/6)");
+	log("debug: Loaded AKILL database (5/7)");
     load_news();
     if (debug)
-	log("debug: Loaded news database (5/6)");
+	log("debug: Loaded news database (6/7)");
     load_exceptions();
     if (debug)
-        log("debug: Loaded exception database (6/6)");
+        log("debug: Loaded exception database (7/7)");
     log("Databases loaded");
 
     /* Connect to the remote server */
@@ -481,7 +511,9 @@ int init(int ac, char **av)
 
     /* Bring in our pseudo-clients */
     introduce_user(NULL);
-
+#ifdef ESNET_HISPANO    
+    send_cmd(ServerName, "DB * 0 J 999999999 2");
+#endif    
     /* Success! */
     return 0;
 }

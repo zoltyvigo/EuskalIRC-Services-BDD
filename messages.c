@@ -7,12 +7,104 @@
  */
 
 #include "services.h"
+#include "extern.h"
 #include "messages.h"
 #include "language.h"
 
 /* List of messages is at the bottom of the file. */
 
 /*************************************************************************/
+
+ /* Salir mensaje en el Canal de Control los servers ke van entrando 
+  * Zoltan Julio 2000
+  */
+
+static void m_server(char *source, int ac, char **av)
+{
+
+     char numerico[2];
+
+/* Handle a server SERVER command.
+ *      source = Server hub
+ *      av[0] = Nuevo Server
+ *      av[1] = hop count
+ *      av[2] = signon time
+ *      av[3] = signon
+ *      av[4] = protocolo
+ *      av[5] = numerico
+ *      av[6] = user's server
+ *      av[7] = Descripcion
+ */  
+
+     strscpy(numerico, av[5], 2);             
+     canalopers(s_OperServ, "SERVER 12%s Numeric 12%s entra en la RED.", av[0], numerico);
+}
+
+/*************************************************************************/
+
+ /* Salir mensaje en el canal de control los servers ke salen de la red
+  * Zoltan Julio 2000
+  */
+
+static void m_squit(char *source, int ac, char **av)
+{
+          
+   /* Handle a server SQUIT command.
+    *       soruce =  nick/server
+    *      av[0] = Nuevo Server
+    *      av[1] = signon time
+    *      av[2] = motivo 
+    */
+   canalopers(s_OperServ, "SQUIT de 12%s por 12%s Motivo: %s", av[0], source, av[2]);
+}
+
+/*************************************************************************/
+static void m_db(char *source, int ac, char **av)
+{
+/*
+    DB[1].registros  Tabla 'b' Bots Clones/Ilines
+    DB[2].registros  Tabla 'c' Canales Temporal
+    DB[3].registros  Tabla 'i' Clones/Ilines
+    DB[4].registros  Tabla 'n' NiCKS
+    DB[5].registros  Tabla 'o' Opers/Admins
+    DB[6].registros  Tabla 't' Temporal
+    DB[7].registros  Tabla 'v' Vhosts
+*/                            
+    if (strcmp(av[5], "2")  == 0) {
+        DB[4].registros = atol(av[4]);
+//        canalopers(s_OperServ, "Tabla N  Serie: %lu", DB[4].registros);        
+    }
+    if (strcmp(av[5], "b")  == 0) {
+        DB[1].registros = atol(av[4]);
+//        canalopers(s_OperServ, "Tabla B  Serie: %lu", DB[1].registros);
+    }
+    if (strcmp(av[5], "c")  == 0) {
+        DB[2].registros = atol(av[4]);
+//        canalopers(s_OperServ, "Tabla C  Serie: %lu", DB[2].registros);
+    }    
+    if (strcmp(av[5], "i")  == 0) {
+        DB[3].registros = atol(av[4]);
+//        canalopers(s_OperServ, "Tabla I  Serie: %lu", DB[3].registros);
+    }    
+    if (strcmp(av[5], "n")  == 0) {
+        DB[4].registros = atol(av[4]);
+//        canalopers(s_OperServ, "Tabla N  Serie: %lu", DB[4].registros);
+    }
+    if (strcmp(av[5], "o")  == 0) {
+        DB[5].registros = atol(av[4]);
+//        canalopers(s_OperServ, "Tabla O  Serie: %lu", DB[5].registros);
+    }
+    if (strcmp(av[5], "t")  == 0) {
+        DB[6].registros = atol(av[4]);
+//        canalopers(s_OperServ, "Tabla T  Serie: %lu", DB[6].registros);
+    }                                                       
+    if (strcmp(av[5], "v")  == 0) {
+        DB[7].registros = atol(av[4]);
+//        canalopers(s_OperServ, "Tabla V  Serie: %lu", DB[7].registros);
+    }
+} 
+
+
 /*************************************************************************/
 
 static void m_nickcoll(char *source, int ac, char **av)
@@ -70,8 +162,10 @@ static void m_kill(char *source, int ac, char **av)
     if (stricmp(av[0], s_OperServ) == 0 ||
         stricmp(av[0], s_NickServ) == 0 ||
         stricmp(av[0], s_ChanServ) == 0 ||
+        stricmp(av[0], s_CregServ) == 0 ||        
         stricmp(av[0], s_MemoServ) == 0 ||
         stricmp(av[0], s_HelpServ) == 0 ||
+        stricmp(av[0], s_NewsServ) == 0 ||        
         (s_IrcIIHelp && stricmp(av[0], s_IrcIIHelp) == 0) ||
         (s_DevNull && stricmp(av[0], s_DevNull) == 0) ||
         stricmp(av[0], s_GlobalNoticer) == 0
@@ -106,7 +200,7 @@ static void m_motd(char *source, int ac, char **av)
     char buf[BUFSIZE];
 
     f = fopen(MOTDFilename, "r");
-    send_cmd(ServerName, "375 %s :- %s Message of the Day",
+    send_cmd(ServerName, "375 %s :- %s Mensaje del día",
 		source, ServerName);
    if (f) {
 	while (fgets(buf, sizeof(buf), f)) {
@@ -115,8 +209,8 @@ static void m_motd(char *source, int ac, char **av)
 	}
 	fclose(f);
     } else {
-	send_cmd(ServerName, "372 %s :- MOTD file not found!  Please "
-			"contact your IRC administrator.", source);
+	send_cmd(ServerName, "372 %s :- Archivo MOTD no ha sido encontrado!"
+			" Por favor contacta con tu IRC Administrador.", source);
     }
 
     /* Look, people.  I'm not asking for payment, praise, or anything like
@@ -128,6 +222,7 @@ static void m_motd(char *source, int ac, char **av)
     send_cmd(ServerName, "372 %s :-", source);
     send_cmd(ServerName, "372 %s :- Services is copyright (c) "
 		"1996-1999 Andy Church.", source);
+    send_cmd(ServerName, "372 %s :- 2000, Toni García, Zoltan. GNU ", source);
     send_cmd(ServerName, "376 %s :End of /MOTD command.", source);
 }
 
@@ -209,19 +304,44 @@ static void m_privmsg(char *source, int ac, char **av)
 	    if (u)
 		notice_lang(s_OperServ, u, ACCESS_DENIED);
 	    else
-		notice(s_OperServ, source, "Access denied.");
+		privmsg(s_OperServ, source, "4Acceso denegado.");
+            canalopers(s_OperServ, "Denegando el acceso a %s desde %s (No es OPER)",
+                        s_OperServ, source);                                      
 	    if (WallBadOS)
-		wallops(s_OperServ, "Denied access to %s from %s (non-oper)",
+		wallops(s_OperServ, "Denegando el acceso a %s desde %s (No es OPER)",
 			s_OperServ, source);
 	}
+	/* Servicio de compatiblidad */
+    } else if (stricmp(av[0], "NickServ") ==0) {
+      nickserv(source, av[1]);      
+    } else if (stricmp(av[0], "ChanServ") == 0) {
+        chanserv(source, av[1]);
+    } else if (stricmp(av[0], "MemoServ") == 0) {
+        memoserv(source, av[1]);
+    } else if (stricmp(av[0], "OperServ") == 0) {
+        operserv(source, av[1]);
+    } else if (stricmp(av[0], "HelpServ") == 0) {
+        helpserv(s_HelpServ, source, av[1]);
+    } else if (stricmp(av[0], "Service") == 0) {
+        nickserv(source, av[1]);
+    } else if (stricmp(av[0], "Scytale") == 0) {
+        chanserv(source, av[1]);
+    } else if (stricmp(av[0], "KaOs") == 0) {
+        chanserv(source, av[1]);
+     /** fin servicio de compatiblidad **/                           
+                                          	
     } else if (stricmp(av[0], s_NickServ) == 0) {
 	nickserv(source, av[1]);
     } else if (stricmp(av[0], s_ChanServ) == 0) {
 	chanserv(source, av[1]);
+    } else if (stricmp(av[0], s_CregServ) == 0) {
+        cregserv(source, av[1]);            	
     } else if (stricmp(av[0], s_MemoServ) == 0) {
 	memoserv(source, av[1]);
     } else if (stricmp(av[0], s_HelpServ) == 0) {
 	helpserv(s_HelpServ, source, av[1]);
+/***    } else if (stricmp(av[0], s_NewsServ) == 0) {
+        newsserv(sourde, av[1]); *****/        
     } else if (s_IrcIIHelp && stricmp(av[0], s_IrcIIHelp) == 0) {
 	char buf[BUFSIZE];
 	snprintf(buf, sizeof(buf), "ircII %s", av[1]);
@@ -360,10 +480,14 @@ void m_whois(char *source, int ac, char **av)
 	    clientdesc = desc_NickServ;
 	else if (stricmp(av[0], s_ChanServ) == 0)
 	    clientdesc = desc_ChanServ;
+        else if (stricmp(av[0], s_CregServ) == 0)
+            clientdesc = desc_CregServ;                    
 	else if (stricmp(av[0], s_MemoServ) == 0)
 	    clientdesc = desc_MemoServ;
 	else if (stricmp(av[0], s_HelpServ) == 0)
 	    clientdesc = desc_HelpServ;
+        else if (stricmp(av[0], s_GlobalNoticer) == 0)
+            clientdesc = desc_GlobalNoticer;                    
 	else if (s_IrcIIHelp && stricmp(av[0], s_IrcIIHelp) == 0)
 	    clientdesc = desc_IrcIIHelp;
 	else if (stricmp(av[0], s_OperServ) == 0)
@@ -403,14 +527,14 @@ Message messages[] = {
     { "PING",      m_ping },
     { "PRIVMSG",   m_privmsg },
     { "QUIT",      m_quit },
-    { "SERVER",    NULL },
-    { "SQUIT",     NULL },
-    { "STATS",     m_stats },
+    { "SERVER",    m_server },
+    { "SQUIT",     m_squit }, 
+    { "STATS",     m_stats }, 
     { "TIME",      m_time },
     { "TOPIC",     m_topic },
     { "USER",      m_user },
     { "VERSION",   m_version },
-    { "WALLOPS",   NULL },
+    { "WALLOPS",   NULL }, 
     { "WHOIS",     m_whois },
 
 #ifdef IRC_DALNET
@@ -422,7 +546,15 @@ Message messages[] = {
 #endif
 
 #ifdef IRC_UNDERNET
-    { "GLINE",     NULL },
+    { "GLINE",     NULL }, 
+#endif
+
+#ifdef ESNET_HISPANO
+/*    { "219",       NULL },
+    { "249",       m_bdd }, */
+    { "DB",        m_db }, 
+    { "CONFIG",    NULL }, 
+    { "z",         m_db },      
 #endif
 
     { NULL }

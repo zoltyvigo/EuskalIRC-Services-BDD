@@ -16,38 +16,48 @@
 static ChannelInfo *chanlists[256];
 
 static int def_levels[][2] = {
-    { CA_AUTOOP,             5 },
-    { CA_AUTOVOICE,          3 },
-    { CA_AUTODEOP,          -1 },
-    { CA_NOJOIN,            -2 },
-    { CA_INVITE,             5 },
-    { CA_AKICK,             10 },
-    { CA_SET,   ACCESS_INVALID },
-    { CA_CLEAR, ACCESS_INVALID },
-    { CA_UNBAN,              5 },
-    { CA_OPDEOP,             5 },
-    { CA_ACCESS_LIST,        0 },
-    { CA_ACCESS_CHANGE,      1 },
-    { CA_MEMO,              10 },
+    { CA_AUTOOP,            300 },
+    { CA_AUTOVOICE,         100 },
+    { CA_AUTODEOP,            -1 },
+    { CA_NOJOIN,              -1 },
+    { CA_INVITE,            300 },
+    { CA_AKICK,             450 },
+    { CA_SET,    ACCESS_INVALID },
+    { CA_CLEAR,  ACCESS_INVALID },
+    { CA_UNBAN,             300 },
+    { CA_OPDEOP,            200 },
+    { CA_ACCESS_LIST,           0 },
+    { CA_ACCESS_CHANGE,     450 },
+    { CA_MEMO,              100 },
+    { CA_RESET,             450 },
+    { CA_AUTODEVOICE          -1 },
+    { CA_VOICEDEVOICE,        50 },
+    { CA_KICK,              400 },
+    { CA_BAN,               400 },                    
     { -1 }
 };
 
 typedef struct {
     int what;
-    char *name;
+    char *name;    
     int desc;
 } LevelInfo;
 static LevelInfo levelinfo[] = {
     { CA_AUTOOP,        "AUTOOP",     CHAN_LEVEL_AUTOOP },
     { CA_AUTOVOICE,     "AUTOVOICE",  CHAN_LEVEL_AUTOVOICE },
     { CA_AUTODEOP,      "AUTODEOP",   CHAN_LEVEL_AUTODEOP },
+/*    { CA_AUTODEVOICE,   "AUTODEVOICE", CHAN_LEVEL_AUTODEVOICE }, */
     { CA_NOJOIN,        "NOJOIN",     CHAN_LEVEL_NOJOIN },
     { CA_INVITE,        "INVITE",     CHAN_LEVEL_INVITE },
+    { CA_OPDEOP,        "OPDEOP",     CHAN_LEVEL_OPDEOP },
+    { CA_VOICEDEVOICE,  "VOICEDEVOICE", CHAN_LEVEL_OPDEOP },        
+    { CA_KICK,          "KICK",       CHAN_LEVEL_KICK },
+/*    { CA_BAN,           "BAN",        CHAN_LEVEL_BAN } */
+    { CA_UNBAN,         "UNBAN",      CHAN_LEVEL_UNBAN },            
     { CA_AKICK,         "AKICK",      CHAN_LEVEL_AKICK },
     { CA_SET,           "SET",        CHAN_LEVEL_SET },
     { CA_CLEAR,         "CLEAR",      CHAN_LEVEL_CLEAR },
-    { CA_UNBAN,         "UNBAN",      CHAN_LEVEL_UNBAN },
-    { CA_OPDEOP,        "OPDEOP",     CHAN_LEVEL_OPDEOP },
+    { CA_RESET,         "RESET",      CHAN_LEVEL_RESET },
     { CA_ACCESS_LIST,   "ACC-LIST",   CHAN_LEVEL_ACCESS_LIST },
     { CA_ACCESS_CHANGE, "ACC-CHANGE", CHAN_LEVEL_ACCESS_CHANGE },
     { CA_MEMO,          "MEMO",       CHAN_LEVEL_MEMO },
@@ -82,11 +92,13 @@ static void do_set_mlock(User *u, ChannelInfo *ci, char *param);
 static void do_set_keeptopic(User *u, ChannelInfo *ci, char *param);
 static void do_set_topiclock(User *u, ChannelInfo *ci, char *param);
 static void do_set_private(User *u, ChannelInfo *ci, char *param);
+static void do_set_securevoices(User *u, ChannelInfo *ci, char *param);
 static void do_set_secureops(User *u, ChannelInfo *ci, char *param);
 static void do_set_leaveops(User *u, ChannelInfo *ci, char *param);
 static void do_set_restricted(User *u, ChannelInfo *ci, char *param);
 static void do_set_secure(User *u, ChannelInfo *ci, char *param);
 static void do_set_opnotice(User *u, ChannelInfo *ci, char *param);
+static void do_set_stay(User *u, ChannelInfo *ci, char *param);
 static void do_set_noexpire(User *u, ChannelInfo *ci, char *param);
 static void do_access(User *u);
 static void do_akick(User *u);
@@ -96,19 +108,35 @@ static void do_invite(User *u);
 static void do_levels(User *u);
 static void do_op(User *u);
 static void do_deop(User *u);
+static void do_voice(User *u);
+static void do_devoice(User *u);
+static void do_ckick(User *u);
+static void do_ban(User *u);
 static void do_unban(User *u);
 static void do_clear(User *u);
+static void do_reset(User *u);
+static void do_verify(User *u);
+static void do_ircops(User *u);
 static void do_getpass(User *u);
+static void do_suspend(User *u);
+static void do_unsuspend(User *u);
 static void do_forbid(User *u);
+static void do_unforbid(User *u);
 static void do_status(User *u);
+static void do_say(User *u);
 
 /*************************************************************************/
 
 static Command cmds[] = {
     { "HELP",     do_help,     NULL,  -1,                       -1,-1,-1,-1 },
-    { "REGISTER", do_register, NULL,  CHAN_HELP_REGISTER,       -1,-1,-1,-1 },
-    { "IDENTIFY", do_identify, NULL,  CHAN_HELP_IDENTIFY,       -1,-1,-1,-1 },
-    { "DROP",     do_drop,     NULL,  -1,
+    { "AYUDA",    do_help,     NULL,  -1,                       -1,-1,-1,-1 },
+    { "SHOWCOMMANDS",    do_help,   NULL,  -1,                  -1,-1,-1,-1 },
+    { ":?",       do_help,     NULL,  -1,                       -1,-1,-1,-1 },
+    { "?",        do_help,     NULL,  -1,                       -1,-1,-1,-1 },                 
+    { "REGISTER", do_register, is_services_oper,  CHAN_HELP_REGISTER,  -1,-1,-1,-1 },
+    { "IDENTIFY", do_identify, NULL,  CHAN_HELP_IDENTIFY,       -1,-1,-1,-1 },    
+    { "AUTH",     do_identify, NULL,  CHAN_HELP_IDENTIFY,       -1,-1,-1,-1 },
+    { "DROP",     do_drop,     is_services_oper,  -1,
 		CHAN_HELP_DROP, CHAN_SERVADMIN_HELP_DROP,
 		CHAN_SERVADMIN_HELP_DROP, CHAN_SERVADMIN_HELP_DROP },
     { "SET",      do_set,      NULL,  CHAN_HELP_SET,
@@ -116,7 +144,8 @@ static Command cmds[] = {
 		CHAN_SERVADMIN_HELP_SET, CHAN_SERVADMIN_HELP_SET },
     { "SET FOUNDER",    NULL,  NULL,  CHAN_HELP_SET_FOUNDER,    -1,-1,-1,-1 },
     { "SET SUCCESSOR",  NULL,  NULL,  CHAN_HELP_SET_SUCCESSOR,  -1,-1,-1,-1 },
-    { "SET PASSWORD",   NULL,  NULL,  CHAN_HELP_SET_PASSWORD,   -1,-1,-1,-1 },
+    { "SET PASSWORD",   NULL,  NULL,  CHAN_HELP_SET_PASSWORD,   -1,-1,-1,-1 },     
+    { "SET PASS",       NULL,  NULL,  CHAN_HELP_SET_PASSWORD,   -1,-1,-1,-1 },
     { "SET DESC",       NULL,  NULL,  CHAN_HELP_SET_DESC,       -1,-1,-1,-1 },
     { "SET URL",        NULL,  NULL,  CHAN_HELP_SET_URL,        -1,-1,-1,-1 },
     { "SET EMAIL",      NULL,  NULL,  CHAN_HELP_SET_EMAIL,      -1,-1,-1,-1 },
@@ -127,9 +156,13 @@ static Command cmds[] = {
     { "SET MLOCK",      NULL,  NULL,  CHAN_HELP_SET_MLOCK,      -1,-1,-1,-1 },
     { "SET RESTRICTED", NULL,  NULL,  CHAN_HELP_SET_RESTRICTED, -1,-1,-1,-1 },
     { "SET SECURE",     NULL,  NULL,  CHAN_HELP_SET_SECURE,     -1,-1,-1,-1 },
+    { "SET SECUREVOICES",  NULL,  NULL,  CHAN_HELP_SET_SECUREOPS,  -1,-1,-1,-1 },     
     { "SET SECUREOPS",  NULL,  NULL,  CHAN_HELP_SET_SECUREOPS,  -1,-1,-1,-1 },
     { "SET LEAVEOPS",   NULL,  NULL,  CHAN_HELP_SET_LEAVEOPS,   -1,-1,-1,-1 },
+    { "SET ISSUED",     NULL,  NULL,  CHAN_HELP_SET_OPNOTICE,   -1,-1,-1,-1 },
+    { "SET DEBUG",      NULL,  NULL,  CHAN_HELP_SET_OPNOTICE,   -1,-1,-1,-1 },
     { "SET OPNOTICE",   NULL,  NULL,  CHAN_HELP_SET_OPNOTICE,   -1,-1,-1,-1 },
+    { "SET STAY",   NULL,  NULL,  CHAN_HELP_SET_OPNOTICE,   -1,-1,-1,-1 },             
     { "SET NOEXPIRE",   NULL,  NULL,  -1, -1,
 		CHAN_SERVADMIN_HELP_SET_NOEXPIRE,
 		CHAN_SERVADMIN_HELP_SET_NOEXPIRE,
@@ -144,20 +177,37 @@ static Command cmds[] = {
     { "LIST",     do_list,     NULL,  -1,
 		CHAN_HELP_LIST, CHAN_SERVADMIN_HELP_LIST,
 		CHAN_SERVADMIN_HELP_LIST, CHAN_SERVADMIN_HELP_LIST },
+    { "VOICE",    do_voice,    NULL,  CHAN_HELP_VOICE,          -1,-1,-1,-1 },
+    { "DEVOICE",  do_devoice,  NULL,  CHAN_HELP_DEVOICE,        -1,-1,-1,-1 },        		
     { "OP",       do_op,       NULL,  CHAN_HELP_OP,             -1,-1,-1,-1 },
     { "DEOP",     do_deop,     NULL,  CHAN_HELP_DEOP,           -1,-1,-1,-1 },
     { "INVITE",   do_invite,   NULL,  CHAN_HELP_INVITE,         -1,-1,-1,-1 },
+    { "KICK",     do_ckick,    NULL,  CHAN_HELP_KICK,           -1,-1,-1,-1 },
+    { "BAN",      do_ban,      NULL,  CHAN_HELP_BAN,            -1,-1,-1,-1 },        
     { "UNBAN",    do_unban,    NULL,  CHAN_HELP_UNBAN,          -1,-1,-1,-1 },
     { "CLEAR",    do_clear,    NULL,  CHAN_HELP_CLEAR,          -1,-1,-1,-1 },
+    { "RESET",    do_reset,    NULL,  CHAN_HELP_RESET,          -1,-1,-1,-1 },
+    { "VERIFY",   do_verify,   NULL,  CHAN_HELP_VERIFY,         -1,-1,-1,-1 },        
+    { "IRCOPS",   do_ircops,   NULL,  CHAN_HELP_IRCOPS,         -1,-1,-1,-1 },    
     { "GETPASS",  do_getpass,  is_services_admin,  -1,
 		-1, CHAN_SERVADMIN_HELP_GETPASS,
 		CHAN_SERVADMIN_HELP_GETPASS, CHAN_SERVADMIN_HELP_GETPASS },
+    { "SUSPEND",  do_suspend,  is_services_oper,  -1,
+                -1, CHAN_SERVADMIN_HELP_SUSPEND,
+                CHAN_SERVADMIN_HELP_SUSPEND, CHAN_SERVADMIN_HELP_SUSPEND },
+    { "UNSUSPEND",  do_unsuspend,  is_services_oper,  -1,
+                -1, CHAN_SERVADMIN_HELP_UNSUSPEND,
+                CHAN_SERVADMIN_HELP_UNSUSPEND, CHAN_SERVADMIN_HELP_UNSUSPEND },                                                                        
     { "FORBID",   do_forbid,   is_services_admin,  -1,
 		-1, CHAN_SERVADMIN_HELP_FORBID,
 		CHAN_SERVADMIN_HELP_FORBID, CHAN_SERVADMIN_HELP_FORBID },
+    { "UNFORBID",   do_unforbid,   is_services_admin,  -1,
+                -1, CHAN_SERVADMIN_HELP_UNFORBID,
+                CHAN_SERVADMIN_HELP_UNFORBID, CHAN_SERVADMIN_HELP_UNFORBID },                                    
     { "STATUS",   do_status,   is_services_admin,  -1,
 		-1, CHAN_SERVADMIN_HELP_STATUS,
 		CHAN_SERVADMIN_HELP_STATUS, CHAN_SERVADMIN_HELP_STATUS },
+    { "SAY",      do_say,      is_services_oper,  -1, -1, -1, -1, -1 },    
     { NULL }
 };
 
@@ -183,7 +233,7 @@ void listchans(int count_only, const char *chan)
 	    for (ci = chanlists[i]; ci; ci = ci->next)
 		count++;
 	}
-	printf("%d channels registered.\n", count);
+	printf("%d canales registrados.\n", count);
 
     } else if (chan) {
 
@@ -191,48 +241,52 @@ void listchans(int count_only, const char *chan)
 	char *s, buf[BUFSIZE];
 
 	if (!(ci = cs_findchan(chan))) {
-	    printf("Channel %s not registered.\n", chan);
+	    printf("El canal %s no esta registrado.\n", chan);
 	    return;
 	}
 	if (ci->flags & CI_VERBOTEN) {
-	    printf("Channel %s is FORBIDden.\n", ci->name);
+	    printf("El canal %s esta FORBIDeado.\n", ci->name);
 	} else {
-	    printf("Information about channel %s:\n", ci->name);
+	    printf("Informacion del canal %s:\n", ci->name);
+            if (ci->flags & CI_SUSPEND)
+                printf("Estado: SUSPENDIDO");
+            else    
+                printf("Estado: ACTIVO");
 	    s = ci->founder->last_usermask;
-	    printf("        Founder: %s%s%s%s\n",
+	    printf("Fundador: %s%s%s%s\n",
 			ci->founder->nick,
 			s ? " (" : "", s ? s : "", s ? ")" : "");
-	    printf("    Description: %s\n", ci->desc);
+	    printf("Descripcion: %s\n", ci->desc);
 	    tm = localtime(&ci->time_registered);
 	    strftime(buf, sizeof(buf), getstring(NULL,STRFTIME_DATE_TIME_FORMAT), tm);
-	    printf("     Registered: %s\n", buf);
+	    printf("Registrado: %s\n", buf);
 	    tm = localtime(&ci->last_used);
 	    strftime(buf, sizeof(buf), getstring(NULL,STRFTIME_DATE_TIME_FORMAT), tm);
-	    printf("      Last used: %s\n", buf);
+	    printf("Ultimo uso: %s\n", buf);
 	    if (ci->last_topic) {
-		printf("     Last topic: %s\n", ci->last_topic);
-		printf("   Topic set by: %s\n", ci->last_topic_setter);
+		printf("Ultimo topic: %s\n", ci->last_topic);
+		printf("Topic ajustado por by: %s\n", ci->last_topic_setter);
 	    }
 	    if (ci->url)
-		printf("            URL: %s\n", ci->url);
+		printf("URL: %s\n", ci->url);
 	    if (ci->email)
-		printf(" E-mail address: %s\n", ci->email);
-	    printf("        Options: ");
+		printf("E-mail: %s\n", ci->email);
+	    printf("Opciones: ");
 	    if (!ci->flags) {
-		printf("None\n");
+		printf("Ninguna\n");
 	    } else {
 		int need_comma = 0;
 		static const char commastr[] = ", ";
 		if (ci->flags & CI_PRIVATE) {
-		    printf("Private");
+		    printf("Privado");
 		    need_comma = 1;
 		}
 		if (ci->flags & CI_KEEPTOPIC) {
-		    printf("%sTopic Retention", need_comma ? commastr : "");
+		    printf("%sRetencion de topic", need_comma ? commastr : "");
 		    need_comma = 1;
 		}
 		if (ci->flags & CI_TOPICLOCK) {
-		    printf("%sTopic Lock", need_comma ? commastr : "");
+		    printf("%sCandado de topic", need_comma ? commastr : "");
 		    need_comma = 1;
 		}
 		if (ci->flags & CI_SECUREOPS) {
@@ -244,20 +298,20 @@ void listchans(int count_only, const char *chan)
 		    need_comma = 1;
 		}
 		if (ci->flags & CI_RESTRICTED) {
-		    printf("%sRestricted Access", need_comma ? commastr : "");
+		    printf("%sAcceso Restringido", need_comma ? commastr : "");
 		    need_comma = 1;
 		}
 		if (ci->flags & CI_SECURE) {
-		    printf("%sSecure", need_comma ? commastr : "");
+		    printf("%sSeguro", need_comma ? commastr : "");
 		    need_comma = 1;
 		}
 		if (ci->flags & CI_NO_EXPIRE) {
-		    printf("%sNo Expire", need_comma ? commastr : "");
+		    printf("%sNo Expira", need_comma ? commastr : "");
 		    need_comma = 1;
 		}
 		printf("\n");
 	    }
-	    printf("      Mode lock: ");
+	    printf("Candado de modos: ");
 	    if (ci->mlock_on || ci->mlock_key || ci->mlock_limit) {
 		printf("+%s%s%s%s%s%s%s%s%s",
 			(ci->mlock_on & CMODE_I) ? "i" : "",
@@ -304,11 +358,11 @@ void listchans(int count_only, const char *chan)
 		printf("  %s %-20s  %s\n", ci->flags & CI_NO_EXPIRE ? "!" : " ",
 			    ci->name,
 			    ci->flags & CI_VERBOTEN ? 
-				    "Disallowed (FORBID)" : ci->desc);
+				    "Inactivo (FORBID)" : ci->desc);
 		count++;
 	    }
 	}
-	printf("%d channels registered.\n", count);
+	printf("%d Canales registrados.\n", count);
 
     }
 }
@@ -857,6 +911,7 @@ void load_cs_dbase(void)
 	for (ci = chanlists[i]; ci; ci = next) {
 	    next = ci->next;
 	    if (!(ci->flags & CI_VERBOTEN) && !ci->founder) {
+                canalopers(s_ChanServ, "El canal 12%s no tiene founder. Borrando..", ci->name); 
 		log("%s: database load: Deleting founderless channel %s",
 			s_ChanServ, ci->name);
 		delchan(ci);
@@ -1001,11 +1056,12 @@ void check_modes(const char *chan)
     /* Check for mode bouncing */
     if (c->server_modecount >= 3 && c->chanserv_modecount >= 3) {
 #if defined(IRC_DALNET) || defined(IRC_UNDERNET)
-	wallops(NULL, "Warning: unable to set modes on channel %s.  "
-		"Are your servers' U:lines configured correctly?", chan);
+	canalopers(NULL, "Desincronizacion detectada en el canal %s. "
+		"Las U-Lines de los servidores tan bien configuradas?", chan);
 #else
-	wallops(NULL, "Warning: unable to set modes on channel %s.  "
-		"Are your servers configured correctly?", chan);
+        canalopers(NULL, "Desincronizacion detectada en el canal %s. "
+                "Las U-Lines de los servidores tan bien configuradas?", chan);
+                        
 #endif
 	log("%s: Bouncy modes on channel %s", s_ChanServ, c->name);
 	c->bouncy_modes = 1;
@@ -1191,7 +1247,10 @@ int check_valid_op(User *user, const char *chan, int serverop)
 	send_cmd(MODE_SENDER(s_ChanServ), "MODE %s -o %s", chan, user->nick);
 	return 0;
     }
-
+    if (ci->flags & CI_SUSPEND) {
+        send_cmd(MODE_SENDER(s_ChanServ), "MODE %s -o %s", chan, user->nick);
+        return 0;
+    }                        
     if (serverop && time(NULL)-start_time >= CSRestrictDelay
 				&& !check_access(user, ci, CA_AUTOOP)) {
 	notice_lang(s_ChanServ, user, CHAN_IS_REGISTERED, s_ChanServ);
@@ -1223,11 +1282,13 @@ int check_should_op(User *user, const char *chan)
 
     if (!ci || (ci->flags & CI_VERBOTEN) || *chan == '+')
 	return 0;
-
+    if (!ci || (ci->flags & CI_SUSPEND) || *chan == '+')
+        return 0;
+            
     if ((ci->flags & CI_SECURE) && !nick_identified(user))
 	return 0;
 
-    if (check_access(user, ci, CA_AUTOOP)) {
+    if (check_access(user, ci, CA_AUTOOP) || is_services_oper(user)) {
 	send_cmd(MODE_SENDER(s_ChanServ), "MODE %s +o %s", chan, user->nick);
 	ci->last_used = time(NULL);
 	return 1;
@@ -1247,6 +1308,8 @@ int check_should_voice(User *user, const char *chan)
 
     if (!ci || (ci->flags & CI_VERBOTEN) || *chan == '+')
 	return 0;
+    if (!ci || (ci->flags & CI_SUSPEND) || *chan == '+')
+        return 0;            
 
     if ((ci->flags & CI_SECURE) && !nick_identified(user))
 	return 0;
@@ -1425,6 +1488,10 @@ void restore_topic(const char *chan)
 #ifdef IRC_CLASSIC
     send_cmd(MODE_SENDER(s_ChanServ), "TOPIC %s %s :%s", chan,
 		c->topic_setter, c->topic ? c->topic : "");
+
+#elif defined IRC_UNDERNET_NEW
+    send_cmd(MODE_SENDER(s_ChanServ), "TOPIC %s :%s", chan,
+                c->topic ? c->topic : "");                   
 #else
     send_cmd(MODE_SENDER(s_ChanServ), "TOPIC %s %s %lu :%s", chan,
 		c->topic_setter, c->topic_time, c->topic ? c->topic : "");
@@ -1454,6 +1521,9 @@ int check_topiclock(const char *chan)
 #ifdef IRC_CLASSIC
     send_cmd(MODE_SENDER(s_ChanServ), "TOPIC %s %s :%s", chan,
 		c->topic_setter, c->topic ? c->topic : "");
+#elif defined IRC_UNDERNET_NEW
+    send_cmd(MODE_SENDER(s_ChanServ), "TOPIC %s :%s", chan,
+                c->topic ? c->topic : "");                    
 #else
     send_cmd(MODE_SENDER(s_ChanServ), "TOPIC %s %s %lu :%s", chan,
 		c->topic_setter, c->topic_time, c->topic ? c->topic : "");
@@ -1468,7 +1538,9 @@ int check_topiclock(const char *chan)
 void expire_chans()
 {
     ChannelInfo *ci, *next;
+#ifdef IRC_DAL4_4_15
     Channel *c;
+#endif    
     int i;
     time_t now = time(NULL);
 
@@ -1479,7 +1551,7 @@ void expire_chans()
 	for (ci = chanlists[i]; ci; ci = next) {
 	    next = ci->next;
 	    if (now - ci->last_used >= CSExpire
-			&& !(ci->flags & (CI_VERBOTEN | CI_NO_EXPIRE))) {
+			&& !(ci->flags & (CI_VERBOTEN | CI_NO_EXPIRE | CI_SUSPEND))) {
 		log("Expiring channel %s", ci->name);
 #ifdef IRC_DAL4_4_15
 		if ((c = findchan(ci->name))) {
@@ -1487,6 +1559,7 @@ void expire_chans()
 		    send_cmd(s_ChanServ, "MODE %s -r", ci->name);
 		}
 #endif
+                canalopers(s_ChanServ, "Expirando el canal 12%s", ci->name);
 		delchan(ci);
 	    }
 	}
@@ -1511,11 +1584,15 @@ void cs_remove_nick(const NickInfo *ni)
 		if (ci->successor) {
 		    NickInfo *ni2 = ci->successor;
 		    if (ni2->channelcount >= ni2->channelmax) {
+		        canalopers(s_ChanServ, "Borrando canal 12%s, sucesor 12%s"
+		         " tiene demasiados canales", ci->name, ni2->nick);
 			log("%s: Successor (%s) of %s owns too many channels, "
 			    "deleting channel",
 			    s_ChanServ, ni2->nick, ci->name);
 			delchan(ci);
 		    } else {
+		        canalopers(s_ChanServ, "Transferiendo el founder de 12%s,"
+		        " del nick borrado  12%s al sucesor 12%s", ci->name, ni->nick, ni2->nick);
 			log("%s: Transferring foundership of %s from deleted "
 			    "nick %s to successor %s",
 			    s_ChanServ, ci->name, ni->nick, ni2->nick);
@@ -1525,6 +1602,8 @@ void cs_remove_nick(const NickInfo *ni)
 			    ni2->channelcount++;
 		    }
 		} else {
+                    canalopers(s_ChanServ, "Borrando canal 12%s propiedad del"
+                     " nick 12%s", ci->name, ni->nick);
 		    log("%s: Deleting channel %s owned by deleted nick %s",
 				s_ChanServ, ci->name, ni->nick);
 		    delchan(ci);
@@ -1580,7 +1659,7 @@ int check_access(User *user, ChannelInfo *ci, int what)
     int level = get_access(user, ci);
     int limit = ci->levels[what];
 
-    if (level == ACCESS_FOUNDER)
+    if (level == ACCESS_FOUNDER || is_services_oper(user))
 	return (what==CA_AUTODEOP || what==CA_NOJOIN) ? 0 : 1;
     /* Hacks to make flags work */
     if (what == CA_AUTODEOP && (ci->flags & CI_SECUREOPS) && level == 0)
@@ -1592,6 +1671,74 @@ int check_access(User *user, ChannelInfo *ci, int what)
     else
 	return level >= ci->levels[what];
 }
+/*************************************************************************/
+
+ /* Sacar informacion para el info del nick en NiCK, de los registros,
+  * akicks, founders de canales y identificados como founder
+  *
+  * Zoltan Julio 2000
+  */
+
+void registros(User *u, NickInfo *ni)
+{
+
+    ChannelInfo *ci;
+    int i, y, z;
+    int passfounder = 0;
+    int cfounder = 0;
+    int cregistros = 0;
+    int cakicks = 0;
+                    
+    ChanAccess *access;
+    AutoKick *akick;
+        
+        
+    for (i = 0; i < 256; i++) {
+        for (ci = chanlists[i]; ci; ci = ci->next) {
+                  
+/* Buscar canales que el usuario esta identificado como founder y no es founder */
+
+/*           if (is_founder(ni, ci) {
+               privmsg(s_NickServ, u->nick, "   %-20s Identificado como 12FOUNDER", ci->name);
+               passfounder++;           
+           } */
+/* Buscar Founders de canales */
+           if (ni == ci->founder) {
+               privmsg(s_NickServ, u->nick, "   %-20s 12FOUNDER", ci->name);
+               cfounder++;
+           }
+
+/* Buscar registros en canales */
+           for (access = ci->access, y = 0; y < ci->accesscount; access++, y++) {
+              if (access->ni->nick == ni->nick) {
+                    privmsg(s_NickServ, u->nick, "   %-20s LEVEL 12%d" ,
+                    ci->name, access->level);
+                    cregistros++;
+               }
+           }
+                                                                                                             
+/* Buscar Akicks en canales */
+           for (akick = ci->akick, z = 0; z < ci->akickcount; akick++, z++) {
+              if (akick->u.ni->nick == ni->nick) {
+                     privmsg(s_NickServ, u->nick, "   %-20s 12AKICK", ci->name);
+                     cakicks++;
+              }
+                               
+           }
+        }
+    }
+    if (cfounder)
+        privmsg(s_NickServ, u->nick, "   Total de FOUNDERS: 12%d", cfounder);
+    if (passfounder)
+        privmsg(s_NickServ, u->nick, "Total identificados como founder: 12%d", passfounder);
+    if (cregistros)
+        privmsg(s_NickServ, u->nick, "   Total de registros: 12%d", cregistros);
+    if (cakicks)
+        privmsg(s_NickServ, u->nick, "   Total de akicks: 12%d", cakicks);
+                                          
+}
+                                                                                                
+
 
 /*************************************************************************/
 /*********************** ChanServ private routines ***********************/
@@ -1810,7 +1957,7 @@ static void do_register(User *u)
     char founderpass[PASSMAX+1];
 #endif
 
-    if (readonly) {
+    if (readonly || !is_services_oper(u)) {
 	notice_lang(s_ChanServ, u, CHAN_REGISTER_DISABLED);
 	return;
     }
@@ -1896,6 +2043,7 @@ static void do_register(User *u)
 		ni->channelcount++;
 	    ni = ni->link;
 	}
+	canalopers(s_ChanServ, "Canal 12%s registrado por 12%s", chan, u->nick);
 	log("%s: Channel %s registered by %s!%s@%s", s_ChanServ, chan,
 		u->nick, u->username, u->host);
 	notice_lang(s_ChanServ, u, CHAN_REGISTERED, chan, u->nick);
@@ -1930,6 +2078,8 @@ static void do_identify(User *u)
 	notice_lang(s_ChanServ, u, CHAN_X_NOT_REGISTERED, chan);
     } else if (ci->flags & CI_VERBOTEN) {
 	notice_lang(s_ChanServ, u, CHAN_X_FORBIDDEN, chan);
+    } else if (ci->flags & CI_SUSPEND) {
+        notice_lang(s_ChanServ, u, CHAN_X_SUSPENDED, chan);            
     } else {
 	int res;
 
@@ -1945,6 +2095,8 @@ static void do_identify(User *u)
 		log("%s: %s!%s@%s identified for %s", s_ChanServ,
 			u->nick, u->username, u->host, ci->name);
 	    }
+            notice(s_ChanServ, chan, "4ATENCION!!! %s se identifica como "
+                              "FUNDADOR del canal.", u->nick);                              
 	    notice_lang(s_ChanServ, u, CHAN_IDENTIFY_SUCCEEDED, chan);
 	} else if (res < 0) {
 	    log("%s: check_password failed for %s", s_ChanServ, ci->name);
@@ -1952,6 +2104,8 @@ static void do_identify(User *u)
 	} else {
 	    log("%s: Failed IDENTIFY for %s by %s!%s@%s",
 			s_ChanServ, ci->name, u->nick, u->username, u->host);
+            notice(s_ChanServ, chan, "4ATENCION!!! Autentificación con clave "
+                             "incorrecta de %s.", u->nick);                              
 	    notice_lang(s_ChanServ, u, PASSWORD_INCORRECT);
 	    bad_password(u);
 	}
@@ -1966,10 +2120,12 @@ static void do_drop(User *u)
     char *chan = strtok(NULL, " ");
     ChannelInfo *ci;
     NickInfo *ni;
+#ifdef  IRC_DAL4_4_15
     Channel *c;
-    int is_servadmin = is_services_admin(u);
+#endif
+    int is_servoper = is_services_oper(u);
 
-    if (readonly && !is_servadmin) {
+    if (readonly && !is_servoper) {
 	notice_lang(s_ChanServ, u, CHAN_DROP_DISABLED);
 	return;
     }
@@ -1978,9 +2134,11 @@ static void do_drop(User *u)
 	syntax_error(s_ChanServ, u, "DROP", CHAN_DROP_SYNTAX);
     } else if (!(ci = cs_findchan(chan))) {
 	notice_lang(s_ChanServ, u, CHAN_X_NOT_REGISTERED, chan);
-    } else if (!is_servadmin & (ci->flags & CI_VERBOTEN)) {
+    } else if (!is_servoper & (ci->flags & CI_VERBOTEN)) {
 	notice_lang(s_ChanServ, u, CHAN_X_FORBIDDEN, chan);
-    } else if (!is_servadmin && !is_identified(u, ci)) {
+    } else if (!is_servoper & (ci->flags & CI_SUSPEND)) {
+        notice_lang(s_ChanServ, u, CHAN_X_SUSPENDED, chan);            
+    } else if (!is_servoper && !is_identified(u, ci)) {
 	notice_lang(s_ChanServ, u, CHAN_IDENTIFY_REQUIRED, s_ChanServ, chan);
     } else {
 	if (readonly)  /* in this case we know they're a Services admin */
@@ -1993,6 +2151,7 @@ static void do_drop(User *u)
 	    if (ni != ci->founder && ni->channelcount > 0)
 		ni->channelcount--;
 	}
+        canalopers(s_ChanServ, "12%s elimino el canal 12%s", u->nick, ci->name);
 	log("%s: Channel %s dropped by %s!%s@%s", s_ChanServ, ci->name,
 			u->nick, u->username, u->host);
 	delchan(ci);
@@ -2022,7 +2181,7 @@ static void do_set(User *u)
     char *cmd  = strtok(NULL, " ");
     char *param;
     ChannelInfo *ci;
-    int is_servadmin = is_services_admin(u);
+    int is_servoper = is_services_admin(u);
 
     if (readonly) {
 	notice_lang(s_ChanServ, u, CHAN_SET_DISABLED);
@@ -2048,22 +2207,24 @@ static void do_set(User *u)
 	notice_lang(s_ChanServ, u, CHAN_X_NOT_REGISTERED, chan);
     } else if (ci->flags & CI_VERBOTEN) {
 	notice_lang(s_ChanServ, u, CHAN_X_FORBIDDEN, chan);
-    } else if (!is_servadmin && !check_access(u, ci, CA_SET)) {
+    } else if (ci->flags & CI_SUSPEND) {
+        notice_lang(s_ChanServ, u, CHAN_X_SUSPENDED, chan);            
+    } else if (!is_servoper && !check_access(u, ci, CA_SET)) {
 	notice_lang(s_ChanServ, u, ACCESS_DENIED);
     } else if (stricmp(cmd, "FOUNDER") == 0) {
-	if (!is_servadmin && get_access(u, ci) < ACCESS_FOUNDER) {
-	    notice_lang(s_ChanServ, u, CHAN_IDENTIFY_REQUIRED, s_ChanServ,chan);
+	if (!is_servoper && get_access(u, ci) < ACCESS_FOUNDER) {
+	    notice_lang(s_ChanServ, u, CHAN_IDENTIFY_REQUIRED, s_ChanServ, chan);
 	} else {
 	    do_set_founder(u, ci, param);
 	}
     } else if (stricmp(cmd, "SUCCESSOR") == 0) {
-	if (!is_servadmin && get_access(u, ci) < ACCESS_FOUNDER) {
+	if (!is_servoper && get_access(u, ci) < ACCESS_FOUNDER) {
 	    notice_lang(s_ChanServ, u, CHAN_IDENTIFY_REQUIRED, s_ChanServ,chan);
 	} else {
 	    do_set_successor(u, ci, param);
 	}
     } else if (stricmp(cmd, "PASSWORD") == 0) {
-	if (!is_servadmin && get_access(u, ci) < ACCESS_FOUNDER) {
+	if (!is_servoper && get_access(u, ci) < ACCESS_FOUNDER) {
 	    notice_lang(s_ChanServ, u, CHAN_IDENTIFY_REQUIRED, s_ChanServ,chan);
 	} else {
 	    do_set_password(u, ci, param);
@@ -2086,6 +2247,8 @@ static void do_set(User *u)
 	do_set_topiclock(u, ci, param);
     } else if (stricmp(cmd, "PRIVATE") == 0) {
 	do_set_private(u, ci, param);
+    } else if (stricmp(cmd, "SECUREVOICES") == 0) {
+        do_set_securevoices(u, ci, param);            
     } else if (stricmp(cmd, "SECUREOPS") == 0) {
 	do_set_secureops(u, ci, param);
     } else if (stricmp(cmd, "LEAVEOPS") == 0) {
@@ -2094,8 +2257,14 @@ static void do_set(User *u)
 	do_set_restricted(u, ci, param);
     } else if (stricmp(cmd, "SECURE") == 0) {
 	do_set_secure(u, ci, param);
-    } else if (stricmp(cmd, "OPNOTICE") == 0) {
+    } else if (stricmp(cmd, "ISSUED") == 0) {
 	do_set_opnotice(u, ci, param);
+    } else if (stricmp(cmd, "DEBUG") == 0) {
+        do_set_opnotice(u, ci, param);
+    } else if (stricmp(cmd, "OPNOTICE") == 0) {
+        do_set_opnotice(u, ci, param);
+    } else if (stricmp(cmd, "STAY") == 0) {
+        do_set_stay(u, ci, param);                                      
     } else if (stricmp(cmd, "NOEXPIRE") == 0) {
 	do_set_noexpire(u, ci, param);
     } else {
@@ -2184,6 +2353,8 @@ static void do_set_password(User *u, ChannelInfo *ci, char *param)
 		ci->name, ci->founderpass);
 #endif /* USE_ENCRYPTION */
     if (get_access(u, ci) < ACCESS_FOUNDER) {
+        canalopers(s_ChanServ, "12%s ha usado SET PASSWORD en el canal 12%s",
+                  u->nick, ci->name);
 	log("%s: %s!%s@%s set password as Services admin for %s",
 		s_ChanServ, u->nick, u->username, u->host, ci->name);
 	if (WallSetpass)
@@ -2278,6 +2449,9 @@ static void do_set_topic(User *u, ChannelInfo *ci, char *param)
 #ifdef IRC_CLASSIC
     send_cmd(MODE_SENDER(s_ChanServ), "TOPIC %s %s :%s",
 		ci->name, u->nick, param);
+#elif defined IRC_UNDERNET
+    send_cmd(MODE_SENDER(s_ChanServ), "TOPIC %s :%s",
+                    ci->name, param);                    
 #else
     send_cmd(MODE_SENDER(s_ChanServ), "TOPIC %s %s %lu :%s",
 		ci->name, u->nick, c->topic_time, param);
@@ -2512,6 +2686,22 @@ static void do_set_private(User *u, ChannelInfo *ci, char *param)
 
 /*************************************************************************/
 
+static void do_set_securevoices(User *u, ChannelInfo *ci, char *param)
+{
+    if (stricmp(param, "ON") == 0) {
+        ci->flags |= CI_SECUREVOICES;
+        notice_lang(s_ChanServ, u, CHAN_SET_SECUREOPS_ON);
+        ci->flags &= ~CI_SUSPEND;
+    } else if (stricmp(param, "OFF") == 0) {
+        ci->flags &= ~CI_SECUREVOICES;
+        notice_lang(s_ChanServ, u, CHAN_SET_SECUREOPS_OFF);
+    } else {
+        syntax_error(s_ChanServ, u, "SET SECUREVOICES", CHAN_SET_SECUREOPS_SYNTAX);
+    }
+}                                                       
+
+/*************************************************************************/
+
 static void do_set_secureops(User *u, ChannelInfo *ci, char *param)
 {
     if (stricmp(param, "ON") == 0) {
@@ -2585,10 +2775,28 @@ static void do_set_opnotice(User *u, ChannelInfo *ci, char *param)
 	ci->flags &= ~CI_OPNOTICE;
 	notice_lang(s_ChanServ, u, CHAN_SET_OPNOTICE_OFF);
     } else {
-	syntax_error(s_ChanServ, u, "SET OPNOTICE", CHAN_SET_OPNOTICE_SYNTAX);
+	syntax_error(s_ChanServ, u, "SET ISSUED", CHAN_SET_OPNOTICE_SYNTAX);
     }
 }
+/*************************************************************************/
 
+static void do_set_stay(User *u, ChannelInfo *ci, char *param)
+{
+    if (stricmp(param, "ON") == 0) {
+        ci->flags |= CI_STAY;
+        send_cmd(s_ChanServ, "JOIN %s ", ci->name);
+        send_cmd(MODE_SENDER(s_ChanServ), "MODE %s +o %s", ci->name, s_ChanServ);
+        notice_lang(s_ChanServ, u, CHAN_SET_STAY_ON);
+        ci->flags &= ~CI_SUSPEND;
+    } else if (stricmp(param, "OFF") == 0) {
+        ci->flags &= ~CI_STAY;
+        send_cmd(s_ChanServ, "PART %s", ci->name);
+        notice_lang(s_ChanServ, u, CHAN_SET_STAY_OFF);
+    } else {
+        syntax_error(s_ChanServ, u, "SET STAY", CHAN_SET_STAY_SYNTAX);
+    }
+}                                                    
+                                            
 /*************************************************************************/
 
 static void do_set_noexpire(User *u, ChannelInfo *ci, char *param)
@@ -2695,9 +2903,14 @@ static void do_access(User *u)
 	notice_lang(s_ChanServ, u, CHAN_X_NOT_REGISTERED, chan);
     } else if (ci->flags & CI_VERBOTEN) {
 	notice_lang(s_ChanServ, u, CHAN_X_FORBIDDEN, chan);
-    } else if (((is_list && !check_access(u, ci, CA_ACCESS_LIST))
+    } else if (ci->flags & CI_SUSPEND) {
+        notice_lang(s_ChanServ, u, CHAN_X_SUSPENDED, chan);
+/*    } else if (((is_list && !check_access(u, ci, CA_ACCESS_LIST))
                 || (!is_list && !check_access(u, ci, CA_ACCESS_CHANGE)))
-               && !is_services_admin(u))
+               && !is_services_admin(u)) */
+    } else if (((is_list && !check_access(u, ci, CA_ACCESS_LIST))
+                    || (!is_list && !check_access(u, ci, CA_ACCESS_CHANGE))))
+                
     {
 	notice_lang(s_ChanServ, u, ACCESS_DENIED);
 
@@ -2742,7 +2955,11 @@ static void do_access(User *u)
 		access->level = level;
 		notice_lang(s_ChanServ, u, CHAN_ACCESS_LEVEL_CHANGED,
 			access->ni->nick, chan, level);
-		return;
+                if (ci->flags & CI_OPNOTICE) {
+                    notice(s_ChanServ, chan, "%s cambia en %s nivel de %s a %d.",
+                                  u->nick, chan, access->ni->nick, level);
+                }                                                           
+                return;
 	    }
 	}
 	for (i = 0; i < ci->accesscount; i++) {
@@ -2766,7 +2983,11 @@ static void do_access(User *u)
 	access->level = level;
 	notice_lang(s_ChanServ, u, CHAN_ACCESS_ADDED,
 		access->ni->nick, chan, level);
-
+       if (ci->flags & CI_OPNOTICE) {
+           notice(s_ChanServ, chan, "%s registra en %s a %s con nivel %d.",
+                      u->nick, chan, access->ni->nick, level);
+       }
+                                                     
     } else if (stricmp(cmd, "DEL") == 0) {
 
 	if (readonly) {
@@ -2814,6 +3035,10 @@ static void do_access(User *u)
 	    } else {
 		notice_lang(s_ChanServ, u, CHAN_ACCESS_DELETED,
 				access->ni->nick, ci->name);
+                if (ci->flags & CI_OPNOTICE) {
+                    notice(s_ChanServ, chan, "%s borra de %s a %s.",
+                    u->nick, chan, access->ni->nick);
+                }                                                                   
 		access->ni = NULL;
 		access->in_use = 0;
 	    }
@@ -2932,7 +3157,9 @@ static void do_akick(User *u)
 	notice_lang(s_ChanServ, u, CHAN_X_NOT_REGISTERED, chan);
     } else if (ci->flags & CI_VERBOTEN) {
 	notice_lang(s_ChanServ, u, CHAN_X_FORBIDDEN, chan);
-    } else if (!check_access(u, ci, CA_AKICK) && !is_services_admin(u)) {
+   } else if (ci->flags & CI_SUSPEND) {
+        notice_lang(s_ChanServ, u, CHAN_X_SUSPENDED, chan);          
+    } else if (!check_access(u, ci, CA_AKICK) && !is_services_oper(u)) {
 	if (ci->founder && getlink(ci->founder) == u->ni)
 	    notice_lang(s_ChanServ, u, CHAN_IDENTIFY_REQUIRED, s_ChanServ,chan);
 	else
@@ -2991,11 +3218,18 @@ static void do_akick(User *u)
 	    akick->is_nick = 0;
 	    akick->u.mask = mask;
 	}
-	if (reason)
+	if (reason) {
+            char buf[BUFSIZE];
+            snprintf(buf, sizeof(buf), "(%s) -> %s", u->nick, reason);                             
 	    akick->reason = sstrdup(reason);
-	else
-	    akick->reason = NULL;
-	notice_lang(s_ChanServ, u, CHAN_AKICK_ADDED, mask, chan);
+	} else {
+            char buf[BUFSIZE];
+            snprintf(buf, sizeof(buf), "(%s) -> %s", u->nick, CSAutokickReason);
+            akick->reason = sstrdup(buf);
+        }                            		 
+ /**       if (!nick_is_server_oper(mask))
+            send_cmd(MODE_SENDER(s_ChanServ), "KICK %s %s :%s", chan, mask, akick->reason);
+**/	notice_lang(s_ChanServ, u, CHAN_AKICK_ADDED, mask, chan);
 
     } else if (stricmp(cmd, "DEL") == 0) {
 
@@ -3135,7 +3369,9 @@ static void do_levels(User *u)
 	notice_lang(s_ChanServ, u, CHAN_X_NOT_REGISTERED, chan);
     } else if (ci->flags & CI_VERBOTEN) {
 	notice_lang(s_ChanServ, u, CHAN_X_FORBIDDEN, chan);
-    } else if (!is_founder(u, ci) && !is_services_admin(u)) {
+    } else if (ci->flags & CI_SUSPEND) {
+            notice_lang(s_ChanServ, u, CHAN_X_SUSPENDED, chan);            	
+    } else if (!is_founder(u, ci) && !is_services_oper(u)) {
 	notice_lang(s_ChanServ, u, ACCESS_DENIED);
 
     } else if (stricmp(cmd, "SET") == 0) {
@@ -3181,7 +3417,7 @@ static void do_levels(User *u)
 	    if (j == ACCESS_INVALID) {
 		j = levelinfo[i].what;
 		if (j == CA_AUTOOP || j == CA_AUTODEOP
-				|| j == CA_AUTOVOICE || j == CA_NOJOIN)
+		|| j == CA_AUTOVOICE || j == CA_AUTODEVOICE || j == CA_NOJOIN)
 		{
 		    notice_lang(s_ChanServ, u, CHAN_LEVELS_LIST_DISABLED,
 				levelinfo_maxwidth, levelinfo[i].name);
@@ -3222,7 +3458,7 @@ static void do_info(User *u)
     struct tm *tm;
     int need_comma = 0;
     const char *commastr = getstring(u->ni, COMMA_SPACE);
-    int is_servadmin = is_services_admin(u);
+    int is_servoper = is_services_oper(u);
     int show_all = 0;
 
     if (!chan) {
@@ -3239,12 +3475,17 @@ static void do_info(User *u)
 
         /* Should we show all fields? Only for sadmins and identified users */
         if (param && stricmp(param, "ALL") == 0 && 
-	    				(is_identified(u, ci) || is_servadmin))
+	    				(is_identified(u, ci) || is_servoper))
             show_all = 1;
 
         notice_lang(s_ChanServ, u, CHAN_INFO_HEADER, chan);
+        if (ci->flags & CI_SUSPEND) {
+            notice_lang(s_ChanServ, u, CHAN_INFO_SUSPENDED);
+        } else {
+            notice_lang(s_ChanServ, u, CHAN_INFO_ACTIVED);
+        }                                                 
         ni = ci->founder;
-        if (ni->last_usermask && (is_servadmin || !(ni->flags & NI_HIDE_MASK)))
+        if (ni->last_usermask && (is_servoper || !(ni->flags & NI_HIDE_MASK)))
         {
             notice_lang(s_ChanServ, u, CHAN_INFO_FOUNDER, ni->nick,
                         ni->last_usermask);
@@ -3255,7 +3496,7 @@ static void do_info(User *u)
 	if (show_all) {
 	    ni = ci->successor;
 	    if (ni) {
-		if (ni->last_usermask && (is_servadmin ||
+		if (ni->last_usermask && (is_servoper ||
 				!(ni->flags & NI_HIDE_MASK))) {
 		    notice_lang(s_ChanServ, u, CHAN_INFO_SUCCESSOR, ni->nick, 
 				ni->last_usermask);
@@ -3304,7 +3545,13 @@ static void do_info(User *u)
 			getstring(u->ni, CHAN_INFO_OPT_TOPICLOCK));
 	    need_comma = 1;
 	}
-	if (ci->flags & CI_SECUREOPS) {
+/**        if (ci->flags & CI_SECUREVOICES) {
+            end += snprintf(end, sizeof(buf)-(end-buf), "%s%s",
+                        need_comma ? commastr : "",
+                        getstring(u->ni, "Secure Voices"));
+            need_comma = 1;
+        }                                                                                        
+*/	if (ci->flags & CI_SECUREOPS) {
 	    end += snprintf(end, sizeof(buf)-(end-buf), "%s%s",
 			need_comma ? commastr : "",
 			getstring(u->ni, CHAN_INFO_OPT_SECUREOPS));
@@ -3378,7 +3625,7 @@ static void do_list(User *u)
     ChannelInfo *ci;
     int nchans, i;
     char buf[BUFSIZE];
-    int is_servadmin = is_services_admin(u);
+    int is_servoper = is_services_oper(u);
 
     if (CSListOpersOnly && (!u || !(u->mode & UMODE_O))) {
 	notice_lang(s_ChanServ, u, PERMISSION_DENIED);
@@ -3392,7 +3639,7 @@ static void do_list(User *u)
 	notice_lang(s_ChanServ, u, CHAN_LIST_HEADER, pattern);
 	for (i = 0; i < 256; i++) {
 	    for (ci = chanlists[i]; ci; ci = ci->next) {
-		if (!is_servadmin & (ci->flags & CI_VERBOTEN))
+		if (!is_servoper & (ci->flags & CI_VERBOTEN))
 		    continue;
 		snprintf(buf, sizeof(buf), "%-20s  %s", ci->name,
 						ci->desc ? ci->desc : "");
@@ -3400,9 +3647,9 @@ static void do_list(User *u)
 					match_wild_nocase(pattern, buf)) {
 		    if (++nchans <= CSListMax) {
 			char noexpire_char = ' ';
-			if (is_servadmin && (ci->flags & CI_NO_EXPIRE))
+			if (is_servoper && (ci->flags & CI_NO_EXPIRE))
 			    noexpire_char = '!';
-			notice(s_ChanServ, u->nick, "  %c%s",
+			privmsg(s_ChanServ, u->nick, "  %c%s",
 						noexpire_char, buf);
 		    }
 		}
@@ -3424,18 +3671,109 @@ static void do_invite(User *u)
 
     if (!chan) {
 	syntax_error(s_ChanServ, u, "INVITE", CHAN_INVITE_SYNTAX);
-    } else if (!(c = findchan(chan))) {
+    } else if (!(c = findchan(chan)) && !is_services_oper(u)) {
 	notice_lang(s_ChanServ, u, CHAN_X_NOT_IN_USE, chan);
     } else if (!(ci = c->ci)) {
 	notice_lang(s_ChanServ, u, CHAN_X_NOT_REGISTERED, chan);
     } else if (ci->flags & CI_VERBOTEN) {
 	notice_lang(s_ChanServ, u, CHAN_X_FORBIDDEN, chan);
-    } else if (!u || !check_access(u, ci, CA_INVITE)) {
+    } else if (ci->flags & CI_SUSPEND) {
+        notice_lang(s_ChanServ, u, CHAN_X_SUSPENDED, chan);             	
+    } else if (!u || !check_access(u, ci, CA_INVITE)  && !is_services_oper(u)) {
 	notice_lang(s_ChanServ, u, PERMISSION_DENIED);
     } else {
+        if (ci->flags & CI_OPNOTICE) {
+            notice(s_ChanServ, chan, "%s se invita al canal.", u->nick);
+        }
+                           
 	send_cmd(s_ChanServ, "INVITE %s %s", u->nick, chan);
     }
 }
+
+/*************************************************************************/
+ 
+static void do_voice(User *u)
+{
+    char *chan = strtok(NULL, " ");
+    char *voice_params = strtok(NULL, " ");
+    Channel *c;
+    ChannelInfo *ci;
+               
+    if (!chan || !voice_params) {
+        syntax_error(s_ChanServ, u, "VOICE", CHAN_OP_SYNTAX);
+    } else if (!(c = findchan(chan))) {
+        notice_lang(s_ChanServ, u, CHAN_X_NOT_IN_USE, chan);
+    } else if (!(ci = c->ci) && is_services_oper(u)) {
+        send_cmd(s_ChanServ, "MODE %s +v %s", chan, voice_params);
+    } else if (!(ci = c->ci)) {
+        notice_lang(s_ChanServ, u, CHAN_X_NOT_REGISTERED, chan);
+    } else if (ci->flags & CI_VERBOTEN) {
+        notice_lang(s_ChanServ, u, CHAN_X_FORBIDDEN, chan);
+    } else if (ci->flags & CI_SUSPEND) {
+        notice_lang(s_ChanServ, u, CHAN_X_SUSPENDED, chan);
+    } else if (!u || !check_access(u, ci, CA_VOICEDEVOICE) && 
+            !is_services_oper(u)) {
+        notice_lang(s_ChanServ, u, PERMISSION_DENIED);
+    } else {
+        char *av[3];
+        send_cmd(MODE_SENDER(s_ChanServ), "MODE %s +v %s", chan, voice_params);
+        av[0] = chan;
+        av[1] = sstrdup("+v");
+        av[2] = voice_params;
+        do_cmode(s_ChanServ, 3, av);
+        free(av[1]);
+        if (ci->flags & CI_OPNOTICE) {
+            char buf[NICKMAX*2+32];
+            snprintf(buf, sizeof(buf), "%s hace VOICE a %s.",
+                         u->nick, voice_params);
+            notice(s_ChanServ, chan, buf);
+        }
+    }
+                                     
+}
+                                                                                                                                                       
+/*************************************************************************/
+
+static void do_devoice(User *u)
+{
+    char *chan = strtok(NULL, " ");
+    char *devoice_params = strtok(NULL, " ");
+    Channel *c;
+    ChannelInfo *ci;
+ 
+    if (!chan || !devoice_params) {
+        syntax_error(s_ChanServ, u, "DEVOICE", CHAN_DEOP_SYNTAX);
+    } else if (!(c = findchan(chan))) {
+        notice_lang(s_ChanServ, u, CHAN_X_NOT_IN_USE, chan);
+    } else if (!(ci = c->ci) && is_services_oper(u)) {
+        send_cmd(s_ChanServ, "MODE %s +v %s", chan, devoice_params); 
+    } else if (!(ci = c->ci)) {
+        notice_lang(s_ChanServ, u, CHAN_X_NOT_REGISTERED, chan);
+    } else if (ci->flags & CI_VERBOTEN) {
+        notice_lang(s_ChanServ, u, CHAN_X_FORBIDDEN, chan);
+    } else if (ci->flags & CI_SUSPEND) {
+        notice_lang(s_ChanServ, u, CHAN_X_SUSPENDED, chan);
+    } else if (!u || !check_access(u, ci, CA_VOICEDEVOICE) && 
+              !is_services_oper(u)) {
+        notice_lang(s_ChanServ, u, PERMISSION_DENIED);
+    } else {
+        char *av[3];
+        send_cmd(s_ChanServ, "MODE %s -v %s", chan, devoice_params);
+        av[0] = chan;
+        av[1] = sstrdup("-v");
+        av[2] = devoice_params;
+        do_cmode(s_ChanServ, 3, av);
+        free(av[1]);
+        if (ci->flags & CI_OPNOTICE) {
+            char buf[NICKMAX*2+32];
+            snprintf(buf, sizeof(buf), "%s hace DEVOICE a %s.",
+                          u->nick, devoice_params);
+            notice(s_ChanServ, chan, buf);
+        }                                                                                
+    }
+    
+}
+                                                                                                      
 
 /*************************************************************************/
 
@@ -3450,11 +3788,15 @@ static void do_op(User *u)
 	syntax_error(s_ChanServ, u, "OP", CHAN_OP_SYNTAX);
     } else if (!(c = findchan(chan))) {
 	notice_lang(s_ChanServ, u, CHAN_X_NOT_IN_USE, chan);
-    } else if (!(ci = c->ci)) {
+    } else if (!(ci = c->ci) && is_services_oper(u)) {
+        send_cmd(MODE_SENDER(s_ChanServ), "MODE %s +o %s", chan, op_params);             
+    } else if (!(ci = c->ci)) {            
 	notice_lang(s_ChanServ, u, CHAN_X_NOT_REGISTERED, chan);
     } else if (ci->flags & CI_VERBOTEN) {
 	notice_lang(s_ChanServ, u, CHAN_X_FORBIDDEN, chan);
-    } else if (!u || !check_access(u, ci, CA_OPDEOP)) {
+    } else if (ci->flags & CI_SUSPEND) {
+        notice_lang(s_ChanServ, u, CHAN_X_SUSPENDED, chan);            	
+    } else if (!u || !check_access(u, ci, CA_OPDEOP) && !is_services_oper(u)) {
 	notice_lang(s_ChanServ, u, PERMISSION_DENIED);
     } else {
 	char *av[3];
@@ -3466,9 +3808,9 @@ static void do_op(User *u)
 	free(av[1]);
 	if (ci->flags & CI_OPNOTICE) {
 	    char buf[NICKMAX*2+32];
-	    snprintf(buf, sizeof(buf), "OP command used for %s by %s",
-			op_params, u->nick);
-	    notice(s_ChanServ, chan, buf);
+            snprintf(buf, sizeof(buf), "%s hace OP a %s.",
+                        u->nick, op_params);
+            notice(s_ChanServ, chan, buf);
 	}
     }
 }
@@ -3486,11 +3828,15 @@ static void do_deop(User *u)
 	syntax_error(s_ChanServ, u, "DEOP", CHAN_DEOP_SYNTAX);
     } else if (!(c = findchan(chan))) {
 	notice_lang(s_ChanServ, u, CHAN_X_NOT_IN_USE, chan);
+    } else if (!(ci = c->ci) && is_services_oper(u)) {
+        send_cmd(MODE_SENDER(s_ChanServ), "MODE %s -o %s", chan, deop_params);             
     } else if (!(ci = c->ci)) {
 	notice_lang(s_ChanServ, u, CHAN_X_NOT_REGISTERED, chan);
     } else if (ci->flags & CI_VERBOTEN) {
 	notice_lang(s_ChanServ, u, CHAN_X_FORBIDDEN, chan);
-    } else if (!u || !check_access(u, ci, CA_OPDEOP)) {
+    } else if (ci->flags & CI_SUSPEND) {
+        notice_lang(s_ChanServ, u, CHAN_X_SUSPENDED, chan);             	
+    } else if (!u || !check_access(u, ci, CA_OPDEOP) && !is_services_oper(u)) {
 	notice_lang(s_ChanServ, u, PERMISSION_DENIED);
     } else {
 	char *av[3];
@@ -3502,13 +3848,98 @@ static void do_deop(User *u)
 	free(av[1]);
 	if (ci->flags & CI_OPNOTICE) {
 	    char buf[NICKMAX*2+32];
-	    snprintf(buf, sizeof(buf), "DEOP command used for %s by %s",
-			deop_params, u->nick);
+	    snprintf(buf, sizeof(buf), "%s hace DEOP a %s.",
+                        u->nick, deop_params);
 	    notice(s_ChanServ, chan, buf);
 	}
     }
 }
 
+/*************************************************************************/
+
+static void do_ckick(User *u)
+{
+
+    char *chan = strtok(NULL, " ");
+    char *nick = strtok(NULL, " ");
+    char *reason = strtok(NULL, "");
+            
+    Channel *c;
+    ChannelInfo *ci;
+    char *av[3];
+        
+    if (!nick) {
+        syntax_error(s_ChanServ, u, "KICK", CHAN_KICK_SYNTAX);
+    } else if (!(c = findchan(chan))) {
+        notice_lang(s_ChanServ, u, CHAN_X_NOT_IN_USE, chan);
+    } else if (!(ci = c->ci)) {
+        notice_lang(s_ChanServ, u, CHAN_X_NOT_REGISTERED, chan);
+    } else if (ci->flags & CI_VERBOTEN) {
+        notice_lang(s_ChanServ, u, CHAN_X_FORBIDDEN, chan);
+    } else if (ci->flags & CI_SUSPEND) {
+        notice_lang(s_ChanServ, u, CHAN_X_SUSPENDED, chan);
+    } else if (!u || !check_access(u, ci, CA_KICK) && !is_services_oper(u)) {
+        notice_lang(s_ChanServ, u, PERMISSION_DENIED);
+    } else {
+        char buf[BUFSIZE];
+        if (reason) 
+            snprintf(buf, sizeof(buf), "Kick ordenado -> %s", reason);     
+        else 
+            snprintf(buf, sizeof(buf), "Kick ordenado.");
+
+        send_cmd(MODE_SENDER(s_ChanServ), "KICK %s %s :%s", chan, nick, buf);
+        av[0] = sstrdup(chan);
+        av[1] = sstrdup(nick);
+        av[2] = sstrdup(buf);
+        do_kick(s_ChanServ, 3, av);
+        free(av[1]);
+                                                                                  
+        if (ci->flags & CI_OPNOTICE)
+            notice(s_ChanServ, chan, "%s ha KICKeado a %s", u->nick, nick);
+        }
+                       
+}
+
+/*************************************************************************/
+
+static void do_ban(User *u)
+{
+
+    char *chan = strtok(NULL, " ");
+    char *mask = strtok(NULL, " ");
+        
+    Channel *c;
+    ChannelInfo *ci;
+                                                                                                                                                                                             
+    if (!mask) {
+        syntax_error(s_ChanServ, u, "BAN", CHAN_BAN_SYNTAX);
+    } else if (!(c = findchan(chan))) {
+        notice_lang(s_ChanServ, u, CHAN_X_NOT_IN_USE, chan);
+    } else if (!(ci = c->ci)) {
+        notice_lang(s_ChanServ, u, CHAN_X_NOT_REGISTERED, chan);
+    } else if (ci->flags & CI_VERBOTEN) {
+        notice_lang(s_ChanServ, u, CHAN_X_FORBIDDEN, chan);
+    } else if (ci->flags & CI_SUSPEND) {
+        notice_lang(s_ChanServ, u, CHAN_X_SUSPENDED, chan);
+    } else if (!u || !check_access(u, ci, CA_BAN) && !is_services_oper(u)) {
+        notice_lang(s_ChanServ, u, PERMISSION_DENIED);
+    } else {
+         char *av[3];
+        
+         send_cmd(MODE_SENDER(s_ChanServ), "MODE %s +b  %s %lu", chan, mask, time(NULL));
+
+         av[0] = chan;
+         av[1] = sstrdup("+b");
+         av[2] = mask;
+         do_cmode(s_ChanServ, 3, av);
+         free(av[1]);                                                        
+            
+         if (ci->flags & CI_OPNOTICE)
+             notice(s_ChanServ, chan, "%s ha BANeado en el canal", u->nick);
+         }
+}
+                                               
+                                                           
 /*************************************************************************/
 
 static void do_unban(User *u)
@@ -3527,7 +3958,9 @@ static void do_unban(User *u)
 	notice_lang(s_ChanServ, u, CHAN_X_NOT_REGISTERED, chan);
     } else if (ci->flags & CI_VERBOTEN) {
 	notice_lang(s_ChanServ, u, CHAN_X_FORBIDDEN, chan);
-    } else if (!u || !check_access(u, ci, CA_UNBAN)) {
+    } else if (ci->flags & CI_SUSPEND) {
+        notice_lang(s_ChanServ, u, CHAN_X_SUSPENDED, chan);            
+    } else if (!u || !check_access(u, ci, CA_UNBAN) && !is_services_oper(u)) {    
 	notice_lang(s_ChanServ, u, PERMISSION_DENIED);
     } else {
 	/* Save original ban info */
@@ -3569,7 +4002,9 @@ static void do_clear(User *u)
 	notice_lang(s_ChanServ, u, CHAN_X_NOT_REGISTERED, chan);
     } else if (ci->flags & CI_VERBOTEN) {
 	notice_lang(s_ChanServ, u, CHAN_X_FORBIDDEN, chan);
-    } else if (!u || !check_access(u, ci, CA_CLEAR)) {
+    } else if (ci->flags & CI_SUSPEND) {
+        notice_lang(s_ChanServ, u, CHAN_X_SUSPENDED, chan);            
+    } else if (!u || !check_access(u, ci, CA_CLEAR)  && !is_services_oper(u)) {
 	notice_lang(s_ChanServ, u, PERMISSION_DENIED);
     } else if (stricmp(what, "bans") == 0) {
 	char *av[3];
@@ -3649,7 +4084,7 @@ static void do_clear(User *u)
 	struct c_userlist *cu, *next;
 	char buf[256];
 
-	snprintf(buf, sizeof(buf), "CLEAR USERS command from %s", u->nick);
+	snprintf(buf, sizeof(buf), "%s ha usado 12CLEAR USERS", u->nick);
 
 	for (cu = c->users; cu; cu = next) {
 	    next = cu->next;
@@ -3668,6 +4103,183 @@ static void do_clear(User *u)
 	syntax_error(s_ChanServ, u, "CLEAR", CHAN_CLEAR_SYNTAX);
     }
 }
+
+/*************************************************************************/
+static void do_reset(User *u)
+{
+    char *chan = strtok(NULL, " ");
+    Channel *c;
+    ChannelInfo *ci;
+
+/*
+    char *av[3];
+    struct c_userlist *cu, *next;
+    int count = c->bancount;
+    char **bans = smalloc(sizeof(char *) * count);
+    int i;                    
+  */       
+    if (!chan) {
+        syntax_error(s_ChanServ, u, "RESET", CHAN_CLEAR_SYNTAX);
+    } else if (!(c = findchan(chan))) {
+        notice_lang(s_ChanServ, u, CHAN_X_NOT_IN_USE, chan);
+    } else if (!(ci = c->ci)) {
+        notice_lang(s_ChanServ, u, CHAN_X_NOT_REGISTERED, chan);
+    } else if (ci->flags & CI_VERBOTEN) {
+        notice_lang(s_ChanServ, u, CHAN_X_FORBIDDEN, chan);
+    } else if (ci->flags & CI_SUSPEND) {
+        notice_lang(s_ChanServ, u, CHAN_X_SUSPENDED, chan);
+    } else if (!u || !check_access(u, ci, CA_RESET) && !is_services_oper(u)) {
+        notice_lang(s_ChanServ, u, PERMISSION_DENIED);
+    } else {
+                                                                                                                                                                  
+        char *av[3];
+        int i;
+        struct c_userlist *cu, *next; 
+        int count = c->bancount;
+        char **bans = smalloc(sizeof(char *) * count);
+        
+        
+        if (ci->flags & CI_OPNOTICE) 
+            notice(s_ChanServ, chan, "%s resetea el canal", u->nick);
+        if (ci->flags & CI_STAY) {
+            send_cmd(s_ChanServ, "PART %s ", chan);
+            send_cmd(s_ChanServ, "JOIN %s ", chan);
+            send_cmd(MODE_SENDER(s_ChanServ), "MODE %s +o %s", chan, s_ChanServ);
+        }
+             /*** Clear Bans ***/
+        for (i = 0; i < count; i++)
+             bans[i] = sstrdup(c->bans[i]);
+             for (i = 0; i < count; i++) {
+                  av[0] = sstrdup(chan);
+                  av[1] = sstrdup("-b");
+                  av[2] = bans[i];
+                  send_cmd(MODE_SENDER(s_ChanServ), "MODE %s %s :%s",
+                          av[0], av[1], av[2]);
+                  do_cmode(s_ChanServ, 3, av);
+                  free(av[2]);
+                  free(av[1]);
+                  free(av[0]);
+              }
+        free(bans);
+                                                           
+              /*** Clear Modes ***/
+    
+        av[0] = sstrdup(chan);
+        av[1] = sstrdup("-mintpslkRAS");
+        if (c->key)
+            av[2] = sstrdup(c->key);
+        else
+        av[2] = sstrdup("");
+        send_cmd(MODE_SENDER(s_ChanServ), "MODE %s %s :%s",
+                av[0], av[1], av[2]);
+        do_cmode(s_ChanServ, 3, av);
+        free(av[2]);
+        free(av[1]);
+        free(av[0]);                 
+        check_modes(chan);
+
+           /*** Clear Ops ***/               
+
+        for (cu = c->chanops; cu; cu = next) {
+             next = cu->next;
+             av[0] = sstrdup(chan);
+             av[1] = sstrdup("-o");
+             av[2] = sstrdup(cu->user->nick);
+             send_cmd(MODE_SENDER(s_ChanServ), "MODE %s %s :%s",
+                      av[0], av[1], av[2]);
+             do_cmode(s_ChanServ, 3, av);
+             free(av[2]);
+             free(av[1]);
+             free(av[0]);
+        }  
+                                      
+          /***  Clear Voices ***/                                                          
+                          
+        for (cu = c->voices; cu; cu = next) {
+             next  = cu->next;
+             av[0] = sstrdup(chan);
+             av[1] = sstrdup("-v");
+             av[2] = sstrdup(cu->user->nick);
+             send_cmd(MODE_SENDER(s_ChanServ), "MODE %s %s :%s",
+                       av[0], av[1], av[2]);
+             do_cmode(s_ChanServ, 3, av);
+             free(av[2]);
+             free(av[1]);
+             free(av[0]);
+        }  
+        send_cmd(MODE_SENDER(s_ChanServ), "TOPIC %s :%s", chan, ci->last_topic); 
+
+    }
+}
+
+/*************************************************************************/
+
+static void do_verify(User *u)
+{
+    char *nick = strtok(NULL, " ");
+    NickInfo *ni;
+       
+    if (!nick) {
+        syntax_error(s_ChanServ, u, "VERIFY", CHAN_INFO_SYNTAX);
+        return;
+    }
+    ni = findnick(nick);
+    
+    if (stricmp(nick, s_ChanServ) == 0)
+        privmsg(s_ChanServ, u->nick, "12%s es un BOT autorizado de la RED", s_ChanServ);
+    else if (stricmp(nick, "ChanServ") == 0)
+        privmsg(s_ChanServ, u->nick, "12ChanServ es un BOT de servicio de compatiblidad de 4%s", s_ChanServ);
+    else if (stricmp(nick, "Scytale") == 0)
+        privmsg(s_ChanServ, u->nick, "12Scytale es un BOT de servicio de compatiblidad de 4%s", s_ChanServ);
+    else if (stricmp(nick, "KaOs") == 0)
+        privmsg(s_ChanServ, u->nick, "12KaOs es un BOT de servicio de compatiblidad de 4%s", s_ChanServ);
+    else if (stricmp(nick, s_NickServ) == 0)
+        privmsg(s_ChanServ, u->nick, "12%s es un BOT autorizado de la RED", s_NickServ);
+    else if (stricmp(nick, "NickServ") == 0)
+        privmsg(s_ChanServ, u->nick, "12NickServ es un BOT de servicio de compatiblidad de 4%s", s_NickServ);
+    else if (stricmp(nick, "Service") == 0)
+        privmsg(s_ChanServ, u->nick, "12Service es un BOT de servicio de compatiblidad de 4%s", s_NickServ);
+    else if (stricmp(nick, s_MemoServ) == 0)
+        privmsg(s_ChanServ, u->nick, "12%s es un BOT autorizado de la RED", s_MemoServ);
+    else if (stricmp(nick, "MemoServ") == 0)
+        privmsg(s_ChanServ, u->nick, "12MemoServ es un BOT de servicio de compatiblidad de 4%s", s_MemoServ);
+    else if (stricmp(nick, s_OperServ) == 0)
+        privmsg(s_ChanServ, u->nick, "12%s es un BOT autorizado de la RED", s_OperServ);
+    else if (stricmp(nick, "OperServ") == 0)
+        privmsg(s_ChanServ, u->nick, "12OperServ es un BOT de servicio de compatiblidad de 4%s", s_OperServ);
+    else if (stricmp(nick, s_HelpServ) == 0)
+        privmsg(s_ChanServ, u->nick, "12%s es un BOT autorizado de la RED", s_HelpServ);
+    else if (stricmp(nick, "HelpServ") == 0)
+        privmsg(s_ChanServ, u->nick, "12HelpServ es un BOT de servicio de compatiblidad de 4%s", s_HelpServ);
+    else if (stricmp(nick, s_GlobalNoticer) == 0)
+        privmsg(s_ChanServ, u->nick, "12%s es un BOT autorizado de la RED", s_GlobalNoticer);
+    else if (stricmp(nick, s_CregServ) == 0)
+        privmsg(s_ChanServ, u->nick, "12%s es un BOT autorizado de la RED", s_CregServ);
+
+/****  Bots de upworld *****/
+    else if (stricmp(nick, "SHaDoW") == 0)
+        privmsg(s_ChanServ, u->nick, "12SHaDoW es un BOT autorizado de la RED"); 
+    else if (stricmp(nick, "ToDo") == 0)
+        privmsg(s_ChanServ, u->nick, "12ToDo es un BOT autorizado de la RED");
+                                                                                                                                                                                                            
+    else if (nick_is_services_admin(ni)) {
+        privmsg(s_ChanServ, u->nick, "12%s es un 12ADMINinstrador de la RED.", ni->nick);
+        return;
+    } else if (nick_is_services_oper(ni)) {
+        privmsg(s_ChanServ, u->nick, "12%s es un 12OPERador de la RED.", ni->nick);
+        return;
+    } else
+        privmsg(s_ChanServ, u->nick, "12%s NO es un representante de la RED.", nick);
+}
+                                                                                      
+
+/*************************************************************************/
+
+static void do_ircops(User *u)
+{
+    ircops(u);
+}
+    
 
 /*************************************************************************/
 
@@ -3695,12 +4307,102 @@ static void do_getpass(User *u)
 	    wallops(s_ChanServ, "\2%s\2 used GETPASS on channel \2%s\2",
 		u->nick, chan);
 	}
+        canalopers(s_ChanServ, "12%s ha usado GETPASS en 12%s.", u->nick, chan);         
 	notice_lang(s_ChanServ, u, CHAN_GETPASS_PASSWORD_IS,
 		chan, ci->founderpass);
     }
 #endif
 }
 
+
+/*************************************************************************/
+
+static void do_suspend(User *u)
+{
+
+    ChannelInfo *ci;
+    char *chan = strtok(NULL, " ");
+    char *av[3];
+    Channel *c;
+    struct c_userlist *cu, *next;        
+    
+    if (!chan) {
+        syntax_error(s_ChanServ, u, "SUSPEND", CHAN_SUSPEND_SYNTAX);
+        return;
+    }
+    if (readonly)
+        notice_lang(s_ChanServ, u, READ_ONLY_MODE);
+
+    if (!(ci = cs_findchan(chan))) {
+        notice_lang(s_ChanServ, u, CHAN_X_NOT_REGISTERED, chan);
+             
+    } else if (ci->flags & CI_VERBOTEN) {
+        privmsg(s_ChanServ, u->nick, "No se puede suspender un canal forbideado");
+                      
+    } else if (ci->flags & CI_SUSPEND) {
+        privmsg(s_ChanServ, u->nick, "El canal ya estaba suspendido");
+                                                     
+    } else {
+        log("%s: %s!%s@%s set SUSPEND for channel %s",
+                 s_ChanServ, u->nick, u->username, u->host, chan);                              
+        ci->flags |= CI_SUSPEND;
+        notice_lang(s_ChanServ, u, CHAN_SUSPEND_SUCCEEDED, chan);
+        if (!(ci->flags & CI_STAY)) {
+              send_cmd(s_ChanServ, "JOIN %s", chan);
+              send_cmd(MODE_SENDER(s_ChanServ), "MODE %s +o %s", chan, s_ChanServ);
+        }
+        send_cmd(s_ChanServ,"TOPIC %s :Canal SUSPENDIDO por el operador %s", chan, u->nick);
+        canalopers(s_ChanServ, "12%s ha 12SUSPENDido el canal 12%s",
+                                u->nick, chan);
+        c = findchan(chan);
+        for (cu = c->chanops; cu; cu = next) {
+            next = cu->next;
+            av[0] = sstrdup(chan);
+            av[1] = sstrdup("-o");
+            av[2] = sstrdup(cu->user->nick);
+            send_cmd(MODE_SENDER(s_ChanServ), "MODE %s %s :%s",
+                  av[0], av[1], av[2]);
+            do_cmode(s_ChanServ, 3, av);
+            free(av[2]);
+            free(av[1]);
+            free(av[0]);
+        }                                                                                                                                                                                                                                              
+    }                                                                                         
+}        
+
+/*************************************************************************/
+
+static void do_unsuspend(User *u)
+{
+    ChannelInfo *ci;
+    char *chan = strtok(NULL, " ");
+
+    if (!chan) {
+        syntax_error(s_ChanServ, u, "UNSUSPEND", CHAN_SUSPEND_SYNTAX);
+        return;
+    }
+    if (readonly)
+        notice_lang(s_ChanServ, u, READ_ONLY_MODE);
+
+    if (!(ci = cs_findchan(chan))) {
+        notice_lang(s_ChanServ, u, CHAN_X_NOT_REGISTERED, chan);
+            
+    } else if (!(ci->flags & CI_SUSPEND)) {
+        privmsg(s_ChanServ, u->nick, "El canal no esta suspendido");
+    } else {
+        log("%s: %s!%s@%s usado UNSUSPEND on %s",
+                s_ChanServ, u->nick, u->username, u->host, chan);
+        ci->flags &= ~CI_SUSPEND;
+        privmsg(s_ChanServ, u->nick, "Canal 12%s ha sido reactivado", chan);      
+        canalopers(s_ChanServ, "12%s ha reactivado el canal 12%s", u->nick, chan);
+        if (!(ci->flags & CI_STAY)) 
+            send_cmd(s_ChanServ, "PART %s", chan);                                        
+        send_cmd(MODE_SENDER(s_ChanServ), "TOPIC %s :%s", chan, ci->last_topic);
+    }
+    
+}                                    
+                                                                    
+        
 /*************************************************************************/
 
 static void do_forbid(User *u)
@@ -3723,12 +4425,41 @@ static void do_forbid(User *u)
 		ci->name);
 	ci->flags |= CI_VERBOTEN;
 	notice_lang(s_ChanServ, u, CHAN_FORBID_SUCCEEDED, chan);
+        canalopers(s_ChanServ, "12%s ha FORBIDeado el canal 12%s",
+                  u->nick, ci->name);                  	
     } else {
 	log("%s: Valid FORBID for %s by %s failed", s_ChanServ, ci->name,
 		u->nick);
 	notice_lang(s_ChanServ, u, CHAN_FORBID_FAILED, chan);
     }
 }
+
+/****************************************************************************/
+static void do_unforbid(User *u)
+{
+    ChannelInfo *ci;
+    char *chan = strtok(NULL, " ");
+
+    if (!chan) {
+        syntax_error(s_ChanServ, u, "UNFORBID", CHAN_FORBID_SYNTAX);
+        return;
+    }
+    if (readonly)
+        notice_lang(s_ChanServ, u, READ_ONLY_MODE);
+
+    if ((ci = cs_findchan(chan)) != NULL && (ci->flags & CI_VERBOTEN)) {
+        ci->flags &= ~CI_VERBOTEN;
+        log("%s: %s!%s@%s used UNFORBID on %s",
+                      s_ChanServ, u->nick, u->username, u->host, chan);                      
+        privmsg(s_ChanServ, u->nick, "Canal 12%s UNFORBIDeado.", ci->name);
+        canalopers(s_ChanServ, "12%s ha UNFORBIDeado el canal 12%s",
+                u->nick, ci->name);
+    } else {
+        log("%s: Valid UNFORBID for %s by %s failed", s_ChanServ, ci->name,
+                        u->nick);
+        privmsg(s_ChanServ, u->nick, "UNFORBID para 12%s fallido", ci->name);   
+    }
+}                                                                                                         
 
 /*************************************************************************/
 
@@ -3741,7 +4472,7 @@ static void do_status(User *u)
     chan = strtok(NULL, " ");
     nick = strtok(NULL, " ");
     if (!nick || strtok(NULL, " ")) {
-	notice(s_ChanServ, u->nick, "STATUS ERROR Syntax error");
+	privmsg(s_ChanServ, u->nick, "STATUS ERROR Error de sintaxis");
 	return;
     }
     if (!(ci = cs_findchan(chan))) {
@@ -3751,17 +4482,39 @@ static void do_status(User *u)
 	ci = cs_findchan(chan);
     }
     if (!ci) {
-	notice(s_ChanServ, u->nick, "STATUS ERROR Channel %s not registered",
+	privmsg(s_ChanServ, u->nick, "STATUS ERROR El canal %s no esta registrado",
 		chan);
     } else if (ci->flags & CI_VERBOTEN) {
-	notice(s_ChanServ, u->nick, "STATUS ERROR Channel %s forbidden", chan);
+	privmsg(s_ChanServ, u->nick, "STATUS ERROR El canal %s esta FORBIDeado", chan);
 	return;
+    } else if (ci->flags & CI_SUSPEND) {
+        privmsg(s_ChanServ, u->nick, "STATUS El canal %s esta SUSPENDido.", chan);
     } else if ((u2 = finduser(nick)) != NULL) {
-	notice(s_ChanServ, u->nick, "STATUS %s %s %d",
+	privmsg(s_ChanServ, u->nick, "STATUS en %s de %s es %d",
 		chan, nick, get_access(u2, ci));
     } else { /* !u2 */
-	notice(s_ChanServ, u->nick, "STATUS ERROR Nick %s not online", nick);
+	privmsg(s_ChanServ, u->nick, "STATUS ERROR El nick %s no esta on-line", nick);
     }
 }
 
+
 /*************************************************************************/
+static void do_say(User *u)
+{
+
+    char *chan = strtok(NULL, " ");
+    char *text = strtok(NULL, "");
+    Channel *c;
+
+    if (!text) {
+        privmsg(s_ChanServ, u->nick, "Sintaxis: 12SAY <canal> <mensaje>");
+    } else if (!(c = findchan(chan))) {
+        notice_lang(s_ChanServ, u, CHAN_X_NOT_IN_USE, chan);
+    } else {
+        log("%s: %s!%s@%s usado SAY on %s (%s)",
+                      s_ChanServ, u->nick, u->username, u->host, chan, text);                            
+        send_cmd(s_ChanServ, "PRIVMSG %s :%s", chan, text);
+        canalopers(s_ChanServ, "12%s ha usado SAY en 12%s (%s)", u->nick, chan, text);
+    }
+}
+                                                       

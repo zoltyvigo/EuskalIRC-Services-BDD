@@ -6,9 +6,9 @@
  * details.
  */
 
-#define BUILD	"0"
+#define BUILD	"257"
 
-const char version_number[] = "4.3.2";
+const char version_number[] = "4.3.3";
 const char version_build[] =
 	"build #" BUILD ", compiled " __DATE__ " " __TIME__;
 const char version_protocol[] =
@@ -16,6 +16,8 @@ const char version_protocol[] =
 	"ircd.dal 4.4.15+"
 #elif defined(IRC_DALNET)
 	"ircd.dal 4.4.13-"
+#elif defined(ESNET_HISPANO)
+	"ircu 2.10.x P9 BDD support"
 #elif defined(IRC_UNDERNET_NEW)
 	"ircu 2.10+"
 #elif defined(IRC_UNDERNET)

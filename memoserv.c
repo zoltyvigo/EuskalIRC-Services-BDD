@@ -27,6 +27,10 @@ static void do_info(User *u);
 
 static Command cmds[] = {
     { "HELP",       do_help, NULL,  -1,                      -1,-1,-1,-1 },
+    { "AYUDA",      do_help, NULL,  -1,                      -1,-1,-1,-1 },
+    { "SHOWCOMMANDS",  do_help,  NULL,  -1,                  -1,-1,-1,-1 },
+    { ":?",         do_help, NULL,  -1,                      -1,-1,-1,-1 },
+    { "?",          do_help, NULL,  -1,                      -1,-1,-1,-1 },                
     { "SEND",       do_send, NULL,  MEMO_HELP_SEND,          -1,-1,-1,-1 },
     { "LIST",       do_list, NULL,  MEMO_HELP_LIST,          -1,-1,-1,-1 },
     { "READ",       do_read, NULL,  MEMO_HELP_READ,          -1,-1,-1,-1 },

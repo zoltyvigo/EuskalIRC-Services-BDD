@@ -1,5 +1,7 @@
 Version 4.3
 -----------
+1999/10/11 .3	Fixed AKICK ENFORCE bug for empty channels. Reported by
+		    Michael Raff <raff@ElectroCity.com>
 1999/09/24 .2	Added support for "JOIN 0". Reported by <BeenJaminG@aol.com>
 		Fixed and updated the listnicks and listchans commands.
 		    Reported by Lim Cheng Siong <IRC@pagans.org>

@@ -3075,6 +3075,11 @@ static void do_akick(User *u)
 	int i;
 	int count = 0;
 
+	if (!c) {
+	    notice_lang(s_ChanServ, u, CHAN_X_NOT_IN_USE, ci->name);
+	    return;
+	}
+
 	for (i = 0; i < 3; i++) {
 	    switch (i) {
 		case 0: cu = c->chanops; break;

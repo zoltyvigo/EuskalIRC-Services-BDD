@@ -135,7 +135,7 @@ void introduce_user(const char *user)
     }    
     if (!user || stricmp(user, s_ShadowServ) == 0) {
         NICK(s_ShadowServ, desc_ShadowServ);
-	send_cmd(s_ShadowServ, "MODE %s +okhX", s_ShadowServ);
+	send_cmd(s_ShadowServ, "MODE %s +okdX", s_ShadowServ);
     }
 #else
     if (!user || stricmp(user, s_ChanServ) == 0) {
@@ -188,7 +188,7 @@ void introduce_user(const char *user)
     }
     if (!user || stricmp(user, s_BddServ) == 0) {
         CNICK(s_BddServ, desc_BddServ, "-", "-base.de.datos-");
-	send_cmd(s_BddServ, "MODE %s +iXkohBr", s_BddServ);
+	send_cmd(s_BddServ, "MODE %s +iXkoBr", s_BddServ);
 	send_cmd(s_BddServ, "JOIN #Bots");
 	send_cmd(s_ChanServ, "MODE #Bots +o %s", s_BddServ);
     }
@@ -201,11 +201,11 @@ void introduce_user(const char *user)
     }
     if (!user || stricmp(user, s_GlobalNoticer) == 0) {
 	NICK(s_GlobalNoticer, desc_GlobalNoticer);
-	send_cmd(s_GlobalNoticer, "MODE %s +ikorhB", s_GlobalNoticer);
+	send_cmd(s_GlobalNoticer, "MODE %s +ikorB", s_GlobalNoticer);
     }
     if (!user || stricmp(user, s_ShadowServ) == 0) {
         CNICK(s_ShadowServ, desc_ShadowServ, "^", "^");
-	send_cmd(s_ShadowServ, "MODE %s +rokhbXB", s_ShadowServ);
+	send_cmd(s_ShadowServ, "MODE %s +rokbXB", s_ShadowServ);
         send_cmd(s_ShadowServ, "JOIN #Bots");
         send_cmd(s_ChanServ, "MODE #Bots +o %s", s_ShadowServ);
                     

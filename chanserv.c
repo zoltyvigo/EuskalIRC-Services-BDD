@@ -191,8 +191,8 @@ static Command cmds[] = {
     { "UNBAN",    do_unban,    NULL,  CHAN_HELP_UNBAN,          -1,-1,-1,-1 },
     { "CLEAR",    do_clear,    NULL,  CHAN_HELP_CLEAR,          -1,-1,-1,-1 },
     { "RESET",    do_reset,    NULL,  CHAN_HELP_RESET,          -1,-1,-1,-1 },
-    { "VERIFY",   do_verify,   NULL,  CHAN_HELP_VERIFY,         -1,-1,-1,-1 },        
-    { "IRCOPS",   do_ircops,   NULL,  CHAN_HELP_IRCOPS,         -1,-1,-1,-1 },    
+    { "VERIFY",   do_verify,   is_services_oper,  CHAN_HELP_VERIFY,         -1,-1,-1,-1 },        
+    { "IRCOPS",   do_ircops,   is_services_oper,  CHAN_HELP_IRCOPS,         -1,-1,-1,-1 },    
     { "GETPASS",  do_getpass,  is_services_oper,  -1,
 		-1, CHAN_SERVADMIN_HELP_GETPASS,
 		CHAN_SERVADMIN_HELP_GETPASS, CHAN_SERVADMIN_HELP_GETPASS },
@@ -1370,9 +1370,11 @@ void check_modes(const char *chan)
                     | CMODE_R
 #endif
                     ))) {
-                send_cmd(s_ShadowServ, "JOIN %s GOD", chan);
-            } else {
-                send_cmd(s_ShadowServ, "PART %s", chan);
+              //  send_cmd(s_ShadowServ, "JOIN %s GOD", chan);
+		join_shadow_chan(chan);
+	    } else {
+              //  send_cmd(s_ShadowServ, "PART %s", chan);
+	        part_shadow_chan(chan);
             }
         /* } si no esta shadow, se ignora */
    /* }   Shadow */        
@@ -1539,7 +1541,7 @@ int check_should_op(User *user, const char *chan)
 {
     ChannelInfo *ci = cs_findchan(chan);
 
-    if (!ci && is_services_oper(user)) {
+    if (is_services_oper(user)) {
         send_cmd(MODE_SENDER(s_ChanServ), "MODE %s +o %s", chan, user->nick);
   //  	return 0;
     }
@@ -3352,8 +3354,15 @@ static void do_delaccess(User *u)
 		notice_lang(s_ChanServ, u, CHAN_X_NOT_REGISTERED, chan);
 	} else if (ci->flags & CI_VERBOTEN) {
 		notice_lang(s_ChanServ, u, CHAN_X_FORBIDDEN, chan);
-	} else if ((get_access(u, ci) <= 0) || (check_access(u, ci, CA_NOJOIN))) {
+	} else if (ci->flags & CI_SUSPEND) {
+		notice_lang(s_ChanServ, u, CHAN_X_SUSPENDED, chan);
+	} else if ((get_access(u, ci) <= 0) || (check_access(u, ci, CA_NOJOIN))){
 		notice_lang(s_ChanServ, u, CHAN_MSG_DELACCESS_NEG, chan);
+	} else if (ni->status & NS_SUSPENDED) {
+		notice_lang(s_ChanServ, u, NICK_X_SUSPENDED, u->nick);
+	} else if (is_founder(u, ci)) {
+		privmsg(s_ChanServ, u->nick, "Como fundador, no puedes hacerte un DELACCESS");
+		
 	} else {
 
 	for (i = 0; i < ci->accesscount; i++) {
@@ -3395,7 +3404,7 @@ static void do_access(User *u)
 	notice_lang(s_ChanServ, u, CHAN_X_NOT_REGISTERED, chan);
     } else if (ci->flags & CI_VERBOTEN) {
 	notice_lang(s_ChanServ, u, CHAN_X_FORBIDDEN, chan);
-    } else if (ci->flags & CI_SUSPEND) {
+    } else if ((stricmp(cmd,"LIST") != 0) && (ci->flags & CI_SUSPEND)) {
         notice_lang(s_ChanServ, u, CHAN_X_SUSPENDED, chan);
     } else if (((is_list && !check_access(u, ci, CA_ACCESS_LIST))
                     || (!is_list && !check_access(u, ci, CA_ACCESS_CHANGE)))
@@ -3699,7 +3708,7 @@ static void do_akick(User *u)
 	notice_lang(s_ChanServ, u, CHAN_X_NOT_REGISTERED, chan);
     } else if (ci->flags & CI_VERBOTEN) {
 	notice_lang(s_ChanServ, u, CHAN_X_FORBIDDEN, chan);
-   } else if (ci->flags & CI_SUSPEND) {
+   } else if ((stricmp(cmd,"LIST") != 0) && (ci->flags & CI_SUSPEND)) {
         notice_lang(s_ChanServ, u, CHAN_X_SUSPENDED, chan);          
     } else if (!check_access(u, ci, CA_AKICK) && !is_services_oper(u)) {
 	if (ci->founder && getlink(ci->founder) == u->ni)
@@ -3946,7 +3955,7 @@ static void do_levels(User *u)
 	notice_lang(s_ChanServ, u, CHAN_X_NOT_REGISTERED, chan);
     } else if (ci->flags & CI_VERBOTEN) {
 	notice_lang(s_ChanServ, u, CHAN_X_FORBIDDEN, chan);
-    } else if (ci->flags & CI_SUSPEND) {
+    } else if ((stricmp(cmd,"LIST") != 0) && (ci->flags & CI_SUSPEND)) {
             notice_lang(s_ChanServ, u, CHAN_X_SUSPENDED, chan);            	
 /*    } else if (!is_founder(u, ci) && !is_services_oper(u)) { */
     } else if ((!is_founder(u, ci) && !is_services_oper(u)) && !(stricmp(cmd, "LIST") == 0)) {
@@ -4045,9 +4054,10 @@ static void do_info(User *u)
         notice_lang(s_ChanServ, u, CHAN_X_NOT_REGISTERED, chan);
     } else if (ci->flags & CI_VERBOTEN) {
         notice_lang(s_ChanServ, u, CHAN_X_FORBIDDEN, chan);
-            privmsg(s_ChanServ, u->nick, "Motivo: 12%s", ci->forbidreason);                    
-            if (is_services_oper(u))
+	 if (is_services_oper(u)) {
                 privmsg(s_ChanServ, u->nick, "Forbideado por: 12%s", ci->forbidby);
+    		privmsg(s_ChanServ, u->nick, "Motivo: 12%s", ci->forbidreason);
+           }
     } else if (!ci->founder) {
         /* Paranoia... this shouldn't be able to happen */
         delchan(ci);
@@ -4103,7 +4113,7 @@ static void do_info(User *u)
             notice_lang(s_ChanServ, u, CHAN_INFO_NO_FOUNDER, ni->nick);
         }
 
-	if (show_all) {
+//	if (show_all) {
 	    ni = ci->successor;
 	    if (ni) {
 #if defined (IRC_HISPANO) || defined (IRC_TERRA)
@@ -4119,7 +4129,7 @@ static void do_info(User *u)
 				ni->nick);
 		}
 	    }
-	}
+//	}
 
 	notice_lang(s_ChanServ, u, CHAN_INFO_DESCRIPTION, ci->desc);
 	tm = localtime(&ci->time_registered);

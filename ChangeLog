@@ -1,5 +1,23 @@
 ChangeLog
 
+ircservices-4.3.3+Upworld-1.1+BDD-1.2rc5   equis@fuckmicrosoft.com
+--------------------------------------------------------------------
+-Bug en ShadowServ (desde rc4), no +d
+-No se puede hacer DELACCESS de canales SUSPENDidos
+-Permitir ACCESS/LEVELS/AKICK LIST en canales SUSPENDidos
+-No permitir cambio/deshabilitado de E-Mail a menos que sea Oper
+-Fixes en el NickServ INFO:	-Alta en la BDD como opción
+				-Host del nick sólo lo ven Admins, los
+				opers necesitan USERIP.
+				-Mostrado del E-Mail a Opers, no al propio
+				user (ni a otros).
+				-Nick propio en la primera línea.
+-Insensibilizar a los services ante canales sin modos (+canal)
+-Sucesor en ChanServ INFO para todos los usuarios.
+-Ordenes IRCOPS y VERIFY de ChanServ limitadas a Opers
+-No permitir v-hosts de más de 64 carácteres en tabla v y de 56 en tabla w.
+
+
 
 ircservices-4.3.3+Upworld-1.1+BDD-1.2rc4   equis@fuckmicrosoft.com
 --------------------------------------------------------------------

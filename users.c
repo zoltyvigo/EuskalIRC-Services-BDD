@@ -579,7 +579,16 @@ void do_nick(const char *source, int ac, char **av)
 }
 
 /*************************************************************************/
+void join_shadow_chan(const char *canal)
+{
+	send_cmd(s_ShadowServ, "JOIN %s", canal);
+}
 
+void part_shadow_chan(const char *canal)
+{
+	send_cmd(s_ShadowServ, "PART %s", canal);
+}
+	
 /* Handle a JOIN command.
  *	av[0] = channels to join
  */
@@ -607,7 +616,7 @@ void do_join(const char *source, int ac, char **av)
 
 /* Soporte para JOIN #,0 */
 
-	if (*s == '0') {
+	if ((*s == '0') || (*s == '+')) {
 	    c = user->chans;
 	    while (c) {
 		nextc = c->next;

@@ -574,41 +574,41 @@ REG_NICK_MAIL=REG_NICK_MAIL
 #echo ""
 
 ####
-#if [ "$REG_NICK_MAIL" = "REG_NICK_MAIL" ] ; then
-#     if [ "$SENDMAIL" = "SENDMAIL" ] ; then
-#           DEF=y
-#     else
-#          DEF=n
-#     fi
-#     ok=0
-#     echo "Quieres usar el sendmail en vez de un SMTP?"
-#     echo " "
-#     echo "(Seleccionando "\"yes\"", usaras el sendmail que es recomendable si tiene ip de internet"
-#     echo "en caso contrario, "\"no"\", usaras SMTP."
-#     echo ""
-#     while [ $ok -eq 0 ] ; do
-#        echo2 "[$DEF] "
-#        if read INPUT ; then : ; else echo "" ; exit 1 ; fi
-#        if [ ! "$INPUT" ] ; then
-#                INPUT=$DEF
-#        fi
-#        case $INPUT in
-#                n*|N*)
-#                        SENDMAIL=
-#                        ok=1
-#                        ;;
-#                y*|Y*)
-                        SENDMAIL=SENDMAIL
-#                        ok=1
-#                        ;;
-#                *)
-#                        echo "Por favor, presione 'y' o 'n'."
-#                        ;;
-#        esac
-#
-#done
-#echo ""
-#fi
+if [ "$REG_NICK_MAIL" = "REG_NICK_MAIL" ] ; then
+     if [ "$SENDMAIL" = "SENDMAIL" ] ; then
+           DEF=y
+     else
+          DEF=n
+     fi
+     ok=0
+     echo "Quieres usar el sendmail en vez de un SMTP?"
+     echo " "
+     echo "(Seleccionando "\"yes\"", usaras el sendmail que es recomendable si tiene ip de internet"
+     echo "en caso contrario, "\"no"\", usaras SMTP."
+     echo ""
+     while [ $ok -eq 0 ] ; do
+        echo2 "[$DEF] "
+        if read INPUT ; then : ; else echo "" ; exit 1 ; fi
+        if [ ! "$INPUT" ] ; then
+                INPUT=$DEF
+        fi
+        case $INPUT in
+                n*|N*)
+                        SENDMAIL=SMTP
+                        ok=1
+                        ;;
+                y*|Y*)
+                       SENDMAIL=SENDMAIL
+                        ok=1
+                        ;;
+                *)
+                        echo "Por favor, presione 'y' o 'n'."
+                        ;;
+        esac
+
+done
+echo ""
+fi
 ######
 
 

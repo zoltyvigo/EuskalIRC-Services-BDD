@@ -195,7 +195,7 @@ E int   ReadTimeout;
 E int   WarningTimeout;
 E int   TimeoutCheck;
 
-#define PNAME "ircservices+UpWorld+BDD 1.24rc4"
+#define PNAME "ircservices+UpWorld+BDD 1.24rc5"
 
 E int   NSForceNickChange; 
 E char *NSGuestNickPrefix;
@@ -533,5 +533,7 @@ E int is_voiced(const char *nick, const char *chan);
 E int match_usermask(const char *mask, User *user);
 E void split_usermask(const char *mask, char **nick, char **user, char **host);
 E char *create_mask(User *u);
-
+E void join_shadow_chan(const char *canal);
+E void part_shadow_chan(const char *canal);
 #endif	/* EXTERN_H */
+

@@ -1133,7 +1133,8 @@ static void do_vhost(User *u)
 {
     char *nick = strtok(NULL, " ");
     char *mask = strtok(NULL, "");
-/*    User *u2 = NULL; */
+  
+    /*    User *u2 = NULL; */
     NickInfo *ni;
     
     if (!nick) {
@@ -1152,6 +1153,11 @@ static void do_vhost(User *u)
 	notice_lang(s_OperServ, u, OPER_VHOST_UNSET, nick);
 	return;
     }
+    if (strlen(mask) > 64) {
+	 privmsg(s_OperServ, u->nick, "V-Host demasiado larga. Máximo 64 carácteres.");
+	 return;
+    }
+    
     
     do_write_bdd(nick, 2, mask);
     notice_lang(s_OperServ, u, OPER_VHOST_SET, nick, mask);

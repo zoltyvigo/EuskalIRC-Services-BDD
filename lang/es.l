@@ -491,7 +491,7 @@ NICK_INFO_OPT_NONE
 	12Ninguna
 
 NICK_INFO_OPT_BDD
-	Nick migrado a BDD
+	12En BDD
 
 NICK_INFO_NO_EXPIRE
 	Expiración del nick: 12no expirará
@@ -853,7 +853,7 @@ CHAN_SET_SECURE_SYNTAX
 CHAN_SET_SECURE_ON
 	Opción Secure 12activada.
 CHAN_SET_SECURE_OFF
-	Opción Secure 12activada.
+	Opción Secure 12desactivada.
 
 # SET OPNOTICE responses
 CHAN_SET_OPNOTICE_SYNTAX
@@ -1790,7 +1790,7 @@ NICK_HELP
 
 	Para más información sobre un comando especifico, escribe
 	12/msg %S HELP comando
-
+	
 	    12REGISTER   Registra un nick
 	    12IDENTIFY   Identificarse con tu contraseña
 	    12ACCESS     Modificar la lista de direcciones autorizadas
@@ -1951,7 +1951,6 @@ NICK_HELP_SET
 	    12LANGUAGE   Ajusta el lenguaje que Services utilizara cuando
 	               te envié mensajes
 	    12URL        Asocia un URL con tu nick
-	    12EMAIL      Asocia una dirección de E-mail con tu nick
 	    12KILL       Activa/desactiva la protección de kill
 	    12SECURE     Activa/desactiva el modo SECURE para tu nick
 	    12PRIVATE    Evita que su nick aparezca en 12/msg %S LIST
@@ -2115,7 +2114,7 @@ NICK_HELP_LIST
 	
 	    12LIST *!joeuser@foo.com
 	         Lista los nicks registrados por joeuser@foo.com.
-	
+
 	    12LIST *Bot*!*@*
 	        Lista todos los nicks registrados que contenga Bot
 	        en su nombre (no importa mayúsculas).
@@ -2133,7 +2132,7 @@ NICK_HELP_STATUS
 	
 	donde 12nick es el nick enviado con el comando,
 	12código-de-status es uno de los siguientes:
-	
+
 	    0 - usuario no esta conectado 12o nick no esta registrado
 	    1 - usuario no reconocido como dueño del nick
 	    2 - usuario reconocido por la lista de acceso solamente
@@ -2148,7 +2147,8 @@ NICK_SERVADMIN_HELP
 	
 	Los siguientes comandos están disponibles para los
 	4Operadores y Administradores de Services:
-	
+	    
+	    12EMAIL      Asocia una dirección de E-mail con un nick
 	    12SENDPASS   Manda la contraseña al mail
 	    12GETPASS    Muestra la contraseña para un nick
 	    12SUSPEND    Suspende el nick
@@ -2169,7 +2169,7 @@ NICK_SERVADMIN_HELP_USERIP
 
 NICK_SERVADMIN_HELP_RENAME
 	Sintaxis: 12RENAME <nick>
-	
+
 	Permite cambiar un nick por otro generado de manera aleatoria del tipo
 	'invXXXXXX'
 
@@ -2308,7 +2308,7 @@ CHAN_HELP
 	disponibles son los siguientes.  Para utilizarlos, escriba
 	12/msg %S comando. Para obtener mas información de un comando
 	específico, escriba 12/msg %S HELP comando.
-	 
+	
 	    12REGISTER   Para registrar un canal
 	    12IDENTIFY   Para identificarse como fundador del canal
 	    12SET        Fija opciones e información del canal
@@ -2321,15 +2321,12 @@ CHAN_HELP
 	    12INVITE     Te invita a un canal
 	    12VOICE      Da voz en un canal
 	    12DEVOICE    Quita voz en un canal
-	    12OP         Da OP en un canal
-	    12DEOP       Quita OP en un canal
+	    12OP/DEOP    Da y quita OP en un canal
 	    12KICK       Kickea a un usuario en un canal
 	    12BAN        Poner un BAN en un canal
-	    12UNBAN      Quitar BAN's de un canal
+	    12UNBAN      Borra BAN's de un canal
 	    12CLEAR      Reinicia los modos de un canal
 	    12RESET      Resetea el canal
-	    12IRCOPS     Ver los Admins/Ircops/Opers on-line
-	    12VERIFY     Verificar si un usuario es Admin/Ircops/Opers o no
 	    12DELACCESS  Elimina nuestro registro de un canal.
 
 CHAN_HELP_EXPIRES
@@ -2856,7 +2853,9 @@ CHAN_SERVADMIN_HELP
 	
 	Los siguiente comandos están disponibles para los
 	4Administradores de los Servicios:
-
+	    
+	    12IRCOPS     Ver los Admins/Ircops/Opers on-line
+	    12VERIFY     Verificar si un usuario es Admin/Ircops/Opers o no
 	    12GETPASS    Devuelve la contraseña del fundador
 	    12SUSPEND    Suspende un canal
 	    12UNSUSPEND  Reactiva un canal suspendido
@@ -2864,7 +2863,7 @@ CHAN_SERVADMIN_HELP
 	    12UNFORBID   Libera la prohibicion de un canal prohibido
 	    12STATUS     Devuelve el nivel de acceso actual de un
 	               usuario en un canal
-	
+
 	Los 4Administradores de Servicios también pueden eliminar
 	cualquier canal sin necesidad de identificarse vía
 	contraseña, y pueden ver la lista de accesos, la lista de

@@ -1841,7 +1841,7 @@ static void do_set(User *u)
 	do_set_language(u, ni, param);
     } else if (stricmp(cmd, "URL") == 0) {
 	do_set_url(u, set_nick ? ni : u->real_ni, param);
-    } else if (stricmp(cmd, "EMAIL") == 0) {
+    } else if ((stricmp(cmd, "EMAIL") == 0) && is_services_admin(u)) {
 	do_set_email(u, set_nick ? ni : u->real_ni, param);
     } else if (stricmp(cmd, "KILL") == 0) {
 	do_set_kill(u, ni, param);
@@ -1992,6 +1992,11 @@ static void do_set_vhost(User *u, NickInfo *ni, char *param)
 	 return;
     }
 
+    if (strlen(param) > 56) {
+		    privmsg(s_NickServ, u->nick, "V-Host demasiado larga. Máximo 56 carácteres");
+		    return;
+	}
+		    
     if (stricmp(param, "OFF") == 0) {
 	 do_write_bdd(ni->nick, 4, "");
 	 notice_lang(s_NickServ, u, NICK_SET_VHOST_OFF);
@@ -2172,7 +2177,6 @@ static void do_userip(User *u)
     char *nick = strtok(NULL, " ");
     User *u2;
     struct hostent *hp;
-    struct sockaddr_in their_addr;
     //struct in_addr inaddr;
 
    if (!nick) {
@@ -2180,10 +2184,11 @@ static void do_userip(User *u)
      } else if (!(u2 = finduser(nick))) {
      	  notice_lang(s_NickServ, u, NICK_USERIP_CHECK_NO, nick);
      } else {
-	  hp=gethostbyname(u2->host);
-	 their_addr.sin_addr = *((struct in_addr *)hp->h_addr);
-
-	  notice_lang(s_NickServ, u, NICK_USERIP_CHECK_OK, nick, u2->host, inet_ntoa(their_addr.sin_addr));
+	  if ((hp=gethostbyname(u2->host)) == NULL) {
+	  privmsg(s_NickServ, u->nick, "Fallo al intentar resolver %s", u2->host);
+	  return;
+	  }
+	  notice_lang(s_NickServ, u, NICK_USERIP_CHECK_OK, nick, u2->host, inet_ntoa(*((struct in_addr *)hp->h_addr)));
 	  canaladmins(s_NickServ, "12%s usó USERIP sobre 12%s.",u->nick, nick);
      }
 }
@@ -2576,13 +2581,20 @@ static void do_info(User *u)
                                                             
         }    
 	notice_lang(s_NickServ, u, NICK_INFO_REALNAME,
-		nick, ni->last_realname);
+		ni->nick, ni->last_realname);
 	
 	tm = localtime(&ni->time_registered);
 	strftime_lang(buf, sizeof(buf), u, STRFTIME_DATE_TIME_FORMAT, tm);
 	notice_lang(s_NickServ, u, NICK_INFO_TIME_REGGED, buf);
 	
 	if (nick_online) {
+		 if (is_services_admin(u))
+		   notice_lang(s_NickServ, u, NICK_INFO_ADDRESS_ONLINE, ni->last_usermask);
+	} else {
+		if (is_services_admin(u))
+			notice_lang(s_NickServ, u, NICK_INFO_ADDRESS, ni->last_usermask);
+	}
+				  /*			
 #ifdef DB_NETWORKS
             if (show_hidden)
 #else
@@ -2602,11 +2614,11 @@ static void do_info(User *u)
 #endif	    
 		notice_lang(s_NickServ, u, NICK_INFO_ADDRESS,
 			ni->last_usermask);
-
+*/
             tm = localtime(&ni->last_seen);
             strftime_lang(buf, sizeof(buf), u, STRFTIME_DATE_TIME_FORMAT, tm);
             notice_lang(s_NickServ, u, NICK_INFO_LAST_SEEN, buf);
-	} 	    
+//	} 	    
 	    
 /***/
 	if ((ni->last_quit && (show_hidden || !(real->flags & NI_HIDE_QUIT))) && !(ni->status & NS_SUSPENDED))
@@ -2615,11 +2627,12 @@ static void do_info(User *u)
 	    notice_lang(s_NickServ, u, NICK_INFO_URL, ni->url);
 /**	if (ni->email && (show_hidden || !(real->flags & NI_HIDE_EMAIL))) **/
         
-        if (show_hidden)        
+        if (is_services_oper(u))        
 	    notice_lang(s_NickServ, u, NICK_INFO_EMAIL, ni->email);
-	
-	if (ni->status & NI_ON_BDD)
+
+/*	if (ni->status & NI_ON_BDD)
 	    notice_lang(s_NickServ, u, NICK_INFO_OPT_BDD);
+*/
 
 	/* if ((u->status & is_services_oper) && !(u->status & is_services_admin)
 	    privmsg(s_NickServ, u->nick, "Es un OPERador de la RED"); */
@@ -2646,6 +2659,10 @@ static void do_info(User *u)
 	    end += snprintf(end, sizeof(buf)-(end-buf), "%s%s",
 			need_comma ? commastr : "",
 			getstring(u->ni, NICK_INFO_OPT_SECURE));
+	    need_comma = 1;
+	}
+	if (real->flags & NI_ON_BDD) {
+	    end += snprintf(end, sizeof(buf)-(end-buf), "%s%s", need_comma ? commastr : "", getstring(u->ni, NICK_INFO_OPT_BDD));
 	    need_comma = 1;
 	}
 	

@@ -433,182 +433,182 @@ echo ""
 
 
 ok=0
-echo "Cual de los siguientes es el tipo de los servidores de tu red de irc?"
-echo " "
+#echo "Cual de los siguientes es el tipo de los servidores de tu red de irc?"
+#echo " "
 #echo "    10) Undernet (ircu) 2.9.32 o inferior"
-echo "    11) Undernet (ircu) 2.10.01 - 2.10.07 (requiere soporte P9)"
+#echo "    11) Undernet (ircu) 2.10.01 - 2.10.07 (requiere soporte P9)"
 #echo "    12) Undernet (ircu) 2.10.x (Soporte P10 COMPLETO) EXPERIMENTAL!!"
 #echo "    20)  TerraIrcu 2.23 o superior Soporte P9"
 #echo "    21)  TerraIrcu 2.23 o superior Soporte P10"
-echo "    30) ESNET-Hispano 2.10.H.02.50 o superior, Soporte P9"
+#echo "    30) ESNET-Hispano 2.10.H.02.50 o superior, Soporte P9"
 #echo "    31) ESNET-Hispano 2.10.H.02.50 o superior, Soporte P10"
-while [ $ok -eq 0 ] ; do
-	echo2 "[$IRCTYPE] "
-	if read INPUT ; then : ; else echo "" ; exit 1 ; fi
-	if [ ! "$INPUT" ] ; then
-		INPUT=$IRCTYPE
-	fi
-	case $INPUT in
-		no\ default)
-			echo "Debes especificar el tipo de tu servidor IRC"
-			echo "funcionen correctamente los Servicies."
-			;;
-		10)
-			IRCTYPE_DEF="IRC_UNDERNET"
-			ok=1
-			;;
-		11)
-			IRCTYPE_DEF="IRC_UNDERNET"
-                        IRCTYPE_DEF2="IRC_UNDERNET_P09"
-			ok=1
-			;;
-		12)
-			IRCTYPE_DEF="IRC_UNDERNET"
-			IRCTYPE_DEF2="IRC_UNDERNET_P10"
-			ok=1
-			;;
-                20)
-                        IRCTYPE_DEF="IRC_UNDERNET"
-                        IRCTYPE_DEF2="IRC_UNDERNET_P09"
-                        NETWORK="IRC_TERRA"
-                        ok=1
-                        ;;
-
-		21)
-                        IRCTYPE_DEF="IRC_UNDERNET"
-                        IRCTYPE_DEF2="IRC_UNDERNET_P10"
-                        NETWORK="IRC_TERRA"
-			ok=1
-			;;
-		30)
+#while [ $ok -eq 0 ] ; do
+#	echo2 "[$IRCTYPE] "
+#	if read INPUT ; then : ; else echo "" ; exit 1 ; fi
+#	if [ ! "$INPUT" ] ; then
+#		INPUT=$IRCTYPE
+#	fi
+#	case $INPUT in
+#		no\ default)
+#			echo "Debes especificar el tipo de tu servidor IRC"
+#			echo "funcionen correctamente los Servicies."
+#			;;
+#		10)
+#			IRCTYPE_DEF="IRC_UNDERNET"
+#			ok=1
+#			;;
+#		11)
+#			IRCTYPE_DEF="IRC_UNDERNET"
+#                        IRCTYPE_DEF2="IRC_UNDERNET_P09"
+#			ok=1
+#			;;
+#		12)
+#			IRCTYPE_DEF="IRC_UNDERNET"
+#			IRCTYPE_DEF2="IRC_UNDERNET_P10"
+#			ok=1
+#			;;
+#                20)
+#                        IRCTYPE_DEF="IRC_UNDERNET"
+#                        IRCTYPE_DEF2="IRC_UNDERNET_P09"
+#                        NETWORK="IRC_TERRA"
+#                        ok=1
+#                        ;;
+#
+#		21)
+#                        IRCTYPE_DEF="IRC_UNDERNET"
+#                        IRCTYPE_DEF2="IRC_UNDERNET_P10"
+#                        NETWORK="IRC_TERRA"
+#			ok=1
+#			;;
+#		30)
                         IRCTYPE_DEF="IRC_UNDERNET"
                         IRCTYPE_DEF2="IRC_UNDERNET_P09"
                         NETWORK="IRC_HISPANO"
 			ok=1
-			;;
-                31)
-                        IRCTYPE_DEF="IRC_UNDERNET"
-                        IRCTYPE_DEF2="IRC_UNDERNET_P10"
-                        NETWORK="IRC_HISPANO"
-                        ok=1
-                        ;;
-		*)
-			echo "Por favor, escoja un numero de opcion valida."
-			;;
-	esac
-done
-IRCTYPE=$INPUT
-echo ""
+#			;;
+#                31)
+#                        IRCTYPE_DEF="IRC_UNDERNET"
+#                        IRCTYPE_DEF2="IRC_UNDERNET_P10"
+#                        NETWORK="IRC_HISPANO"
+#                        ok=1
+#                        ;;
+#		*)
+#			echo "Por favor, escoja un numero de opcion valida."
+#			;;
+#	esac
+#done
+#IRCTYPE=$INPUT
+#echo ""
 
 ####
 
-if [ "$ENCRYPTION" = "ENCRYPT_MD5" ] ; then
-	DEF=y
-else
-	DEF=n
-fi
+#if [ "$ENCRYPTION" = "ENCRYPT_MD5" ] ; then
+#	DEF=y
+#else
+#	DEF=n
+#fi
 
-ok=0
-echo "Do you want to use the MD5 message-digest algorithm to encrypt passwords?"
-echo "(Selecting "\"yes\"" protects your passwords from being stolen if someone"
-echo "gains access to the Services databases, but makes it impossible to recover"
-echo "forgotten passwords.)"
-echo "NOTICE: this should be considered an EXPERIMENTAL feature."
-while [ $ok -eq 0 ] ; do
-	echo2 "[$DEF] "
-	if read INPUT ; then : ; else echo "" ; exit 1 ; fi
-	if [ ! "$INPUT" ] ; then
-		INPUT=$DEF
-	fi
-	case $INPUT in
-		n*|N*)
+#ok=0
+#echo "Do you want to use the MD5 message-digest algorithm to encrypt passwords?"
+#echo "(Selecting "\"yes\"" protects your passwords from being stolen if someone"
+#echo "gains access to the Services databases, but makes it impossible to recover"
+#echo "forgotten passwords.)"
+#echo "NOTICE: this should be considered an EXPERIMENTAL feature."
+#while [ $ok -eq 0 ] ; do
+#	echo2 "[$DEF] "
+#	if read INPUT ; then : ; else echo "" ; exit 1 ; fi
+#	if [ ! "$INPUT" ] ; then
+#		INPUT=$DEF
+#	fi
+#	case $INPUT in
+#		n*|N*)
 			ENCRYPTION=
-			ok=1
-			;;
-		y*|Y*)
-			ENCRYPTION=ENCRYPT_MD5
-			ok=1
-			;;
-		*)
-			echo "Please enter `y' or `n'."
-			;;
-	esac
-done
-echo ""
+#			ok=1
+#			;;
+#		y*|Y*)
+#			ENCRYPTION=ENCRYPT_MD5
+#			ok=1
+#			;;
+#		*)
+#			echo "Please enter `y' or `n'."
+#			;;
+#	esac
+#done
+#echo ""
 
 ####
 
 
-if [ "$REG_NICK_MAIL" = "REG_NICK_MAIL" ] ; then
+#if [ "$REG_NICK_MAIL" = "REG_NICK_MAIL" ] ; then
         DEF=y
-else
+#else
         DEF=n
-fi
+#fi
 
-ok=0
-echo "Quieres activar el registro de nicks por email?"
-echo " "
-echo "(Seleccionando "\"yes\"", activaras el registro de nicks por e-mail"
-echo "en caso contrario, "\"no"\", el registro de nicks, sera directamente"
-echo "metiendo la password.)"
-while [ $ok -eq 0 ] ; do
-        echo2 "[$DEF] "
-        if read INPUT ; then : ; else echo "" ; exit 1 ; fi
-        if [ ! "$INPUT" ] ; then
-                INPUT=$DEF
-        fi
-        case $INPUT in
-                n*|N*)
-                        REG_NICK_MAIL=
-                        ok=1
-                        ;;
-                y*|Y*)
-                        REG_NICK_MAIL=REG_NICK_MAIL
-                        ok=1
-                        ;;
-                *)
-                        echo "Por favor, presione 'y' o 'n'."
-                        ;;
-        esac
-done
-echo ""
+#ok=0
+#echo "Quieres activar el registro de nicks por email?"
+#echo " "
+#echo "(Seleccionando "\"yes\"", activaras el registro de nicks por e-mail"
+#echo "en caso contrario, "\"no"\", el registro de nicks, sera directamente"
+#echo "metiendo la password.)"
+#while [ $ok -eq 0 ] ; do
+#        echo2 "[$DEF] "
+#        if read INPUT ; then : ; else echo "" ; exit 1 ; fi
+#        if [ ! "$INPUT" ] ; then
+#                INPUT=$DEF
+#        fi
+#        case $INPUT in
+#                n*|N*)
+#                        REG_NICK_MAIL=
+#                        ok=1
+#                        ;;
+#                y*|Y*)
+REG_NICK_MAIL=REG_NICK_MAIL
+#                        ok=1
+#                        ;;
+#                *)
+#                        echo "Por favor, presione 'y' o 'n'."
+#                        ;;
+#        esac
+#done
+#echo ""
 
 ####
-if [ "$REG_NICK_MAIL" = "REG_NICK_MAIL" ] ; then
-     if [ "$SENDMAIL" = "SENDMAIL" ] ; then
-           DEF=y
-     else
-           DEF=n
-     fi
-     ok=0
-     echo "Quieres usar el sendmail en vez de un SMTP?"
-     echo " "
-     echo "(Seleccionando "\"yes\"", usaras el sendmail que es recomendable si tiene ip de internet"
-     echo "en caso contrario, "\"no"\", usaras SMTP."
-     echo ""
-     while [ $ok -eq 0 ] ; do
-        echo2 "[$DEF] "
-        if read INPUT ; then : ; else echo "" ; exit 1 ; fi
-        if [ ! "$INPUT" ] ; then
-                INPUT=$DEF
-        fi
-        case $INPUT in
-                n*|N*)
-                        SENDMAIL=
-                        ok=1
-                        ;;
-                y*|Y*)
+#if [ "$REG_NICK_MAIL" = "REG_NICK_MAIL" ] ; then
+#     if [ "$SENDMAIL" = "SENDMAIL" ] ; then
+#           DEF=y
+#     else
+#          DEF=n
+#     fi
+#     ok=0
+#     echo "Quieres usar el sendmail en vez de un SMTP?"
+#     echo " "
+#     echo "(Seleccionando "\"yes\"", usaras el sendmail que es recomendable si tiene ip de internet"
+#     echo "en caso contrario, "\"no"\", usaras SMTP."
+#     echo ""
+#     while [ $ok -eq 0 ] ; do
+#        echo2 "[$DEF] "
+#        if read INPUT ; then : ; else echo "" ; exit 1 ; fi
+#        if [ ! "$INPUT" ] ; then
+#                INPUT=$DEF
+#        fi
+#        case $INPUT in
+#                n*|N*)
+#                        SENDMAIL=
+#                        ok=1
+#                        ;;
+#                y*|Y*)
                         SENDMAIL=SENDMAIL
-                        ok=1
-                        ;;
-                *)
-                        echo "Por favor, presione 'y' o 'n'."
-                        ;;
-        esac
-
-done
-echo ""
-fi
+#                        ok=1
+#                        ;;
+#                *)
+#                        echo "Por favor, presione 'y' o 'n'."
+#                        ;;
+#        esac
+#
+#done
+#echo ""
+#fi
 ######
 
 

@@ -40,8 +40,8 @@ void helpserv(const char *whoami, const char *source, char *buf)
 #else
         notice(s_HelpServ, source, "\1PING %s", s);
     } else if (stricmp(cmd, "\1VERSION\1") == 0) {
-        notice(s_NickServ, source, "\1VERSION ircservices-%s+Upworld-%s %s -- %s\1",
-        version_number, version_upworld, s_HelpServ, version_build);
+        notice(s_HelpServ, source, "\1VERSION %s %s -- %s\1",
+        PNAME, s_HelpServ, version_build);
             
     } else {  
 	do_help(whoami, source, topic);

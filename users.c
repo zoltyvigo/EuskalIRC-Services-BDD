@@ -799,7 +799,7 @@ void do_umode(const char *source, int ac, char **av)
                 if (add) {
                     user->mode |= UMODE_R;
                     new_ni = findnick(user->nick);
-                    if (new_ni && !(new_ni->status & NS_SUSPENDED
+		    if (new_ni && !(new_ni->status & NS_SUSPENDED
                             || new_ni->status & NS_VERBOTEN)) {
                         new_ni->status |= NS_IDENTIFIED;
                         new_ni->id_timestamp = user->signon;
@@ -815,7 +815,7 @@ void do_umode(const char *source, int ac, char **av)
                         }      
                         log("%s: %s!%s@%s AUTO-identified for nick %s", s_NickServ,
                         user->nick, user->username, user->host, user->nick);
-                        notice_lang(s_NickServ, user, NICK_IDENTIFY_X_MODE_R, user->nick);                                   
+                        /* notice_lang(s_NickServ, user, NICK_IDENTIFY_X_MODE_R);*/
                         if (!(new_ni->status & NS_RECOGNIZED))                    
                             check_memos(user); 
                         strcpy(new_ni->nick, user->nick);

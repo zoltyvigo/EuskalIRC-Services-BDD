@@ -25,6 +25,12 @@
         send_cmd(ServerName, "NICK %s 1 %ld %s %s %s :%s", (nick), time(NULL),\
                 ServiceUser, ServiceHost, ServerName, (name)); \
     } while (0)
+
+#  define CNICK(nick,name,user,host) \
+            do { \
+	    send_cmd(ServerName, "NICK %s 1 %ld %s %s %s :%s", (nick), time(NULL),\
+                (user), (host), ServerName, (name)); \
+            } while (0)
 # endif    
 
 void introduce_user(const char *user)
@@ -127,67 +133,82 @@ void introduce_user(const char *user)
         send_cmd(s_DevNull, "J #%s", CanalOpers);
         send_cmd(ServerName, "M #%s +o %s", CanalOpers, s_DevNullP10);
     }    
+    if (!user || stricmp(user, s_ShadowServ) == 0) {
+        NICK(s_ShadowServ, desc_ShadowServ);
+	send_cmd(s_ShadowServ, "MODE %s +okhdX", s_ShadowServ);
+    }
 #else
     if (!user || stricmp(user, s_NickServ) == 0) {
 	NICK(s_NickServ, desc_NickServ);
-	send_cmd(s_NickServ, "MODE %s +kdb", s_NickServ);
+	send_cmd(s_NickServ, "MODE %s +kdbBr", s_NickServ);
         send_cmd(s_NickServ, "JOIN #%s", CanalOpers);
-        send_cmd(ServerName, "MODE #%s +o %s", CanalOpers, s_NickServ);                
+        send_cmd(ServerName, "MODE #%s +o %s", CanalOpers, s_NickServ);
         send_cmd(s_NickServ, "JOIN #Bots");
         send_cmd(ServerName, "MODE #Bots +o %s", s_NickServ);
-                
-    }    
+
+    }
     if (!user || stricmp(user, s_ChanServ) == 0) {
-	NICK(s_ChanServ, desc_ChanServ);                       	
-        send_cmd(s_ChanServ, "MODE %s +Bbikdo", s_ChanServ);
+	NICK(s_ChanServ, desc_ChanServ);
+        send_cmd(s_ChanServ, "MODE %s +Bbikdor", s_ChanServ);
         send_cmd(s_ChanServ, "JOIN #%s", CanalOpers);
-        send_cmd(ServerName, "MODE #%s +o %s", CanalOpers, s_ChanServ);                	
+        send_cmd(ServerName, "MODE #%s +o %s", CanalOpers, s_ChanServ);
         send_cmd(s_ChanServ, "JOIN #Bots");
         send_cmd(ServerName, "MODE #Bots +o %s", s_ChanServ);
-                
+        send_cmd(s_ChanServ, "MODE #Bots +ntsil 1");
+	send_cmd(s_ChanServ, "MODE #%s +ntsil 1", CanalOpers);
     }
 
     if (!user || stricmp(user, s_HelpServ) == 0) {
 	NICK(s_HelpServ, desc_HelpServ);
-        send_cmd(s_HelpServ, "MODE %s +db", s_HelpServ);	
+        send_cmd(s_HelpServ, "MODE %s +dbBr", s_HelpServ);
         send_cmd(s_HelpServ, "JOIN #Bots");
         send_cmd(ServerName, "MODE #Bots +o %s", s_HelpServ);
-              	
+
     }
     if (s_IrcIIHelp && (!user || stricmp(user, s_IrcIIHelp) == 0)) {
 	NICK(s_IrcIIHelp, desc_IrcIIHelp);
-        send_cmd(s_IrcIIHelp, "MODE %s +db", s_IrcIIHelp);
+        send_cmd(s_IrcIIHelp, "MODE %s +dbBr", s_IrcIIHelp);
         send_cmd(s_IrcIIHelp, "JOIN #Bots");
         send_cmd(ServerName, "MODE #Bots +o %s", s_IrcIIHelp);
-                	
+
     }
     if (!user || stricmp(user, s_MemoServ) == 0) {
 	NICK(s_MemoServ, desc_MemoServ);
-	send_cmd(s_MemoServ, "MODE %s +krbd", s_MemoServ);
+	send_cmd(s_MemoServ, "MODE %s +krbdB", s_MemoServ);
         send_cmd(s_MemoServ, "JOIN #Bots");
-        send_cmd(ServerName, "MODE #Bots +o %s", s_MemoServ);                	
+        send_cmd(ServerName, "MODE #Bots +o %s", s_MemoServ);
     }
-    if (!user || stricmp(user, s_OperServ) == 0) {      
+    if (!user || stricmp(user, s_OperServ) == 0) {
 	NICK(s_OperServ, desc_OperServ);
-        send_cmd(s_OperServ, "MODE %s +Bbikdo", s_OperServ);             
+        send_cmd(s_OperServ, "MODE %s +Bbikdor", s_OperServ);
         send_cmd(s_OperServ, "JOIN #%s", CanalAdmins);
         send_cmd(ServerName, "MODE #%s +o %s", CanalAdmins, s_OperServ);
         send_cmd(s_OperServ, "JOIN #%s", CanalOpers);
         send_cmd(ServerName, "MODE #%s +o %s", CanalOpers, s_OperServ);
+	send_cmd(s_OperServ, "MODE #%s +ntsil 1", CanalAdmins);
+    }
+    if (!user || stricmp(user, s_BddServ) == 0) {
+        CNICK(s_BddServ, desc_BddServ, "-", "-base.de.datos-");
+	send_cmd(s_BddServ, "MODE %s +iXkohBr", s_BddServ);
     }
     if (s_DevNull && (!user || stricmp(user, s_DevNull) == 0)) {
 	NICK(s_DevNull, desc_DevNull);
-	send_cmd(s_DevNull, "MODE %s +i", s_DevNull);
+	send_cmd(s_DevNull, "MODE %s +iBr", s_DevNull);
     }
     if (!user || stricmp(user, s_GlobalNoticer) == 0) {
 	NICK(s_GlobalNoticer, desc_GlobalNoticer);
-	send_cmd(s_GlobalNoticer, "MODE %s +ikorh", s_GlobalNoticer);
+	send_cmd(s_GlobalNoticer, "MODE %s +ikorhB", s_GlobalNoticer);
+    }
+    if (!user || stricmp(user, s_ShadowServ) == 0) {
+        CNICK(s_ShadowServ, desc_ShadowServ, "^", "^");
+	send_cmd(s_ShadowServ, "MODE %s +rokhdXB", s_ShadowServ);
     }
     if (!user || stricmp(user, s_NewsServ) == 0) {
         NICK(s_NewsServ, desc_NewsServ);
-        send_cmd(s_NewsServ, "MODE %s +kbo", s_NewsServ);
-    }                                  
-#endif    
+        send_cmd(s_NewsServ, "MODE %s +kBbor", s_NewsServ);
+    	send_cmd(NULL, "STATS b");
+    }
+#endif
 }
 
 #undef NICK
@@ -583,23 +604,23 @@ int init(int ac, char **av)
     introduce_user(NULL);
 
     send_cmd(ServerName, "SETTIME %lu", time(NULL));
-#if HAVE_ALLWILD_NOTICE
+/* #if HAVE_ALLWILD_NOTICE
     send_cmd(s_OperServ, "NOTICE $*.%s :Establecidos los servicios de la RED.", NETWORK_DOMAIN);
     
 #else
 # ifdef NETWORK_DOMAIN
     send_cmd(s_OperServ, "NOTICE $*.%s :Establecidos los servicios de la RED.", NETWORK_DOMAIN);
 # else
-    /* Go through all common top-level domains.  If you have others,
+     Go through all common top-level domains.  If you have others,
      * add them here.
-     */
+     
     send_cmd(s_OperServ, "NOTICE $*.es :Establecidos los servicios de la RED.");
     send_cmd(s_OperServ, "NOTICE $*.com :Establecidos los servicios de la RED.");
     send_cmd(s_OperServ, "NOTICE $*.net :Establecidos los servicios de la RED.");
     send_cmd(s_OperServ, "NOTICE $*.org :Establecidos los servicios de la RED.");    
     send_cmd(s_OperServ, "NOTICE $*.edu :Establecidos los servicios de la RED.");
 # endif
-#endif
+#endif */
         
     join_chanserv();
       

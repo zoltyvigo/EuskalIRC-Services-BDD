@@ -37,6 +37,13 @@ char *s_GlobalNoticer;
 char *s_NewsServ;
 char *s_IrcIIHelp;
 char *s_DevNull;
+char *s_BddServ;
+char *OperHost;
+char *AdminHost;
+
+
+char *s_ShadowServ;
+
 #ifdef IRC_UNDERNET_P10
 char s_NickServP10[4];
 char s_ChanServP10[4];
@@ -57,6 +64,9 @@ char *desc_GlobalNoticer;
 char *desc_NewsServ;
 char *desc_IrcIIHelp;
 char *desc_DevNull;
+
+char *desc_ShadowServ;
+char *desc_BddServ;
 
 char *PIDFilename;
 char *MOTDFilename;
@@ -126,9 +136,9 @@ int   CSInhabit;
 int   CSRestrictDelay;
 int   CSListOpersOnly;
 int   CSListMax;
-int   ShadowServ;
+/* int   ShadowServ;
 char *NickShadow;
-
+*/
 int   MSMaxMemos;
 int   MSSendDelay;
 int   MSNotifyAll;
@@ -191,6 +201,8 @@ Directive directives[] = {
     { "ChanServDB",       { { PARAM_STRING, 0, &ChanDBName } } },
     { "ChanServName",     { { PARAM_STRING, 0, &s_ChanServ },
                             { PARAM_STRING, 0, &desc_ChanServ } } },
+    { "ShadowServName",	  { { PARAM_STRING, 0, &s_ShadowServ },
+    			    { PARAM_STRING, 0, &desc_ShadowServ } } },
     { "CSAccessMax",      { { PARAM_POSINT, 0, &CSAccessMax } } },
     { "CSAutokickMax",    { { PARAM_POSINT, 0, &CSAutokickMax } } },
     { "CSAutokickReason", { { PARAM_STRING, 0, &CSAutokickReason } } },
@@ -228,6 +240,10 @@ Directive directives[] = {
     { "NickServName",     { { PARAM_STRING, 0, &s_NickServ },
                             { PARAM_STRING, 0, &desc_NickServ } } },
     { "NoBackupOkay",     { { PARAM_SET, 0, &NoBackupOkay } } },
+    
+    { "BddServName",	  { { PARAM_STRING, 0, &s_BddServ },
+    			    { PARAM_STRING, 0, &desc_BddServ } } },
+    
     { "NoSplitRecovery",  { { PARAM_SET, 0, &NoSplitRecovery } } },
     { "NSAccessMax",      { { PARAM_POSINT, 0, &NSAccessMax } } },
     { "NSAllowKillImmed", { { PARAM_SET, 0, &NSAllowKillImmed } } },
@@ -266,6 +282,9 @@ Directive directives[] = {
 #endif        
     { "ServicesRoot",     { { PARAM_STRING, 0, &ServicesRoot } } },
     { "ServiceUser",      { { PARAM_STRING, 0, &temp_userhost } } },
+    { "OperHost",	  { { PARAM_STRING, 0, &OperHost } } },
+    { "AdminHost",	  { { PARAM_STRING, 0, &AdminHost } } },
+    
 #ifdef REG_NICK_MAIL   
 #ifdef SENDMAIL
     { "SendMailPatch",    { { PARAM_STRING, 0, &SendMailPatch } } },
@@ -278,8 +297,8 @@ Directive directives[] = {
     { "SendFrom",         { { PARAM_STRING, 0, &SendFrom } } },
     { "WebNetwork",       { { PARAM_STRING, 0, &WebNetwork } } },
 #endif
-    { "ShadowServ",       { { PARAM_SET, PARAM_FULLONLY, &ShadowServ } } },
-    { "NickShadow",       { { PARAM_STRING, 0, &NickShadow } } },    
+  /*  { "ShadowServ",       { { PARAM_SET, PARAM_FULLONLY, &ShadowServ } } }, */
+   /* { "ShadowServ",       { { PARAM_STRING, 0, &s_ShadowServ } } },    */
     { "CanalAdmins",      { { PARAM_STRING, 0, &CanalAdmins } } },
     { "CanalOpers",       { { PARAM_STRING, 0, &CanalOpers } } },            
     { "StrictPasswords",  { { PARAM_SET, 0, &StrictPasswords } } },
@@ -525,6 +544,8 @@ int read_config()
     CHECK(ServerNumerico);
 #endif    
     CHECK(ServerDesc);  
+    CHECK(OperHost);
+    CHECK(AdminHost);
     CHEK2(temp_userhost, ServiceUser);
     CHEK2(s_NickServ, NickServName);
     CHEK2(s_ChanServ, ChanServName);
@@ -533,6 +554,7 @@ int read_config()
     CHEK2(s_OperServ, OperServName);
     CHEK2(s_GlobalNoticer, GlobalName);
     CHEK2(s_NewsServ, NewsServName);
+    CHEK2(s_BddServ, BddServName);
     CHEK2(PIDFilename, PIDFile);
     CHEK2(MOTDFilename, MOTDFile);
     CHECK(HelpDir);
@@ -611,8 +633,8 @@ int read_config()
     }
     
     
-    if (ShadowServ) 
-        CHECK(NickShadow);
+    if (s_ShadowServ) 
+        CHECK(desc_ShadowServ);
      
     return retval;
 }

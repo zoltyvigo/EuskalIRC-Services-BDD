@@ -2,7 +2,7 @@
 #
 # Services esta protegido por derechos de autor (c) 1996-1999 Andy Church
 #     E-mail: <achurch@dragonfire.net>
-#g Este programa es gratis pero esta registrado; vea el archivo COPYING para
+# Este programa es gratis pero esta registrado; vea el archivo COPYING para
 # detalles.
 # Traducción por:
 # José R. Holzmann "Joselito" joselito@sandnet.org
@@ -124,16 +124,16 @@ USER_RECORD_NOT_FOUND
 UNKNOWN_COMMAND
 	Comando desconocido 12%s.
 UNKNOWN_COMMAND_HELP
-	Comando desconocido 12%s.  "12/msg %s HELP" para ayuda.
+	Comando desconocido 12%s. "/msg %s HELP" para ayuda.
 SYNTAX_ERROR
 	Sintaxis: 12%s
 MORE_INFO
 	12/msg %s HELP %s para mas información.
 NO_HELP_AVAILABLE
-	No hay ayuda disponible para 12%s.
+	No dispongo de ayuda para 12%s.
 
 BAD_USERHOST_MASK
-	Mascara debe ser en formato 12usuario@12host.
+	La máscara debe estar en formato 12usuario@12host.
 
 BAD_EXPIRY_TIME
 	Tiempo de expiración invalido.
@@ -141,7 +141,7 @@ BAD_EXPIRY_TIME
 SERVICE_OFFLINE
 	12%s esta actualmente fuera de servicio.
 READ_ONLY_MODE
-	4Noticia:12 Services esta en modo de leer solamente; cambios no serán grabados!
+	4Advertencia:12 Los servicios están en modo de sólo lectura; los cambios no serán grabados!
 ACCESS_DENIED
 	4Acceso denegado.
 PERMISSION_DENIED
@@ -150,20 +150,20 @@ PASSWORD_INCORRECT
 	4Contraseña incorrecta.
 
 MORE_OBSCURE_PASSWORD
-	Intente de nuevo con una contraseña mas difícil. Contraseñas deben ser de 5 caracteres mínimo,no debe ser algo fácil de descifrar (ejemplo. su verdadero nombre o su nick), tampoco debe contener espacios.
+	Intente de nuevo con una contraseña mas difícil. Las contraseñas deben ser de 5 caracteres mínimo,no debe ser algo fácil de descifrar (ejemplo. su verdadero nombre o su nick), tampoco deben contener espacios.
 PASSWORD_TRUNCATED
-	4Noticia: Su contraseña ha sido limitada a 12%d caracteres.
+	4Atención: Su contraseña ha sido limitada a 12%d caracteres.
 
 NICK_NOT_REGISTERED
 	Tu nick no esta registrado.
 NICK_NOT_REGISTERED_HELP
-	Tu nick no esta registrado. Escriba 12/msg %s HELP12 para mayor información de como registrar su nick.
+	Tu nick no esta registrado. Escribe 12/msg %s HELP12 para obtener informacion sobre como registrar su nick.
 NICK_SUSPENDED
 	Este nick ha sido 12SUDPENDido temporalmente.
 	Motivo: %s
 NICK_IS_SUSPENDED
 	Tu nick 12%s ha sido 12SUSPENDido temporalmente.
-	Causa de suspension: %s
+	Causa de suspensión: %s
 NICK_IS_REACTIVED
 	Tu nick 12%s ha sido reactivado.
 	Vuelve a identificar con tu nick.
@@ -174,7 +174,7 @@ NICK_X_NOT_IN_USE
 NICK_X_FORBIDDEN
 	El nick 12%s no puede ser registrado o utilizado.
 NICK_X_SUSPENDED
-	El nick 12%s ha sido suspendido temporalmente. 
+	El nick 12%s ha sido suspendido temporalmente.
 CHAN_X_NOT_REGISTERED
 	El canal 12%s no esta registrado.
 CHAN_X_NOT_IN_USE
@@ -188,8 +188,8 @@ NICK_IDENTIFY_REQUIRED
 	Vuelva a intentar después de escribir 12/msg %s IDENTIFY contraseña.
 
 CHAN_IDENTIFY_REQUIRED
-	Contraseña es requerida para ese comando.
-	Vuelva a intentar después de escribir 12/msg %s IDENTIFY contraseña.
+	La contraseña es necesaria para ese comando.
+	Vuelve a intentar después de escribir 12/msg %s IDENTIFY contraseña.
 
 ###########################################################################
 #
@@ -200,11 +200,11 @@ CHAN_IDENTIFY_REQUIRED
 # Automatic messages
 NICK_IS_REGISTERED
 	4Este nick es pertenece a otra persona. Escoge otro nick.
-	(Si es el tuyo, escribe 12/msg %s IDENTIFY contraseña.)
+	Si es el tuyo, escribe 12/msg %s IDENTIFY contraseña.
 NICK_IS_SECURE
 	Este nick esta registrado y protegido. Si es su nick, escriba 12/msg %s IDENTIFY contraseña. Si no lo es, escoge un nick diferente.
 NICK_MAY_NOT_BE_USED
-	Este nick no se puede utilizar. Escoger otro nick.
+	Este nick no se puede utilizar. Debes escoger otro nick.
 DISCONNECT_IN_1_MINUTE
 	4Si no cambias tu nick antes de un minuto, serás desconectado.
 DISCONNECT_IN_20_SECONDS
@@ -213,9 +213,9 @@ DISCONNECT_NOW
 	Este nick ha sido registrado; no lo puedes usar.
 	Escoge otro nick antes de reconectar.
 FORCENICKCHANGE_IN_1_MINUTE
-	4Si no cambias tu nick antes de un minuto, será cambiado tu nick.
+	4Si no cambias tu nick antes de un minuto, será cambiado por otro aletorio
 FORCENICKCHANGE_IN_20_SECONDS
-	12Si no cambias tu nick antes de 20 segundos, será cambiado tu nick.
+	12Si no cambias tu nick antes de 20 segundos, será cambiado por otro aleatorio.
 FORCENICKCHANGE_NOW
 	Este nick ha sido registrado; no lo puedes usar.
 	Tu nick ha sido cambiado a 12%s.
@@ -224,28 +224,28 @@ FORCENICKCHANGE_NOW
 NICK_REGISTER_SYNTAX
 	12REGISTER <direccion@correo.electronico>
 NICK_REGISTRATION_DISABLED
-	Lo siento, el registro de nicks esta temporalmente deshabilitado.
+	El registro de nicks esta temporalmente deshabilitado.
 NICK_REGISTRATION_FAILED
-	Lo siento, el registro ha fallado.
+	El registro ha fallado.
 NICK_REG_PLEASE_WAIT
-	Favor de esperar 12%d segundos antes de volver a utilizar el comando 12REGISTER.
+	Debe esperar 12%d segundos antes de volver a utilizar el comando 12REGISTER.
 NICK_CANNOT_BE_REGISTERED
-	Nick 12%s no puede ser registrado.
+	El nick 12%s no puede ser registrado.
 NICK_ALREADY_REGISTERED
-	Nick 12%s ya esta registrado!
+	El nick 12%s ya esta registrado!
 NICK_MAIL_INVALID
 	Dirección Email invalida, utiliza tu mail REAL!!
 NICK_MAIL_ANONYMOUS
-	Dominio de correo inaceptable.
-	No utilice servicios anonimos.
+	Dominio de correo no válido.
+	No utilices servicios anonimos.
 NICK_MAIL_ABUSE
-	No puedes registrar mas de %d nicks por email.	
+	No puedes registrar mas de %d nicks por email.
 NICK_REGISTERED
-	Nick 12%s esta registrado bajo tu cuenta: 12%s
+	El nick 12%s esta registrado bajo tu cuenta: 12%s
 NICK_PASSWORD_IS
 	Tu contraseña es 12%s, recuerdala para uso posterior.
 NICK_IN_MAIL
-	Revisa tu correo en unos minutos, te llegará una password.
+	Revisa tu correo en unos minutos, te llegará una password temporal.
 
 # IDENTIFY responses
 NICK_IDENTIFY_SYNTAX
@@ -255,37 +255,37 @@ NICK_IDENTIFY_FAILED
 NICK_IDENTIFY_SUCCEEDED
 	3Contraseña aceptada. Bienvenid@ a casa ;)
 NICK_IDENTIFY_X_MODE_R
-	12%s has sido AUTOidentificado por tu modo +r
+	3Contraseña aceptada. Bienvenid@ a casa ;)12 [identificado por +r]
 NICK_IS_IDENTIFIED
-	Ya estabas identificad@ ;)
+	3Ya estabas identificad@ ;)
 
 # DROP responses
 NICK_DROP_SYNTAX
-	12DROP
+	12DROP [nick]
 NICK_DROP_DISABLED
-	Lo siento, la cancelación de nicks esta temporalmente deshabilitada.
+	La cancelación de nicks esta temporalmente deshabilitada.
 NICK_DROP_FORBIDDEN
-	No se puede dropear un nick forbideado
+	No se puede dropar un nick forbideado
 NICK_DROPPED
 	Tu nick ha sido cancelado.
 NICK_X_DROPPED
-	Nick 12%s ha sido cancelado.
+	El nick 12%s ha sido cancelado.
 
 # SET responses
 NICK_SET_SYNTAX
-	12SET <opcion> <parametros>
+	12SET <opción> <parámetros>
 NICK_SET_SERVADMIN_SYNTAX
-	12SET [nick] <option> <parameters>
+	12SET [nick] <opción> <parámetros>
 NICK_SET_DISABLED
-	Lo siento, la configuración de opciones de nick esta temporalmente deshabilitara.
+	La configuración de opciones de nick esta temporalmente deshabilitada.
 NICK_SET_UNKNOWN_OPTION
 	4Opción SET12 %s desconocida.
 NICK_SET_UNKNOWN_OPTION_OR_BAD_NICK
-	4Opción SET 12%s desconocida, o tu nick no esta registrado.
+	4Opción SET 12%s desconocida, o nick no registrado.
 
 # SET PASSWORD responses
 NICK_SET_PASSWORD_FAILED
-	Lo siento, la contraseña no se pudo cambiar.
+	La contraseña no se pudo cambiar.
 NICK_SET_PASSWORD_CHANGED
 	Contraseña cambiada.
 NICK_SET_PASSWORD_CHANGED_TO
@@ -305,9 +305,9 @@ NICK_SET_EMAIL_UNSET
 
 # SET LANGUAGE responses
 NICK_SET_LANGUAGE_SYNTAX
-	12SET LANGUAGE <numbero>
+	12SET LANGUAGE <número>
 NICK_SET_LANGUAGE_UNKNOWN
-	Numero %d de lenguaje desconocido.  Escriba 12/msg %s HELP SET LANGUAGE para una lista de lenguajes disponibles.
+	Numero %d de lenguaje desconocido.  Escriba 12/msg %s HELP SET LANGUAGE para ver una lista de lenguajes disponibles.
 NICK_SET_LANGUAGE_CHANGED
 	Lenguaje cambiado a 12Castellano.
 
@@ -347,39 +347,68 @@ NICK_SET_PRIVATE_OFF
 NICK_SET_HIDE_SYNTAX
 	12SET HIDE {EMAIL | USERMASK | QUIT} {ON | OFF}
 NICK_SET_HIDE_EMAIL_ON
-	Su dirección de E-mail esta oculta para exhibición de 12%s INFO.
+	Tu dirección de E-mail no se mostrará en 12%s INFO.
 NICK_SET_HIDE_EMAIL_OFF
-	Su dirección de E-mail esta visible para exhibición de 12%s INFO.
+	Tu dirección de E-mail se mostrará en 12%s INFO.
 NICK_SET_HIDE_MASK_ON
-	Su ultima mascara de usuario@host esta oculta para exhibición de 12%s INFO.
+	Tu ultima mascara de usuario@host no se mostrará en 12%s INFO.
 NICK_SET_HIDE_MASK_OFF
-	Su ultima mascara de usuario@host esta visible para exhibición de 12%s INFO.
+	Tu ultima mascara de usuario@host se mostrará en 12%s INFO.
 NICK_SET_HIDE_QUIT_ON
-	Su ultimo mensaje de quit esta oculto para exhibición de 12%s INFO.
+	Tu ultimo mensaje de quit no se mostrará en 12%s INFO.
 NICK_SET_HIDE_QUIT_OFF
-	Su ultimo mensaje de quit esta visible para exhibición de 12%s INFO.
+	Tu ultimo mensaje de se mostrará en 12%s INFO.
+
+NICK_SET_VHOST_SYNTAX
+	12SET [nick] VHOST {<máscara> | OFF}
+NICK_SET_VHOST_ON
+	V-host cambiada a 12%s
+NICK_SET_VHOST_OFF
+	V-Host deshabilitada.
+
+NICK_MUST_BE_ON_BDD
+	El nick debe estar en la BDD para poder utilizar esto.
+
+# SET BDD responses
+NICK_SET_BDD_SYNTAX
+	12SET [nick] BDD {ON | OFF}
+NICK_SET_BDD_ON
+	El nick 12%s ha sido migrado a BDD
+NICK_SET_BDD_OFF
+	El nick 12%s ha salido de la BDD
+
 
 # SET NOEXPIRE responses
 NICK_SET_NOEXPIRE_SYNTAX
 	12SET [nick] NOEXPIRE {ON | OFF}
 NICK_SET_NOEXPIRE_ON
-	Nick 12%s 4NO expirará.
+	El nick 12%s no expirará.
 NICK_SET_NOEXPIRE_OFF
-	Nick 12%s 4si expirará.
+	El nick 12%s si expirará.
+
+NICK_INFO_SERV_OPER
+	Es un 12OPERador de los servicios de RED
+NICK_INFO_SERV_ADMIN
+	Es un 12ADMINistrador de los servicios de RED
+NICK_INFO_SERV_ROOT
+	Es el 12ROOT de la RED
+
+NICK_DO_INFO_OVER_OPER
+	12%s ha utilizado %s INFO sobre ti
 
 # ACCESS responses
 NICK_ACCESS_SYNTAX
 	12ACCESS {ADD | DEL | LIST} [mascara]
 NICK_ACCESS_ALREADY_PRESENT
-	Mascara 12%s ya existe en su lista de acceso.
+	La máscara 12%s ya existe en su lista de acceso.
 NICK_ACCESS_REACHED_LIMIT
-	Lo siento, solo puedes tener 12%d entradas en el access para tu nick.
+	Sólo puedes tener 12%d entradas en el access para tu nick.
 NICK_ACCESS_ADDED
-	12%s agregada a su lista de acceso.
+	12%s agregada a tu lista de acceso.
 NICK_ACCESS_NOT_FOUND
-	12%s no encontrada en su lista de acceso.
+	12%s no encontrada en tu lista de acceso.
 NICK_ACCESS_DELETED
-	12%s borrada de su lista de acceso.
+	12%s borrada de yu lista de acceso.
 NICK_ACCESS_LIST
 	Lista de acceso:
 NICK_ACCESS_LIST_X
@@ -430,7 +459,7 @@ NICK_INFO_LINKED
 NICK_INFO_SUSPENDED
 	SUSPENDIDO: %s
 NICK_INFO_REALNAME
-	Realname de 12%s es 12%s
+	RealName de 12%s es 12%s
 NICK_INFO_ADDRESS
 	Ultima dirección: 12%s
 NICK_INFO_ADDRESS_ONLINE
@@ -458,8 +487,12 @@ NICK_INFO_OPT_PRIVATE
 	12Privado
 NICK_INFO_OPT_NONE
 	12Ninguna
+
+NICK_INFO_OPT_BDD
+	Migrado a BDD
+
 NICK_INFO_NO_EXPIRE
-	Expiración del nick: 4NO12 expirará.
+	Expiración del nick: no expirará
 NICK_INFO_LINKS
 	Linkado por 12%s (12%s)
 
@@ -469,7 +502,7 @@ NICK_LIST_SYNTAX
 NICK_LIST_SERVADMIN_SYNTAX
 	12LIST <patron> [FORBID] [NOEXPIRE] [SUSPEND]
 NICK_LIST_HEADER
-	Lista de entradas que satisfacen 12%s:
+	Lista de entradas que coinciden con 12%s:
 NICK_LIST_HIDDEN
 	    %-20s [Oculto]
 NICK_LIST_FORBIDDEN
@@ -502,9 +535,9 @@ NICK_RELEASED
 NICK_GHOST_SYNTAX
 	12GHOST <nick> [password]
 NICK_NO_GHOST_SELF
-	No puede aplicar ghost a si mismo!
+	No puedes hacerte ghost a ti mismo!
 NICK_GHOST_KILLED
-	Ghost con su nick ha sido desconectado.
+	Sesión fantasma de tu nick ha sido desconectada.
 
 # STATUS responses
 NICK_STATUS_OFFLINE
@@ -533,7 +566,7 @@ NICK_GETPASS_SYNTAX
 NICK_GETPASS_UNAVAILABLE
 	Comando 12GETPASS no disponible cuando encripción esta en uso.
 NICK_GETPASS_PASSWORD_IS
-	Contraseña para 12%s es 12%s.
+	La contraseña de 12%s es 12%s.
 
 # SUSPEND responses
 NICK_SUSPEND_SYNTAX
@@ -545,7 +578,7 @@ NICK_SUSPEND_SUSPENDED
 NICK_SUSPEND_OPER
 	Que intentas:??
 NICK_SUSPEND_SUCCEEDED
-	El nick 12%s ha sido 12SUSPENDido.
+	El nick 12%s ha sido suspendido.
 NICK_SUSPEND_FAILED
 	No se puede suspender nick 12%s!
 
@@ -557,7 +590,7 @@ NICK_SUSPEND_NOT_SUSPEND
 NICK_UNSUSPEND_SUCCEEDED
 	El nick 12%s ha sido reactivado.
 NICK_UNSUSPEND_FAILED
-	No se puede reactivarel nick 12%s!
+	No se puede reactivar el nick 12%s!
 
 
 # FORBID responses
@@ -566,7 +599,7 @@ NICK_FORBID_SYNTAX
 NICK_FORBID_FORBIDDEN
 	El nick 12%s ya estaba forbideado.
 NICK_FORBID_SUCCEEDED
-	El nick 12%s esta prohibido de ser usado.
+	El nick 12%s esta prohibido.
 NICK_FORBID_FAILED
 	No se puede prohibir nick 12%s!
 
@@ -635,7 +668,7 @@ CHAN_NOT_ALLOWED_OP
 CHAN_MAY_NOT_BE_USED
 	Este canal no puede ser utilizado.
 CHAN_NOT_ALLOWED_TO_JOIN
-	Usted no puede permanecer en este canal.
+	No puedes permanecer en este canal.
 
 # REGISTER responses
 CHAN_REGISTER_SYNTAX
@@ -650,21 +683,21 @@ CHAN_MUST_IDENTIFY_NICK
 	Por favor identifiquese primero con 12%s, utilizando el comando:
 	12/msg %s IDENTIFY contraseña
 CHAN_MAY_NOT_BE_REGISTERED
-	Canal 12%s no puede ser registrado.
+	El canal 12%s no puede ser registrado.
 CHAN_ALREADY_REGISTERED
-	Canal 12%s ya esta registrado!
+	El canal 12%s ya esta registrado!
 CHAN_MUST_BE_CHANOP
-	Usted debe ser operador de canal para poder registrarlo.
+	Debes ser operador de canal para poder registrarlo.
 CHAN_REACHED_CHANNEL_LIMIT
 	Lo siento, usted ya alcanzo su limite de 12%d canales.
 CHAN_EXCEEDED_CHANNEL_LIMIT
 	Lo siento, usted ya excedió su limite de 12%d canales.
 CHAN_REGISTRATION_FAILED
-	Lo siento, el registro ha fallado.
+	El registro ha fallado.
 CHAN_REGISTERED
-	Canal 12%s registrado bajo su nick: 12%s
+	El canal 12%s registrado bajo el nick: 12%s
 CHAN_PASSWORD_IS
-	Su contraseña de canal es 12%s, recuerdela para uso posterior.
+	La contraseña del canal es 12%s, recuerdala para uso posterior.
 
 # IDENTIFY responses
 CHAN_IDENTIFY_SYNTAX
@@ -680,14 +713,14 @@ CHAN_DROP_SYNTAX
 CHAN_DROP_DISABLED
 	Lo siento, la cancelación de registro de canal esta temporalmente deshabilitada.
 CHAN_DROPPED
-	Canal 12%s ha sido cancelado.
+	El canal 12%s ha sido cancelado.
 
 # SET responses
 CHAN_SET_SYNTAX
 	12SET <canal> <opcion> <parametros>
 
 CHAN_SET_DISABLED
-	Lo siento, el ajuste de opciones de canal esta temporalmente deshabilitada.
+	El ajuste de opciones de canal esta temporalmente deshabilitada.
 CHAN_SET_UNKNOWN_OPTION
 	4Opción SET 12%s desconocida.
 
@@ -705,11 +738,11 @@ CHAN_SUCCESSOR_UNSET
 
 # SET PASSWORD responses
 CHAN_SET_PASSWORD_FAILED
-	Lo siento, no se ha podido cambiar la contraseña.
+	No se ha podido cambiar la contraseña.
 CHAN_PASSWORD_CHANGED
-	12%s contraseña cambiada.
+	La contraseña de 12%s ha sido cambiada.
 CHAN_PASSWORD_CHANGED_TO
-	12%s contraseña cambiada a 12%s.
+	La contraseña de 12%s ha sido cambiada a 12%s.
 
 # SET DESC responses
 CHAN_DESC_CHANGED
@@ -717,25 +750,25 @@ CHAN_DESC_CHANGED
 
 # SET URL responses
 CHAN_URL_CHANGED
-	URL para 12%s cambiada a 12%s.
+	URL de 12%s cambiada a 12%s.
 CHAN_URL_UNSET
-	URL para 12%s desactivada.
+	URL de 12%s desactivada.
 
 # SET EMAIL responses
 CHAN_EMAIL_CHANGED
-	Dirección de E-mail para 12%s cambiada a 12%s.
+	Dirección de E-mail de 12%s cambiada a 12%s.
 CHAN_EMAIL_UNSET
-	Dirección de E-mail para 12%s desactivada.
+	Dirección de E-mail de 12%s desactivada.
 
 # SET ENTRYMSG responses
 CHAN_ENTRY_MSG_CHANGED
-	Mensaje de entrada para 12%s cambiado.
+	Mensaje de entrada de 12%s cambiado.
 CHAN_ENTRY_MSG_UNSET
-	Mensaje de entrada para 12%s desactivada.
+	Mensaje de entrada de 12%s desactivado.
 
 # SET TOPIC responses
 CHAN_SET_TOPIC_FAILED
-	Lo siento, no fue posible poner el tópic.
+	No fue posible poner el tópic.
 
 # SET MLOCK responses
 CHAN_SET_MLOCK_KEY_REQUIRED
@@ -747,25 +780,25 @@ CHAN_SET_MLOCK_LIMIT_POSITIVE
 CHAN_SET_MLOCK_UNKNOWN_CHAR
 	Modo 12%c es desconocido e ignorado.
 CHAN_MLOCK_CHANGED
-	Candado de modo de canal 12%s cambiado a 12%s.
+	Candado de modo del canal 12%s cambiado a 12%s.
 CHAN_MLOCK_REMOVED
-	Candado de modo de canal 12%s removido.
+	Candado de modo del canal 12%s eliminado.
 
 # SET KEEPTOPIC responses
 CHAN_SET_KEEPTOPIC_SYNTAX
 	12SET <canal> KEEPTOPIC {ON | OFF}
 CHAN_SET_KEEPTOPIC_ON
-	Opción de retención de tópico 12activada.
+	Retención de tópico 12activada.
 CHAN_SET_KEEPTOPIC_OFF
-	Opción de retención de tópico 12desactivada.
+	Retención de tópico 12desactivada.
 
 # SET TOPICLOCK responses
 CHAN_SET_TOPICLOCK_SYNTAX
 	12SET <canal> TOPICLOCK {ON | OFF}
 CHAN_SET_TOPICLOCK_ON
-	Opción de candado de tópico 12activada.
+	Candado de tópico 12activado.
 CHAN_SET_TOPICLOCK_OFF
-	Opción de candado de tópico 12desactivada.
+	Candado de tópico 12desactivado.
 
 # SET PRIVATE responses
 CHAN_SET_PRIVATE_SYNTAX
@@ -773,7 +806,7 @@ CHAN_SET_PRIVATE_SYNTAX
 CHAN_SET_PRIVATE_ON
 	Opción de privacidad 12activada.
 CHAN_SET_PRIVATE_OFF
-	Opción de privacidad 12desactivada.
+	Opción de privacidad 12desactivada.
 # SET SECUREOPS responses
 CHAN_SET_SECUREOPS_SYNTAX
 	12SET <canal> SECUREOPS {ON | OFF}
@@ -835,19 +868,19 @@ CHAN_SET_NOEXPIRE_OFF
 CHAN_ACCESS_SYNTAX
 	12ACCESS <canal> {ADD|DEL|LIST} [nick [nivel] | entrada-lista]
 CHAN_ACCESS_DISABLED
-	Lo siento, la modificación a la lista de acceso de canal esta temporalmente deshabilitada.
+	La modificación a la lista de acceso de canal esta temporalmente deshabilitada.
 CHAN_ACCESS_LEVEL_NONZERO
-	Nivel de acceso debe ser diferente de cero.
+	El nivel de acceso debe ser diferente de cero.
 CHAN_ACCESS_LEVEL_RANGE
-	Nivel de acceso debe estar entre 12%d y 12%d.
+	El nivel de acceso debe estar entre 12%d y 12%d.
 CHAN_ACCESS_NICKS_ONLY
-	Lista de acceso de canal debe contener solamente nicks registrados.
+	La lista de acceso de canal debe contener solamente nicks registrados.
 CHAN_ACCESS_REACHED_LIMIT
-	Lo siento, solo puede haber 12%d entradas en el access en un canal.
+	Sólo puede haber 12%d entradas en el access en un canal.
 CHAN_ACCESS_LEVEL_UNCHANGED
-	Nivel de acceso para 12%s en 12%s no ha cambiado de 12%d.
+	EL nivel de acceso para 12%s en 12%s no ha cambiado de 12%d.
 CHAN_ACCESS_LEVEL_CHANGED
-	Nivel de acceso para 12%s en 12%s ha sido cambiado a 12%d.
+	El nivel de acceso para 12%s en 12%s ha sido cambiado a 12%d.
 CHAN_ACCESS_ADDED
 	12%s ha sido agregado a lista de acceso de 12%s con nivel 12%d.
 CHAN_ACCESS_NO_SUCH_ENTRY
@@ -866,7 +899,7 @@ CHAN_ACCESS_LIST_HEADER
 	Lista de acceso de 12%s:
 	  Num   Niv  Nick
 CHAN_ACCESS_LIST_EMPTY
-	Lista de access de 12%s está vacia.
+	La lista de aceeso de 12%s está vacia.
 CHAN_ACCESS_LIST_FORMAT
 	  %3d  %4d  %s%s%s%s
 
@@ -1099,7 +1132,7 @@ MEMO_AT_LIMIT
 MEMO_OVER_LIMIT
 	4Atención: has pasado el limite máximo de mensajes (12%d). No podrás recibir mensajes nuevos hasta que borres algunos de los mensajes que tienes.
 MEMO_NEW_MEMO_ARRIVED
-	Usted tiene un mensaje nuevo de 12%s. Escribe 12/msg %s READ %d para leerlo.
+	Tienes un mensaje nuevo de 12%s. Escribe 12/msg %s READ %d para leerlo.
 # Multi-use responses
 MEMO_HAVE_NO_MEMOS
 	No tienes mensajes.
@@ -1739,10 +1772,10 @@ NICK_HELP
 	12%d días, caducará el registro. Los siguientes comandos
 	permiten el registro y mantenimiento de
 	nicks; para utilizarlos, escribe 12/msg %S comando.
-	
+
 	Para más información sobre un comando especifico, escribe
 	12/msg %S HELP comando
-	
+
 	    12REGISTER   Registra un nick
 	    12IDENTIFY   Identificarse con tu contraseña
 	    12ACCESS     Modificar la lista de direcciones autorizadas
@@ -1908,6 +1941,7 @@ NICK_HELP_SET
 	    12SECURE     Activa/desactiva el modo SECURE para tu nick
 	    12PRIVATE    Evita que su nick aparezca en 12/msg %S LIST
 	    12HIDE       Esconde ciertas informaciones sobre tu nick
+	    12VHOST      Permite cambiar parte de la IP virtual.
 	
 	Para utilizar este comando es necesario que te identifiques antes
 	con su contraseña (12/msg %S HELP IDENTIFY para mas
@@ -1972,7 +2006,7 @@ NICK_HELP_SET_SECURE
 
 NICK_HELP_SET_PRIVATE
 	Sintaxis: 12SET PRIVATE {ON | OFF}
-	
+
 	Activa/desactiva la opción privacidad de 12%S sobre tu
 	nick. Con 12PRIVATE activado, tu nick no aparecerá en las
 	listas de nicks generadas con el comando 12%S LIST.
@@ -1981,7 +2015,7 @@ NICK_HELP_SET_PRIVATE
 
 NICK_HELP_SET_HIDE
 	Sintaxis: 12SET HIDE {EMAIL | USERMASK | QUIT} {ON | OFF}
-	
+
 	Permite evites que ciertas informaciones sean
 	mostradas cuando alguien usa el comando 12%S INFO en tu
 	nick. Usted puede esconder su E-mail (12EMAIL), ultima
@@ -1989,13 +2023,22 @@ NICK_HELP_SET_HIDE
 	(12QUIT). El segundo parámetro especifica que información
 	debe ser mostrada (12OFF) o escondida (12ON).
 
+NICK_HELP_SET_VHOST
+	Sintaxis: 12SET VHOST {<mascara> | OFF}
+
+	Permite añadir/eliminar una entrada en la tabla W del IRCd, lo que
+	facilita una dirección virtual semi-personalizada, con una parte
+	generada a partir de la IP del cliente y otra a elegir medianta
+	el parámetro <máscara>. Usando OFF podemos volver al formato "estándar"
+
+
 NICK_HELP_RECOVER
 	Sintaxis: 12RECOVER <nick> [contraseña]
-	
+
 	Permite que recuperes tu nick si alguien mas lo ha
 	tomado; esto es lo mismo que 12%S hace automáticamente si
 	alguien intenta utilizar un nick protegido con kill.
-	
+
 	Cuando usted envía este comando, 12%S conectara en línea a un
 	usuario falso con el mismo nick que el usuario que usted
 	desea recuperar. Esto causara que los servidores de IRC
@@ -2097,10 +2140,18 @@ NICK_SERVADMIN_HELP
 	    12UNSUSPEND  Reactiva un nick suspendido
 	    12FORBID     Evita que un nick sea utilizado
 	    12UNFORBID   Libera un nick prohibido
+	    12RENAME     Cambia un nick por otro generado aleatoriamente.
 	
 	4Administradores de Services pueden cancelar cualquier nick
 	sin necesidad de identificarse por el mismo, y pueden ver la
 	lista de acceso de cualquier nick (12/msg %S ACCESS LIST <nick>).
+
+
+NICK_SERVADMIN_HELP_RENAME
+	Sintaxis: 12RENAME <nick>
+	
+	Permite cambiar un nick por otro generado de manera aleatoria del tipo
+	'invXXXXXX'
 
 NICK_SERVADMIN_HELP_DROP
 	Sintaxis: 12DROP [nick]
@@ -2259,6 +2310,7 @@ CHAN_HELP
 	    12RESET      Resetea el canal
 	    12IRCOPS     Ver los Admins/Ircops/Opers on-line
 	    12VERIFY     Verificar si un usuario es Admin/Ircops/Opers o no
+	    12DELACCESS  Elimina nuestro registro de un canal.
 
 CHAN_HELP_EXPIRES
 	
@@ -2754,13 +2806,29 @@ CHAN_HELP_RESET
 
 CHAN_HELP_VERIFY
 	Sintaxis: 12VERIFY <nick>
-	 
+
 	Verifica si el 12nick es o no un operador/administrador de los
 	servicios de la red.
 
+CHAN_HELP_DELACCESS
+	Sintaxis: 12DELACCESS <#canal>
+
+	Nos elimina el registro que tengamos en el canal deseado, sin necesidad
+	de tener que ser borrados por un operador del canal ó el fundador
+
+CHAN_SYNTAX_DELACCESS
+	DELACCESS <#canal>
+
+CHAN_MSG_DELACCESS_SUCCESS
+	Tu registro en 12%s ha sido eliminado
+
+CHAN_MSG_DELACCESS_NEG
+	No tienes registro positivo en el canal 12%s
+
+
 CHAN_HELP_IRCOPS
 	Sintaxis: 12IRCOPS
-	 
+
 	Lista todos los usuarios on-line que son operadores o
 	administradores de los servicios de la red. 
 
@@ -2998,7 +3066,7 @@ MEMO_SERVADMIN_HELP_SET_LIMIT
 	habilita al 12usuario a recibir y mantener tantos memos como
 	el desee. Si usted NO ESPECIFICA usuario SU propio límite
 	es el que se establece.
-	
+	mascara
 	Agregando el parámetro 12HARD, previene que el usuario pueda
 	cambiar dicho límite. No agregando 12HARD tiene el efecto
 	opuesto, habilitando al usuario a cambiar el límite (aun si
@@ -3050,6 +3118,8 @@ OPER_HELP
 	    12SETTIME     Sincroniza la RED a tiempo real
 	    12APODERA     MassDeop de los usuarios de un canal
 	    12LIMPIA      MassKick de los usuarios de un canal
+	    12KILL        Expulsa a un usuario de la red anónimamente
+	    12VHOST       Cambia por completo el vhost de un usuario
 
 	
 	Comandos disponibles solo para los Administradores de
@@ -3079,18 +3149,43 @@ OPER_HELP
 
 OPER_HELP_GLOBAL
 	Sintaxis: 12GLOBAL <mensaje>
-	
+
 	Habilita a los IRCops a enviar un 12mensaje a todos los
 	usuarios en la red. El mensaje puede ser enviado para 12%s.
 
+OPER_HELP_VHOST
+	Sintaxis: 12VHOST <nick> [mascara]
+	
+	Modifica la máscara virtual de un usuario (por tabla V) que esté +r, ó
+	la elimina, en caso de que no introduzcamos [mascara]
+
+OPER_HELP_KILL
+	Sintaxis: 12VHOST <nick> [mensaje]
+	
+	Realiza un KILL 'anónimo' a un usuario de la red. Si no se especifica
+	[mensaje], se envía "Have a nice day!"
+
+OPER_VHOST_SYNTAX
+	VHOST <nick> [máscara]
+
+OPER_VHOST_SET
+	Vhost para 12%s cambiada a 12%s
+	
+
+OPER_VHOST_UNSET
+	VHost para 12%s deshabilitada
+
+OPER_KILL_SUCCESS
+	Orden KILL enviada con éxito
+
 OPER_HELP_STATS
 	Sintaxis: 12STATS [AKILL | ALL]
-	
+
 	Sin opciones, muestra la cantidad de usuarios e IRCops en
 	línea, el mas alto numero de usuarios en línea desde que los
 	servicios se pusieron en funcionamiento, y desde cuando
 	están funcionando los servicios.
-	
+
 	Con el parámetro 12AKILL muestra la longitud de la lista de
 	AKILL y la fecha actual de expiración.
 	
@@ -3657,6 +3752,14 @@ SERVICES_CREDITS
 	o más informacion en la siguiente web:
 	12http://irc.zolty.net/upworld.html
 	
+	----------------------------------------------------------------
+	
+	Esta es una modificación de los Upworld de Toni García creada
+	para interactuar con la Base de Datos Distribuida del IRCd de
+	la red iRC-Hispano. Modificación esctrita por David Martín Díaz
+	[x] - <equis@fuckmicrosoft.com>
+
+
 ######## NOTA IMPORTANTE ##########
 ######## NO BORRES NI CAMBIES LAS LINEAS DE LOS CREDITOS
 ########
@@ -3666,3 +3769,60 @@ SERVICES_CREDITS
 	Las ultimas versiones de los Services Originales pueden ser obtenidas de:
 	La web de los Services es: <12http://ender.shadowfire.org/ircservices/>
 	El FTP de los services es: <12ftp://ender.shadowfire.org/pub/ircservices/>
+
+BDD_HELP
+	12%S permite llevar a cabo tareas varias de mantenimiento
+	y administración del sistema de Base de Datos Distribuida del
+	IRCD, así como simplificar su manejo. Permite llevar a cabo
+	operaciones no integradas en algún otro service, como
+	pueden ser:
+		
+		12COMPACTAR     Compacta las tablas de la BDD para ahorrar CPU y disco
+		12REGENERAR     Regenera manualmente una clave de cifrado para IPs
+		12ACTUALIZAR    Re-lee información del servidor para tener una sincronización
+		12TOCAR         Toca manualmente una tabla.
+	
+	4ATENCIÓN! El uso de cualquiera de estos comandos puede resultar peligroso
+	para la integridad de las tablas en la Base de Datos Distribuida!
+
+BDD_HELP_COMPACTAR
+	Sintaxis: 12COMPACTAR
+	
+	Compacta tablas de la base de datos para ahorrar CPU y espacio en disco.
+	Las tablas de toda la red son reducidas según sea conveniente.
+
+BDD_HELP_REGENERAR
+	Sintaxis: 12REGENERAR
+	
+	Genera una clave de cifrado aleatoria de alta calidad (pero de 64 bits)
+	para el sistema de cifrado de IPs virtuales. Esta clave 4NO debería ser conocida
+	por nadie más que no sea el que la genera.
+	
+BDD_HELP_ACTUALIZAR
+	Sintaxis: 12ACTUALIZAR
+	
+	Actualiza los contadores internos de los services en caso de un posible "desfase"
+	a causa de algún "raw" o algún otro nodo. Normalmente, nunca es necesario usar esto,
+	ya que se producen sincronizaciones cada vez que se accede a la BDD.
+
+BDD_HELP_TOCAR
+	Sintaxis: 12TOCAR <tabla> [clave]
+	
+	'Toca' manualmente una tabla de la Base de Datos Distribuida, tratando
+	la información introducida y actualizando los contadores.
+
+BDD_REG_SUCCESS
+	Clave de cifrado regenerada con éxito, usando: 12%s
+
+BDD_COMPACT
+	Tablas compactadas
+
+BDD_TOCAR_SYNTAX
+	12TOCAR <tabla> <clave> [valor]
+
+BDD_ERR_TABLE
+	Tabla errónea
+
+BDD_SEQ_OK
+	Secuencia completa
+

@@ -213,7 +213,9 @@ static void m14_load_nick(const char *sourcedir)
 		ni->status |= NS_VERBOTEN;
 	    if (oldni.flags & 0x00000008)
 		ni->status |= NS_NO_EXPIRE;
-	    if (oldni.flags & 0x00000010)
+	    if (oldni.flags & 0x00000020)
+	        ni->status |= NI_ON_BDD;
+	    if (oldni.flags & 0x00001000)
 		ni->flags |= NI_PRIVATE;
 	    if (oldni.flags & 0x00000080)
 		ni->link = (NickInfo *) -1;  /* Flag: this is a linked nick */

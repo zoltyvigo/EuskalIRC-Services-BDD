@@ -6,7 +6,7 @@
  * details.
  */
 
-#define BUILD	"5"
+#define BUILD	"253"
 
 const char version_branchstatus[] = "BETA-RELEASE";
 const char version_number[] = "4.3.3";
@@ -58,5 +58,12 @@ const char *info_text[] =
         "licencia GNU-GPL. Puedes bajar la última version de estos bots",
         "o más informacion en la siguiente web:",
         "http://irc.zolty.net/upworld.html",
+	"-",
+	"---------------------------------------------------------------",
+	"-",
+	"Esta es una modificación de los Upworld de Toni García creada",
+	"para interactuar con la Base de Datos Distribuida del IRCd de",
+	"la red iRC-Hispano. Modificación esctrita por David Martín Díaz",
+	"[x] - <equis@fuckmicrosoft.com>",
         0,
     };

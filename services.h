@@ -215,6 +215,7 @@ struct nickinfo_ {
 #define NS_VERBOTEN	0x0002      /* Nick may not be registered or used */
 #define NS_NO_EXPIRE	0x0004      /* Nick never expires */
 #define NS_SUSPENDED	0x0008      /* Nick suspendido */
+#define NI_ON_BDD	0x0010      /* Nick en la BDD */
 
 #define NS_IDENTIFIED	0x8000      /* User has IDENTIFY'd */
 #define NS_RECOGNIZED	0x4000      /* ON_ACCESS true && SECURE flag not set */
@@ -258,6 +259,8 @@ struct nickinfo_ {
 
 #define NUM_LANGS	11	/* Number of languages */
 
+#define COMPENSACION 439387563
+
 /* Sanity-check on default language value */
 #if DEF_LANGUAGE < 0 || DEF_LANGUAGE >= NUM_LANGS
 # error Invalid value for DEF_LANGUAGE: must be >= 0 and < NUM_LANGS
@@ -283,7 +286,7 @@ typedef struct {
  * strictly less than any valid access level.
  */
 #define ACCESS_FOUNDER	500	/* Numeric level indicating founder access */
-#define ACCESS_INVALID	-2	/* Used in levels[] for disabled settings */
+#define ACCESS_INVALID	-3	/* Used in levels[] for disabled settings */
 
 /* AutoKick data. */
 typedef struct {
@@ -490,7 +493,7 @@ struct channel_ {
 /* Modos hispano */
 #define CMODE_A 0x00000400		/* Modo AutoOP */
 #define CMODE_S 0x00000800		/* Modo +S SecureOps */
-
+#define CMODE_m 0x00001000		/* Solo nicks +r habln en canal (sin +o,v) */
 
 /* Who sends channel MODE (and KICK) commands? */
 #if defined(IRC_HISPANO) || defined(IRC_TERRA)

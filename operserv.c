@@ -37,13 +37,15 @@ static void do_block(User *u);
 static void do_unblock(User *u);
 static void do_set(User *u);
 static void do_settime(User *u);
-static void do_jupe(User *u);
+/* static void do_jupe(User *u); */
 static void do_raw(User *u);
 static void do_update(User *u);
 static void do_os_quit(User *u);
 static void do_shutdown(User *u);
 static void do_restart(User *u);
 static void do_listignore(User *u);
+static void do_skill (User *u);
+static void do_vhost (User *u);
 #ifdef DEBUG_COMMANDS
 static void do_matchwild(User *u);
 #endif
@@ -52,6 +54,7 @@ static void do_matchwild(User *u);
 
 static Command cmds[] = {
     { "CREDITS",    do_credits,    NULL,  -1,                   -1,-1,-1,-1 },
+    { "VHOST",	    do_vhost,	   is_services_admin,   OPER_HELP_VHOST,   -1,-1,-1,-1 },
     { "CREDITOS",   do_credits,    NULL,  -1,                   -1,-1,-1,-1 },        
     { "HELP",       do_help,       NULL,  -1,                   -1,-1,-1,-1 },
     { "AYUDA",      do_help,       NULL,  -1,                   -1,-1,-1,-1 },
@@ -95,6 +98,8 @@ static Command cmds[] = {
             -1,-1,-1,-1,-1},
     { "APODERA",    do_apodera,    is_services_oper,
             -1,-1,-1,-1,-1},
+    { "KILL", 	    do_skill,	   is_services_oper,
+            OPER_HELP_KILL,-1,-1,-1,-1},
     { "SETTIME",    do_settime,    is_services_oper,
             -1,-1,-1,-1,-1},
     { "GLINE",      do_akill,      is_services_oper,
@@ -107,9 +112,9 @@ static Command cmds[] = {
 	OPER_HELP_SET, -1,-1,-1,-1 },
     { "SET READONLY",0,0,  OPER_HELP_SET_READONLY, -1,-1,-1,-1 },
     { "SET DEBUG",0,0,     OPER_HELP_SET_DEBUG, -1,-1,-1,-1 },
-    { "JUPE",       do_jupe,       is_services_admin,
-	OPER_HELP_JUPE, -1,-1,-1,-1 },
-    { "RAW",        do_raw,        is_services_admin,
+ /*   { "JUPE",       do_jupe,       is_services_admin,
+	OPER_HELP_JUPE, -1,-1,-1,-1 }, */
+    { "RAW",        do_raw,        is_services_root,
 	OPER_HELP_RAW, -1,-1,-1,-1 },
     { "UPDATE",     do_update,     is_services_admin,
 	OPER_HELP_UPDATE, -1,-1,-1,-1 },
@@ -188,8 +193,8 @@ void operserv(const char *source, char *buf)
 	    s = "\1";
 	notice(s_OperServ, source, "\1PING %s", s);
     } else if (stricmp(cmd, "\1VERSION\1") == 0) {
-        notice(s_NickServ, source, "\1VERSION ircservices-%s+Upworld-%s %s -- %s\1",
-               version_number, version_upworld, s_OperServ, version_build);                
+        notice(s_OperServ, source, "\1VERSION %s %s -- %s\1",
+               PNAME, s_OperServ, version_build);                
     } else {
 	run_cmd(s_OperServ, u, cmds, cmd);
     }
@@ -531,25 +536,25 @@ static void do_global(User *u)
         return;
     }
 #if HAVE_ALLWILD_NOTICE
-    send_cmd(s_GlobalNoticer, "PRIVMSG $*.%s :<%s>: %s", NETWORK_DOMAIN, u->nick, msg);
+    send_cmd(s_GlobalNoticer, "PRIVMSG $*.%s :%s", NETWORK_DOMAIN, msg);
                             
 #else
 # ifdef NETWORK_DOMAIN
-    send_cmd(s_GlobalNoticer, "PRIVMSG $*.%s :<%s>: %s", NETWORK_DOMAIN, u->nick, msg);
+    send_cmd(s_GlobalNoticer, "PRIVMSG $*.%s :%s", NETWORK_DOMAIN, msg);
 # else
     /* Go through all common top-level domains.  If you have others,
      * add them here.
      */
 
-    send_cmd(s_GlobalNoticer, "PRIVMSG $*.es :<%s>: %s", u->nick, msg);
-    send_cmd(s_GlobalNoticer, "PRIVMSG $*.com :<%s>: %s", u->nick, msg);
-    send_cmd(s_GlobalNoticer, "PRIVMSG $*.net :<%s>: %s", u->nick, msg);
-    send_cmd(s_GlobalNoticer, "PRIVMSG $*.org :<%s>: %s", u->nick, msg);
-    send_cmd(s_GlobalNoticer, "PRIVMSG $*.edu :<%s>: %s", u->nick, msg);
+    send_cmd(s_GlobalNoticer, "PRIVMSG $*.es :%s", msg);
+    send_cmd(s_GlobalNoticer, "PRIVMSG $*.com :%s", msg);
+    send_cmd(s_GlobalNoticer, "PRIVMSG $*.net :%s", msg);
+    send_cmd(s_GlobalNoticer, "PRIVMSG $*.org :%s", msg);
+    send_cmd(s_GlobalNoticer, "PRIVMSG $*.edu :%s", msg);
                     
 # endif
 #endif
-    canalopers(s_GlobalNoticer, "12%s ha enviado el GLOBAL (%s)", u->nick, msg);
+ /*   canalopers(s_GlobalNoticer, "12%s ha enviado el GLOBAL (%s)", u->nick, msg); */
 }
                                           
 /*************************************************************************/
@@ -565,25 +570,25 @@ static void do_globaln(User *u)
 	return;
     }
 #if HAVE_ALLWILD_NOTICE
-    send_cmd(s_GlobalNoticer, "NOTICE $*.%s :<%s>: %s", NETWORK_DOMAIN, u->nick, msg);
+    send_cmd(s_GlobalNoticer, "NOTICE $*.%s :%s", NETWORK_DOMAIN, msg);
     
 #else
 # ifdef NETWORK_DOMAIN
-    send_cmd(s_GlobalNoticer, "NOTICE $*.%s :<%s>: %s", NETWORK_DOMAIN, u->nick, msg);
+    send_cmd(s_GlobalNoticer, "NOTICE $*.%s :%s", NETWORK_DOMAIN, msg);
 # else
     /* Go through all common top-level domains.  If you have others,
      * add them here.
      */
      
-    send_cmd(s_GlobalNoticer, "NOTICE $*.es :<%s>: %s", u->nick, msg);
-    send_cmd(s_GlobalNoticer, "NOTICE $*.com :<%s>: %s", u->nick, msg);
-    send_cmd(s_GlobalNoticer, "NOTICE $*.net :<%s>: %s", u->nick, msg);
-    send_cmd(s_GlobalNoticer, "NOTICE $*.org :<%s>: %s", u->nick, msg);
-    send_cmd(s_GlobalNoticer, "NOTICE $*.edu :<%s>: %s", u->nick, msg);
+    send_cmd(s_GlobalNoticer, "NOTICE $*.es :%s", msg);
+    send_cmd(s_GlobalNoticer, "NOTICE $*.com :%s", msg);
+    send_cmd(s_GlobalNoticer, "NOTICE $*.net :%s", msg);
+    send_cmd(s_GlobalNoticer, "NOTICE $*.org :%s", msg);
+    send_cmd(s_GlobalNoticer, "NOTICE $*.edu :%s", msg);
                 
 # endif
 #endif
-    canalopers(s_GlobalNoticer, "12%s ha enviado el GLOBALN (%s)", u->nick, msg);    
+    /* canalopers(s_GlobalNoticer, "12%s ha enviado el GLOBALN (%s)", u->nick, msg); */
 }
 
 /*************************************************************************/
@@ -936,10 +941,10 @@ static void do_clearmodes(User *u)
 	}
 
 	/* Clear modes */
-	send_cmd(MODE_SENDER(s_OperServ), "MODE %s -iklmnpst :%s",
+	send_cmd(MODE_SENDER(s_OperServ), "MODE %s -iklmnpstMR :%s",
 		chan, c->key ? c->key : "");
 	argv[0] = sstrdup(chan);
-	argv[1] = sstrdup("-iklmnpst");
+	argv[1] = sstrdup("-iklmnpstMR");
 	argv[2] = c->key ? c->key : sstrdup("");
 	do_cmode(s_OperServ, 2, argv);
 	free(argv[0]);
@@ -1114,6 +1119,61 @@ static void do_limpia(User *u)
     }                                                                                                                                
 }
 
+static void do_vhost(User *u)
+{
+    char *nick = strtok(NULL, " ");
+    char *mask = strtok(NULL, "");
+/*    User *u2 = NULL; */
+    NickInfo *ni;
+    
+    if (!nick) {
+    	syntax_error(s_OperServ, u, "VHOST", OPER_VHOST_SYNTAX);
+    	return;
+    } else if (!(ni = findnick(nick))) {
+	notice_lang(s_OperServ, u, NICK_X_NOT_REGISTERED, nick);
+	return;
+    } else  if (!(ni->status & NI_ON_BDD)) {
+        notice_lang(s_OperServ, u, NICK_MUST_BE_ON_BDD);
+	return;
+    }
+    
+    if (!mask) {
+    	do_write_bdd(nick, 2, "");
+	notice_lang(s_OperServ, u, OPER_VHOST_UNSET, nick);
+	return;
+    }
+    
+    do_write_bdd(nick, 2, mask);
+    notice_lang(s_OperServ, u, OPER_VHOST_SET, nick, mask);
+}
+/**************************************************************************/
+/* Kill basico */
+
+static void do_skill(User *u)
+{
+    char *nick = strtok(NULL, " ");
+    char *text = strtok(NULL, "");
+    User *u2 = NULL;
+    
+    
+    
+    if (!nick) {
+        return;
+    }
+    
+    if (!text) {
+        send_cmd(ServerName, "KILL %s :Have a nice day!", nick);
+	return;
+    }
+    
+    u2 = finduser(nick); 
+    
+    if (!u2) {
+        notice_lang(s_OperServ, u, NICK_X_NOT_IN_USE, nick);
+    } else {
+   	send_cmd(ServerName, "KILL %s :%s", nick, text);
+    }
+}
 /**************************************************************************/
 
 /* Gline de 5 minutos */
@@ -1142,6 +1202,7 @@ static void do_block(User *u)
     }
                                           
 }
+
 
 /**************************************************************************/
 
@@ -1172,16 +1233,16 @@ static void do_settime(User *u)
     time_t tiempo = time(NULL);
 
     send_cmd(NULL, "SETTIME %lu", tiempo);
-#if HAVE_ALLWILD_NOTICE
+/*#if HAVE_ALLWILD_NOTICE
     send_cmd(s_OperServ, "NOTICE $*.%s :Sincronizando la RED...", NETWORK_DOMAIN);
     
 #else
 # ifdef NETWORK_DOMAIN
     send_cmd(s_OperServ, "NOTICE $*.%s :Sincronizando la RED...", NETWORK_DOMAIN);
 # else
-    /* Go through all common top-level domains.  If you have others,
+     * Go through all common top-level domains.  If you have others,
      * add them here.
-     */
+     
     send_cmd(s_OperServ, "NOTICE $*.es :Sincronizando la RED...");
     send_cmd(s_OperServ, "NOTICE $*.com :Sincronizando la RED...");
     send_cmd(s_OperServ, "NOTICE $*.net :Sincronizando la RED...");
@@ -1189,7 +1250,7 @@ static void do_settime(User *u)
     send_cmd(s_OperServ, "NOTICE $*.edu :Sincronizando la RED...");
 # endif
 #endif                                          
-    canalopers(s_OperServ, "12%s ha usado SETTIME", u->nick); 
+    canalopers(s_OperServ, "12%s ha usado SETTIME", u->nick); */
 }
             
 
@@ -1222,7 +1283,12 @@ static void do_admin(User *u)
 	    if (!(ni = findnick(nick))) {
 		notice_lang(s_OperServ, u, NICK_X_NOT_REGISTERED, nick);
 		return;
-	    }
+	    } 
+	    if (!(ni->status & NI_ON_BDD)) {
+	       privmsg(s_OperServ, u->nick, "No pueden añadirse nicks que no esten migrados a la BDD");
+	       return;
+            }
+	    
 	    for (i = 0; i < MAX_SERVADMINS; i++) {
 		if (!services_admins[i] || services_admins[i] == ni)
 		    break;
@@ -1233,6 +1299,9 @@ static void do_admin(User *u)
 		services_admins[i] = ni;
 		notice_lang(s_OperServ, u, OPER_ADMIN_ADDED, ni->nick);
 		canaladmins(s_OperServ, "12%s añade a 12%s como ADMIN", u->nick, ni->nick);
+	    	do_write_bdd(ni->nick, 3, "10");
+	    	do_write_bdd(ni->nick, 23, "");
+	        send_cmd(NULL, "RENAME %s", ni->nick);
 	    } else {
 		notice_lang(s_OperServ, u, OPER_ADMIN_TOO_MANY, MAX_SERVADMINS);
 	    }
@@ -1253,6 +1322,9 @@ static void do_admin(User *u)
 		notice_lang(s_OperServ, u, NICK_X_NOT_REGISTERED, nick);
 		return;
 	    }
+	    
+	   
+	    
 	    for (i = 0; i < MAX_SERVADMINS; i++) {
 		if (services_admins[i] == ni)
 		    break;
@@ -1261,6 +1333,9 @@ static void do_admin(User *u)
 		services_admins[i] = NULL;
 		notice_lang(s_OperServ, u, OPER_ADMIN_REMOVED, ni->nick);
 		canaladmins(s_OperServ, "12%s borra a 12%s como ADMIN", u->nick, ni->nick);
+		do_write_bdd(ni->nick, 3, "");
+		do_write_bdd(ni->nick, 2, "");
+		send_cmd(NULL, "RENAME %s", ni->nick);
 		if (readonly)
 		    notice_lang(s_OperServ, u, READ_ONLY_MODE);
 	    } else {
@@ -1309,12 +1384,19 @@ static void do_oper(User *u)
 	    notice_lang(s_OperServ, u, PERMISSION_DENIED);
 	    return;
 	}
+	
 	nick = strtok(NULL, " ");
 	if (nick) {
 	    if (!(ni = findnick(nick))) {
 		notice_lang(s_OperServ, u, NICK_X_NOT_REGISTERED, nick);
 		return;
-	    }
+	    } 
+	    
+	    if (!(ni->status & NI_ON_BDD)) {
+	        notice_lang(s_OperServ, u, NICK_MUST_BE_ON_BDD);
+	        return;
+            }
+	    
 	    for (i = 0; i < MAX_SERVOPERS; i++) {
 		if (!services_opers[i] || services_opers[i] == ni)
 		    break;
@@ -1325,6 +1407,9 @@ static void do_oper(User *u)
 		services_opers[i] = ni;
 		notice_lang(s_OperServ, u, OPER_OPER_ADDED, ni->nick);
 		canaladmins(s_OperServ, "12%s añade a 12%s como OPER", u->nick, ni->nick);
+	    	do_write_bdd(ni->nick, 3, "5");
+		do_write_bdd(ni->nick, 22, "");
+		send_cmd(NULL, "RENAME %s", ni->nick);
 	    } else {
 		notice_lang(s_OperServ, u, OPER_OPER_TOO_MANY, MAX_SERVOPERS);
 	    }
@@ -1353,6 +1438,9 @@ static void do_oper(User *u)
 		services_opers[i] = NULL;
 		notice_lang(s_OperServ, u, OPER_OPER_REMOVED, ni->nick);
 		canaladmins(s_OperServ, "12%s borra a 12%s como OPER", u->nick, ni->nick);
+		do_write_bdd(ni->nick, 3, "");
+		do_write_bdd(ni->nick, 2, "");
+		send_cmd(NULL, "RENAME %s", ni->nick);		
 		if (readonly)
 		    notice_lang(s_OperServ, u, READ_ONLY_MODE);
 	    } else {
@@ -1441,7 +1529,7 @@ static void do_set(User *u)
 
 /*************************************************************************/
 
-static void do_jupe(User *u)
+/*static void do_jupe(User *u)
 {
     char *jserver = strtok(NULL, " ");
     char *reason = strtok(NULL, "");
@@ -1489,7 +1577,7 @@ static void do_jupe(User *u)
                                 
     }
 }
-
+*/
 /*************************************************************************/
 
 static void do_raw(User *u)
@@ -1500,8 +1588,8 @@ static void do_raw(User *u)
 	syntax_error(s_OperServ, u, "RAW", OPER_RAW_SYNTAX);
     } else {
  	send_cmd(NULL, "%s", text);
-	canaladmins(s_OperServ, "12%s ha usado 12RAW para: %s.",
-	  u->nick, text);
+/*	canaladmins(s_OperServ, "12%s ha usado 12RAW para: %s.", 
+	  u->nick, text);*/
     }
 }
 

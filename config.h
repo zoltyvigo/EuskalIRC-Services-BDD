@@ -30,7 +30,6 @@
 /* Maximum amount of data from/to the network to buffer (bytes). */
 #define NET_BUFSIZE	4096
 
-
 /******* NickServ configuration *******/
 
 /* Default language for newly registered nicks (and nicks imported from

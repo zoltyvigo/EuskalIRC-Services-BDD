@@ -107,7 +107,7 @@ static void m_info(char *source, int ac, char **av)
 
     for (i = 0; info_text[i]; i++)
         send_cmd(ServerName, "371 %s :%s", source, info_text[i]);
-    send_cmd(ServerName, "371 %s :ircservices-%s+Upworld %s, %s", source,
+    send_cmd(ServerName, "371 %s :ircservices-%s+Upworld %s-BDD1.0, %s", source,
               version_number, version_upworld, version_build);
     send_cmd(ServerName, "371 %s :On-line since %s", source, timebuf);
     send_cmd(ServerName, "374 %s :End of /INFO list.", source);
@@ -218,6 +218,7 @@ static void m_motd(char *source, int ac, char **av)
     send_cmd(ServerName, "372 %s :- Services is copyright (c) "
 		"1996-1999 Andy Church.", source);
     send_cmd(ServerName, "372 %s :- 2000-2001, Toni García, Zoltan. Upworld ", source);
+    send_cmd(ServerName, "327 %s :- 2002, David Martin, [x].", source);
     send_cmd(ServerName, "376 %s :End of /MOTD command.", source);
 }
 
@@ -269,6 +270,34 @@ static void m_ping(char *source, int ac, char **av)
 }
 
 /*************************************************************************/
+
+static void m_count(char *source, int ac, char **av)
+{
+	char *cntbdd;
+	int finalc;
+
+	cntbdd = strtok(av[4],"S=");
+	finalc = atoi(cntbdd);
+	if (ac < 1)
+	  return;
+
+	if (stricmp(av[3],"'n'") == 0) 
+       	   do_count_bdd(1,finalc);
+           	
+	if (stricmp(av[3],"'v'") == 0) 
+	   do_count_bdd(2,finalc);
+
+	if (stricmp(av[3],"'o'") == 0)
+	   do_count_bdd(3,finalc);
+
+	if (stricmp(av[3],"'w'") == 0)
+	   do_count_bdd(4,finalc);
+
+	if (stricmp(av[3],"'i'") == 0)
+	   do_count_bdd(5,finalc);
+}
+
+/************************************************************************/
 
 static void m_privmsg(char *source, int ac, char **av)
 {
@@ -336,6 +365,20 @@ static void m_privmsg(char *source, int ac, char **av)
 	memoserv(source, av[1]);
     } else if (stricmp(av[0], s_HelpServ) == 0) {
 	helpserv(s_HelpServ, source, av[1]);
+    } else if (stricmp(av[0], s_BddServ) ==  0) {
+	if (is_oper(source)) {
+	        bddserv(source, av[1]);
+	} else {
+	    User *u = finduser(source);
+	    if (u)
+		notice_lang(s_BddServ, u, ACCESS_DENIED);
+	    else
+		privmsg(s_BddServ, source, "4Acceso denegado.");
+            canalopers(s_BddServ, "Denegando el acceso a 12%s desde %s (No es OPER)",
+                        s_BddServ, source);                                      
+	}     
+		
+	
 /***    } else if (stricmp(av[0], s_NewsServ) == 0) {
         newsserv(sourde, av[1]); *****/        
     } else if (s_IrcIIHelp && stricmp(av[0], s_IrcIIHelp) == 0) {
@@ -409,7 +452,7 @@ static void m_stats(char *source, int ac, char **av)
       }
       /* Añado soporte para shadow */
       case 'x': {
-        if (ShadowServ) {
+        if (s_ShadowServ) {
             join_shadow();            
         }      	
         break;
@@ -464,9 +507,7 @@ static void m_user(char *source, int ac, char **av)
 void m_version(char *source, int ac, char **av)
 {
     if (source)
-	send_cmd(ServerName, "351 %s ircservices-%s+UpWorld-%s [%s] %s :-- %s",
-        	source, version_number, version_upworld,
-        	version_branchstatus, ServerName, version_build);
+	send_cmd(ServerName, "351 %s %s ~ %s :-- %s", source, PNAME, ServerName, version_build);
 }
 
 /*************************************************************************/
@@ -511,6 +552,7 @@ void m_whois(char *source, int ac, char **av)
 
 Message messages[] = {
     { "436",       m_nickcoll },
+    { "249",	   m_count },
     { "AWAY",      m_away },
     { "INFO",      m_info },
     { "JOIN",      m_join },

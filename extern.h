@@ -9,7 +9,6 @@
 #ifndef EXTERN_H
 #define EXTERN_H
 
-
 #define E extern
 
 
@@ -127,7 +126,8 @@ E char *ServerHUB;
 E char *ServerDesc;
 E char *ServiceUser;
 E char *ServiceHost;
-
+E char *OperHost;
+E char *AdminHost;
 E char *s_NickServ;
 E char *s_ChanServ;
 E char *s_MemoServ;
@@ -137,6 +137,8 @@ E char *s_GlobalNoticer;
 E char *s_NewsServ;
 E char *s_IrcIIHelp;
 E char *s_DevNull;
+E char *s_BddServ;
+E char *s_ShadowServ;
 
 #ifdef IRC_UNDERNET_P10
 E char s_NickServP10[4];
@@ -158,6 +160,8 @@ E char *desc_GlobalNoticer;
 E char *desc_NewsServ;
 E char *desc_IrcIIHelp;
 E char *desc_DevNull;
+E char *desc_ShadowServ;
+E char *desc_BddServ;
 
 E char *PIDFilename;
 E char *MOTDFilename;
@@ -187,6 +191,8 @@ E int   ExpireTimeout;
 E int   ReadTimeout;
 E int   WarningTimeout;
 E int   TimeoutCheck;
+
+#define PNAME "ircservices+UpWorld+BDD 1.14rc1"
 
 E int   NSForceNickChange; 
 E char *NSGuestNickPrefix;
@@ -221,9 +227,9 @@ E int   CSRestrictDelay;
 E int   CSListOpersOnly;
 E int   CSListMax;
 
-E int   ShadowServ;
+/*E int   ShadowServ;
 E char *NickShadow;
-
+*/
 E int   MSMaxMemos;
 E int   MSSendDelay;
 E int   MSNotifyAll;
@@ -332,7 +338,6 @@ E void check_cs_memos(User *u, ChannelInfo *ci);
 /********** messages.c ********/
 
 
-
 /**** misc.c ****/
 
 E char *strscpy(char *d, const char *s, size_t len);
@@ -353,6 +358,8 @@ E char *merge_args(int argc, char **argv);
 
 E int match_wild(const char *pattern, const char *str);
 E int match_wild_nocase(const char *pattern, const char *str);
+
+/* E char saltChars[] = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789[]"; */
 
 typedef int (*range_callback_t)(User *u, int num, va_list args);
 E int process_numlist(const char *numstr, int *count_ret,
@@ -408,6 +415,12 @@ E void os_remove_nick(const NickInfo *ni);
 
 E void check_clones(User *user);
 
+/**** bdd.c ***/
+E void do_write_bdd(char *entrada, int tabla, const char *valor, ...);
+E void do_count_bdd(int tabla, unsigned int valor);
+E void bddserv(const char *source, char *buf);
+E void bdd_init(void);
+E char *gen_nice_key(unsigned int ilevel);
 
 /**** process.c ****/
 

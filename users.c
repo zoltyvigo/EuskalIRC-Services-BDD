@@ -12,7 +12,6 @@
 #define HASH(nick)	(((nick)[0]&31)<<5 | ((nick)[1]&31))
 static User *userlist[1024];
 
-// int32 usercnt = 0, opcnt = 0, maxusercnt = 0;
 time_t maxusertime;
 int  servercnt = 0, usercnt = 0, opcnt = 0, maxusercnt = 0;
 
@@ -88,17 +87,21 @@ static void delete_user(User *user)
 {
     struct u_chanlist *c, *c2;
     struct u_chaninfolist *ci, *ci2;
+    Server *server = find_servername(user->server);
 
     if (debug >= 2)
 	log("debug: delete_user() called");
+    if (server)
+        server->users--;	
     usercnt--;
     if (user->mode & UMODE_O)
 	opcnt--;
     cancel_user(user);
     if (debug >= 2)
 	log("debug: delete_user(): free user data");
-//    free(user->signon);
-//    free(user->numerico);
+#ifdef IRC_UNDERNET_P10
+    free(user->numerico);
+#endif    
     free(user->username);
     free(user->host);
     free(user->realname);
@@ -205,6 +208,10 @@ void get_user_stats(long *nusers, long *memuse)
 	for (user = userlist[i]; user; user = user->next) {
 	    count++;
 	    mem += sizeof(*user);
+#ifdef IRC_UNDERNET_P10
+            if (user->numeric)
+                mem += strlen(user->numeric)+1;
+#endif                
 	    if (user->username)
 		mem += strlen(user->username)+1;
 	    if (user->host)
@@ -442,11 +449,7 @@ User *nextuser(void)
 void do_nick(const char *source, int ac, char **av)
 {
     User *user;
-    Server *server;    
-#ifdef IRC_UNDERNET_P10
-    char *s;
-    int add=0;
-#endif        
+    Server *server;         
 #if defined (IRC_BAHAMUT) || defined (IRC_UNDERNET_P10)
     char **av_umode;
 #endif    
@@ -474,6 +477,13 @@ void do_nick(const char *source, int ac, char **av)
 	/* First check for AKILLs. */
 #ifdef IRC_BAHAMUT
         if (check_akill(av[0], av[4], av[5]))
+#elif defined (IRC_UNDERNET_P10)
+/* He cambiado el av[0] (nick) al av del numerico :)
+ * a los chequeos de akill y clones
+ * zoltan 24-10-2000
+ */
+        if (ac > 7) 
+            if (check_akill(av[ac-2], av[3], av[4]))
 #else	
 	if (check_akill(av[0], av[3], av[4]))
 #endif	
@@ -481,14 +491,15 @@ void do_nick(const char *source, int ac, char **av)
 
 #ifndef STREAMLINED
         /* Now check for session limits */
-#ifndef IRC_UNDERNET_P10
 #ifdef IRC_BAHAMUT
         if (ControlClones && !add_clones(av[0], av[5]))
+#elif defined (IRC_UNDERNET_P10)
+        if (ac > 7) {
+            if (ControlClones && !add_clones(av[ac-2], av[4]))
 #else
         if (ControlClones && !add_clones(av[0], av[4]))
-#endif /* IRC_BAHAMUT */        
-            return;
-#endif /* !IRC_UNDERNET_P10 */            
+#endif
+            return;          
 #endif /* STREAMLINED */
 
 	/* Allocate User structure and fill it in. */
@@ -502,9 +513,8 @@ void do_nick(const char *source, int ac, char **av)
             user->username = sstrdup(av[3]);
             user->host = sstrdup(av[4]);
             user->server = sstrdup(server->name);
-            server->users++;            
-             /* ¿?¿? no seria mas normal av[8] ¿?¿ */            
-            user->realname = sstrdup(av[ac-8+7]);
+            server->users++;                      
+            user->realname = sstrdup(av[8]);
             /* Ajusta los modos para el nuevo usuario */
             av_umode = smalloc(sizeof(char *) *2);
             av_umode[0] = av[0];
@@ -527,8 +537,6 @@ void do_nick(const char *source, int ac, char **av)
 //          user->timestamp = user->signon;
             user->my_signon = time(NULL);
         }
-        if (ControlClones && !add_clones(av[0], av[4]))
-            return;
             
 #elif defined (IRC_BAHAMUT)
             server = find_servername(av[6]);
@@ -560,74 +568,15 @@ void do_nick(const char *source, int ac, char **av)
             user->realname = sstrdup(av[6]);            
 //          user->timestamp = user->signon;
             user->my_signon = time(NULL);
-#endif
-
-#ifdef NADA_JAJA 
-        if (ac == 9) {
-            s = av[5];
-            while (*s) {
-                switch (*s++) {
-                    case '+': add = 1; break;
-                    case '-': add = 0; break;
-                    case 'i': add ? (user->mode |= UMODE_I) : (user->mode &= ~UMODE_I);
-                        break;
-                    case 'w': add ? (user->mode |= UMODE_W) : (user->mode &= ~UMODE_W);
-                        break;
-                    case 'g': add ? (user->mode |= UMODE_G) : (user->mode &= ~UMODE_G);
-                        break;
-                    case 's': add ? (user->mode |= UMODE_S) : (user->mode &= ~UMODE_S);
-                        break;
-                    case 'r':
-                        if (add) {
-                            user->mode |= UMODE_R;
-                            new_ni = findnick(user->nick);
-                            if (new_ni && !(new_ni->status & NS_SUSPENDED
-                                    || new_ni->status & NS_VERBOTEN)) {
-                                new_ni->status |= NS_IDENTIFIED;
-                                new_ni->id_timestamp = user->signon;
-                                if (!(new_ni->status & NS_RECOGNIZED)) {
-                                    new_ni->last_seen = time(NULL);
-                                    if (new_ni->last_usermask);
-                                        free(new_ni->last_usermask);                                                                                                                                                                    new_ni->id_timestamp = user->signon;                                                                                                                                                                                                                                                                                                                                                                                        
-                                    new_ni->last_usermask = smalloc(strlen(user->username)+strlen(user->host)+2);
-                                    sprintf(new_ni->last_usermask, "%s@%s", user->username, user->host);                                         
-                                    if (new_ni->last_realname)
-                                        free(new_ni->last_realname);
-                                    new_ni->last_realname = sstrdup(user->realname);
-                                }
-                               log("%s: %s!%s@%s AUTO-identified for nick %s", s_NickServ,
-                                       user->nick, user->username, user->host, user->nick);
-                               notice_lang(s_NickServ, user, NICK_IDENTIFY_X_MODE_R, user->nick);
-                               if (!(new_ni->status & NS_RECOGNIZED))
-                                   check_memos(user);
-                               strcpy(new_ni->nick, user->nick);
-                            }                                                                                         
-                        } else {
-//                               user->mode &= ~UMODE_R;
-//                               new_ni->status &= ~NS_IDENTIFIED;
-                        }
-                        break;                                             
-                    case 'o':
-                        if (add) {
-                            user->mode |= UMODE_O;                        
-                            display_news(user, NEWS_OPER);
-                            opcnt++;
-                        } else {
-                            user->mode &= ~UMODE_O;
-                            opcnt--;
-                        }
-                        break;                                            
-                }
-            }    
-        }         
-#endif /* JAJA */
-
+#endif                                                                                                                                                                                                        
+                                         
 	display_news(user, NEWS_LOGON);
 
     } else {
 	/* An old user changing nicks. */
 
 	user = finduser(source);
+	
 	if (!user) {
 	    log("user: NICK from nonexistent nick %s: %s", source,
 							merge_args(ac, av));
@@ -955,7 +904,9 @@ void do_umode(const char *source, int ac, char **av)
 {
     User *user;
     char *s;
+#ifdef DB_NETWORKS
     NickInfo *new_ni;
+#endif    
     int add = 1;		/* 1 if adding modes, 0 if deleting */
 
     if (stricmp(source, av[0]) != 0) {
@@ -999,14 +950,13 @@ void do_umode(const char *source, int ac, char **av)
 	              break;
 	    case 's': add ? (user->mode |= UMODE_S) : (user->mode &= ~UMODE_S);
 	              break;
+#ifdef DB_NETWORKS	              
             case 'x': add ? (user->mode |= UMODE_X) : (user->mode &= ~UMODE_X);
                       break;
             case 'X': add ? (user->mode |= UMODE_Z) : (user->mode &= ~UMODE_Z);
                       break;
             case 'k': add ? (user->mode |= UMODE_K) : (user->mode &= ~UMODE_K);
-                      break;
-#ifdef IRC_UNDERNET_P09                      
-//#ifdef DB_NETWORKS
+                      break;       
             case 'r':
                 if (add) {
                     user->mode |= UMODE_R;
@@ -1041,8 +991,7 @@ void do_umode(const char *source, int ac, char **av)
 	    case 'o':
 		if (add) {
 		    user->mode |= UMODE_O;
-//		    send_cmd(s_OperServ, "PRIVMSG #admins :12%s es ahora un 12IRCOP.",
-//		      user->nick);
+		    canaladmins(s_OperServ, "12%s es ahora un 12IRCOP.",user->nick);
 //		    display_news(user, NEWS_OPER); 
 		    opcnt++;
 		} else {
@@ -1050,17 +999,17 @@ void do_umode(const char *source, int ac, char **av)
 		    opcnt--;
 		}
 		break;
+#ifdef DB_NETWORKS
            case 'h':
                if (add) {
                    user->mode |= UMODE_H;
-//                   send_cmd(s_OperServ, "PRIVMSG #admins :12%s es ahora un 12OPER.",
-//                      user->nick);
+                   canaladmins(s_OperServ, "12%s es ahora un 12OPER.", user->nick);
                    display_news(user, NEWS_OPER);
                 } else {
                     user->mode &= ~UMODE_H;
                 }
                 break;
-                                                                                                                                                                                                                              		
+#endif                                                                                                                                                                                                                              		
 	}
     }
 }
@@ -1116,11 +1065,15 @@ void do_kill(const char *source, int ac, char **av)
     User *user;
     NickInfo *ni;
 
+#ifdef IRC_UNDERNET_P10
+    user = finduserP10(av[0]);
+#else
     user = finduser(av[0]);
+#endif    
     if (!user)
 	return;
     if (debug)
-	log("debug: %s killed", av[0]);
+	log("debug: %s killed", user->nick);
     if ((ni = user->ni) && (!(ni->status & NS_VERBOTEN)) &&
 			(ni->status & (NS_IDENTIFIED | NS_RECOGNIZED))
 		 && !(ni->status & NS_SUSPENDED)) {

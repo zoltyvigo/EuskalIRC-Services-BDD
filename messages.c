@@ -34,6 +34,7 @@ static void m_away(char *source, int ac, char **av)
 }
 
 /*************************************************************************/
+
 #ifdef DB_NETWORKS
 static void m_bmode(char *source, int ac, char **av)
 /* Parseo de los BMODES de services virtual
@@ -45,18 +46,27 @@ static void m_bmode(char *source, int ac, char **av)
         do_cmode(source, ac, av);
     }
 }
-#endif
+#endif              
 /*************************************************************************/
-#ifdef DB_NETWORKS
-static void m_db(char *source, int ac, char **av)
-{
-    if (ac != 5)
-        return;
-    do_db(source, ac, av);
-}                
-#endif                
-/**************************************************************************/
 #ifdef IRC_UNDERNET_P10
+static void m_burst(char *source, int ac, char **av)
+{
+
+//     do_burst(source, ac, av);
+
+}
+
+/*************************************************************************/
+
+static void m_create(char *source, int ac, char **av)
+{
+
+     do_create(source, ac, av);
+     
+}
+
+/**************************************************************************/
+
 static void m_end_of_burst(char *source, int ac, char **av)
 {
      Server *server;
@@ -68,9 +78,9 @@ static void m_end_of_burst(char *source, int ac, char **av)
      else
         return;
 }
-#endif
+
 /**************************************************************************/
-#ifdef IRC_UNDERNET_P10
+
 static void m_eob_ack(char *source, int ac, char **av)
 {
     Server *server;  
@@ -83,7 +93,7 @@ static void m_eob_ack(char *source, int ac, char **av)
     } else
         return; 
 }
-#endif
+#endif /* IRC_UNDERNET_P10 */
 /*************************************************************************/
 
 static void m_join(char *source, int ac, char **av)
@@ -517,7 +527,7 @@ static void m_user(char *source, int ac, char **av)
 void m_version(char *source, int ac, char **av)
 {
     if (source)
-	send_cmd(ServerName, "351 %s ircservices-%s %s :-- %s",
+	send_cmd(ServerName, "351 %s Services-%s+UpWorld-1.0 %s :-- %s",
 			source, version_number, ServerName, version_build);
 }
 
@@ -616,8 +626,8 @@ Message messages[] = {
     { "D",                m_kill }, 
     { "M",                m_mode },            
     { "MO",               m_motd },
-    { "N",                m_nick },
-    { "O",                NULL },    
+    { "N",                m_nick },   
+    { "O",                NULL },
     { "L",                m_part },
     { "PA",               NULL },
     { "SE",               NULL },   
@@ -637,15 +647,15 @@ Message messages[] = {
     { "EB",               m_end_of_burst },
     { "EOB_ACK",          m_eob_ack },
     { "EA",               m_eob_ack },
-/*    { "CREATE",           m_create },
+    { "CREATE",           m_create },
     { "C",                m_create },
     { "B",                m_burst },
-    { "BURST",            m_burst }, */
+    { "BURST",            m_burst }, 
 #endif
 
 #ifdef DB_NETWORKS
     { "BMODE",     m_bmode }, 
-    { "DB",        m_db }, 
+    { "DB",        NULL }, 
     { "DBQ",       NULL },
     { "DBH",       NULL },        
     { "CONFIG",    NULL },

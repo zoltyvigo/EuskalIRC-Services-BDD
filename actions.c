@@ -28,7 +28,11 @@ void kill_user(const char *source, const char *user, const char *reason)
     snprintf(buf, sizeof(buf), "%s (%s)", source, reason);
     av[0] = sstrdup(user);
     av[1] = buf;
+#ifdef IRC_UNDERNET_P10
+    send_cmd(source, "D %s :%s", user, av[1]);
+#else
     send_cmd(source, "KILL %s :%s", user, av[1]);
+#endif
     do_kill(source, 2, av);
     free(av[0]);
 }

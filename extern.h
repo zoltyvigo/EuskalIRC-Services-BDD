@@ -46,6 +46,10 @@ E Channel *nextchan(void);
 E void chan_adduser(User *user, const char *chan);
 E void chan_deluser(User *user, Channel *c);
 
+#ifdef IRC_UNDERNET_P10
+E void do_burst(const char *source, int ac, char **av);
+E void do_create(const char *source, int ac, char **av);
+#endif
 E void do_cmode(const char *source, int ac, char **av);
 E void do_topic(const char *source, int ac, char **av);
 
@@ -286,14 +290,6 @@ E IlineInfo *iline_find_host(const char *host);
 E IlineInfo *iline_find_admin(const char *nick);
 E int is_cyber_admin(User *u);
 
-/**** db_hispano.c ****/
-
-#ifdef DB_NETWORKS
-E void do_db(const char *source, int ac, char **av);
-E void tea(unsigned long v[],unsigned long k[], unsigned long x[]);
-E char *cifrado_tea(char *nick, char *pass);
-#endif
-
 
 /**** helpserv.c ****/
 
@@ -389,6 +385,14 @@ E char *stristr(char *s1, char *s2);
 E char *strupper(char *s);
 E char *strlower(char *s);
 E char *strnrepl(char *s, int32 size, const char *old, const char *new);
+#ifdef IRC_UNDERNET
+E int strCasecmp(const char *a, const char *b);
+E const char NTL_tolower_tab[];
+E const char NTL_toupper_tab[];
+# ifdef IRC_UNDERNET_P10
+E char *strtoken(char **save, char *str, char *fs);
+# endif
+#endif /* IRC_UNDERNET */
 
 E char *merge_args(int argc, char **argv);
 
@@ -482,13 +486,14 @@ E void privmsg(const char *source, const char *dest, const char *fmt, ...)
 
 /**** servers.c ****/
 
+E void get_server_stats(long *nrec, long *memuse);
 E void do_server(const char *source, int ac, char **av);
 E void do_squit(const char *source, int ac, char **av);
 E Server *find_servername(const char *servername);
 E Server *find_servernumeric(const char *numeric);
 E Server *add_server(const char *servername);
 E void del_server(Server *server);
-E void control_del_server(Server *parent, const char *razon);
+E void recursive_squit(Server *parent, const char *razon);
 E void del_users_server(Server *server);
 E void do_servers(User *u);
 
@@ -509,7 +514,7 @@ E int conn(const char *host, int port, const char *lhost, int lport);
 E void disconn(int s);
 
 
-/**** undernetp10.c ****/
+/**** P10.c ****/
 
 #ifdef IRC_UNDERNET_P10
 E char convert2y[];
@@ -520,7 +525,6 @@ E const char *inttobase64(unsigned int i);
 
 /**** users.c ****/
 
-// E int32 usercnt, opcnt, maxusercnt;
 E int usercnt, opcnt, maxusercnt, servercnt;
 E time_t maxusertime;
 

@@ -12,6 +12,7 @@
 #include "pseudo.h"
 
 int nodos;
+int usuarios;
 static Server *serverlist; 
 static Server *lastserver = NULL;
 
@@ -29,6 +30,8 @@ void del_server(Server *server)
         lastserver = NULL;
 
     servercnt--;
+    nodos++;
+    usuarios = usuarios + server->users;
     
     del_users_server(server);
     
@@ -45,7 +48,7 @@ void del_server(Server *server)
         log("Servers: del_server() OK.");
 }    
 /*************************************************************************/
-void control_del_server(Server *padre, const char *razon)
+void recursive_squit(Server *padre, const char *razon)
 {
     Server *server, *nextserver;
     
@@ -54,11 +57,11 @@ void control_del_server(Server *padre, const char *razon)
         log("Control borrado servers, HUB: %s", padre->name);
     while (server) {
         if (server->hijo)
-            control_del_server(server, razon);
+            recursive_squit(server, razon);
         if (debug)
             log("Control borrado servers, Leaf: %s", server->name);
         nextserver = server->rehijo;
-        usercnt = usercnt - server->users;
+//        usercnt = usercnt - server->users;
         del_server(server);
         server = nextserver;
     }
@@ -123,6 +126,27 @@ Server *find_servernumeric(const char *numerico)
 }
 
 /*************************************************************************/
+/*************************************************************************/
+
+/* Return statistics.  Pointers are assumed to be valid. */
+void get_server_stats(long *nrec, long *memuse)
+{
+    long count = 0, mem = 0;
+    Server *server;
+
+    for (server = serverlist; server; server = server->next) {
+        count++;
+        mem += sizeof(*server);
+        if (server->name)
+            mem += strlen(server->name)+1;
+        if (server->numerico)
+            mem += strlen(server->numerico)+1;
+    }
+    *nrec = count;
+    *memuse = mem;
+}    
+        
+/*************************************************************************/
 
  /* Salir mensaje en el Canal de Control los servers ke van entrando
   * Zoltan Julio 2000
@@ -154,22 +178,15 @@ void do_server(const char *source, int ac, char **av)
 #else
     server->hub = find_servername(source);
 #endif        
-/******** a mi me parece ke ta mal     
+     
     if (!*source) {
         ServerHUB = sstrdup(server->name);
         server->hub = find_servername(av[0]);
         return;
     }    
-    ******/
-    if (!*source) {
-        server->name = sstrdup(ServerHUB);
-        server->hub = find_servername(av[0]);
-    }    
+
 
     if (!server->hub) {
-     /*
-      * BASURILLA: En un futuro, eliminar del codigo.
-      */
         log("Server: No puedo encontrar el HUB %s de %s", source, av[0]);
         return;
     }    
@@ -207,8 +224,11 @@ void do_squit(const char *source, int ac, char **av)
     
     server = find_servername(av[0]);
         
+    usuarios = 0;
+    nodos = 0;
+
     if (server) {
-        control_del_server(server, av[1]);
+        recursive_squit(server, av[1]);
         if (server->hub) {
             if (server->hub->hijo == server) {
                 server->hub->hijo = server->rehijo;
@@ -221,15 +241,15 @@ void do_squit(const char *source, int ac, char **av)
                      }
                 }
             }    
-            if (nodos < 1)
-                canalopers(s_OperServ, "SQUIT de 12%s, llevandose %d usuarios", server->name, server->users);
-            else {
-                canalopers(s_OperServ, "SQUIT de 12%s, llevandose %d nodos y %d usuarios", server->name, nodos, server->users);    
-                canalopers(s_OperServ, "SQUIT de 12%s por C12%sC Motivo: %s", av[0], source, av[2]);
-            }
             log("Eliminando servidor %s", server->name);
             del_server(server);
-            }                                            
+            
+            if (nodos < 2)            
+                canalopers(s_OperServ, "SQUIT de 12%s, llevandose %d usuarios", av[0], usuarios);
+            else 
+                canalopers(s_OperServ, "SQUIT de 12%s, llevandose %d nodos y %d usuarios", av[0], nodos, usuarios);    
+
+        }                                            
     } else {        
         log("Server: Tratando de eliminar el servidor inexsistente: %s", av[0]);
         return;
@@ -241,6 +261,7 @@ void do_servers(User *u)
 {
      Server *server;
      int porcentaje = 0, media = 0;
+     
      privmsg(s_OperServ, u->nick, "Nombre servidor                   Numerico   Usuarios  Porcentaje");
      for (server = serverlist; server; server = server->next) {     
          if (server->name)

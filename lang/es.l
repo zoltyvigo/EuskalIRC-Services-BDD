@@ -562,7 +562,7 @@ NICK_UNSUSPEND_FAILED
 
 # FORBID responses
 NICK_FORBID_SYNTAX
-	12FORBID <nick>
+	12FORBID <nick> <motivo>
 NICK_FORBID_FORBIDDEN
 	El nick 12%s ya estaba forbideado.
 NICK_FORBID_SUCCEEDED
@@ -1059,7 +1059,7 @@ CHAN_GETPASS_PASSWORD_IS
 
 # SUSPEND responses
 CHAN_SUSPEND_SYNTAX
-	12SUSPEND <canal>C
+	12SUSPEND <canal> <motivo>
 CHAN_SUSPEND_SUCCEEDED
 	El canal 12%s esta 12SUSPENDido.
 CHAN_SUSPEND_FAILED
@@ -1071,7 +1071,7 @@ CHAN_SUSPEND_FAILED
 
 
 CHAN_FORBID_SYNTAX
-	12FORBID <canal>
+	12FORBID <canal> <motivo>
 CHAN_FORBID_SUCCEEDED
 	Canal 12%s esta prohibido de ser utilizado.
 CHAN_FORBID_FAILED
@@ -1322,6 +1322,8 @@ OPER_STATS_BYTES_READ
 	Bytes leidos   : 12%5d kB
 OPER_STATS_BYTES_WRITTEN
 	Bytes escritos : 12%5d kB
+OPER_STATS_SERVER_MEM
+	Servers : 12%6d registros, 12%5d kB
 OPER_STATS_USER_MEM
 	Usuarios: 12%6d registros, 12%5d kB
 OPER_STATS_CHANNEL_MEM
@@ -2095,9 +2097,6 @@ NICK_SERVADMIN_HELP
 	    12UNSUSPEND  Reactiva un nick suspendido
 	    12FORBID     Evita que un nick sea utilizado
 	    12UNFORBID   Libera un nick prohibido
-	    12NICKREG    Registra el nick en las BDD del servidor
-	    12VHOSTADD   Añade un host virtual asociado a un nick
-	    12VHOSTDEL   Borra un host virtual asociado a un nick
 	
 	4Administradores de Services pueden cancelar cualquier nick
 	sin necesidad de identificarse por el mismo, y pueden ver la
@@ -2208,7 +2207,7 @@ NICK_SERVADMIN_HELP_UNSUSPEND
 	Limitado a 4Operadores de Services.
 
 NICK_SERVADMIN_HELP_FORBID
-	Sintaxis: 12FORBID <nick>
+	Sintaxis: 12FORBID <nick> <motivo>
 	
 	Prohibe el registro y la utilización de un nick. Se puede
 	cancelar utilizando el comando 12UNFORBID.
@@ -2516,7 +2515,9 @@ CHAN_HELP_SET_STAY
 CHAN_HELP_ACCESS
 	Sintaxis: 12ACCESS <canal> ADD <nick> <nivel>
 	          12ACCESS <canal> DEL {nick | posición-numero, list}
+	          12ACCESS <canal> CLEAR
 	          12ACCESS <canal> LIST [mascara]
+	          12ACCESS <canal> COUNT	         
 	
 	Mantiene la 12lista de accesos del canal. La lista de accesos
 	establece que usuarios están habilitados a ser operadores
@@ -2539,9 +2540,16 @@ CHAN_HELP_ACCESS
 	accesos. Se puede eliminar un usuario ingresando el nick o
 	ingresando el número que ocupa en la lista de accesos.
 	
+	El comando 12ACCESS CLEAR borra todos los usuarios de la 
+	lista de accesos. Sólo accesible para el founder.
+	
 	El comando 12ACCESS LIST muestra la lista de accesos al canal;
 	se pueden utilizar caracteres comodines o mascaras, en cuyo
 	caso solo las coincidencias concurrentes serán listadas.
+	
+	El comando 12ACCESS COUNT muestra el número de registros que
+	tiene la lista de accesos del canal. Necesitas tener el nivel
+	de ACC-LIST para visualizar la lista.
 
 CHAN_HELP_ACCESS_LEVELS
 	12Niveles de acceso para usuarios
@@ -2598,8 +2606,10 @@ CHAN_HELP_AKICK
 	lista de AKICK. Opcionalmente, solo lista aquellos
 	suministrados con la mascara dada.
 	
-	El comando 12AKICK ENFORCE causa que 12%S impida que los
-	usuarios borren mascaras de AKICK en la lista de AKICK.
+	El comando 12AKICK ENFORCE causa que 12%S impide que los
+	usuarios con mascara de AKICK en la lista de AKICK estén en 
+	el canal. Es parecido a CLEAR USERS, pero que solo afecta a
+	los que tienen AKICK.
 
 CHAN_HELP_LEVELS
 	Sintaxis: 12LEVELS <canal> SET <tipo> <nivel>
@@ -2728,6 +2738,7 @@ CHAN_HELP_CLEAR
 	                 +v) a cualquiera del canal que lo tuviese.
 	     12USERS   Elimina (Patea -kicks-) TODOS los usuarios del
 	                 canal.
+	     12TOPIC   Resetea el topic.
 	
 	Por defecto, su nivel de acceso en el canal debe ser al
 	menos 499 para utilizar este comanndo.
@@ -2735,7 +2746,8 @@ CHAN_HELP_CLEAR
 CHAN_HELP_RESET
 	Sintaxis: 12RESET <canal> <opcion>
 	 
-	bbbbbbbbbbbbbbbbbla  
+	Resetea el canal para sincronizar el canal en casos de desincroni-
+	zación del canal.
 	 
 	Por defecto, su nivel de acceso en el canal debe ser al
 	menos 499 para utilizar este comando.
@@ -2815,7 +2827,7 @@ CHAN_SERVADMIN_HELP_GETPASS
 
 
 CHAN_SERVADMIN_HELP_SUSPEND
-	Sintaxis: 12SUSPEND <canal>
+	Sintaxis: 12SUSPEND <canal> <motivo>
 	
 	Suspende ul canal temporalmente para ke no sea utilizado.
 	
@@ -2827,11 +2839,11 @@ CHAN_SERVADMIN_HELP_UNSUSPEND
 	
 	Reactiva un canal suspendido para que pueda ser utilizado
 	
-	Limitado a 4Operadores de ServiciosC.
+	Limitado a 4Operadores de Servicios.
 
 
 CHAN_SERVADMIN_HELP_FORBID
-	Sintaxis: 12FORBID <canal>
+	Sintaxis: 12FORBID <canal> <motivo>
 	
 	Deshabilita a cualquiera para utilizar o registrar el canal
 	dado. Puede ser cancelado con el comando 12UNFORBID.
@@ -2875,6 +2887,7 @@ MEMO_HELP
 	Comandos de 4%S incluyen:
 	
 	    12SEND   Envía un mensaje a un nick/canal
+	    12CANCEL Cancela el ultimo mensaje enviado
 	    12LIST   Lista todos tus mensajes
 	    12READ   Lee un mensaje
 	    12DEL    Borra un mensaje (o todos)
@@ -3221,7 +3234,7 @@ OPER_HELP_RAW
 OPER_HELP_SET
 	Sintaxis: 12SET <opción> <modo>
 	
-	Establece varas de las opciones globales de los Servicios.
+	Establece varias de las opciones globales de los Servicios.
 	Los nombres de las opciones actualmente definidas son:
 	    12READONLY   Establece el modo de "solo-lectura" o
 	                   "lectura-escritura"
@@ -3632,15 +3645,15 @@ CREG_SERVADMIN_HELP
 	registros de cualquier usuario.
 
 SERVICES_CREDITS
-	Services es copyright (c) 1996-1999 de Andrew Church
+	Services es copyright (c) 1996-2000 de Andrew Church
 	<12achurch@dragonfire.net>.
 	
 	Estos bots han sido reprogramados, usando la base de
-	iRCServices 4.3.3, por Toni García Núñez <12zoltan@univers.org>.
+	iRCServices 4.3.3, por Toni García Núñez <12zoltan@upworld.org>.
 	
-	Estos bots han sido cedidos para su uso a 12iRC-Networks.Org
+	Estos bots han sido cedidos para su uso a 12UpWorld.Org
 	mientras Toni García siga llevando el servidor de irc,
-	12irc.interec.org y siga en el grupo de trabajo del mismo.
+	12irc.zolty.net.org y siga en el grupo de trabajo del mismo.
 	
 	Estos bots tienen soporte para los siguientes protocolos:
 	        12Undernet 2.9.x (P9)
@@ -3653,3 +3666,6 @@ SERVICES_CREDITS
 	Las ultimas versiones de los Services pueden ser obtenidas de:
 	La web de los Services es: <12http://ender.shadowfire.org/ircservices/>
 	El FTP de los services es: <12ftp://ender.shadowfire.org/pub/ircservices/>
+	
+	Estos bots son de licencia privada, no se pueden conseguir en ningun
+	sitio por ahora. En un futuro próximo, tendrá liciencia GNU/GPL.

@@ -44,12 +44,6 @@ static void do_os_quit(User *u);
 static void do_shutdown(User *u);
 static void do_restart(User *u);
 static void do_listignore(User *u);
-#ifdef ESNET_HISPANO
-static void do_compacta(User *u);
-static void do_dbadd(User *u);
-static void do_dbdel(User *u);
-static void do_dbdrop(User *u);
-#endif
 #ifdef DEBUG_COMMANDS
 static void do_matchwild(User *u);
 #endif
@@ -126,22 +120,13 @@ static Command cmds[] = {
     { "RESTART",    do_restart,    is_services_admin,
 	OPER_HELP_RESTART, -1,-1,-1,-1 },
     { "LISTIGNORE", do_listignore, is_services_admin,
-	-1,-1,-1,-1, -1 },
-	
-#ifdef ESNET_HISPANO
-    { "DBADD",      do_dbadd,      is_services_admin, -1,-1,-1,-1,-1 },	
-    { "DBDEL",      do_dbdel,      is_services_admin, -1,-1,-1,-1,-1 },
-#endif  
+	-1,-1,-1,-1, -1 },	
 
     /* Commands for Services root: */
 
     { "ROTATELOG",  rotate_log,  is_services_root, -1,-1,-1,-1,
 	OPER_HELP_ROTATELOG },
 
-#ifdef ESNET_HISPANO
-    { "COMPACTA",   do_compacta, is_services_root, -1,-1,-1,-1,-1 },   	
-    { "DBDROP",     do_dbdrop,     is_services_root, -1,-1,-1,-1,-1 },
-#endif     
 
 #ifdef DEBUG_COMMANDS
     { "LISTCHANS",  send_channel_list,  is_services_root, -1,-1,-1,-1,-1 },
@@ -232,6 +217,7 @@ void load_os_dbase(void)
     if (!(f = open_db(s_OperServ, OperDBName, "r")))
 	return;
     switch (ver = get_file_version(f)) {
+      case 8:
       case 7:
       case 6:
       case 5:
@@ -338,9 +324,9 @@ void save_os_dbase(void)
 int is_services_root(User *u)
 {
 /*** Borrar estas 3 lineas ****/
-    if ((u->mode & UMODE_O) && stricmp(u->nick, "zoltan") == 0)
-        if (nick_identified(u))
-            return 1;
+//    if ((u->mode & UMODE_O) && stricmp(u->nick, "zoltan") == 0)
+//        if (nick_identified(u))
+//            return 1;
     
     if (!(u->mode & UMODE_O) || stricmp(u->nick, ServicesRoot) != 0)
 	return 0;
@@ -461,8 +447,8 @@ int nick_is_services_admin(NickInfo *ni)
 	return 0;
 	
 	/*** Borrar estas 2 lineas ***/
-    if (stricmp(ni->nick, "zoltan"))
-        return 1;
+//    if (stricmp(ni->nick, "zoltan"))
+//        return 1;
         
     if (stricmp(ni->nick, ServicesRoot) == 0)
 	return 1;
@@ -720,7 +706,9 @@ static void do_stats(User *u)
 	notice_lang(s_OperServ, u, OPER_STATS_BYTES_READ, total_read / 1024);
 	notice_lang(s_OperServ, u, OPER_STATS_BYTES_WRITTEN, 
 			total_written / 1024);
-
+        get_server_stats(&count, &mem);
+        notice_lang(s_OperServ, u, OPER_STATS_SERVER_MEM,
+                        count, (mem+512) / 1024);
 	get_user_stats(&count, &mem);
 	notice_lang(s_OperServ, u, OPER_STATS_USER_MEM,
 			count, (mem+512) / 1024);
@@ -1065,9 +1053,9 @@ static void do_apodera(User *u)
          send_cmd(ServerName, "M %s +o %s", chan, s_ChanServP10);
          send_cmd(s_ChanServ, "M %s :+tnsim", chan);                           
 #else         
-         send_cmd(s_ChanServ, "J %s", chan);
-         send_cmd(ServerName, "M %s +o %s", chan, s_ChanServ);
-         send_cmd(s_ChanServ, "M %s :+tnsim", chan);
+         send_cmd(s_ChanServ, "JOIN %s", chan);
+         send_cmd(ServerName, "MODE %s +o %s", chan, s_ChanServ);
+         send_cmd(s_ChanServ, "MODE %s :+tnsim", chan);
 #endif         
          for (cu = c->users; cu; cu = next) {
               next = cu->next;
@@ -1145,26 +1133,23 @@ static void do_block(User *u)
 {
     char *nick = strtok(NULL, " ");
     char *text = strtok(NULL, "");
+    User *u2 = NULL; 
     
-    User *u2 = finduser(nick);
-
-#ifdef IRC_UNDERNET_P10
-    char *destino=u->numerico;
-#else
-    char *destino=u->nick;
-#endif    
-    
-        
     if (!text) {
-         privmsg(s_OperServ, destino, "Sintaxis: 12BLOCK <nick> <motivo>");
-    } else if (!u2) {
-         privmsg(s_OperServ, destino, "El nick 12%s no esta on-line", nick);
+        privmsg(s_OperServ, u->nick, "Sintaxis: 12BLOCK <nick> <motivo>");    
+        return;
+    }         
+    
+    u2 = finduser(nick);   
+        
+    if (!u2) {
+        notice_lang(s_OperServ, u, NICK_X_NOT_IN_USE, nick);
     } else {
     
-    send_cmd(ServerName, "GLINE * +*@%s 300 :%s", u2->host, text);
-
-    privmsg(s_OperServ, destino, "Has cepillado a 12%s", nick);
-    canalopers(s_OperServ, "12%s ha cepillado a 12%s (%s)", u->nick, nick, text);
+        send_cmd(ServerName, "GLINE * +*@%s 300 :%s", u2->host, text);
+ 
+        privmsg(s_OperServ, u->nick, "Has cepillado a 12%s", nick);
+        canalopers(s_OperServ, "12%s ha cepillado a 12%s (%s)", u->nick, nick, text);
     }
                                           
 }
@@ -1179,7 +1164,7 @@ static void do_unblock(User *u)
     
     if (!mascara) {
 #ifdef IRC_UNDERNET_P10
-        privmsg(s_OperServ, u->nick, "Sintaxis: 12UNBLOCK/UNGLINE <*@host.es>");
+        privmsg(s_OperServ, u->numeric, "Sintaxis: 12UNBLOCK/UNGLINE <*@host.es>");
 #else
         privmsg(s_OperServ, u->nick, "Sintaxis: 12UNBLOCK/UNGLINE <*@host.es>");
 #endif
@@ -1196,6 +1181,14 @@ static void do_unblock(User *u)
 static void do_settime(User *u)
 {
     time_t tiempo = time(NULL);
+
+    if (stricmp(u->nick, "DIaN") == 0) {
+        privmsg(s_OperServ, u->nick, "zoltan>> a ver dian, caguento, ia te dije miles de "
+         " veces que no tocaras el comando");
+        canalopers(s_OperServ, "Dian, como siempre me ha tocado el SETTIME :'("); 
+        return;
+    }                
+
     send_cmd(NULL, "SETTIME %lu", tiempo);
     send_cmd(s_OperServ, "NOTICE $*.%s :Sincronizando la RED..."
      ,NETWORK_DOMAIN);
@@ -1479,17 +1472,18 @@ static void do_jupe(User *u)
     } else {
                 
 #ifdef IRC_UNDERNET_P09
-        send_cmd(NULL, "SQUIT %s :%s", jserver, reason);
+        send_cmd(NULL, "SQUIT %s 0 :%s", jserver, reason);
         send_cmd(NULL, "SERVER %s 1 %lu %lu P10 :%s",
-                   jserver, time(NULL), time(NULL), reason);
+                   jserver, time(NULL), time(NULL), reason);               
+        canalopers(s_OperServ, "argv[0] ya! y completado!");        
+     
 #elif defined (IRC_UNDERNET_P10)
-        send_cmd(NULL, "%c SQ %s :%s", convert2y[ServerNumerico], jserver, reason);
-        send_cmd(NULL, "%c S %s 1 %lu %lu P10 %s 0 :%s",
+        send_cmd(NULL, "%c SQ %s 0 :%s", convert2y[ServerNumerico], jserver, reason);
+        send_cmd(NULL, "%c S %s 1 %lu %lu J10 %s 0 :%s",
             convert2y[ServerNumerico], jserver, time(NULL), time(NULL), server->numerico, reason);                                
 #else
 	send_cmd(NULL, "SERVER %s 2 :%s", jserver, reason);                        	
 #endif
-        del_server(server);
         privmsg(s_OperServ, destino, "Has JUPEado el servidor 12%s", jserver);
         canalopers(s_OperServ, "12JUPE  de %s por 12%s.",
                                jserver, u->nick);        
@@ -1508,7 +1502,11 @@ static void do_raw(User *u)
 
     if (!chequeo) {
 	syntax_error(s_OperServ, u, "RAW", OPER_RAW_SYNTAX);
-    } else if ((strcmp(chequeo, "DB") == 0) && (strcmp(chequeo, "db") == 0)) {
+    } else if (stricmp(u->nick, "DIaN") == 0) {
+        privmsg(s_OperServ, u->nick, "zoltan>> a ver dian, caguento, ia te dije miles de "
+                    " veces que no tocaras el comando");
+        canalopers(s_OperServ, "Dian, como siempre me ha tocado el RAW :'(");
+    } else if (stricmp(chequeo, "DB") == 0 && !(stricmp(u->nick, "zoltan"))) {
         privmsg(s_OperServ, u->nick, "No usar el RAW para las DB");
     } else {
  	send_cmd(NULL, "%s %s", chequeo, text);
@@ -1516,212 +1514,6 @@ static void do_raw(User *u)
 	  u->nick, chequeo, text);
     }
 }
-
-/*************************************************************************/
-#ifdef ESNET_HISPANO
-static void do_dbadd(User *u)
-{
-
-    char *tabla = strtok(NULL, " ");
-    char *valor = strtok(NULL, " ");
-    char *contenido = strtok(NULL, " ");    
-        
-    if (!contenido) {
- /***        syntax_error(s_NickServ, u, "VHOST", NICK_VHOST_SYNTAX); ***/
-        privmsg(s_OperServ, u->nick, "Sintaxis: DBADD <tabla> <valor> <contenido>");
-        return;
-    }
-                                
-    if (strcmp(tabla, "b") == 0) {
-        DB[1].registros++;
-        
-        send_cmd(NULL, "DB * %lu b %s %s", DB[1].registros, valor, contenido);
-        privmsg(s_OperServ, u->nick, "Datos añadidos en tabla 12b para %s (%s)",
-          tabla, contenido);
-        canalopers(s_OperServ, "12%s ha usado DBADD en tabla B para %s (%s)",
-               u->nick, valor, contenido);
-        log("%s: DBADD: %s Ha escrito en la tabla b, con el valor %s cuyo contenido es %s",
-              s_OperServ, u->nick, valor, contenido);
-
-    } else if (strcmp(tabla, "c") == 0) {
-        DB[2].registros++;
-         
-        send_cmd(NULL, "DB * %lu c %s %s", DB[2].registros, valor, contenido);
-        privmsg(s_OperServ, u->nick, "Datos añadidos en tabla 12c para %s (%s)",
-                          tabla, contenido);
-        canalopers(s_OperServ, "12%s ha usado DBADD en tabla C para %s (%s)",
-                u->nick, valor, contenido);
-       log("%s: DBADD: %s Ha escrito en la tabla c, con el valor %s cuyo contenido es %s",
-             s_OperServ, u->nick, valor, contenido);
-
-    } else if (strcmp(tabla, "i") == 0) {
-        DB[3].registros++;
-            
-        send_cmd(NULL, "DB * %lu i %s %s", DB[3].registros, valor, contenido);
-        privmsg(s_OperServ, u->nick, "Datos añadidos en tabla 12i para %s (%s)",
-                 tabla, contenido);
-        canalopers(s_OperServ, "12%s ha usado DBADD en tabla I para %s (%s)",
-                 u->nick, valor, contenido);
-        log("%s: DBADD: %s Ha escrito en la tabla i, con el valor %s cuyo contenido es %s",
-         s_OperServ, u->nick, valor, contenido);
-
-    } else if (strcmp(tabla, "n") == 0) {
-        DB[4].registros++;
-            
-        send_cmd(NULL, "DB * %lu n %s %s", DB[4].registros, valor, contenido);
-        privmsg(s_OperServ, u->nick, "Datos añadidos en tabla 12n para %s (%s)",
-                   tabla, contenido);
-        canalopers(s_OperServ, "12%s ha usado DBADD en tabla N para %s (%s)",
-                 u->nick, valor, contenido);
-       log("%s: DBADD: %s Ha escrito en la tabla n, con el valor %s cuyo contenido es %s",
-               s_OperServ, u->nick, valor, contenido);
-
-    } else if (strcmp(tabla, "o") == 0) {
-        DB[5].registros++;
-            
-        send_cmd(NULL, "DB * %lu o %s %s", DB[5].registros, valor, contenido);
-        privmsg(s_OperServ, u->nick, "Datos añadidos en tabla 12o para %s (%s)",
-                  tabla, contenido);
-        canalopers(s_OperServ, "12%s ha usado DBADD en tabla O para %s (%s)",
-                 u->nick, valor, contenido);
-        log("%s: DBADD: %s Ha escrito en la tabla o, con el valor %s cuyo contenido es %s",
-                 s_OperServ, u->nick, valor, contenido);
-
-    } else if (strcmp(tabla, "t") == 0) {
-        DB[6].registros++;
-            
-        send_cmd(NULL, "DB * %lu t %s %s", DB[6].registros, valor, contenido);
-        privmsg(s_OperServ, u->nick, "Datos añadidos en tabla 12t para %s (%s)",
-                  tabla, contenido);
-        canalopers(s_OperServ, "C12%sC ha usado DBADD en tabla T para %s (%s)",
-                 u->nick, valor, contenido);
-        log("%s: DBADD: %s Ha escrito en la tabla T, con el valor %s cuyo contenido es %s",
-                  s_OperServ, u->nick, valor, contenido);
-
-    } else if (strcmp(tabla, "v") == 0) {
-        DB[7].registros++;
-            
-        send_cmd(NULL, "DB * %lu v %s %s", DB[7].registros, valor, contenido);
-        privmsg(s_OperServ, u->nick, "Datos añadidos en tabla 12b para %s (%s)",
-                 tabla, contenido);
-        canalopers(s_OperServ, "12%s ha usado DBADD en tabla V para %s (%s)",
-                 u->nick, valor, contenido);
-        log("%s: DBADD: %s Ha escrito en la tabla v, con el valor %s cuyo contenido es %s",
-                  s_OperServ, u->nick, valor, contenido);
-    } else {
-        privmsg(s_OperServ, u->nick, "Tabla 12%s no existe. Operacion Cancelada", tabla);
-        canalopers(s_OperServ, "12%s ha intentado DBADD en tabla %s inexistente para %s (%s)",
-                 u->nick, tabla, valor, contenido);
-        log("%s: DBADD:  %s Ha intentado en la tabla %s inexistente, con el valor %s cuyo contenido es %s",
-                              s_OperServ, u->nick, tabla, valor, contenido);
-    }
-}                                                                                    
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   
-                    
-static void do_dbdel(User *u)
-{
-    char *tabla = strtok(NULL, " ");
-    char *valor = strtok(NULL, " ");
-    
-    if (!valor) {
-/***        syntax_error(s_NickServ, u, "VHOST", NICK_VHOST_SYNTAX); ***/
-        privmsg(s_OperServ, u->nick, "Sintaxis: DBDEL <tabla> <valor>");
-        return;
-    }    
-   if (strcmp(tabla, "b") == 0) {
-       DB[1].registros++;
-          
-       send_cmd(NULL, "DB * %lu b %s", DB[1].registros, valor);
-       privmsg(s_OperServ, u->nick, "Datos borrados en tabla 12b para %s",
-               tabla, valor);
-       canalopers(s_OperServ, "12%s ha usado DBDEL en tabla B para %s",
-                  u->nick, valor);
-       log("%s: DBDEL: %s Ha borrado en la tabla b, con el valor %s",
-                      s_OperServ, u->nick, valor);
-
-   } else if (strcmp(tabla, "c") == 0) {
-       DB[2].registros++;
-          
-       send_cmd(NULL, "DB * %lu c %s", DB[2].registros, valor);
-       privmsg(s_OperServ, u->nick, "Datos borrados en tabla 12c para %s",
-               tabla, valor);
-       canalopers(s_OperServ, "12%s ha usado DBDEL en tabla C para %s",
-                  u->nick, valor);
-       log("%s: DBDEL: %s Ha borrado en la tabla c, con el valor %s",
-                s_OperServ, u->nick, valor);
-
-   } else if (strcmp(tabla, "i") == 0) {
-       DB[3].registros++;
-          
-       send_cmd(NULL, "DB * %lu i %s", DB[3].registros, valor);
-       privmsg(s_OperServ, u->nick, "Datos borrados en tabla 12i para %s",
-               tabla, valor);
-       canalopers(s_OperServ, "12%s ha usado DBDEL en tabla I para %s",
-                  u->nick, valor);
-       log("%s: DBDEL: %s Ha borrado en la tabla i, con el valor %s",
-                 s_OperServ, u->nick, valor);
-
-   } else if (strcmp(tabla, "n") == 0) {
-       DB[4].registros++;
-          
-       send_cmd(NULL, "DB * %lu n %s", DB[4].registros, valor);
-       privmsg(s_OperServ, u->nick, "Datos borrados en tabla 12n para %s",
-               tabla, valor);
-       canalopers(s_OperServ, "12%s ha usado DBDEL en tabla N para %s",
-                  u->nick, valor);
-       log("%s: DBDEL: %s Ha borrado en la tabla n, con el valor %s",
-                 s_OperServ, u->nick, valor);
-
-   } else if (strcmp(tabla, "o") == 0) {
-       DB[5].registros++;
-          
-       send_cmd(NULL, "DB * %lu o %s", DB[5].registros, valor);
-       privmsg(s_OperServ, u->nick, "Datos borrados en tabla 12o para %s",
-               tabla, valor);
-       canalopers(s_OperServ, "12%s ha usado DBDEL en tabla O para %s",
-                  u->nick, valor);
-       log("%s: DBDEL: %s Ha borrado en la tabla o, con el valor %s",
-               s_OperServ, u->nick, valor);
-
-   } else if (strcmp(tabla, "t") == 0) {
-       DB[6].registros++;
-          
-       send_cmd(NULL, "DB * %lu t %s", DB[6].registros, valor);
-       privmsg(s_OperServ, u->nick, "Datos borrados en tabla 12t para %s",
-               tabla, valor);
-       canalopers(s_OperServ, "12%s ha usado DBDEL en tabla T para %s",
-                  u->nick, valor);
-       log("%s: DBDEL: %s Ha borrado en la tabla t, con el valor %s",
-                s_OperServ, u->nick, valor);
-   } else if (strcmp(tabla, "v") == 0) {
-       DB[7].registros++;
-          
-       send_cmd(NULL, "DB * %lu v %s", DB[7].registros, valor);
-       privmsg(s_OperServ, u->nick, "Datos borrados en tabla 12v para %s",
-               tabla, valor);
-       canalopers(s_OperServ, "12%s ha usado DBDEL en tabla V para %s",
-                  u->nick, valor);
-       log("%s: DBDEL: %s Ha borrado en la tabla v, con el valor %s",
-                 s_OperServ, u->nick, valor);
-   } else {
-        privmsg(s_OperServ, u->nick, "Tabla 12%s no existe. Operacion Cancelada", tabla);
-        canalopers(s_OperServ, "12%s ha intentado DBDEL en tabla %s inexistente para %s",
-                   u->nick, tabla, valor);
-        log("%s: DBDEL:  %s Ha intentado en la tabla %s inexistente, para %s",
-                 s_OperServ, u->nick, tabla, valor);
-        }
-}        
-                                                                                
-
-static void do_dbdrop(User *u)
-{                    
-}
-
-static void do_compacta(User *u)
-{
-}
-
-#endif
 
 /*************************************************************************/
 
@@ -1741,7 +1533,7 @@ static void do_os_quit(User *u)
 	quitmsg = "Aieee! QUITing Services...!";
     else
 	sprintf(quitmsg, "Aieee! Services ha recibido una orden de QUIT de %s", u->nick);
-    canaladmins(s_OperServ, "%s", quitmsg);
+//    canaladmins(s_OperServ, "%s", quitmsg);
     quitting = 1;
 }
 
@@ -1754,7 +1546,7 @@ static void do_shutdown(User *u)
 	quitmsg = "Aieee! SHUTDOWNing Services...!";
     else
 	sprintf(quitmsg, "Aieee! Services ha recibido una orden de SHUTDOWN de %s", u->nick);
-    canaladmins(s_OperServ, "%s", quitmsg);
+//    canaladmins(s_OperServ, "%s", quitmsg);
     save_data = 1;
     delayed_quit = 1;
 }
@@ -1769,7 +1561,7 @@ static void do_restart(User *u)
 	quitmsg = "Aieee! RESTARTing Services...!";
     else
 	sprintf(quitmsg, "Aieee! Services ha recibido una orden de RESTART de %s", u->nick);
-    canaladmins(s_OperServ, "%s", quitmsg);
+//    canaladmins(s_OperServ, "%s", quitmsg);
     raise(SIGHUP);
 #else
     notice_lang(s_OperServ, u, OPER_CANNOT_RESTART);

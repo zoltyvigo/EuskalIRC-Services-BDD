@@ -40,15 +40,15 @@ OBJS =	actions.o akill.o channels.o chanserv.o commands.o compat.o \
 	config.o datafiles.o encrypt.o helpserv.o init.o language.o \
 	list.o log.o main.o memory.o memoserv.o messages.o misc.o news.o \
 	nickserv.o operserv.o process.o send.o sockutil.o \
-	timeout.o users.o correo.o cregserv.o cyberserv.o db_hispano.o \
-        undernetp10.o servers.o \
+	timeout.o users.o correo.o cregserv.o cyberserv.o  \
+        P10.o servers.o \
 	$(VSNPRINTF_O)
 SRCS =	actions.c akill.c channels.c chanserv.c commands.c compat.c \
 	config.c datafiles.c encrypt.c helpserv.c init.c language.c \
 	list.c log.c main.c memory.c memoserv.c messages.c misc.c news.c \
 	nickserv.c operserv.c process.c send.c sockutil.c \
-	timeout.c users.c correo.c cregserv.c cyberserv.c db_hispano.c \
-        undernetp10.c servers.c \
+	timeout.c users.c correo.c cregserv.c cyberserv.c \
+        P10.c servers.c \
 	$(VSNPRINTF_C)
 
 .c.o:
@@ -59,7 +59,7 @@ all: $(PROGRAM) languages
 	@echo Ahora, ejecute \"$(MAKE) install\" para instalar los Services.
 
 myclean:
-	rm -f *.o $(PROGRAM) import-db version.h.old
+	rm -f *.o *~ $(PROGRAM) import-db version.h.old
 
 clean: myclean
 	(cd lang ; $(MAKE) clean)
@@ -112,7 +112,6 @@ correo.o:	correo.c	services.h
 cregserv.o:	cregserv.c	services.h pseudo.h
 cyberserv.o:	cyberserv.c	services.h pseudo.h
 datafiles.o:	datafiles.c	services.h datafiles.h
-db_hispano.o:	db_hispano.c	services.h 
 encrypt.o:	encrypt.c	encrypt.h sysconf.h
 helpserv.o:	helpserv.c	services.h language.h
 init.o:		init.c		services.h
@@ -132,7 +131,7 @@ send.o:		send.c		services.h
 servers.o:	servers.c	services.h pseudo.h
 sockutil.o:	sockutil.c	services.h
 timeout.o:	timeout.c	services.h timeout.h
-undernetp10.o:	undernetp10.c   services.h
+P10.o:		P10.c		services.h
 users.o:	users.c		services.h
 vsnprintf.o:	vsnprintf.c
 

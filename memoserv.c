@@ -78,8 +78,10 @@ void memoserv(const char *source, char *buf)
 
     if (!u) {
 	log("%s: user record for %s not found", s_MemoServ, source);
-	notice(s_MemoServ, source,
+#ifndef IRC_UNDERNET_P10
+	privmsg(s_MemoServ, source,
 		getstring((NickInfo *)NULL, USER_RECORD_NOT_FOUND));
+#endif		
 	return;
     }
 

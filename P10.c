@@ -15,10 +15,7 @@
 #ifdef IRC_UNDERNET_P10
 
 #include "services.h"
-#include "pseudo.h"
 
-#define NUMNICKBASE 64
-#define NUMNICKMAXCHAR 'z'
 
 char convert2y[NUMNICKBASE] = {
   'A','B','C','D','E','F','G','H','I','J','K','L','M',
@@ -60,7 +57,7 @@ const char *inttobase64(unsigned int i)
   base64buf[3] = convert2y[(i >> 12) & 0x3f];
   base64buf[4] = convert2y[(i >> 6) & 0x3f];
   base64buf[5] = convert2y[i & 0x3f];
-  base64buf[6] = 0; * (static is initialized 0) *
+  base64buf[6] = 0; /* (static is initialized 0) */
   return base64buf;
 }
 

@@ -155,6 +155,7 @@ void load_news()
     if (!(f = open_db(s_OperServ, NewsDBName, "r")))
 	return;
     switch (i = get_file_version(f)) {
+      case 8:
       case 7:
 	SAFE(read_int16(&n, f));
 	nnews = n;

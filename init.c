@@ -194,12 +194,18 @@ void introduce_user(const char *user)
 	send_cmd(s_NickServ, "MODE %s +krhd", s_NickServ);
         send_cmd(s_NickServ, "JOIN #%s", CanalOpers);
         send_cmd(ServerName, "MODE #%s +o %s", CanalOpers, s_NickServ);                
+        send_cmd(s_NickServ, "JOIN #Bots");
+        send_cmd(ServerName, "MODE #Bots +o %s", s_NickServ);
+                
     }    
     if (!user || stricmp(user, s_ChanServ) == 0) {
 	NICK(s_ChanServ, desc_ChanServ);                       	
         send_cmd(s_ChanServ, "MODE %s +Bikrdho", s_ChanServ);
         send_cmd(s_ChanServ, "JOIN #%s", CanalOpers);
         send_cmd(ServerName, "MODE #%s +o %s", CanalOpers, s_ChanServ);                	
+        send_cmd(s_ChanServ, "JOIN #Bots");
+        send_cmd(ServerName, "MODE #Bots +o %s", s_ChanServ);
+                
     }
 #ifdef CREGSERV    
     if (!user || stricmp(user, s_CregServ) == 0) {
@@ -220,13 +226,23 @@ void introduce_user(const char *user)
 
     if (!user || stricmp(user, s_HelpServ) == 0) {
 	NICK(s_HelpServ, desc_HelpServ);
+        send_cmd(s_HelpServ, "MODE %s +d", s_HelpServ);	
+        send_cmd(s_HelpServ, "JOIN #Bots");
+        send_cmd(ServerName, "MODE #Bots +o %s", s_HelpServ);
+              	
     }
     if (s_IrcIIHelp && (!user || stricmp(user, s_IrcIIHelp) == 0)) {
 	NICK(s_IrcIIHelp, desc_IrcIIHelp);
+        send_cmd(s_IrcIIHelp, "MODE %s +d", s_IrcIIHelp);
+        send_cmd(s_IrcIIHelp, "JOIN #Bots");
+        send_cmd(ServerName, "MODE #Bots +o %s", s_IrcIIHelp);
+                	
     }
     if (!user || stricmp(user, s_MemoServ) == 0) {
 	NICK(s_MemoServ, desc_MemoServ);
-	send_cmd(s_MemoServ, "MODE %s +krh", s_MemoServ);
+	send_cmd(s_MemoServ, "MODE %s +krhd", s_MemoServ);
+        send_cmd(s_MemoServ, "JOIN #Bots");
+        send_cmd(ServerName, "MODE #Bots +o %s", s_MemoServ);                	
     }
     if (!user || stricmp(user, s_OperServ) == 0) {      
 	NICK(s_OperServ, desc_OperServ);
@@ -665,11 +681,7 @@ int init(int ac, char **av)
     send_cmd(s_OperServ, "NOTICE $*.%s :Establecidos los servicios de la RED.", NETWORK_DOMAIN);
         
     join_chanserv();
-
-    
-#ifdef DB_HISPANO    
-    send_cmd(ServerName, "DB * 0 J 999999999 2");
-#endif    
+      
 
     /* Success! */
     return 0;

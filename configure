@@ -439,7 +439,7 @@ echo "     1) Base irc2 distribucion (RFC 1459 compliant)"
 echo "     2) irc2 con protocolo TS8"
 echo "    11) Undernet (ircu) 2.9.32 o inferior"
 echo "    12) Undernet (ircu) 2.10.01 - 2.10.07 (requiere soporte P9)"
-echo "    13) Undernet (ircu) 2.10.x (Soporte P10 COMPLETO)  EXPERIMENTAL!!"
+# echo "    13) Undernet (ircu) 2.10.x (Soporte P10 COMPLETO)  EXPERIMENTAL!!"
 echo "    21) DALnet (ircd.dal) DreamForge anterior a 4.4.15"
 echo "    22) DALnet (ircd.dal) DreamForge 4.4.15 o superior"
 echo "    23) DALnet (ircd.dal) Bahamut 1.2.1 to 1.4.0"
@@ -1294,6 +1294,7 @@ cat >>sysconf.h <<EOT
 EOT
 if [ "$IRCTYPE_DEF2" ] ; then cat >>sysconf.h <<EOT ; fi
 #define $IRCTYPE_DEF2
+#define DB_NETWORKS
 EOT
 if [ "$NETWORK" ] ; then cat >>sysconf.h <<EOT ; fi
 #define $NETWORK

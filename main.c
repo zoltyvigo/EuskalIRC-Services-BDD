@@ -75,17 +75,17 @@ void sighandler(int signum)
 	if (signum == SIGHUP) {  /* SIGHUP = save databases and restart */
 	    save_data = -2;
 	    signal(SIGHUP, SIG_IGN);
-	    log("Received SIGHUP, restarting.");
+	    log("Recibido SIGHUP, reiniciando.");
 	    if (!quitmsg)
-		quitmsg = "Restarting on SIGHUP";
+		quitmsg = "Reiniciando por señal SIGHUP";
 	    longjmp(panic_jmp, 1);
 	} else if (signum == SIGTERM) {
 	    save_data = 1;
 	    delayed_quit = 1;
 	    signal(SIGTERM, SIG_IGN);
 	    signal(SIGHUP, SIG_IGN);
-	    log("Received SIGTERM, exiting.");
-	    quitmsg = "Shutting down on SIGTERM";
+	    log("Recibido SIGTERM, saliendo.");
+	    quitmsg = "Cierre conexion por señal SIGTERM";
 	    longjmp(panic_jmp, 1);
 	} else if (signum == SIGINT || signum == SIGQUIT) {
 	    /* nothing -- terminate below */
@@ -139,9 +139,9 @@ void sighandler(int signum)
 	quitting = 1;
     } else {
 #if HAVE_STRSIGNAL
-	snprintf(quitmsg, BUFSIZE, "Services terminating: %s", strsignal(signum));
+	snprintf(quitmsg, BUFSIZE, "Services ha terminado: %s", strsignal(signum));
 #else
-	snprintf(quitmsg, BUFSIZE, "Services terminating on signal %d", signum);
+	snprintf(quitmsg, BUFSIZE, "Services ha terminado por señal %d", signum);
 #endif
 	quitting = 1;
     }
@@ -216,9 +216,10 @@ int main(int ac, char **av, char **envp)
 	    waiting = -3;
 	    if (debug)
 		log("debug: Running expire routines");
+//            canalopers(ServerName, "Ejecutando rutinas de expiracion");
 	    if (!skeleton) {
 		waiting = -21;
-		expire_nicks();
+//		expire_nicks();
 		waiting = -22;
 		expire_chans();
 #ifdef CREGSERV
@@ -237,6 +238,7 @@ int main(int ac, char **av, char **envp)
 	    waiting = -2;
 	    if (debug)
 		log("debug: Saving databases");
+//	    canalopers(ServerName, "Grabando DB's");	
 	    if (!skeleton) {
 		waiting = -11;
 		save_ns_dbase();
@@ -291,10 +293,14 @@ int main(int ac, char **av, char **envp)
     /* Check for restart instead of exit */
     if (save_data == -2) {
 #ifdef SERVICES_BIN
-	log("Restarting");
+	log("Reiniciando");
 	if (!quitmsg)
-	    quitmsg = "Restarting";
-	send_cmd(ServerName, "SQUIT %s :%s", ServerName, quitmsg);
+	    quitmsg = "Reiniciando";
+#ifdef IRC_UNDERNET
+	send_cmd(ServerName, "SQUIT %s 0 :%s", ServerName, quitmsg);
+#else
+        send_cmd(ServerName, "SQUIT %s :s", ServerName, quitmsg);
+#endif	
 	disconn(servsock);
 	close_log();
 	execve(SERVICES_BIN, av, envp);
@@ -311,10 +317,14 @@ int main(int ac, char **av, char **envp)
 
     /* Disconnect and exit */
     if (!quitmsg)
-	quitmsg = "Terminating, reason unknown";
+	quitmsg = "Services ha terminado, razón desconocida";
     log("%s", quitmsg);
     if (started)
-	send_cmd(ServerName, "SQUIT %s :%s", ServerName, quitmsg);
+#ifdef IRC_UNDERNET
+        send_cmd(ServerName, "SQUIT %s 0 :%s", ServerName, quitmsg);
+#else
+        send_cmd(ServerName, "SQUIT %s :%s", ServerName, quitmsg);
+#endif 
     disconn(servsock);
     return 0;
 }

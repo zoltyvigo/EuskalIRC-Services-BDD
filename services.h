@@ -121,7 +121,7 @@ extern int toupper(char), tolower(char);
 /* Version number for data files; if structures below change, increment
  * this.  (Otherwise -very- bad things will happen!) */
 
-#define FILE_VERSION	7
+#define FILE_VERSION	8
 
 /*************************************************************************/
 
@@ -179,6 +179,12 @@ struct nickinfo_ {
     time_t time_registered;
     time_t last_seen;
     int16 status;	/* See NS_* below */
+    char *suspendby;         /* Quien lo suspendio */
+    char *suspendreason;     /* Motivo de la suspension */
+    time_t time_suspend;     /* Tiempo cuando suspendio el nick */
+    time_t time_expiresuspend; /* Expiracion suspension */
+    char *forbidby;          /* Quien lo forbideo */
+    char *forbidreason;      /* Motivo del forbid */
 
     NickInfo *link;	/* If non-NULL, nick to which this one is linked */
     int16 linkcount;	/* Number of links to this nick */
@@ -289,6 +295,7 @@ typedef struct {
 	NickInfo *ni;	/* Same */
     } u;
     char *reason;
+    char *who[NICKMAX]; /* Quien ha metido el akick */
 } AutoKick;
 
 typedef struct chaninfo_ ChannelInfo;
@@ -310,6 +317,12 @@ struct chaninfo_ {
     time_t last_topic_time;		/* When the last topic was set */
 
     int32 flags;			/* See below */
+    char *suspendby;                    /* Quien lo suspendio */
+    char *suspendreason;                /* Motivo de la suspension */
+    time_t time_suspend;                /* Tiempo cuando suspendio el canal */
+    time_t time_expiresuspend;          /* Expiracion suspension */
+    char *forbidby;                     /* Quien lo forbideo */
+    char *forbidreason;                 /* Motivo del forbid */                        
 
     int16 *levels;			/* Access levels for commands */
 
@@ -494,6 +507,12 @@ struct channel_ {
 #else
 # define MODE_SENDER(service) ServerName
 #endif
+
+/* P10 */
+
+#define NUMNICKBASE 64
+#define NUMNICKMAXCHAR 'z'
+
 /*************************************************************************/
 /* CyberServ, Control de clones y ilines */
 
@@ -519,6 +538,15 @@ struct ilineinfo_ {
     int num;
 };
 
+/* Soporte P10 */
+
+#define NUMNICKBASE 64
+#define NUMNICKMAXCHAR 'z'
+
+#ifdef IRC_UNDERNET
+#define toLower(c)      (NTL_tolower_tab[(c)-CHAR_MIN])
+#define toUpper(c)      (NTL_toupper_tab[(c)-CHAR_MIN])
+#endif
 /*************************************************************************/
 
 /* Constants for news types. */
@@ -537,13 +565,6 @@ typedef struct ignore_data {
 } IgnoreData;
 
 /*************************************************************************/
-/********* Protocolo DB *********/
-#ifdef ESNET_HISPANO
-struct DB {
-     long registros;   // Numero de registro por el ke van
-} DB[7];
-
-#endif
 /*************************************************************************/
 
 #include "extern.h"

@@ -34,12 +34,12 @@ typedef struct creginfo_ CregInfo;
 
 struct creginfo_ {
     CregInfo *next, *prev;
-        char name[CHANMAX];          /* Nombre del canal */
-            char *founder;               /* Nick del founder */
+    char name[CHANMAX];          /* Nombre del canal */
+    char *founder;               /* Nick del founder */
             
-                char founderpass[PASSMAX];   /* Password de founder */
-                    char *desc;                  /* Descripcion del canal */
-                        char *email;                 /* Email del founder */
+    char founderpass[PASSMAX];   /* Password de founder */
+    char *desc;                  /* Descripcion del canal */
+    char *email;                 /* Email del founder */
                             time_t time_peticion;        /* Hora de la peticion */
                             
                                 char *nickoper;              /* Nick del OPER */

@@ -21,15 +21,27 @@ static void do_help(const char *whoami, const char *source, char *topic);
 void helpserv(const char *whoami, const char *source, char *buf)
 {
     char *cmd, *topic, *s;
+#ifdef IRC_UNDERNET_P10    
+    User *u = finduser(source);
+    
+    if (!u)
+        return;
+#endif        
 
     topic = buf ? sstrdup(buf) : NULL;
     cmd = strtok(buf, " ");
     if (cmd && stricmp(cmd, "\1PING") == 0) {
 	if (!(s = strtok(NULL, "")))
 	    s = "\1";
-	notice(s_HelpServ, source, "\1PING %s", s);
+#ifdef IRC_UNDERNET_P10
+	notice(s_HelpServ, u->numerico, "\1PING %s", s);
     } else {
+        do_help(whoami, u->numerico, topic);    
+#else
+        notice(s_HelpServ, source, "\1PING %s", s);
+    } else {  
 	do_help(whoami, source, topic);
+#endif	
     }
     if (topic)
 	free(topic);
@@ -91,9 +103,11 @@ static void do_help(const char *whoami, const char *source, char *topic)
 	    log_perror("debug: No encuentra el archivo de ayuda %s", buf);
 	if (u) {
 	    notice_lang(whoami, u, NO_HELP_AVAILABLE, old_topic);
+#ifndef IRC_UNDERNET_P10
 	} else {
 	    privmsg(whoami, source,
 			"Lo siento, no hay ayuda disponible para 12%s.", old_topic);
+#endif			
 	}
 	free(old_topic);
 	return;
@@ -104,7 +118,11 @@ static void do_help(const char *whoami, const char *source, char *topic)
 	 * doing weird stuff to the output.  Also replace blank lines by
 	 * spaces (see send.c/notice_list() for an explanation of why).
 	 */
-	privmsg(whoami, source, "%s", s ? s : " ");
+#ifdef IRC_UNDERNET_P10
+	privmsg(whoami, u->numerico, "%s", s ? s : " ");
+#else
+        privmsg(whoami, source, "%s", s ? s : " ");
+#endif	
     }
     fclose(f);
     free(old_topic);

@@ -82,7 +82,7 @@ void send_channel_list(User *user)
 #endif                                
                                 				
 #if defined (IRC_DAL4_4_15) || defined (IRC_BAHAMUT)
-/* Hay que meter aqui nuevos modos de UNREAL y BAHAMUT cuando los implemente */
+/* Hay que meter aqui nuevos modos de BAHAMUT cuando los implemente */
 				(c->mode&CMODE_R) ? "R" : "",
 #else
 				"",
@@ -235,9 +235,11 @@ void chan_adduser(User *user, const char *chan)
 	/* Store ChannelInfo pointer in channel record */
 	c->ci = cs_findchan(chan);
 	if (c->ci) {
+#if defined (IRC_DAL4_4_15) || defined (IRC_BAHAMUT)
 	    /* This is a registered channel, ensure it's mode locked +r */
 	    c->ci->mlock_on |= CMODE_r;
 	    c->ci->mlock_off &= ~CMODE_r;	/* just to be safe */
+#endif
 
 	    /* Store return pointer in ChannelInfo record */
 	    c->ci->c = c;
@@ -347,6 +349,192 @@ void chan_deluser(User *user, Channel *c)
 
 /*************************************************************************/
 
+/* Handle a channel CREATE command. */
+/*
+ *  Source = Numerico
+ *   av[0] = Canal
+ *   av[1] = Tiempo creacion canal
+ *
+ * Ejemplo:
+ *
+ *   0AI CREATE #vigo 973551641
+ */
+
+#ifdef IRC_UNDERNET_P10
+void do_create(const char *source, int ac, char **av)
+{
+   User *user;
+   
+   u = finduser(source);
+
+   if (debug)
+       log("debug: %s crea el canal %s", user->nick, av[0]);
+          
+   do_join(user->nick, ac, av);
+   av[0] = sstrdup(av[0]);
+   av[1] = sstrdup("+o");
+   av[2] = sstrdup(user->numerico);
+/* Al entrar el tio, le pongo op */
+   do_cmode(user->nick, 3, av);
+   free(av[0]);
+   free(av[1]);
+   free(av[2]);
+                              
+}
+
+/*************************************************************************/
+
+/* Handle a channel BURST command. */
+
+/* Codigo copiado del ircu P10 de undernet
+ *
+ *      source = Numerico del servidor
+ *      av[0]  = Canal
+ *      av[1]  = Hora de creacion canal
+ *      av[2]  = Modos canal
+ *
+ *  Si tiene modo +k y +l
+ *      av[3]  = Key
+ *      av[4]  = Limite usuarios
+ *      av[5]  = usuarios y los modos
+ *      av[6..]  = bans....
+ *
+ *  Si solo tiene modo +k o +l
+ *      av[3]  = key o limite
+ *      av[4]  = usuarios y los modos
+ *      av[5..]  = bans....
+ *
+ *  Si no tiene modo +k y +l
+ *      av[3]  = usuarios y los modos
+ *      av[4..]  = bans....
+ *
+ * Ejemplo:
+ *   "E BURST #zoltan 93422742 +ntkli lere 12 EMS,TEJ:o,FWE:ov,JET:v,EJS,JRT :%*!*@jet.es *!*@*.lnst.es"
+ */
+void do_burst(const char *source, int ac, char **av)
+{                    
+    char **modes = NULL;
+    char *ax[3];
+    int n = 0, first = 1, mod_num = 0;
+    User *u = NULL;
+                        
+    /* Run over all remaining parameters */
+    for (n = 2; n < ac; n++) {
+        switch (av[n][0]) {        /* What type is it ¿mode, nicks or bans? */
+            case '+':        /* modes */
+            {
+                modes = smalloc(sizeof(char*) * 2);
+                modes[mod_num++] = sstrdup(av[0]);
+                modes[mod_num++] = sstrdup(av[n]);
+                if (strchr(modes[1], 'l')) {
+                    realloc(modes, (sizeof(modes) +sizeof(char *)));
+                    modes[mod_num++] = sstrdup(av[++n]);
+                }
+                if (strchr(modes[1], 'k')) {
+                    realloc(modes, (sizeof(modes) +sizeof(char *)));
+                    modes[mod_num++] = sstrdup(av[++n]);
+                }                                                                                                    
+                break;
+            }
+             
+            case '%':        /* bans */
+            {                
+                char *pv, *p = NULL, *ban;
+                /* Run over all bans */
+                for (pv = av[n] +1; (ban = strtoken(&p, pv, " ")); pv = NULL)
+                {                       
+                    ax[0] = sstrdup(av[0]);
+                    ax[1] = sstrdup("+b");
+                    ax[2] = sstrdup(ban);
+                    /* Como no sabemos quien ha baneado, ponemos que
+                     * ha sido ChanServ :)
+                     */                
+                    do_cmode(s_ChanServ, 3, ax);
+//                    free(ax);
+                }
+                break;                /* Done bans part */
+            }                     
+
+            default:                  /* nicks */
+            {                        
+                char *pv, *p = NULL, *nick, *ptr;
+                /* Default mode: */
+                char *default_mode = NULL;
+                /* Run over all nicks */
+                for (pv = av[n]; (nick = strtoken(&p, pv, ",")); pv = NULL)
+                {            
+                    if ((ptr = strchr(nick, ':')))        /* New default mode ? */
+                    {
+                        default_mode = NULL;
+                        *ptr = '\0';        /* Fix 'nick' */
+                        u = finduserP10(nick);
+
+                        /*Calculate new mode change: */
+                        while (*(++ptr)) {
+                            if (*ptr == 'o')
+                            {
+                                if (default_mode)
+                                    strcat(default_mode, "o");
+                                else
+                                    default_mode = sstrdup("o");
+                            }
+                            else if (*ptr == 'v')
+                            {
+                                if (default_mode)
+                                    strcat(default_mode, "v");
+                                else
+                                    default_mode = sstrdup("v");                                                                                                                                        
+                            }
+                            else
+                              break;                                                                                                                                       
+                        }
+                    }
+                    else 
+                        u = finduserP10(nick);                                                                                                                                                                                                                                                                                                           
+
+                    if (u) {
+                        if (debug)
+                            log("Canales: Usuario %s entra al canal %s", u->nick, av[0]);
+                        do_join(u->nick, 1, av);
+                        if (first && mod_num) {
+                            do_cmode(source, mod_num, modes);
+//                            free(modes);
+                        }                                                                                                            
+                        if (first)
+                            first = 0;
+                              
+                        if (default_mode) {                    
+                            if (stricmp(default_mode, "ov") == 0) {
+                                ax[0] = sstrdup(av[0]);
+                                ax[1] = sstrdup("o");
+                                ax[2] = sstrdup(u->numeric);
+                                do_cmode(s_ChanServ, 3, ax);
+                                ax[1] = sstrdup("v");
+                                do_cmode(s_ChanServ, 3, ax);
+                                free(ax);
+                            } else {
+                                ax[0] = sstrdup(av[0]);
+                                ax[1] = sstrdup(default_mode);
+                                ax[2] = sstrdup(u->numerico);                                                                                        
+                                /* Como no sabemos quien ha dado los modos,
+                                 * ponemos que ha sido ChanServ :)
+                                 */                                
+                                do_cmode(s_ChanServ, 3, ax);
+                                free(ax);                                
+                            }
+                        }    
+                    } else
+                        log("channel: No se encuentra user %s en canal %s", nick, av[0]);
+                }
+            }                         /* <-- Next parameter if any */    
+        }    /* Swith de la linea de burst */
+    }  /* Fin del for */
+
+}
+#endif /* IRC_UNDERNET_P10 */
+                        
+/*************************************************************************/
+
 /* Handle a channel MODE command. */
 
 void do_cmode(const char *source, int ac, char **av)
@@ -388,7 +576,7 @@ void do_cmode(const char *source, int ac, char **av)
 	case '-':
 	    add = 0; break;
                                                                                     
-/* Añadir los nuevos modos para BAHAMUT Y UNREAL cuando los implemente */                
+/* Añadir los nuevos modos para BAHAMUT cuando los implemente */                
 	case 'i':
 	    if (add)
 		chan->mode |= CMODE_I;
@@ -550,7 +738,7 @@ void do_cmode(const char *source, int ac, char **av)
 		    break;
 		}
 		if (debug)
-		    log("debug: Setting +o on %s for %s", chan->name, nick);
+		    log("debug: Setting +o on %s for %s", chan->name, user->nick);
 		if (!check_valid_op(user, chan->name, !!strchr(source, '.')))
 		    break;
 		u = smalloc(sizeof(*u));
@@ -564,6 +752,7 @@ void do_cmode(const char *source, int ac, char **av)
 		for (u = chan->chanops; u && stricmp(u->user->nick, nick);
 								u = u->next)
 		    ;
+                /* Poner aqui leaveops :??? */
 		if (!u)
 		    break;
 		if (u->next)
@@ -600,7 +789,7 @@ void do_cmode(const char *source, int ac, char **av)
 		    break;
 		}
 		if (debug)
-		    log("debug: Setting +v on %s for %s", chan->name, nick);
+		    log("debug: Setting +v on %s for %s", chan->name, user->nick);
 /* Aun no implementado Securevoices y Autodeop
                 if (!check_valid_voice(user, chan->name, !!strchr(source, '.')))
                     break;
@@ -664,7 +853,7 @@ void do_topic(const char *source, int ac, char **av)
     Channel *c = findchan(av[0]);
 
     if (!c) {
-	log("channel: TOPIC %s for nonexistent channel %s",
+	log("Canales: TOPIC %s para canal %s inexistente",
 						merge_args(ac-1, av+1), av[0]);
 	return;
     }

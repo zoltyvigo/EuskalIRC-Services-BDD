@@ -1638,34 +1638,51 @@ void registros(User *u, NickInfo *ni)
 {
 
     ChannelInfo *ci;
-    int i; /* y; */
+    int i, y, z;
     int cfounder = 0;
+    int cregistros = 0;
+    int cakicks = 0;
     
-/**    ChanAccess *access;    **/
+    ChanAccess *access; 
+    AutoKick *akick;
+        
     
     for (i = 0; i < 256; i++) {    
-         
+      for (ci = chanlists[i]; ci; ci = ci->next) {
+               
 /* Buscar Founders de canales */         
-      for (ci = chanlists[i]; ci; ci = ci->next) {      
         if (ni == ci->founder) {  
-             privmsg(s_NickServ, u->nick, "%-26s 12FOUNDER", ci->name);
+             privmsg(s_NickServ, u->nick, "%-20s 12FOUNDER", ci->name);
              cfounder++;
         }
-      }    
+      
 /* Buscar registros en canales */              
-/**      for (y = 0; y < ci->accesscount; y++) {
-          if (ni && ci->access[y].ni 
-                 && !match_wild(ni->nick, ci->access[y].ni->nick)) 
-             privmsg(s_NickServ, u->nick, "%s %s %s", 
-             ci->name, ni->nick, ci->access[y].ni->nick);                                              
-      } ***/
-      
+      for (access = ci->access, y = 0; y < ci->accesscount; access++, y++) {
+        if (access->ni->nick == ni->nick) { 
+             privmsg(s_NickServ, u->nick, "%-20s LEVEL 12%d" , 
+             ci->name, access->level);
+             cregistros++;         
+        }          
+      }
+ 
 /* Buscar Akicks en canales */         
-                
+      for (akick = ci->akick, z = 0; z < ci->akickcount; akick++, z++) {         
+        if (akick->u.ni->nick == ni->nick) {    
+             privmsg(s_NickServ, u->nick, "%-20s 12AKICK12", ci->name);
+             cakicks++;
+        }                                     
       
+      }
       
+     } 
     } 
-    privmsg(s_NickServ, u->nick, "Total de FOUNDERS: 12%d", cfounder); 
+    if (cfounder) 
+       privmsg(s_NickServ, u->nick, "Total de FOUNDERS: 12%d", cfounder); 
+    if (cregistros)  
+       privmsg(s_NickServ, u->nick, "Total de registros: 12%d", cregistros);
+    if (cakicks)
+       privmsg(s_NickServ, u->nick, "Total de akicks: 12%d", cakicks);
+                
 }            
 
 /*************************************************************************/

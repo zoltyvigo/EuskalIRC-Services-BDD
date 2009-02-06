@@ -8,7 +8,7 @@
 
 #include "services.h"
 #include "pseudo.h"
-
+#include "P10.c" /*faltaba soporte p10*/
 /*************************************************************************/
 
 struct akill {

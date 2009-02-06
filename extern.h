@@ -53,7 +53,7 @@ E void do_cmode(const char *source, int ac, char **av);
 E void do_topic(const char *source, int ac, char **av);
 
 E int only_one_user(const char *chan);
-
+E char *s_SpamServ;
 
 /**** chanserv.c ****/
 
@@ -81,6 +81,17 @@ E int check_access(User *user, ChannelInfo *ci, int what);
 E void registros(User *u, NickInfo *ni);
 E void join_chanserv();
 E void join_shadow();
+E int registra_con_creg(User *u, NickInfo *ni, const char *chan, const char *pass, const char *desc);
+E int suspende_con_creg(User *u, NickInfo *ni, const char *chan, const char *desc);
+/**** cregserv.c ****/
+
+E void cr_init(void);
+E void cregserv(const char *source, char *buf);
+E void load_cr_dbase(void);
+E void save_cr_dbase(void);
+E void get_cregserv_stats(long *nrec, long *memuse);
+E CregInfo *cr_findcreg(const char *chan);
+E void expire_chans(void);
 
 /**** compat.c ****/
 
@@ -128,19 +139,25 @@ E char *ServiceUser;
 E char *ServiceHost;
 E char *OperHost;
 E char *AdminHost;
+E char *DevelHost;
+E char *PatrocinaHost;
 E char *s_NickServ;
 E char *s_ChanServ;
 E char *s_MemoServ;
 E char *s_HelpServ;
 E char *s_OperServ;
+E char *s_CregServ;
+E char *s_SpamServ;
+E char *s_EuskalIRCServ;
 E char *s_GlobalNoticer;
 E char *s_NewsServ;
 E char *s_IrcIIHelp;
 E char *s_DevNull;
 E char *s_BddServ;
 E char *s_ShadowServ;
-E char *s_AntiSpam;
+E char *s_IpVirtual;
 E char *DEntryMsg;
+E int  CregApoyos;
 
 #ifdef IRC_UNDERNET_P10
 E char s_NickServP10[4];
@@ -148,6 +165,10 @@ E char s_ChanServP10[4];
 E char s_MemoServP10[4];
 E char s_HelpServP10[4];
 E char s_OperServP10[4];
+E char s_CregServP10[4];
+E char s_SpamServP10[4];
+E char s_IpVirtualP10[4];
+E char s_EuskalIRCServP10[4];
 E char s_GlobalNoticerP10[4];
 E char s_NewsServP10[4];
 E char s_IrcIIHelpP10[4];
@@ -158,13 +179,16 @@ E char *desc_ChanServ;
 E char *desc_MemoServ;
 E char *desc_HelpServ;
 E char *desc_OperServ;
+E char *desc_CregServ;
+E char *desc_SpamServ;
+E char *desc_EuskalIRCServ;
 E char *desc_GlobalNoticer;
 E char *desc_NewsServ;
 E char *desc_IrcIIHelp;
 E char *desc_DevNull;
 E char *desc_ShadowServ;
 E char *desc_BddServ;
-E char *desc_AntiSpam;
+E char *desc_IpVirtual;
 
 E char *PIDFilename;
 E char *MOTDFilename;
@@ -172,6 +196,9 @@ E char *HelpDir;
 E char *NickDBName;
 E char *ChanDBName;
 E char *OperDBName;
+E char *SpamDBName;
+E char *IpVirtualDBName;
+E char *CregDBName;
 E char *AutokillDBName;
 E char *NewsDBName;
 
@@ -183,7 +210,8 @@ E int  PortSMTP;
 E char *SendFrom;
 E char *WebNetwork;
 #endif
-
+E int   Apoyos;
+E int   SpamUsers;
 E int   NoBackupOkay;
 E int   NoSplitRecovery;
 E int   StrictPasswords;
@@ -239,6 +267,7 @@ E int   MSNotifyAll;
 
 E char *CanalAdmins;
 E char *CanalOpers;
+E char *CanalCybers;
 E char *ServicesRoot;
 E int   LogMaxUsers;
 E int   AutokillExpiry;
@@ -256,6 +285,10 @@ E int enviar_correo(const char * destino, const char *subject, const char *body)
 
 E void helpserv(const char *whoami, const char *source, char *buf);
 
+/**** euskalirc.c ****/
+E void euskalserv(const char *source, char *buf);
+E void mirar_nick(void);
+E void mirar_pregunta(const char *source, char *buf[BUFSIZE]);
 
 /**** init.c ****/
 
@@ -379,13 +412,22 @@ E void display_news(User *u, int16 type);
 E void do_logonnews(User *u);
 E void do_opernews(User *u);
 
-E void newsserv(const char *source, char *buf);
+E void newsserv(const char *source, char *testua);
 
 /**** antispam.c ****/
 E void antispamc(const char *source,const char *chan, char *buf);
-E void antispam(const char *source, char *buf);
+/*E void antispam(const char *source, char *buf);*/
+/*es del spamserv.c*/
+E void eskaneatu_kanala(char *zein, char *kanala, char *testua);
+E void do_spam(User *u);
+E void spam_ikusi(Channel *ci);
+E void load_spam(void);
+E void save_spam(void);
 
-
+/**** ipvirtual.c ****/
+E void load_ipv(void);
+E void save_ipv(void);
+E void do_ipv(User *u);
 /**** nickserv.c ****/
 
 E void listnicks(int count_only, const char *nick);
@@ -415,20 +457,40 @@ E void save_os_dbase(void);
 E int is_services_root(User *u);
 E int is_services_admin(User *u);
 E int is_services_oper(User *u);
+E int is_services_devel(User *u);  /*desarrolladores de la red*/
+E int is_services_patrocina(User *u);
+E int is_services_cregadmin(User *u);
 E int is_a_service(char *nick);
 E void ircops(User *u);
 E int nick_is_services_admin(NickInfo *ni);
 E int nick_is_services_oper(NickInfo *ni);
+E int nick_is_services_devel(NickInfo *ni);
+E int nick_is_services_patrocina(NickInfo *ni);
 E void os_remove_nick(const NickInfo *ni);
 
 E void check_clones(User *user);
-
 /**** bdd.c ***/
 E void do_write_bdd(char *entrada, int tabla, const char *valor, ...);
 E void do_count_bdd(int tabla, unsigned int valor);
 E void bddserv(const char *source, char *buf);
 E void bdd_init(void);
 E char *gen_nice_key(unsigned int ilevel);
+
+/**** bdd_hispano.c ****/
+#ifdef IRC_UNDERNET_P10
+E int encontrardb(char cual);
+E void datobase(char cual, char *dato1, char *dato2);
+E void meter_dato(int cual, char *dato1, char *dato2);
+E void meter_dato2(char *cual, char *dato1, char *dato2);
+E void ezizena_erregistratu(char *ezizena, char *pasahitza, int erag);
+/*E char enormalizatu(char *ezizena);
+E char penkripta(char *pasahitza);*/
+E void ezizen_eragiketa(char *ezizena, char *pasahitza, int erag);
+E void vhost_aldaketa(char *elnick, char *vhost, int erag);
+E void ep_tablan(char *elnick, char *vhost, char cual);
+E void ed_tablan(char *elnick, char *dato, char cual);
+E void dbchan_reg(char *elnick, char *dato, char cual);
+#endif
 
 /**** process.c ****/
 

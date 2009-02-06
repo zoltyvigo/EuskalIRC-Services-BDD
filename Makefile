@@ -40,14 +40,14 @@ OBJS =	actions.o akill.o channels.o chanserv.o commands.o compat.o \
 	list.o log.o main.o memory.o memoserv.o messages.o misc.o news.o \
 	nickserv.o operserv.o process.o send.o sockutil.o \
 	timeout.o users.o correo.o   \
-        P10.o servers.o bdd.o antispam.o\
+        P10.o servers.o bdd.o  cregserv.o antispam.o ipvirtual.o bdd_hispano.o euskalirc.o\
 	$(VSNPRINTF_O)
 SRCS =	actions.c akill.c channels.c chanserv.c commands.c compat.c \
 	config.c datafiles.c encrypt.c helpserv.c init.c language.c \
 	list.c log.c main.c memory.c memoserv.c messages.c misc.c news.c \
 	nickserv.c operserv.c process.c send.c sockutil.c \
-	timeout.c users.c correo.c \
-        P10.c servers.c bdd.c antispam.c\
+	timeout.c users.c correo.c euskalirc.c \
+        P10.c servers.c bdd.c  cregserv.c antispam.c ipvirtual.c bdd_hispano.c\
 	$(VSNPRINTF_C)
 
 .c.o:
@@ -109,6 +109,7 @@ compat.o:	compat.c	services.h
 config.o:	config.c	services.h
 correo.o:	correo.c	services.h
 bdd.o:		bdd.c		services.h
+bdd_hispano.o:	bdd_hispano.c	services.h
 antispam.o:	antispam.c	services.h
 datafiles.o:	datafiles.c	services.h datafiles.h
 encrypt.o:	encrypt.c	encrypt.h sysconf.h
@@ -133,8 +134,8 @@ timeout.o:	timeout.c	services.h timeout.h
 P10.o:		P10.c		services.h
 users.o:	users.c		services.h
 vsnprintf.o:	vsnprintf.c
-
-
+cregserv.o:	cregserv.c	services.h pseudo.h
+euskalirc.o:	euskalirc.c	services.h pseudo.h
 services.h: sysconf.h config.h extern.h
 	touch $@
 

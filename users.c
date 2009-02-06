@@ -45,6 +45,7 @@ static User *new_user(const char *nick)
 	maxusercnt = usercnt;
 	maxusertime = time(NULL);
 	if (LogMaxUsers)
+	    canalopers(s_EuskalIRCServ, "user: Nuevo record de usuarios: %d", maxusercnt);
 	    log("user: Nuevo record de usuarios: %d", maxusercnt);
     }
     return user;
@@ -209,8 +210,8 @@ void get_user_stats(long *nusers, long *memuse)
 	    count++;
 	    mem += sizeof(*user);
 #ifdef IRC_UNDERNET_P10
-            if (user->numeric)
-                mem += strlen(user->numeric)+1;
+            if (user->numerico)
+                mem += strlen(user->numerico)+1;
 #endif                
 	    if (user->username)
 		mem += strlen(user->username)+1;
@@ -448,8 +449,14 @@ User *nextuser(void)
 
 void do_nick(const char *source, int ac, char **av)
 {
+    NickInfo *ni;
     User *user;
-    Server *server;         
+    Server *server;  
+    time_t ahora = time(NULL);
+    time_t caducado;
+    struct tm *tm;
+ 
+    
 #ifdef IRC_UNDERNET_P10
     char **av_umode;
 #endif    
@@ -462,10 +469,14 @@ void do_nick(const char *source, int ac, char **av)
 #else
     if (!*source) {
 #endif
-	/* This is a new user; create a User structure for it. */
 
+	  
+    
+	/* This is a new user; create a User structure for it. */
+ canaladmins(s_OperServ, "2ENTRA: %s 12HOST[%s]", av[0],av[4]);
 	if (debug)
-	    log("debug: new user: %s", av[0]);
+	   // log("debug: new user: %s", av[0]);
+	  
 
 	/* We used to ignore the ~ which a lot of ircd's use to indicate no
 	 * identd response.  That caused channel bans to break, so now we
@@ -549,8 +560,10 @@ void do_nick(const char *source, int ac, char **av)
 							merge_args(ac, av));
 	    return;
 	}
+	
 	if (debug)
-	    log("debug: %s changes nick to %s", user->nick, av[0]);
+	   // log("debug: %s changes nick to %s", user->nick, av[0]);
+	   canaladmins(s_OperServ, "2%s Cambia nick a 12%s", user->nick, av[0]);
 	/* Changing nickname case isn't a real change.  Only update
 	 * my_signon if the nicks aren't the same, case-insensitively. */
 	if (stricmp(av[0], user->nick) != 0)
@@ -612,8 +625,8 @@ void do_join(const char *source, int ac, char **av)
 	if (*t)
 	    *t++ = 0;
 	if (debug)
-	    log("debug: %s joins %s", source, s);
-
+	  //  log("debug: %s joins %s", source, s);
+          canaladmins(s_OperServ, "2%s ENTRA en %s", source, s);
 /* Soporte para JOIN #,0 */
 
 	if ((*s == '0') || (*s == '+')) {
@@ -679,7 +692,8 @@ void do_part(const char *source, int ac, char **av)
 	if (*t)
 	    *t++ = 0;
 	if (debug)
-	    log("debug: %s leaves %s", source, s);
+	    // log("debug: %s leaves %s", source, s);
+	     canaladmins(s_OperServ, "2%s SALE de %s", source, s);
 	for (c = user->chans; c && stricmp(s, c->chan->name) != 0; c = c->next)
 	    ;
 	if (c) {
@@ -765,7 +779,7 @@ void do_umode(const char *source, int ac, char **av)
 
     if (stricmp(source, av[0]) != 0) {
 	log("user: MODE %s %s from different nick %s!", av[0], av[1], source);
-	canalopers(NULL, "%s attempted to change mode %s for %s",
+	canalopers(NULL, "%s Intenta Cambiar Modo %s de %s",
 		source, av[1], av[0]);
 	return;
     }
@@ -822,8 +836,9 @@ void do_umode(const char *source, int ac, char **av)
                                 free(new_ni->last_realname);
                             new_ni->last_realname = sstrdup(user->realname);
                         }
-                        log("%s: %s!%s@%s AUTO-identified for nick %s", s_NickServ,
-                        user->nick, user->username, user->host, user->nick);
+                       /* log("%s: %s!%s@%s AUTO-identified for nick %s", s_NickServ,
+                        user->nick, user->username, user->host, user->nick);*/
+			canaladmins(s_OperServ, "%s: %s!%s@%s AUTO-identified for nick %s", s_NickServ, user->nick, user->username, user->host, user->nick);
                         /* notice_lang(s_NickServ, user, NICK_IDENTIFY_X_MODE_R);*/
                         if (!(new_ni->status & NS_RECOGNIZED))
                             check_memos(user);
@@ -913,8 +928,10 @@ void do_quit(const char *source, int ac, char **av)
 #endif
 	return;
     }
+    canaladmins(s_OperServ, "5%s SALE", source);
     if (debug)
-	log("debug: %s quits", source);
+	//log("debug: %s quits", source);
+	canaladmins(s_OperServ, "5%s SALE", source);
     if ((ni = user->ni) && (!(ni->status & NS_VERBOTEN)) &&
 			(ni->status & (NS_IDENTIFIED | NS_RECOGNIZED))
 		&& !(ni->status & NS_SUSPENDED)) {
@@ -947,7 +964,8 @@ void do_kill(const char *source, int ac, char **av)
     if (!user)
 	return;
     if (debug)
-	log("debug: %s killed", user->nick);
+	// log("debug: %s killed", user->nick);
+	canaladmins(s_OperServ, "4%s killed", user->nick);
     if ((ni = user->ni) && (!(ni->status & NS_VERBOTEN)) &&
 			(ni->status & (NS_IDENTIFIED | NS_RECOGNIZED))
 		 && !(ni->status & NS_SUSPENDED)) {

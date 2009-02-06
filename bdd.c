@@ -10,21 +10,21 @@
  * IRCd de IRC-Hispano, escrito originalmente por sus desarrolladores
  * (las rutinas de TEA)
  */
- 
+#define NUMNICKLOG 6
+#define NICKLEN 15
+#define NUMNICKBASE 64          /* (2 << NUMNICKLOG) */
+#define NUMNICKMASK 63          /* (NUMNICKBASE-1) */
 #include "services.h"
 #include "pseudo.h"
 
+#include <stdio.h>
 #include <string.h>
 #include <netinet/in.h>
 #include <stdlib.h>
 #include <time.h>
 #include <unistd.h>
-#include <string.h>
 
-#define NUMNICKLOG 6
-#define NICKLEN 9
-#define NUMNICKBASE 64          /* (2 << NUMNICKLOG) */
-#define NUMNICKMASK 63          /* (NUMNICKBASE-1) */
+ #ifdef IRC_UNDERNET_P09
 
 static const char convert2y[] = {
   'A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P',
@@ -125,10 +125,12 @@ void tea(unsigned int v[], unsigned int k[], unsigned int x[])
 
 
 static unsigned int tabla_n;
+static unsigned int tabla_c; /* para los canales persistentes*/
 static unsigned int tabla_v;
 static unsigned int tabla_o;
 static unsigned int tabla_w;
 static unsigned int tabla_i;
+static unsigned int tabla_z;
 static void compactar_tablas(User *u);
 static void regenerar_clave(User *u);
 static void tocar_tablas(User *u);
@@ -223,10 +225,19 @@ void do_write_bdd(char *entrada, int tabla, const char *valor, ...)
 	 	send_cmd(NULL, "DB * %d v %s :%s", tabla_v, nicks, valor);
 		tabla_v++;
 	 } else if (tabla == 22) {
-		send_cmd(NULL, "DB * %d v %s :%s%s", tabla_v, nicks, nicks, OperHost); 
+		send_cmd(NULL, "DB * %d v %s :12%s%s", tabla_v, nicks, nicks, OperHost); 
 	        tabla_v++;
 	 } else if (tabla == 23){
-	 	send_cmd(NULL, "DB * %d v %s :%s%s", tabla_v, nicks, nicks, AdminHost);
+	 	send_cmd(NULL, "DB * %d v %s :4%s%s", tabla_v, nicks, nicks, AdminHost);
+	 	tabla_v++;
+	 } else if (tabla == 24){
+	 	send_cmd(NULL, "DB * %d v %s :4%s5%s", tabla_v, nicks, nicks, DevelHost);
+		tabla_v++;
+	  } else if (tabla == 25){
+	 	send_cmd(NULL, "DB * %d v %s :3%s%s", tabla_v, nicks, nicks, PatrocinaHost);
+	 	tabla_v++;
+	  } else if (tabla == 26){
+	 	send_cmd(NULL, "DB * %d v %s :5%s.co-admin.euskalirc.net", tabla_v, nicks, nicks);
 	 	tabla_v++;
 	 } else if (tabla == 3) {
 	 	send_cmd(NULL, "DB * %d o %s :%s", tabla_o, nicks, valor);
@@ -237,6 +248,13 @@ void do_write_bdd(char *entrada, int tabla, const char *valor, ...)
 	 } else  if (tabla == 5) {
 	 	send_cmd(NULL, "DB * %d i %s :%s", tabla_i, entrada, valor);
 		tabla_w++;
+	 } else  if (tabla == 6) {
+	 	send_cmd(NULL, "DB * %d z %s :%s", tabla_z, entrada, valor);
+		tabla_z++;
+	 
+          } else  if (tabla == 7) {
+	 	send_cmd(NULL, "DB * %d c %s :%s", tabla_c, entrada, valor);
+		tabla_c++;
 	 }
 	 
 //send_cmd(NULL, "DB * %d %s %s :%s", reg, tab, ent, val);
@@ -261,6 +279,10 @@ void do_count_bdd(int tabla, unsigned int valor)
 
 	if (tabla == 5)
 		tabla_i = valor +1;
+	if (tabla == 6)
+		tabla_z = valor +1;
+        if (tabla == 7)
+		tabla_c = valor +1;
 }
 
 static Command cmds[] = {
@@ -313,7 +335,7 @@ static void compactar_tablas(User *u)
 	do_write_bdd("*", 2, "Compactando tabla v");
 	do_write_bdd("*", 3, "Compactando tabla o");
 	do_write_bdd("*", 4, "Compactando tabla w");
-	notice_lang(s_BddServ, u, BDD_COMPACT);
+       	notice_lang(s_BddServ, u, BDD_COMPACT);
 }
 
 static void regenerar_clave(User *u)
@@ -341,7 +363,36 @@ static void tocar_tablas(User *u)
 	char *tabla = strtok(NULL, " ");
 	char *clave = strtok(NULL, " ");
 	char *valor = strtok(NULL, "");
-	
+
+       /*asi podemos desactivar la ip virtual con bdd*/
+	if (stricmp(tabla, "V") == 0) {
+        if (!valor) {
+                     do_write_bdd(clave, 2, "");
+                     notice_lang(s_BddServ, u, BDD_SEQ_OK);
+		      return;
+		     }
+         else {
+             do_write_bdd(clave, 2, valor);
+             notice_lang(s_BddServ, u, BDD_SEQ_OK);
+              return;
+              }
+           
+          }
+       /*asi podemos desactivar los canales persistentes-tabla c- con bdd*/
+	if (stricmp(tabla, "c") == 0) {
+        if (!valor) {
+                     do_write_bdd(clave, 7, "");
+                     notice_lang(s_BddServ, u, BDD_SEQ_OK);
+		      return;
+		     }
+         else {
+             do_write_bdd(clave, 7, valor);
+             notice_lang(s_BddServ, u, BDD_SEQ_OK);
+              return;
+              }
+           
+          }
+
 	if (!valor) {
 		syntax_error(s_BddServ, u, "TOCAR", BDD_TOCAR_SYNTAX);
 		return;
@@ -354,12 +405,14 @@ static void tocar_tablas(User *u)
 			do_write_bdd(clave, 1, valor);
 		} else if (stricmp(tabla, "O") == 0) {
 			do_write_bdd(clave, 3, valor);
-		} else if (stricmp(tabla, "V") == 0) {
+		}/* else if (stricmp(tabla, "V") == 0) {
 			do_write_bdd(clave, 2, valor);
-		} else if (stricmp(tabla, "W") == 0) {
+		}*/ else if (stricmp(tabla, "W") == 0) {
 			do_write_bdd(clave, 4, valor);
 		} else if (stricmp(tabla, "I") == 0) {
 			do_write_bdd(clave, 5, valor);
+		} else if (stricmp(tabla, "Z") == 0) {
+			do_write_bdd(clave, 6, valor);
 		} else {
 			notice_lang(s_BddServ, u, BDD_ERR_TABLE);
 			return;
@@ -370,5 +423,7 @@ static void tocar_tablas(User *u)
 	}
 
 }
+#endif
+
 
 

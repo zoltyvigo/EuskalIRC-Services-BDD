@@ -43,9 +43,15 @@
 
 /* What is the maximum number of Services admins we will allow? */
 #define MAX_SERVADMINS	32
+/* What is the maximum number of Services devels we will allow? */
+#define MAX_SERVDEVELS	32
+
 
 /* What is the maximum number of Services operators we will allow? */
 #define MAX_SERVOPERS	64
+/* What is the maximum number of Services Patrocinadores  we will allow? */
+#define MAX_SERVPATROCINAS 64
+
 
 /* How big a hostname list do we keep for clone detection?  On large nets
  * (over 500 simultaneous users or so), you may want to increase this if

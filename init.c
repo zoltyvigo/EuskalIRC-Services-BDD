@@ -58,6 +58,8 @@ void introduce_user(const char *user)
         NICK(s_NickServ, modos, s_NickServP10, desc_NickServ);
         send_cmd(s_NickServ, "J #%s", CanalOpers);
         send_cmd(ServerName, "M #%s +o %s", CanalOpers, s_NickServP10);
+	send_cmd(s_NickServ, "J #%s", CanalAdmins);
+        send_cmd(ServerName, "M #%s +o %s", CanalAdmins, s_NickServP10);
     }    
     if (!user || stricmp(user, s_ChanServ) == 0 || stricmp(user, s_ChanServP10) == 0) {
         s_ChanServP10[0]=convert2y[ServerNumerico];
@@ -67,6 +69,8 @@ void introduce_user(const char *user)
         NICK(s_ChanServ, modos, s_ChanServP10, desc_ChanServ);
         send_cmd(s_ChanServ, "J #%s", CanalOpers);
         send_cmd(ServerName, "M #%s +o %s", CanalOpers, s_ChanServP10);
+	 send_cmd(s_ChanServ, "J #%s", CanalAdmins);
+        send_cmd(ServerName, "M #%s +o %s", CanalAdmins, s_ChanServP10);
     }    
     if (!user || stricmp(user, s_MemoServ) == 0 || stricmp(user, s_MemoServP10) == 0) {    
         s_MemoServP10[0]=convert2y[ServerNumerico];
@@ -76,6 +80,8 @@ void introduce_user(const char *user)
         NICK(s_MemoServ, modos, s_MemoServP10, desc_MemoServ);
         send_cmd(s_MemoServ, "J #%s", CanalOpers);
         send_cmd(ServerName, "M #%s +o %s", CanalOpers, s_MemoServP10);
+	send_cmd(s_MemoServ, "J #%s", CanalAdmins);
+        send_cmd(ServerName, "M #%s +o %s", CanalAdmins, s_MemoServP10);
     }                                                                                                                                                                                                                                                                                                                
     if (!user || stricmp(user, s_OperServ) == 0 || stricmp(user, s_OperServP10) == 0) {    
         s_OperServP10[0]=convert2y[ServerNumerico];
@@ -96,52 +102,95 @@ void introduce_user(const char *user)
         NICK(s_NewsServ, modos, s_NewsServP10, desc_NewsServ);
         send_cmd(s_NewsServ, "J #%s", CanalOpers);
         send_cmd(ServerName, "M #%s +o %s", CanalOpers, s_NewsServP10);
-    }    
+	send_cmd(s_NewsServ, "J #%s", CanalAdmins);
+        send_cmd(ServerName, "M #%s +o %s", CanalAdmins, s_NewsServP10);
+    }   
+      if (!user || stricmp(user, s_SpamServ) == 0 || stricmp(user, s_SpamServP10) == 0) {
+        s_SpamServP10[0]=convert2y[ServerNumerico];
+        s_SpamServP10[1]='\0';
+        strcat(s_SpamServP10, "AH");
+        modos="+kro";
+        NICK(s_SpamServ, modos, s_SpamServP10, desc_SpamServ);
+        send_cmd(s_SpamServ, "J #%s", CanalOpers);
+        send_cmd(ServerName, "M #%s +o %s", CanalOpers, s_SpamServP10);
+	send_cmd(s_SpamServ, "J #%s", CanalAdmins);
+        send_cmd(ServerName, "M #%s +o %s", CanalAdmins, s_SpamServP10);
+
+    }
     if (!user || stricmp(user, s_GlobalNoticer) == 0 || stricmp(user, s_GlobalNoticerP10) == 0) {
         s_GlobalNoticerP10[0]=convert2y[ServerNumerico];
         s_GlobalNoticerP10[1]='\0';
-        strcat(s_GlobalNoticerP10, "AH");
+        strcat(s_GlobalNoticerP10, "AI");
         modos="+krhod";
         NICK(s_GlobalNoticer, modos, s_GlobalNoticerP10, desc_GlobalNoticer);
         send_cmd(s_GlobalNoticer, "J #%s", CanalOpers);
         send_cmd(ServerName, "M #%s +o %s", CanalOpers, s_GlobalNoticerP10);
+	 send_cmd(s_GlobalNoticer, "J #%s", CanalAdmins);
+        send_cmd(ServerName, "M #%s +o %s", CanalAdmins, s_GlobalNoticerP10);
     }    
     if (!user || stricmp(user, s_HelpServ) == 0 || stricmp(user, s_HelpServP10) == 0) {
         s_HelpServP10[0]=convert2y[ServerNumerico];
         s_HelpServP10[1]='\0';
-        strcat(s_HelpServP10, "AI");
+        strcat(s_HelpServP10, "AJ");
         modos="+krd";
         NICK(s_HelpServ, modos, s_HelpServP10, desc_HelpServ);
         send_cmd(s_HelpServ, "J #%s", CanalOpers);
         send_cmd(ServerName, "M #%s +o %s", CanalOpers, s_HelpServP10);
+	send_cmd(s_HelpServ, "J #%s", CanalAdmins);
+        send_cmd(ServerName, "M #%s +o %s", CanalAdmins, s_HelpServP10);
     }
     if (s_IrcIIHelp && (!user || stricmp(user, s_IrcIIHelp) == 0 || stricmp(user, s_IrcIIHelpP10) == 0)) {
         s_IrcIIHelpP10[0]=convert2y[ServerNumerico];
         s_IrcIIHelpP10[1]='\0';
-        strcat(s_IrcIIHelpP10, "AJ");
+        strcat(s_IrcIIHelpP10, "AK");
         modos="+krd";
         NICK(s_IrcIIHelp, modos, s_IrcIIHelpP10, desc_IrcIIHelp);
         send_cmd(s_IrcIIHelp, "J #%s", CanalOpers);
         send_cmd(ServerName, "M #%s +o %s", CanalOpers, s_IrcIIHelpP10);
+	send_cmd(s_IrcIIHelp, "J #%s", CanalAdmins);
+        send_cmd(ServerName, "M #%s +o %s", CanalAdmins, s_IrcIIHelpP10);
     }    
     if (s_DevNull && (!user || stricmp(user, s_DevNull) == 0 || stricmp(user, s_DevNullP10) == 0)) {
         s_DevNullP10[0]=convert2y[ServerNumerico];
         s_DevNullP10[1]='\0';
-        strcat(s_DevNullP10, "AK");
+        strcat(s_DevNullP10, "AL");
         modos="+krdi";
         NICK(s_DevNull, modos, s_DevNullP10, desc_DevNull);
         send_cmd(s_DevNull, "J #%s", CanalOpers);
         send_cmd(ServerName, "M #%s +o %s", CanalOpers, s_DevNullP10);
+	send_cmd(s_DevNull, "J #%s", CanalAdmins);
+        send_cmd(ServerName, "M #%s +o %s", CanalAdmins, s_DevNullP10);
     }    
-    if (!user || stricmp(user, s_ShadowServ) == 0) {
-        NICK(s_ShadowServ, desc_ShadowServ);
-	send_cmd(s_ShadowServ, "MODE %s +okdX", s_ShadowServ);
+   if (!user || stricmp(user, s_EuskalIRCServ) == 0 || stricmp(user, s_EuskalIRCServP10) == 0) {
+        s_EuskalIRCServP10[0]=convert2y[ServerNumerico];
+        s_EuskalIRCServP10[1]='\0';
+        strcat(s_EuskalIRCServP10, "AH");
+        modos="+kro";
+        NICK(s_EuskalIRCServ, modos, s_EuskalIRCServP10, desc_EuskalIRCServ);
+        send_cmd(s_EuskalIRCServ, "J #%s", CanalOpers);
+        send_cmd(ServerName, "M #%s +o %s", CanalOpers, s_EuskalIRCServP10);
+	send_cmd(s_EuskalIRCServ, "J #%s", CanalAdmins);
+        send_cmd(ServerName, "M #%s +o %s", CanalAdmins, s_EuskalIRCServP10);
+
+    }
+if (!user || stricmp(user, s_CregServ) == 0 || stricmp(user, s_CregServP10) == 0) {
+        s_CregServP10[0]=convert2y[ServerNumerico];
+        s_CregServP10[1]='\0';
+        strcat(s_CregServP10, "AJ");
+        modos="+krd";
+        NICK(s_CregServ, modos, s_CregServP10, desc_CregServ);
+        send_cmd(s_CregServ, "J #%s", CanalOpers);
+        send_cmd(ServerName, "M #%s +o %s", CanalOpers, s_CregServP10);
+	send_cmd(s_CregServ, "J #%s", CanalAdmins);
+        send_cmd(ServerName, "M #%s +o %s", CanalAdmins, s_CregServP10);
     }
 #else
     if (!user || stricmp(user, s_ChanServ) == 0) {
 	NICK(s_ChanServ, desc_ChanServ);
         send_cmd(s_ChanServ, "MODE %s +Bbikdor", s_ChanServ);
         send_cmd(s_ChanServ, "JOIN #%s", CanalOpers);
+	send_cmd(s_ChanServ, "JOIN #%s", CanalAdmins);
+	send_cmd(s_ChanServ, "MODE #%s +o %s", CanalAdmins, s_ChanServ);
         send_cmd(s_ChanServ, "MODE #%s +o %s", CanalOpers, s_ChanServ);
         send_cmd(s_ChanServ, "JOIN #Bots");
         send_cmd(s_ChanServ, "MODE #Bots +o %s", s_ChanServ);
@@ -152,6 +201,8 @@ void introduce_user(const char *user)
             NICK(s_NickServ, desc_NickServ);
         send_cmd(s_NickServ, "MODE %s +kdbBr", s_NickServ);
         send_cmd(s_NickServ, "JOIN #%s", CanalOpers);
+	send_cmd(s_NickServ, "JOIN #%s", CanalAdmins);
+	send_cmd(s_ChanServ, "MODE #%s +o %s", CanalAdmins, s_NickServ);
         send_cmd(s_ChanServ, "MODE #%s +o %s", CanalOpers, s_NickServ);
         send_cmd(s_NickServ, "JOIN #Bots");
         send_cmd(s_ChanServ, "MODE #Bots +o %s", s_NickServ);
@@ -160,6 +211,10 @@ void introduce_user(const char *user)
     if (!user || stricmp(user, s_HelpServ) == 0) {
 	NICK(s_HelpServ, desc_HelpServ);
         send_cmd(s_HelpServ, "MODE %s +dbBrk", s_HelpServ);
+	send_cmd(s_HelpServ, "JOIN #%s", CanalAdmins);
+	send_cmd(s_HelpServ, "JOIN #%s", CanalCybers);
+	send_cmd(s_ChanServ, "MODE #%s +o %s", CanalCybers, s_HelpServ);
+	send_cmd(s_ChanServ, "MODE #%s +o %s", CanalAdmins, s_HelpServ);
         send_cmd(s_HelpServ, "JOIN #Bots");
         send_cmd(s_ChanServ, "MODE #Bots +o %s", s_HelpServ);
 
@@ -174,6 +229,8 @@ void introduce_user(const char *user)
     if (!user || stricmp(user, s_MemoServ) == 0) {
 	NICK(s_MemoServ, desc_MemoServ);
 	send_cmd(s_MemoServ, "MODE %s +krbdB", s_MemoServ);
+	send_cmd(s_MemoServ, "JOIN #%s", CanalAdmins);
+	send_cmd(s_ChanServ, "MODE #%s +o %s", CanalAdmins, s_MemoServ);
         send_cmd(s_MemoServ, "JOIN #Bots");
         send_cmd(s_ChanServ, "MODE #Bots +o %s", s_MemoServ);
     }
@@ -186,9 +243,27 @@ void introduce_user(const char *user)
         send_cmd(s_ChanServ, "MODE #%s +o %s", CanalOpers, s_OperServ);
 	send_cmd(s_OperServ, "MODE #%s +ntsil 1", CanalAdmins);
     }
+    if (!user || stricmp(user, s_CregServ) == 0) {
+	NICK(s_CregServ, desc_CregServ);
+        send_cmd(s_CregServ, "MODE %s +Bbikdor", s_CregServ);
+        send_cmd(s_CregServ, "JOIN #%s", CanalAdmins);
+        send_cmd(s_ChanServ, "MODE #%s +o %s", CanalAdmins, s_CregServ);
+        
+    }
+     if (!user || stricmp(user, s_EuskalIRCServ) == 0) {
+	NICK(s_EuskalIRCServ, desc_EuskalIRCServ);
+        send_cmd(s_EuskalIRCServ, "MODE %s +Bbikdor", s_EuskalIRCServ);
+        send_cmd(s_EuskalIRCServ, "JOIN #%s", CanalAdmins);
+	send_cmd(s_EuskalIRCServ, "JOIN #%s", CanalCybers);
+	send_cmd(s_ChanServ, "MODE #%s +o %s", CanalCybers, s_EuskalIRCServ);
+        send_cmd(s_ChanServ, "MODE #%s +o %s", CanalAdmins, s_EuskalIRCServ);
+        
+    }
     if (!user || stricmp(user, s_BddServ) == 0) {
         CNICK(s_BddServ, desc_BddServ, "-", "-base.de.datos-");
 	send_cmd(s_BddServ, "MODE %s +iXkoBrd", s_BddServ);
+	send_cmd(s_BddServ, "JOIN #%s", CanalAdmins);
+	send_cmd(s_ChanServ, "MODE #%s +o %s", CanalAdmins, s_BddServ);
 	send_cmd(s_BddServ, "JOIN #Bots");
 	send_cmd(s_ChanServ, "MODE #Bots +o %s", s_BddServ);
     }
@@ -202,28 +277,47 @@ void introduce_user(const char *user)
     if (!user || stricmp(user, s_GlobalNoticer) == 0) {
 	NICK(s_GlobalNoticer, desc_GlobalNoticer);
 	send_cmd(s_GlobalNoticer, "MODE %s +ikorBd", s_GlobalNoticer);
+	send_cmd(s_GlobalNoticer, "JOIN #%s", CanalAdmins);
+	send_cmd(s_ChanServ, "MODE #%s +o %s", CanalAdmins, s_GlobalNoticer);
     }
     if (!user || stricmp(user, s_ShadowServ) == 0) {
-        CNICK(s_ShadowServ, desc_ShadowServ, "^", "^");
+        CNICK(s_ShadowServ, desc_ShadowServ, "-", "-");
 	send_cmd(s_ShadowServ, "MODE %s +rokbXBd", s_ShadowServ);
+	send_cmd(s_ShadowServ, "JOIN #%s", CanalAdmins);
+	send_cmd(s_ChanServ, "MODE #%s +o %s", CanalAdmins, s_ShadowServ);
         send_cmd(s_ShadowServ, "JOIN #Bots");
         send_cmd(s_ChanServ, "MODE #Bots +o %s", s_ShadowServ);
                     
     }
-/* Esto, algún día funcionará... o eso espero ;)
- *    if (!user || stricmp(user, s_AntiSpam) == 0) {
- *   	CNICK(s_AntiSpam, desc_AntiSpam, "guardian", ServerName);
- *	send_cmd(s_AntiSpam, "MODE %s +rokhBX", s_AntiSpam);
- *   }
- */
+/* Esto, algún día funcionará... o eso espero ;) */
+    if (!user || stricmp(user, s_IpVirtual) == 0) {
+    	CNICK(s_IpVirtual, desc_IpVirtual, "ipvirtual", ServerName);
+ 	send_cmd(s_IpVirtual, "MODE %s +rokhBX", s_IpVirtual);
+	send_cmd(s_IpVirtual, "JOIN #%s", CanalAdmins);
+	send_cmd(s_IpVirtual, "MODE #%s +o %s", CanalAdmins, s_IpVirtual);
+    }
+ 
     if (!user || stricmp(user, s_NewsServ) == 0) {
         NICK(s_NewsServ, desc_NewsServ);
         send_cmd(s_NewsServ, "MODE %s +kBbord", s_NewsServ);
+	send_cmd(s_NewsServ, "JOIN #%s", CanalAdmins);
+	send_cmd(s_ChanServ, "MODE #%s +o %s", CanalAdmins, s_NewsServ);
     	send_cmd(NULL, "STATS b");
         send_cmd(s_NewsServ, "JOIN #Bots");
         send_cmd(s_ChanServ, "MODE #Bots +o %s", s_NewsServ);
                         
     }
+    if (!user || stricmp(user,  s_SpamServ) == 0) {
+        CNICK(s_SpamServ, desc_SpamServ, "2NoSpam", "10guardian.antispam.euskalirc.net");
+        send_cmd( s_SpamServ, "MODE %s +kBbor",  s_SpamServ);
+	send_cmd( s_SpamServ, "JOIN #%s", CanalAdmins);
+	send_cmd(s_ChanServ, "MODE #%s +o %s", CanalAdmins, s_SpamServ);
+    	send_cmd(NULL, "STATS b");
+        send_cmd(s_SpamServ, "JOIN #Bots");
+        send_cmd(s_ChanServ, "MODE #Bots +o %s", s_SpamServ);
+                        
+    }
+   
 #endif
 }
 
@@ -567,7 +661,8 @@ int init(int ac, char **av)
 #endif    
     ms_init();
     os_init();
-
+    load_spam();
+    load_ipv();   /*leyendo datos de frases*/
     /* Load up databases */
     if (!skeleton) {
 	load_ns_dbase();
@@ -576,7 +671,11 @@ int init(int ac, char **av)
 	load_cs_dbase();
 	if (debug)
 	    log("debug: Cargando la DB de %s (2/7)", s_ChanServ);
+	    load_cr_dbase();
+	if (debug)
+	    log("debug: Cargando la DB de %s (3/7)", s_CregServ);
     }
+	
     load_os_dbase();
     if (debug)
 	log("debug: Cargando la DB de %s (4/7)", s_OperServ);
@@ -586,6 +685,11 @@ int init(int ac, char **av)
     load_news();
     if (debug)
 	log("debug: Cargando la DB de NOTICIAS (6/7)");
+   
+    if (debug)
+	log("debug: Cargando la DB de SPAM (7/7)");
+    load_cr_dbase();
+    load_ipv();
     log("Cargadas las bases de datos");
 
     /* Connect to the remote server */
@@ -620,7 +724,7 @@ int init(int ac, char **av)
     introduce_user(NULL);
 
     send_cmd(ServerName, "SETTIME %lu", time(NULL));
-/* #if HAVE_ALLWILD_NOTICE
+#if HAVE_ALLWILD_NOTICE
     send_cmd(s_OperServ, "NOTICE $*.%s :Establecidos los servicios de la RED.", NETWORK_DOMAIN);
     
 #else
@@ -635,8 +739,9 @@ int init(int ac, char **av)
     send_cmd(s_OperServ, "NOTICE $*.net :Establecidos los servicios de la RED.");
     send_cmd(s_OperServ, "NOTICE $*.org :Establecidos los servicios de la RED.");    
     send_cmd(s_OperServ, "NOTICE $*.edu :Establecidos los servicios de la RED.");
+    send_cmd(s_OperServ, "NOTICE $*.tk :Establecidos los servicios de la RED.");
 # endif
-#endif */
+#endif
         
     join_chanserv();
       

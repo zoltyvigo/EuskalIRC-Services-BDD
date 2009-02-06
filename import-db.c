@@ -31,6 +31,8 @@ NickInfo *nicklists[256];
 ChannelInfo *chanlists[256];
 NickInfo *services_admins[MAX_SERVADMINS];
 NickInfo *services_opers[MAX_SERVOPERS];
+NickInfo *services_devels[MAX_SERVDEVELS];
+NickInfo *services_patrocinas[MAX_SERVPATROCINAS];
 int nakill;
 struct akill *akills;
 int nnews;

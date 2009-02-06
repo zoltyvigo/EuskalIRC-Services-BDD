@@ -83,7 +83,7 @@ static void do_unsuspend(User *u);
 static void do_forbid(User *u);
 static void do_unforbid(User *u);
 static void do_rename(User *u);
-static void do_getnewpass(User *u);
+/*static void do_getnewpass(User *u);*/
 
 /*************************************************************************/
 
@@ -92,7 +92,7 @@ static Command cmds[] = {
     { "CREDITOS", do_credits,  NULL,  -1,                     -1,-1,-1,-1 },        
     { "HELP",     do_help,     NULL,  -1,                     -1,-1,-1,-1 },
     { "AYUDA",    do_help,     NULL,  -1,                     -1,-1,-1,-1 },
-    { "GETNEWPASS",  do_getnewpass,  NULL,  -1,                     -1,-1,-1,-1 },
+   /* { "GETNEWPASS",  do_getnewpass,  NULL,  -1,                     -1,-1,-1,-1 },*/
     { "SHOWCOMMANDS",    do_help,   NULL,  -1,                -1,-1,-1,-1 },    
     { ":?",       do_help,     NULL,  -1,                     -1,-1,-1,-1 },
     { "?",        do_help,     NULL,  -1,                     -1,-1,-1,-1 },            
@@ -1097,11 +1097,9 @@ static NickInfo *makenick(const char *nick)
 static int delnick(NickInfo *ni)
 {
     int i;
-
-
-
     cs_remove_nick(ni);
     os_remove_nick(ni);
+
     if (ni->linkcount)
 	remove_links(ni);
     if (ni->link)
@@ -1143,10 +1141,18 @@ static int delnick(NickInfo *ni)
 	free(ni->memos.memos);
     }
     if (ni->status & NI_ON_BDD) {
-	do_write_bdd(ni->nick, 15, "");
+          #ifdef IRC_UNDERNET_P09
+           do_write_bdd(ni->nick, 15, "");
 	do_write_bdd(ni->nick, 2, "");
 	do_write_bdd(ni->nick, 3, "");
 	do_write_bdd(ni->nick, 4, "");
+	#else
+// datu baseetatik ezabatu
+ed_tablan(ni->nick, 0, 'n');
+       #endif
+      
+   
+    
     }
 
     free(ni);
@@ -1559,6 +1565,7 @@ static void do_register(User *u)
 
 #endif
 	ni = makenick(u->nick);
+		
 	if (ni) {
 #ifdef REG_NICK_MAIL
 /*** Registro de nicks por mail by Zoltan ***/
@@ -1594,12 +1601,26 @@ static void do_register(User *u)
                        ni->nick, ni->pass, ni->nick, ni->pass, s_NickServ, WebNetwork);
        
                snprintf(subject, sizeof(subject), "Registro del NiCK '%s'", ni->nick);
-               
-               enviar_correo(ni->email, subject, buf);
-	       do_write_bdd(ni->nick, 1, ni->pass);
-	       ni->status |= NI_ON_BDD;
-	       notice_lang(s_NickServ, u, NICK_BDD_NEW_REG,ni->pass, ni->nick, ni->pass);
+		notice_lang(s_NickServ, u, NICK_REGISTERED, u->nick, ni->email);
+		 #ifdef IRC_UNDERNET_P09
+            	notice_lang(s_NickServ, u, NICK_IN_MAIL);
+		 notice_lang(s_NickServ, u, NICK_BDD_NEW_REG,ni->pass, ni->nick, ni->pass);/*en colores*/
+             /*  privmsg(s_NickServ, ni->nick, "Su clave es %s. Recuerdela por si no le llega notificacion al correo. Use /nick %s:%s para identificarse.",ni->pass, ni->nick, ni->pass);*/
 	       send_cmd(NULL, "RENAME %s", ni->nick);
+		
+		ni->status |= NI_ON_BDD;
+		do_write_bdd(ni->nick, 1, ni->pass);
+               #endif
+                 	  		       
+                 #ifdef IRC_UNDERNET_P10
+		/*notice_lang(s_NickServ, u, NICK_IN_MAIL);
+		 notice_lang(s_NickServ, u, NICK_BDD_NEW_REG,ni->pass, ni->nick, ni->pass);
+                ep_tablan(ni->nick, ni->pass, 'n');
+		/* privmsg(s_NickServ, u->numerico, "Su clave es %s. Recuerdela por si no le llega notificacion al correo. Use /nick %s:%s para identificarse.",ni->pass, ni->nick, ni->pass);*/
+		send_cmd(NULL, "%c RENAME :%s", convert2y[ServerNumerico], ni->nick);
+                 #endif
+  enviar_correo(ni->email, subject, buf);
+		             
                exit(0);
             }
            }                                                                                                                                                                      
@@ -1661,6 +1682,8 @@ static void do_register(User *u)
 	    ni->language = DEF_LANGUAGE;
 	    ni->link = NULL;
 	    u->ni = u->real_ni = ni;
+
+
 #ifdef REG_NICK_MAIL
             log("%s: %s' registered by %s@%s Email: %s Pass: %s", s_NickServ,
                    u->nick, u->username, u->host, ni->email, ni->pass);                
@@ -1776,7 +1799,11 @@ static void do_drop(User *u)
 
     } else {
 	if (readonly)
-	    notice_lang(s_NickServ, u, READ_ONLY_MODE);
+            notice_lang(s_NickServ, u, READ_ONLY_MODE);
+                #ifdef IRC_UNDERNET_P10
+		 ed_tablan(ni->nick, 0, 'n');
+		#endif
+
 #if defined (IRC_TERRA)
 	send_cmd(ServerName, "SVSMODE %s -r", ni->nick);
 #endif
@@ -1872,7 +1899,7 @@ static void do_set(User *u)
 static void do_getnewpass(User *u)
 {
             NickInfo *ni;
-	    /* char pass[255]; */
+	    char pass[255]; 
             static char saltChars[] = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789[]";
 	    char salt[13];
 	    unsigned long long xi;
@@ -1887,14 +1914,16 @@ static void do_getnewpass(User *u)
 	    for(cnt = 0; cnt < 12; ++cnt)
 		  salt[cnt] = saltChars[random() % 64];
 
-            /* sprintf(pass,"%s",salt);*/
+            sprintf(pass,"%s",salt);
                                     
             strscpy(ni->pass, salt, PASSMAX);
 	    privmsg(s_NickServ, u->nick, "Generada clave de alta calidad para tu nick. La clave es %s, recuerdala", ni->pass);
 	   
-	  if (ni->status & NI_ON_BDD)
-	    do_write_bdd(ni->nick, 1, ni->pass);
-	   
+	  if (ni->status & NI_ON_BDD) 
+		do_write_bdd(ni->nick, 1, ni->pass);
+		
+		
+
 }
 
 static void do_set_password(User *u, NickInfo *ni, char *param)
@@ -1932,7 +1961,13 @@ static void do_set_password(User *u, NickInfo *ni, char *param)
     notice_lang(s_NickServ, u, NICK_SET_PASSWORD_CHANGED_TO, ni->pass);
   
     if (ni->status & NI_ON_BDD)
-       do_write_bdd(ni->nick, 1, ni->pass);
+   #ifdef IRC_UNDERNET_P10
+      ep_tablan(ni->nick, ni->pass, 'n');
+     privmsg(s_NickServ,u->numerico, "Para identificarse haga 2,15/nick %s!%s",ni->nick,ni->pass);
+   #else
+    do_write_bdd(ni->nick, 1, ni->pass);
+    
+   #endif
     
 #endif
     if (u->real_ni != ni) {
@@ -1991,17 +2026,31 @@ static void do_set_vhost(User *u, NickInfo *ni, char *param)
          notice_lang(s_NickServ, u, NICK_MUST_BE_ON_BDD);
 	 return;
     }
-
+     if (!param) {
+		    privmsg(s_NickServ, u->nick, "V-Host sin Rellenar  Minimo 3 carácteres");
+		    return;
+	}
+    
     if (strlen(param) > 56) {
 		    privmsg(s_NickServ, u->nick, "V-Host demasiado larga. Máximo 56 carácteres");
 		    return;
 	}
+    if (strlen(param) <= 2) {
+		    privmsg(s_IpVirtual, u->nick, "V-Host demasiado corta. Minimo 3 carácteres");
+		    return;
+	}
 		    
     if (stricmp(param, "OFF") == 0) {
+         #ifdef IRC_UNDERNET_P09
+          
 	 do_write_bdd(ni->nick, 4, "");
+	#endif
 	 notice_lang(s_NickServ, u, NICK_SET_VHOST_OFF);
     } else {
+        strcat(param , ".ip.virtual");
+	#ifdef IRC_UNDERNET_P09
         do_write_bdd(ni->nick, 4, param);
+	#endif
 	notice_lang(s_NickServ, u, NICK_SET_VHOST_ON, param);
     }
 }
@@ -2160,14 +2209,25 @@ static void do_set_bdd(User *u, NickInfo *ni, char *param)
      if (stricmp(param, "ON") == 0) {
          ni->status |= NI_ON_BDD;
 	 notice_lang(s_NickServ, u, NICK_SET_BDD_ON, ni->nick);
-	 do_write_bdd(ni->nick, 1, ni->pass);
+	#ifdef IRC_UNDERNET_P09
+	privmsg(s_NickServ,u->nick, "Para identificarse haga 2,15/nick %s!%s",ni->nick,ni->pass);
+     	 do_write_bdd(ni->nick, 1, ni->pass);
+	#else
+	privmsg(s_NickServ,u->numerico, "Para identificarse haga 2,15/nick %s!%s",ni->nick,ni->pass);
+        ep_tablan(ni->nick, ni->pass, 'n');
+         #endif
      } else if (stricmp(param, "OFF") == 0) {
          ni->status &= ~NI_ON_BDD;
 	 notice_lang(s_NickServ, u, NICK_SET_BDD_OFF, ni->nick);
+	#ifdef IRC_UNDERNET_P09
 	 do_write_bdd(ni->nick, 15, "");
 	 do_write_bdd(ni->nick, 2, "");
 	 do_write_bdd(ni->nick, 3, "");
 	 do_write_bdd(ni->nick, 4, "");
+	#endif
+         #ifdef IRC_UNDERNET_P10
+         ed_tablan(ni->nick, 0, 'n');
+         #endif
      } else {
          syntax_error(s_NickServ, u, "SET BDD", NICK_SET_BDD_SYNTAX);
      }
@@ -2639,11 +2699,22 @@ static void do_info(User *u)
 	if (nick_is_services_oper(ni) && !(stricmp(ni->nick, u->nick) == 0))
 	    privmsg(s_NickServ, ni->nick, "%s ha utilizado %s INFO sobre ti", u->nick, s_NickServ);
 	    
-	if (nick_is_services_oper(ni) && !nick_is_services_admin(ni) && !(stricmp(nick, ServicesRoot) ==0))
+	    if (nick_is_services_oper(ni)  && !nick_is_services_admin(ni) && !nick_is_services_devel(ni) && !(stricmp(nick, ServicesRoot) ==0))
 	    notice_lang(s_NickServ, u, NICK_INFO_SERV_OPER);
-	       
+	    
+	 if (nick_is_services_patrocina(ni) && !nick_is_services_admin(ni) && !nick_is_services_devel(ni) && !nick_is_services_oper(ni) && !(stricmp(nick, ServicesRoot) ==0))
+	    notice_lang(s_NickServ, u, NICK_INFO_SERV_PATROCINA);
+	    
+	
+	
+	 if (nick_is_services_devel(ni) && !nick_is_services_admin(ni) && !(stricmp(nick, ServicesRoot) ==0))
+	    notice_lang(s_NickServ, u, NICK_INFO_SERV_DEVEL);
+	 
+	    
 	if (nick_is_services_admin(ni) && !(stricmp(nick, ServicesRoot) ==0))
 	    notice_lang(s_NickServ, u, NICK_INFO_SERV_ADMIN);
+	if (nick_is_services_cregadmin(ni) && !(stricmp(nick, ServicesRoot) ==0))
+	    notice_lang(s_NickServ, u, NICK_INFO_SERV_CREGADMIN);
 	 
 	if (stricmp(nick, ServicesRoot) ==0)
 	    notice_lang(s_NickServ, u, NICK_INFO_SERV_ROOT);
@@ -3096,7 +3167,12 @@ static void do_suspend(User *u)
         ni->status &= ~NS_IDENTIFIED;
 	
 	if (ni->status & NI_ON_BDD)
+	#ifdef IRC_UNDERNET_P10
+		privmsg(s_NickServ,u->numerico, "Para identificarse haga 2,15/nick %s!%s",ni->nick,ni->pass);
+		ep_tablan(ni->nick, ni->pass, 'n');
+	#else
 		do_write_bdd(ni->nick, 16, ni->pass); 
+	#endif
         
 	canalopers(s_NickServ, "12%s ha 12SUSPENDido el nick 12%s (%s)",
           u->nick, nick, reason); 
@@ -3137,7 +3213,12 @@ static void do_unsuspend(User *u)
 	  canalopers(s_NickServ, "12%s ha reactivado el nick 12%s", u->nick, nick);
 
 	  if (ni->status & NI_ON_BDD)
+		#ifdef IRC_UNDERNET_P10
+                privmsg(s_NickServ,u->numerico, "Para identificarse haga 2,15/nick %s!%s",ni->nick,ni->pass);
+		ep_tablan(ni->nick, ni->pass, 'n');
+		#else
 		  do_write_bdd(ni->nick, 1, ni->pass);
+		#endif
 
           notice_lang(s_NickServ, u, NICK_UNSUSPEND_SUCCEEDED, nick);
           if (finduser(nick)) {
@@ -3181,7 +3262,10 @@ static void do_forbid(User *u)
         ni->forbidreason = sstrdup(reason);    
 	ni->status |= NS_VERBOTEN;
 	log("%s: %s set FORBID for nick %s", s_NickServ, u->nick, nick);
+	#ifdef IRC_UNDERNET_P109
+	
 	do_write_bdd(nick, 1, "!");
+	#endif
 	notice_lang(s_NickServ, u, NICK_FORBID_SUCCEEDED, nick);
     } else {
 	log("%s: Valid FORBID for %s by %s failed", s_NickServ,
@@ -3212,9 +3296,17 @@ static void do_unforbid(User *u)
         log("%s: %s set UNFORBID for nick %s", s_NickServ, u->nick, nick);
         
 	if (ni->status & NI_ON_BDD) {
+ 	#ifdef IRC_UNDERNET_P10
+                 privmsg(s_NickServ,u->numerico, "Para identificarse haga 2,15/nick %s!%s",ni->nick,ni->pass);
+		ep_tablan(ni->nick, ni->pass, 'n');
+	#else
 	   do_write_bdd(nick, 1, ni->pass);
+	#endif
 	} else {
+	#ifdef IRC_UNDERNET_P09
+	
 	   do_write_bdd(nick, 15, "!");
+	#endif
 	}
 	
 	notice_lang(s_NickServ, u, NICK_UNFORBID_SUCCEEDED, nick);

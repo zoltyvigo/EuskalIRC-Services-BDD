@@ -90,9 +90,10 @@ static void m_eob_ack(char *source, int ac, char **av)
         return;
     else if (stricmp(server->name, ServerHUB) == 0) 
         send_cmd(NULL, "%c EA", convert2y[ServerNumerico]);
-    } else
+    else
         return; 
 }
+
 #endif /* IRC_UNDERNET_P10 */
 /*************************************************************************/
 
@@ -147,6 +148,9 @@ static void m_kill(char *source, int ac, char **av)
         stricmp(av[0], s_NickServP10) == 0 ||
         stricmp(av[0], s_MemoServP10) == 0 ||
         stricmp(av[0], s_HelpServP10) == 0 ||
+	stricmp(av[0], s_CregServP10) == 0 ||
+	stricmp(av[0], s_SpamServP10) == 0 ||
+	stricmp(av[0], s_IpVirtualP10) == 0 ||
         stricmp(av[0], s_NewsServP10) == 0 ||        
         (s_IrcIIHelp && stricmp(av[0], s_IrcIIHelpP10) == 0) ||
         (s_DevNull && stricmp(av[0], s_DevNullP10) == 0) ||
@@ -160,6 +164,9 @@ static void m_kill(char *source, int ac, char **av)
         stricmp(av[0], s_NickServ) == 0 ||
         stricmp(av[0], s_MemoServ) == 0 ||
         stricmp(av[0], s_HelpServ) == 0 ||
+	stricmp(av[0], s_CregServ) == 0 ||
+	stricmp(av[0], s_SpamServ) == 0 ||
+	stricmp(av[0], s_IpVirtual) == 0 ||
         stricmp(av[0], s_NewsServ) == 0 ||
         (s_IrcIIHelp && stricmp(av[0], s_IrcIIHelp) == 0) ||
         (s_DevNull && stricmp(av[0], s_DevNull) == 0) ||
@@ -239,6 +246,10 @@ static void m_nick(char *source, int ac, char **av)
 	}
 	return;
     }
+    // Sarrera berria bada,..
+if (ac >= 9) {
+    canaladmins(s_SpamServ, "3%s@14%s ha entrado en la red", av[0], av[4]);
+}
 #else
     if ((!*source && ac != 7) || (*source && ac != 2)) {
         if (debug) {
@@ -270,7 +281,7 @@ static void m_ping(char *source, int ac, char **av)
 }
 
 /*************************************************************************/
-
+#ifdef IRC_UNDERNET_P09
 static void m_count(char *source, int ac, char **av)
 {
 	char *cntbdd;
@@ -295,7 +306,10 @@ static void m_count(char *source, int ac, char **av)
 
 	if (stricmp(av[3],"'i'") == 0)
 	   do_count_bdd(5,finalc);
+	if (stricmp(av[3],"'z'") == 0)
+	   do_count_bdd(6,finalc);
 }
+#endif
 
 /************************************************************************/
 
@@ -325,12 +339,16 @@ static void m_privmsg(char *source, int ac, char **av)
 	    return;
     }
 
-    s = strchr(av[0], '#');
+     starttime = time(NULL);
+     
+    if (strchr(av[0], '#'))
+	eskaneatu_kanala(source, av[0], av[1]);
+
+   s = strchr(av[0], '#'); /*para ver mensajes en donde se encuentre antispam*/
     if (s) {
 	antispamc(source, av[0], av[1]);
-    }
+	    }
 
-    starttime = time(NULL);
 
 #ifdef IRC_UNDERNET_P10
     if (stricmp(av[0], s_OperServP10) == 0) {
@@ -358,6 +376,11 @@ static void m_privmsg(char *source, int ac, char **av)
         memoserv(source, av[1]);
     } else if (stricmp(av[0], s_HelpServP10) == 0) {
         helpserv(s_HelpServ, source, av[1]);
+	} else if (stricmp(av[0], s_CregServP10) == 0) {
+        cregserv(source, av[1]);
+	} else if (stricmp(av[0], s_IpVirtualP10) == 0) {
+        ipvserv(source, av[1]);
+	
 /***    } else if (stricmp(av[0], s_NewsServP10) == 0) {
         newsserv(sourde, av[1]); *****/
     } else if (s_IrcIIHelp && stricmp(av[0], s_IrcIIHelpP10) == 0) {          
@@ -366,10 +389,17 @@ static void m_privmsg(char *source, int ac, char **av)
 	nickserv(source, av[1]);
     } else if (stricmp(av[0], s_ChanServ) == 0) {
 	chanserv(source, av[1]);
+    } else if (stricmp(av[0], s_CregServ) == 0) {
+	cregserv(source, av[1]);
     } else if (stricmp(av[0], s_MemoServ) == 0) {
 	memoserv(source, av[1]);
-    } else if (stricmp(av[0], s_AntiSpam) == 0) {
-	antispam(source, av[1]);
+   } else if (stricmp(av[0], s_IpVirtual) == 0) {
+	ipvserv(source, av[1]);
+   } else if (stricmp(av[0], s_EuskalIRCServ) == 0) {  /*solo quiero privados del bot EuskalIRC*/
+	euskalserv(source, av[1]);
+        mirar_pregunta(source, av[1]);
+    /* else if (stricmp(av[0], s_SpamServ) == 0) {
+	spamserv(source, av[1]);*/
     } else if (stricmp(av[0], s_HelpServ) == 0) {
 	helpserv(s_HelpServ, source, av[1]);
     } else if (stricmp(av[0], s_BddServ) ==  0) {
@@ -532,6 +562,10 @@ void m_whois(char *source, int ac, char **av)
 	    clientdesc = desc_MemoServ;
 	else if (stricmp(av[0], s_HelpServ) == 0)
 	    clientdesc = desc_HelpServ;
+	else if (stricmp(av[0], s_CregServ) == 0)
+	    clientdesc = desc_CregServ;
+	 else if (stricmp(av[0], s_IpVirtual) == 0)
+	    clientdesc = desc_IpVirtual;
         else if (stricmp(av[0], s_GlobalNoticer) == 0)
             clientdesc = desc_GlobalNoticer;                    
 	else if (s_IrcIIHelp && stricmp(av[0], s_IrcIIHelp) == 0)
@@ -559,7 +593,9 @@ void m_whois(char *source, int ac, char **av)
 
 Message messages[] = {
     { "436",       m_nickcoll },
+#ifdef IRC_UNDERNET_P09
     { "249",	   m_count },
+#endif
     { "AWAY",      m_away },
     { "INFO",      m_info },
     { "JOIN",      m_join },

@@ -97,7 +97,14 @@ extern int toupper(char), tolower(char);
 /*************************************************************************/
 
 /* Configuration sanity-checking: */
-
+#if MAX_SERVDEVELS > 32767
+# undef MAX_SERVDEVELS
+# define MAX_SERVDEVELS 32767
+#endif
+#if MAX_SERVPATROCINAS > 32767
+# undef MAX_SERVPATROCINAS
+# define MAX_SERVPATROCINAS 32767
+#endif
 #if CHANNEL_MAXREG > 32767
 # undef CHANNEL_MAXREG
 # define CHANNEL_MAXREG	0
@@ -124,6 +131,24 @@ extern int toupper(char), tolower(char);
 #define FILE_VERSION	8
 
 /*************************************************************************/
+/*************************************************************************/
+/* Hispano BDD Support
+ * Añadimos soporte para la base de datos hispano.
+ * 
+ * Se almacenaran segun su posición.
+ * a b c d e f g h i j k l m n o p q r s t u v w x y z 
+ *
+ * En TKOPURU se almacena el n-1 de tablas.
+ *
+ * Aritz, aritz@itxaropena.org
+ * Itxaropena Garapen Taldea - www.itxaropena.org
+ */
+#ifdef IRC_UNDERNET_P10
+#define TKOPURU	26
+unsigned int tablas[28];
+
+
+#endif
 
 typedef struct server_ Server;
 
@@ -183,6 +208,8 @@ struct nickinfo_ {
     char *suspendreason;     /* Motivo de la suspension */
     time_t time_suspend;     /* Tiempo cuando suspendio el nick */
     time_t time_expiresuspend; /* Expiracion suspension */
+    time_t time_vhost; /* Tiempo para el proximo cambio de vhost --->24 horas y tal */
+    time_t time_cnick; /* Tiempo para cambiarse el nick no registrado--->1 minuto y tal */
     char *forbidby;          /* Quien lo forbideo */
     char *forbidreason;      /* Motivo del forbid */
 
@@ -312,6 +339,9 @@ struct chaninfo_ {
     char *desc;
     char *url;
     char *email;
+   
+     int erab;                   /*modo para el antispam de mamu*/
+
 
     time_t time_registered;
     time_t last_used;
@@ -435,6 +465,8 @@ struct user_ {
     time_t invalid_pw_time;		/* Time of last invalid password */
     time_t lastmemosend;		/* Last time MS SEND command used */
     time_t lastnickreg;			/* Last time NS REGISTER cmd used */
+    char creg_apoyo[PASSMAX];		/* token del apoyo por creg */
+    
 };
 
 #define UMODE_O 0x00000001
@@ -469,13 +501,14 @@ struct channel_ {
     struct c_userlist {
 	struct c_userlist *next, *prev;
 	User *user;
-    } *users, *chanops, *voices;
+    } *users, *chanowners, *chanops, *voices;
 
     time_t server_modetime;		/* Time of last server MODE */
     time_t chanserv_modetime;		/* Time of last check_modes() */
     int16 server_modecount;		/* Number of server MODEs this second */
     int16 chanserv_modecount;		/* Number of check_mode()'s this sec */
     int16 bouncy_modes;			/* Did we fail to set modes here? */
+    int erab;
 };
 
 #define CMODE_I 0x00000001
@@ -543,7 +576,7 @@ typedef struct ignore_data {
 
 /*************************************************************************/
 /*************************************************************************/
-
+#include "cregserv.h"
 #include "extern.h"
 
 /*************************************************************************/

@@ -214,6 +214,8 @@ int main(int ac, char **av, char **envp)
 		expire_nicks();
 		waiting = -22;
 		expire_chans();
+		waiting = -23;
+                expire_creg();
 	    }
 	    waiting = -25;
 	    expire_akills();
@@ -229,6 +231,8 @@ int main(int ac, char **av, char **envp)
 		save_ns_dbase();
 		waiting = -12;
 		save_cs_dbase();
+		waiting = -13;
+                save_cr_dbase();
 	    }
 	    waiting = -14;
 	    save_os_dbase();
@@ -236,6 +240,10 @@ int main(int ac, char **av, char **envp)
 	    save_akill();
 	    waiting = -16;
 	    save_news();
+	    waiting = -17;
+	    save_spam();
+	    waiting = -18;
+	    save_ipv();
 	    if (save_data < 0)
 		break;	/* out of main loop */
 

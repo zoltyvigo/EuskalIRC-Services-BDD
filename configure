@@ -441,64 +441,67 @@ ok=0
 #echo "    20)  TerraIrcu 2.23 o superior Soporte P9"
 #echo "    21)  TerraIrcu 2.23 o superior Soporte P10"
 #echo "    30) ESNET-Hispano 2.10.H.02.50 o superior, Soporte P9"
-#echo "    31) ESNET-Hispano 2.10.H.02.50 o superior, Soporte P10"
-#while [ $ok -eq 0 ] ; do
-#	echo2 "[$IRCTYPE] "
-#	if read INPUT ; then : ; else echo "" ; exit 1 ; fi
-#	if [ ! "$INPUT" ] ; then
-#		INPUT=$IRCTYPE
-#	fi
-#	case $INPUT in
-#		no\ default)
-#			echo "Debes especificar el tipo de tu servidor IRC"
-#			echo "funcionen correctamente los Servicies."
-#			;;
+echo "    30) ESNET-Hispano ircd-u2.10.H.10.58 o superior, Soporte P9"
+echo "    31) ESNET-Hispano ircd-u2.10.H.10.76 o superior, Soporte P10"
+while [ $ok -eq 0 ] ; do
+	echo2 "[$IRCTYPE] "
+	if read INPUT ; then : ; else echo "" ; exit 1 ; fi
+	if [ ! "$INPUT" ] ; then
+		INPUT=$IRCTYPE
+	fi
+	case $INPUT in
+		no\ default)
+			echo "Debes especificar el tipo de tu servidor IRC"
+			echo "funcionen correctamente los Servicies."
+			;;
 #		10)
-#			IRCTYPE_DEF="IRC_UNDERNET"
-#			ok=1
-#			;;
-#		11)
-#			IRCTYPE_DEF="IRC_UNDERNET"
-#                        IRCTYPE_DEF2="IRC_UNDERNET_P09"
-#			ok=1
-#			;;
-#		12)
-#			IRCTYPE_DEF="IRC_UNDERNET"
-#			IRCTYPE_DEF2="IRC_UNDERNET_P10"
-#			ok=1
-#			;;
-#                20)
-#                        IRCTYPE_DEF="IRC_UNDERNET"
-#                        IRCTYPE_DEF2="IRC_UNDERNET_P09"
-#                        NETWORK="IRC_TERRA"
-#                        ok=1
-#                        ;;
-#
-#		21)
-#                        IRCTYPE_DEF="IRC_UNDERNET"
-#                        IRCTYPE_DEF2="IRC_UNDERNET_P10"
-#                        NETWORK="IRC_TERRA"
-#			ok=1
-#			;;
-#		30)
-                        IRCTYPE_DEF="IRC_UNDERNET"
-                        IRCTYPE_DEF2="IRC_UNDERNET_P09"
-                        NETWORK="IRC_HISPANO"
+# 			IRCTYPE_DEF="IRC_UNDERNET"
+# 			ok=1
+# 			;;
+# 		11)
+# 			IRCTYPE_DEF="IRC_UNDERNET"
+  #                       IRCTYPE_DEF2="IRC_UNDERNET_P09"
+# 			ok=1
+# 			;;
+# 		12)
+# 			IRCTYPE_DEF="IRC_UNDERNET"
+# 			IRCTYPE_DEF2="IRC_UNDERNET_P10"
+# 			ok=1
+# 			;;
+  #               20)
+#                         IRCTYPE_DEF="IRC_UNDERNET"
+#                         IRCTYPE_DEF2="IRC_UNDERNET_P09"
+#                         NETWORK="IRC_TERRA"
+#                         ok=1
+#                         ;;
+
+# 		21)
+#                         IRCTYPE_DEF="IRC_UNDERNET"
+#                         IRCTYPE_DEF2="IRC_UNDERNET_P10"
+#                         NETWORK="IRC_TERRA"
+# 			ok=1
+# 			;;
+ 		30)
+                         IRCTYPE_DEF="IRC_UNDERNET"
+                         IRCTYPE_DEF2="IRC_UNDERNET_P09"
+                         NETWORK="IRC_HISPANO"
 			ok=1
-#			;;
-#                31)
-#                        IRCTYPE_DEF="IRC_UNDERNET"
-#                        IRCTYPE_DEF2="IRC_UNDERNET_P10"
-#                        NETWORK="IRC_HISPANO"
-#                        ok=1
-#                        ;;
-#		*)
-#			echo "Por favor, escoja un numero de opcion valida."
-#			;;
-#	esac
-#done
-#IRCTYPE=$INPUT
-#echo ""
+			;;
+                31)
+                        IRCTYPE_DEF="IRC_UNDERNET"
+                        IRCTYPE_DEF2="IRC_UNDERNET_P10"
+                        NETWORK="IRC_HISPANO"
+                        ok=1
+                        ;;
+		*)
+			echo "Por favor, escoja un numero de opcion valida."
+			;;
+	esac
+done
+IRCTYPE=$INPUT
+echo ""
+
+
 
 ####
 

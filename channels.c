@@ -99,7 +99,8 @@ void send_channel_list(User *user)
 	end = buf;
 	end += snprintf(end, sizeof(buf)-(end-buf), "%s", c->name);
 	for (u = c->users; u; u = u->next) {
-	    isop = isvoice = 0;
+	   isop = isvoice = 0;
+	    
 	    for (u2 = c->chanops; u2; u2 = u2->next) {
 		if (u2->user == u->user) {
 		    isop = 1;
@@ -142,7 +143,7 @@ void send_channel_users(User *user)
     privmsg(s_OperServ, source, "Canal %s usuarios:", chan);
     for (u = c->users; u; u = u->next)
 	privmsg(s_OperServ, source, "%s", u->user->nick);
-    privmsg(s_OperServ, source, "Canal %s operadores:", chan);
+      privmsg(s_OperServ, source, "Canal %s operadores:", chan);
     for (u = c->chanops; u; u = u->next)
 	privmsg(s_OperServ, source, "%s", u->user->nick);
     privmsg(s_OperServ, source, "Canal %s moderadores:", chan);
@@ -251,6 +252,7 @@ void chan_adduser(User *user, const char *chan)
 	check_modes(chan);
 	restore_topic(chan);
     }
+ 
     if (check_should_op(user, chan)) {
 	u = smalloc(sizeof(struct c_userlist));
 	u->next = c->chanops;
@@ -275,6 +277,8 @@ void chan_adduser(User *user, const char *chan)
 	c->users->prev = u;
     c->users = u;
     u->user = user;
+    c->erab++;
+    spam_ikusi(c);
 }
 
 
@@ -294,6 +298,7 @@ void chan_deluser(User *user, Channel *c)
     else
 	c->users = u->next;
     free(u);
+    
     for (u = c->chanops; u && u->user != user; u = u->next)
 	;
     if (u) {
@@ -346,8 +351,11 @@ void chan_deluser(User *user, Channel *c)
 	    c->prev->next = c->next;
 	else
 	    chanlist[HASH(c->name)] = c->next;
+	    spam_ikusi(c);
 	free(c);
-    }
+    } else {
+	c->erab--;
+	    spam_ikusi(c); }
 }
 
 /*************************************************************************/
@@ -368,7 +376,7 @@ void do_create(const char *source, int ac, char **av)
 {
    User *user;
    
-   u = finduser(source);
+   user = finduser(source);
 
    if (debug)
        log("debug: %s crea el canal %s", user->nick, av[0]);
@@ -510,7 +518,7 @@ void do_burst(const char *source, int ac, char **av)
                             if (stricmp(default_mode, "ov") == 0) {
                                 ax[0] = sstrdup(av[0]);
                                 ax[1] = sstrdup("o");
-                                ax[2] = sstrdup(u->numeric);
+                                ax[2] = sstrdup(u->numerico);
                                 do_cmode(s_ChanServ, 3, ax);
                                 ax[1] = sstrdup("v");
                                 do_cmode(s_ChanServ, 3, ax);

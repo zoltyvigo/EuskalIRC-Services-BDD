@@ -20,30 +20,38 @@ int   LocalPort;
 
 char *ServerName;
 char *ServerDesc;
-#ifdef IRC_UNDERNET_P10
-int  ServerNumerico;
-#endif
 char *ServerHUB;
 char *ServiceUser;
 char *ServiceHost;
 static char *temp_userhost;
+#ifdef IRC_UNDERNET_P10
+int  ServerNumerico;
+#endif
 
 char *s_NickServ;
 char *s_ChanServ;
 char *s_MemoServ;
 char *s_HelpServ;
 char *s_OperServ;
+char *s_SpamServ;
 char *s_GlobalNoticer;
 char *s_NewsServ;
+char *s_ShadowServ;
 char *s_IrcIIHelp;
 char *s_DevNull;
 char *s_BddServ;
+char *DEntryMsg;
+char *s_CregServ;
+char *s_IpVirtual;
+char *s_EuskalIRCServ;
+int  CregApoyos;
 char *OperHost;
 char *AdminHost;
-char *DEntryMsg;
+char *DevelHost;
+char *PatrocinaHost;
 
-char *s_ShadowServ;
-char *s_AntiSpam;
+
+
 
 #ifdef IRC_UNDERNET_P10
 char s_NickServP10[4];
@@ -51,23 +59,32 @@ char s_ChanServP10[4];
 char s_MemoServP10[4];
 char s_HelpServP10[4];
 char s_OperServP10[4];
+char s_CregServP10[4];
+char s_SpamServP10[4];
+char s_IpVirtualP10[4];
+char s_EuskalIRCServP10[4];
 char s_GlobalNoticerP10[4];
 char s_NewsServP10[4];
 char s_IrcIIHelpP10[4];
 char s_DevNullP10[4];
+char s_ShadowServP10[4];
+
 #endif
 char *desc_NickServ;
 char *desc_ChanServ;
 char *desc_MemoServ;
 char *desc_HelpServ;
 char *desc_OperServ;
+char *desc_SpamServ;
+char *desc_CregServ;
+char *desc_IpVirtual;
+char *desc_EuskalIRCServ;
 char *desc_GlobalNoticer;
 char *desc_NewsServ;
 char *desc_IrcIIHelp;
 char *desc_DevNull;
-
 char *desc_ShadowServ;
-char *desc_AntiSpam;
+char *desc_IpVirtual;
 char *desc_BddServ;
 
 char *PIDFilename;
@@ -76,10 +93,14 @@ char *HelpDir;
 char *NickDBName;
 char *ChanDBName;
 char *CregDBName;
+char *SpamDBName;
 char *OperDBName;
+char *IpVirtualDBName;
+char *EuskalIRCDBName;
 char *AutokillDBName;
 char *NewsDBName;
 
+int   SpamUsers;
 int   NoBackupOkay;
 int   NoSplitRecovery;
 int   StrictPasswords;
@@ -216,6 +237,9 @@ Directive directives[] = {
     { "CSRestrictDelay",  { { PARAM_TIME, 0, &CSRestrictDelay } } },
     { "DevNullName",      { { PARAM_STRING, 0, &s_DevNull },
                             { PARAM_STRING, 0, &desc_DevNull } } },
+     { "ShadowName",      { { PARAM_STRING, 0, &s_ShadowServ },
+                            { PARAM_STRING, 0, &desc_ShadowServ} } },
+
     { "ExpireTimeout",    { { PARAM_TIME, 0, &ExpireTimeout } } },
     { "GlobalName",       { { PARAM_STRING, 0, &s_GlobalNoticer },
                             { PARAM_STRING, 0, &desc_GlobalNoticer } } },
@@ -241,12 +265,21 @@ Directive directives[] = {
     { "NickservDB",       { { PARAM_STRING, 0, &NickDBName } } },
     { "NickServName",     { { PARAM_STRING, 0, &s_NickServ },
                             { PARAM_STRING, 0, &desc_NickServ } } },
+     { "SpamServDB",       { { PARAM_STRING, 0, &SpamDBName } } },
+    { "SpamServName",     { { PARAM_STRING, 0, &s_SpamServ },
+                            { PARAM_STRING, 0, &desc_SpamServ } } },
     { "NoBackupOkay",     { { PARAM_SET, 0, &NoBackupOkay } } },
 
     { "BddServName",	  { { PARAM_STRING, 0, &s_BddServ },
     			    { PARAM_STRING, 0, &desc_BddServ } } },
-    { "AntiSpamName",	  { { PARAM_STRING, 0, &s_AntiSpam },
-    			    { PARAM_STRING, 0, &desc_AntiSpam } } },
+    { "IPVirtualName",	  { { PARAM_STRING, 0, &s_IpVirtual },
+    			    { PARAM_STRING, 0, &desc_IpVirtual } } },
+
+        
+#ifdef IRC_UNDERNET_P10
+    { "ServerNumerico",   { { PARAM_INT, 0, &ServerNumerico } } },
+   /* { "ServerHUB",       { { PARAM_STRING, 0, &ServerHUB } } },*/
+#endif        
 
     { "NoSplitRecovery",  { { PARAM_SET, 0, &NoSplitRecovery } } },
     { "NSAccessMax",      { { PARAM_POSINT, 0, &NSAccessMax } } },
@@ -274,6 +307,17 @@ Directive directives[] = {
     { "OperServDB",       { { PARAM_STRING, 0, &OperDBName } } },
     { "OperServName",     { { PARAM_STRING, 0, &s_OperServ },
                             { PARAM_STRING, 0, &desc_OperServ } } },
+    { "CregServDB",       { { PARAM_STRING, 0, &CregDBName } } },
+    { "CregServName",     { { PARAM_STRING, 0, &s_CregServ },
+                            { PARAM_STRING, 0, &desc_CregServ } } },
+			    
+    { "IpVirtualDB",       { { PARAM_STRING, 0, &IpVirtualDBName } } },
+    { "IpVirtualName",     { { PARAM_STRING, 0, &s_IpVirtual},
+                            { PARAM_STRING, 0, &desc_IpVirtual } } },
+   
+    { "EuskalIRCServDB",       { { PARAM_STRING, 0, &EuskalIRCDBName } } },
+    { "EuskalIRCServName",     { { PARAM_STRING, 0, &s_EuskalIRCServ },
+                            { PARAM_STRING, 0, &desc_EuskalIRCServ } } },
     { "PIDFile",          { { PARAM_STRING, 0, &PIDFilename } } },
     { "ReadTimeout",      { { PARAM_TIME, 0, &ReadTimeout } } },
     { "RemoteServer",     { { PARAM_STRING, 0, &RemoteServer },
@@ -281,14 +325,15 @@ Directive directives[] = {
                             { PARAM_STRING, 0, &RemotePassword } } },
     { "ServerDesc",       { { PARAM_STRING, 0, &ServerDesc } } },
     { "ServerName",       { { PARAM_STRING, 0, &ServerName } } },
-#ifdef IRC_UNDERNET_P10
-    { "ServerNumerico",   { { PARAM_INT, 0, &ServerNumerico } } },
-#endif
+     { "SpamUsers",        { { PARAM_INT, 0, &SpamUsers } } },
     { "ServicesRoot",     { { PARAM_STRING, 0, &ServicesRoot } } },
     { "ServiceUser",      { { PARAM_STRING, 0, &temp_userhost } } },
+    { "DEntryMsg",	  { { PARAM_STRING, 0, &DEntryMsg } } },
     { "OperHost",	  { { PARAM_STRING, 0, &OperHost } } },
     { "AdminHost",	  { { PARAM_STRING, 0, &AdminHost } } },
-    { "DEntryMsg",	  { { PARAM_STRING, 0, &DEntryMsg } } },
+    { "DevelHost",	  { { PARAM_STRING, 0, &DevelHost } } },
+    { "PatrocinaHost",	  { { PARAM_STRING, 0, &PatrocinaHost } } },
+     { "CregApoyos",       { { PARAM_POSINT, 0, &CregApoyos } } },
 #ifdef REG_NICK_MAIL
 #ifdef SENDMAIL
     { "SendMailPatch",    { { PARAM_STRING, 0, &SendMailPatch } } },
@@ -305,6 +350,7 @@ Directive directives[] = {
    /* { "ShadowServ",       { { PARAM_STRING, 0, &s_ShadowServ } } },    */
     { "CanalAdmins",      { { PARAM_STRING, 0, &CanalAdmins } } },
     { "CanalOpers",       { { PARAM_STRING, 0, &CanalOpers } } },
+    { "CanalCybers",       { { PARAM_STRING, 0, &CanalCybers } } }, 
     { "StrictPasswords",  { { PARAM_SET, 0, &StrictPasswords } } },
     { "TimeoutCheck",     { { PARAM_TIME, 0, &TimeoutCheck } } },
     { "UpdateTimeout",    { { PARAM_TIME, 0, &UpdateTimeout } } },
@@ -546,27 +592,37 @@ int read_config()
     CHECK(ServerName);
 #ifdef IRC_UNDERNET_P10
     CHECK(ServerNumerico);
+    
 #endif
     CHECK(ServerDesc);
     CHECK(OperHost);
     CHECK(AdminHost);
+    CHECK(DevelHost);
+    CHECK(PatrocinaHost);
     CHECK(DEntryMsg);
     CHEK2(temp_userhost, ServiceUser);
     CHEK2(s_NickServ, NickServName);
+     CHEK2(s_SpamServ, SpamServName);
     CHEK2(s_ChanServ, ChanServName);
     CHEK2(s_MemoServ, MemoServName);
     CHEK2(s_HelpServ, HelpServName);
     CHEK2(s_OperServ, OperServName);
+    CHEK2(s_CregServ, CregServName);
+    CHEK2(s_IpVirtual, IPVirtualName);
+    CHEK2(s_EuskalIRCServ, EuskalIRCServName);
     CHEK2(s_GlobalNoticer, GlobalName);
     CHEK2(s_NewsServ, NewsServName);
     CHEK2(s_BddServ, BddServName);
-    CHEK2(s_AntiSpam, AntiSpamName);
     CHEK2(PIDFilename, PIDFile);
     CHEK2(MOTDFilename, MOTDFile);
     CHECK(HelpDir);
     CHEK2(NickDBName, NickServDB);
     CHEK2(ChanDBName, ChanServDB);
     CHEK2(OperDBName, OperServDB);
+    CHEK2(SpamDBName, SpamServDB);
+    CHEK2(CregDBName, CregServDB);
+    CHEK2(IpVirtualDBName, IpVirtualDB);
+    CHEK2(EuskalIRCDBName, EuskalIRCServDB);
     CHEK2(AutokillDBName, AutokillDB);
     CHEK2(NewsDBName, NewsDB);
     CHECK(UpdateTimeout);
@@ -585,6 +641,7 @@ int read_config()
     CHECK(CSListMax);
     CHECK(CanalAdmins);
     CHECK(CanalOpers);
+    CHECK(CanalCybers);
     CHECK(ServicesRoot);
     CHECK(AutokillExpiry);
 #ifdef REG_NICK_MAIL

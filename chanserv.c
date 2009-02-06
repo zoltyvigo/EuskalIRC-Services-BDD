@@ -192,7 +192,7 @@ static Command cmds[] = {
     { "CLEAR",    do_clear,    NULL,  CHAN_HELP_CLEAR,          -1,-1,-1,-1 },
     { "RESET",    do_reset,    NULL,  CHAN_HELP_RESET,          -1,-1,-1,-1 },
     { "VERIFY",   do_verify,   is_services_oper,  CHAN_HELP_VERIFY,         -1,-1,-1,-1 },        
-    { "IRCOPS",   do_ircops,   is_services_oper,  CHAN_HELP_IRCOPS,         -1,-1,-1,-1 },    
+    { "IRCOPS",   do_ircops,   NULL,  CHAN_HELP_IRCOPS,         -1,-1,-1,-1 },    
     { "GETPASS",  do_getpass,  is_services_oper,  -1,
 		-1, CHAN_SERVADMIN_HELP_GETPASS,
 		CHAN_SERVADMIN_HELP_GETPASS, CHAN_SERVADMIN_HELP_GETPASS },
@@ -1842,6 +1842,7 @@ void expire_chans()
 #ifdef IRC_TERRA
     Channel *c;
 #endif    
+    CregInfo *cr; 
     int i;
     time_t now = time(NULL);
 
@@ -1854,6 +1855,11 @@ void expire_chans()
 	    if (now - ci->last_used >= CSExpire
 			&& !(ci->flags & (CI_VERBOTEN | CI_NO_EXPIRE | CI_SUSPEND))) {
 		log("Expirando canal %s", ci->name);
+		if ((cr = cr_findcreg(ci->name))) {
+                    cr->estado = 0;
+                    cr->estado |= CR_EXPIRADO;
+                    cr->time_motivo = time(NULL);
+                }
 #ifdef IRC_TERRA
 		if ((c = findchan(ci->name))) {
 		    c->mode &= ~CMODE_r;
@@ -1868,16 +1874,13 @@ void expire_chans()
     }
 }
 
-/*************************************************************************/
-
-/* Remove a (deleted or expired) nickname from all channel lists. */
-
 void cs_remove_nick(const NickInfo *ni)
 {
     int i, j;
     ChannelInfo *ci, *next;
     ChanAccess *ca;
     AutoKick *akick;
+    CregInfo *cr;
 
     for (i = 0; i < 256; i++) {
 	for (ci = chanlists[i]; ci; ci = next) {
@@ -1891,6 +1894,11 @@ void cs_remove_nick(const NickInfo *ni)
 			log("%s: Successor (%s) of %s owns too many channels, "
 			    "deleting channel",
 			    s_ChanServ, ni2->nick, ci->name);
+			    if ((cr = cr_findcreg(ci->name))) {
+                            cr->estado = 0;
+                            cr->estado |= CR_EXPIRADO;
+                            cr->time_motivo = time(NULL);
+                        }
 			delchan(ci);
 		    } else {
 		        canalopers(s_ChanServ, "Transferiendo el founder de 12%s,"
@@ -1908,6 +1916,11 @@ void cs_remove_nick(const NickInfo *ni)
                      " nick 12%s", ci->name, ni->nick);
 		    log("%s: Deleting channel %s owned by deleted nick %s",
 				s_ChanServ, ci->name, ni->nick);
+		if ((cr = cr_findcreg(ci->name))) {
+                            cr->estado = 0;
+                            cr->estado |= CR_EXPIRADO;
+                            cr->time_motivo = time(NULL);
+                        }
 		    delchan(ci);
 		}
 		continue;
@@ -2343,6 +2356,7 @@ static void do_register(User *u)
     NickInfo *ni = u->ni;
     Channel *c;
     ChannelInfo *ci;
+     CregInfo *cr;
     struct u_chaninfolist *uc;
 #ifdef USE_ENCRYPTION
     char founderpass[PASSMAX+1];
@@ -2361,7 +2375,7 @@ static void do_register(User *u)
 
     if (!desc) {
 	syntax_error(s_ChanServ, u, "REGISTER", CHAN_REGISTER_SYNTAX);
-    } else if ((*chan == '&') || (*chan == '+')) {
+    } else if (*chan == '&') {
 	notice_lang(s_ChanServ, u, CHAN_REGISTER_NOT_LOCAL);
     } else if (!ni) {
 	notice_lang(s_ChanServ, u, CHAN_MUST_REGISTER_NICK, s_NickServ);
@@ -2377,6 +2391,9 @@ static void do_register(User *u)
 	} else {
 	    notice_lang(s_ChanServ, u, CHAN_ALREADY_REGISTERED, chan);
 	}
+    } else if ((cr = cr_findcreg(chan)) != NULL) {
+        privmsg(s_ChanServ, u->nick, "El canal está en proceso por %s.", s_CregServ);
+
 
     } else if (!is_chanop(u->nick, chan) && !is_services_oper(u)) {
 	notice_lang(s_ChanServ, u, CHAN_MUST_BE_CHANOP);
@@ -2460,6 +2477,124 @@ static void do_register(User *u)
 
     }
 }
+/*************************************************************************/
+
+int registra_con_creg(User *u, NickInfo *ni, const char *chan, const char *pass, const char *desc)
+{
+    Channel *c;
+    User *u2;
+    ChannelInfo *ci;
+    struct u_chaninfolist *uc;
+
+    if ((*chan == '&') || (*chan == '+')) {
+	return 0;
+    } else if (!ni) {
+	return 0;
+    } else if ((ci = cs_findchan(chan)) != NULL) {
+	return 0;
+    } else if (!(c = findchan(chan))) {
+	log("%s: Channel %s not found for REGISTER", s_ChanServ, chan);
+	return 0;
+    } else if (!(ci = makechan(chan))) {
+	log("%s: makechan() failed for REGISTER %s", s_ChanServ, chan);
+	return 0;
+    } else {
+	c->ci = ci;
+	ci->c = c;
+	ci->flags = CI_KEEPTOPIC | CI_SECURE;
+	ci->mlock_on = CMODE_N | CMODE_T;
+	ci->memos.memomax = MSMaxMemos;
+	ci->last_used = ci->time_registered;
+	ci->founder = ni;
+	strscpy(ci->founderpass, pass, PASSMAX);
+	ci->desc = sstrdup(desc);
+	if (c->topic) {
+	    ci->last_topic = sstrdup(c->topic);
+	    strscpy(ci->last_topic_setter, c->topic_setter, NICKMAX);
+	    ci->last_topic_time = c->topic_time;
+	}
+	ni = ci->founder;
+
+	if (ni->channelcount+1 > ni->channelcount)  /* Avoid wraparound */
+	    ni->channelcount++;
+
+	ci->entry_message =  DEntryMsg;
+	canalopers(s_ChanServ, "Canal 12%s aprobado por %s en %s (FUNDADOR: 12%s)", chan, s_ChanServ, u->nick, ni->nick);
+	log("%s: Canal %s registrado por %s!%s@%s", s_ChanServ, chan, u->nick, u->username, u->host);
+
+        if ((u2 = finduser(ni->nick))) {
+                uc = smalloc(sizeof(*uc));
+                uc->next = u2->founder_chans;
+                uc->prev = NULL;
+                if (u2->founder_chans)
+                    u2->founder_chans->prev = uc;
+                u2->founder_chans = uc;
+                uc->chan = ci;
+        }
+	/* Implement new mode lock */
+	check_modes(ci->name);
+	return 1;
+    }
+}
+/*************************************************************************/
+
+int suspende_con_creg(User *u, NickInfo *ni, const char *chan, const char *desc)
+{
+    Channel *c;
+    User *u2;
+    ChannelInfo *ci;
+    struct u_chaninfolist *uc;
+
+    if ((*chan == '&') || (*chan == '+')) {
+	return 0;
+    } else if (!ni) {
+	return 0;
+    } else if ((ci = cs_findchan(chan)) != NULL) {
+	return 0;
+    } else if (!(c = findchan(chan))) {
+	log("%s: Channel %s not found for REGISTER", s_ChanServ, chan);
+	return 0;
+    } else if (!(ci = makechan(chan))) {
+	log("%s: makechan() failed for REGISTER %s", s_ChanServ, chan);
+	return 0;
+    } else {
+	c->ci = ci;
+	ci->c = c;
+	ci->flags = CI_SUSPEND;
+	ci->mlock_on = CMODE_N | CMODE_T;
+	ci->memos.memomax = MSMaxMemos;
+	ci->last_used = ci->time_registered;
+	ci->founder = ni;
+	ci->desc = sstrdup(desc);
+	if (c->topic) {
+	    ci->last_topic = sstrdup(c->topic);
+	    strscpy(ci->last_topic_setter, c->topic_setter, NICKMAX);
+	    ci->last_topic_time = c->topic_time;
+	}
+	ni = ci->founder;
+
+	if (ni->channelcount+1 > ni->channelcount)  /* Avoid wraparound */
+	    ni->channelcount++;
+
+	ci->entry_message =  DEntryMsg;
+	canalopers(s_ChanServ, "Canal 12%s aprobado por %s en %s (FUNDADOR: 12%s)", chan, s_ChanServ, u->nick, ni->nick);
+	log("%s: Canal %s registrado por %s!%s@%s", s_ChanServ, chan, u->nick, u->username, u->host);
+
+        if ((u2 = finduser(ni->nick))) {
+                uc = smalloc(sizeof(*uc));
+                uc->next = u2->founder_chans;
+                uc->prev = NULL;
+                if (u2->founder_chans)
+                    u2->founder_chans->prev = uc;
+                u2->founder_chans = uc;
+                uc->chan = ci;
+        }
+	/* Implement new mode lock */
+	check_modes(ci->name);
+	return 1;
+    }
+}
+/*************************************************************************/
 
 /*************************************************************************/
 
@@ -3229,10 +3364,10 @@ static void do_set_opnotice(User *u, ChannelInfo *ci, char *param)
 
 static void do_set_stay(User *u, ChannelInfo *ci, char *param)
 {
-    privmsg(s_ChanServ, u->nick, "Opción STAY deshabilitada.");
-    return;
+    /*privmsg(s_ChanServ, u->nick, "Opción STAY deshabilitada.");
+    return;*/
     
-/*    if (stricmp(param, "ON") == 0) {
+  if (stricmp(param, "ON") == 0) {
         ci->flags |= CI_STAY;
         send_cmd(s_ChanServ, "JOIN %s ", ci->name);
 #ifdef IRC_UNDERNET_P10
@@ -3248,7 +3383,7 @@ static void do_set_stay(User *u, ChannelInfo *ci, char *param)
         notice_lang(s_ChanServ, u, CHAN_SET_STAY_OFF);
     } else {
         syntax_error(s_ChanServ, u, "SET STAY", CHAN_SET_STAY_SYNTAX);
-    }*/
+    }
 }                                                    
                                             
 /*************************************************************************/
@@ -5024,11 +5159,20 @@ static void do_verify(User *u)
      } else if (nick_is_services_admin(ni)) {
         privmsg(s_ChanServ, u->nick, "12%s es un 12ADMINinstrador de la RED.", ni->nick);
         return;
+     } else if (nick_is_services_cregadmin(ni)) {
+        privmsg(s_ChanServ, u->nick, "12%s es un 12COADMINinstrador de la RED.", ni->nick);
+        return;
+    } else if (nick_is_services_devel(ni)) {
+        privmsg(s_ChanServ, u->nick, "12%s es un 12DESARROLLador de la RED.", ni->nick);
+        return;
     } else if (nick_is_services_oper(ni)) {
         privmsg(s_ChanServ, u->nick, "12%s es un 12OPERador de la RED.", ni->nick);
         return;
+     } else if (nick_is_services_patrocina(ni)) {
+        privmsg(s_ChanServ, u->nick, "12%s es un 12PATROCINador de la RED.", ni->nick);
+        return;
     } else
-        privmsg(s_ChanServ, u->nick, "12%s NO es un representante de la RED.", nick);
+        privmsg(s_ChanServ, u->nick, "12%s NO es un Representante de la RED.", nick);
 }
                                                                                       
 

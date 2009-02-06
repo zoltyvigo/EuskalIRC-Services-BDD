@@ -392,6 +392,12 @@ NICK_INFO_SERV_OPER
 	Es un 12OPERador de los servicios de RED
 NICK_INFO_SERV_ADMIN
 	Es un 12ADMINistrador de los servicios de RED
+NICK_INFO_SERV_CREGADMIN
+	Es un 12COADMINistrador de los servicios de RED
+NICK_INFO_SERV_DEVEL
+	Es un 12PROGRAMAdor 12DEVEL de los servicios de RED
+NICK_INFO_SERV_PATROCINA
+	Es un 12PATROCINAdor 12SPONSOR de los servicios de RED
 NICK_INFO_SERV_ROOT
 	Es el 12ROOT de la RED
 
@@ -1441,6 +1447,29 @@ OPER_ADMIN_NOT_FOUND
 	12%s no fue encontrado en la lista de Administradores de Services.
 OPER_ADMIN_LIST_HEADER
 	Lista de Administradores de Services:
+#CREGADMIN responses
+OPER_CREGADMIN_SYNTAX
+	12CREGADMIN {ADD | DEL | LIST} [nick]
+OPER_CREGADMIN_ADD_SYNTAX
+	12CREGADMIN ADD <nick>
+OPER_CREGADMIN_DEL_SYNTAX
+	12CREGADMIN DEL <nick>
+
+OPER_CREGADMIN_SKELETON
+	Services esta en modo skeleton; el comando 12CREGADMIN no esta disponible.
+OPER_CREGADMIN_EXISTS
+	12%s ya está en la lista de Co-Administradores de Services.
+OPER_CREGADMIN_ADDED
+	12%s agregado a la lista de Co-Administradores de Services.
+OPER_CREGADMIN_TOO_MANY
+	Demasiadas entradas (12%d) en la lista de Co-Administradores de Services; no se puede agregar mas.
+OPER_CREGADMIN_REMOVED
+	12%s borrado de la lista de Co-Administradores de Services.
+OPER_CREGADMIN_NOT_FOUND
+	12%s no fue encontrado en la lista de Co-Administradores de Services.
+OPER_CREGADMIN_LIST_HEADER
+	Lista de Co-Administradores de Services:
+
 
 # OPER responses
 OPER_OPER_SYNTAX
@@ -1537,6 +1566,44 @@ OPER_SET_DEBUG_ERROR
 	Parámetro para DEBUG debe ser ON, OFF, o un numero positivo.
 OPER_SET_UNKNOWN_OPTION
 	Opción %s desconocida.
+# PATROCINA responses
+OPER_PATROCINA_SYNTAX
+	12PATROCINA {ADD | DEL | LIST} [nick]
+OPER_PATROCINA_ADD_SYNTAX
+	12PATROCINA ADD <nick>
+OPER_PATROCINA_DEL_SYNTAX
+	12PATROCINA DEL <nick>
+OPER_PATROCINA_EXISTS
+	12%s ya estaba en la lista de Patrocinadores de Services.
+OPER_PATROCINA_ADDED
+	12%s agregado a la lista de Patrocinadores de Services.
+OPER_PATROCINA_TOO_MANY
+	Muchas entradas (12%d) en la lista de Patrocinadores de Services; no se pueden agregar mas.
+OPER_PATROCINA_REMOVED
+	12%s borrado de la lista de Patrocinadores de Services.
+OPER_PATROCINA_NOT_FOUND
+	12%s no fue encontrado en la lista de Patrocinadores de Services.
+OPER_PATROCINA_LIST_HEADER
+	Lista de Patrocinadores de Services:
+# DEVEL responses
+OPER_DEVEL_SYNTAX
+	12DEVEL {ADD | DEL | LIST} [nick]
+OPER_DEVEL_ADD_SYNTAX
+	12DEVEL ADD <nick>
+OPER_DEVEL_DEL_SYNTAX
+	12DEVEL DEL <nick>
+OPER_DEVEL_EXISTS
+	12%s ya estaba en la lista de Desarrolladores de Services.
+OPER_DEVEL_ADDED
+	12%s agregado a la lista de Desarrolladores de Services.
+OPER_DEVEL_TOO_MANY
+	Muchas entradas (12%d) en la lista de Desarrolladores de Services; no se pueden agregar mas.
+OPER_DEVEL_REMOVED
+	12%s borrado de la lista de Desarrolladores de Services.
+OPER_DEVEL_NOT_FOUND
+	12%s no fue encontrado en la lista de Desarrolladores de Services.
+OPER_DEVEL_LIST_HEADER
+	Lista de Desarrolladores  de Services:
 
 # JUPE responses
 OPER_JUPE_SYNTAX
@@ -3107,7 +3174,85 @@ MEMO_SERVADMIN_HELP_INFO
 	Con el parámetro 12usuario, muestra la misma información, pero
 	del 12usuario especificado. Esta opción está limitada
 	únicamente a los 4Administradores de Servicios.
+	
+###########################################################################
+#
+# IpVirtual help messages (mensajes de ayuda de IpVirtual)
+###########################################################################
 
+IPV_HELP
+	Comandos de 4%S:
+	  
+	    12CAMBIAR      Activa Tu Ip Virtual Personalizada
+	    12PONER        Inserta Frases Personalizadas en una Agenda  
+	    12ACTIVAR      Activa la Ip Virtual Personalizada Con Colores (Solo Admins)
+	    12SET          Activa  IpVirtual  de otros semi-personalizada (Solo Admins)
+	    12HELP         La Ayuda del Comando
+
+IPV_HELP_ACTIVAR
+	Sintaxis: 12ACTIVAR [mascara]
+	
+	Modifica la máscara virtual de un usuario (por tabla V) que esté +r, ó
+	la elimina, en caso de que introduzcamos [mascara]
+IPV_HELP_CAMBIAR
+	Sintaxis: 12CAMBIAR [mascara]
+	
+	Modifica la máscara virtual de un usuario (por tabla w) que esté +r, ó
+	la elimina, en caso de que introduzcamos la palabra 5OFF como [mascara]
+	donde la [mascara] es <la.nueva.ip.virtual>
+	
+
+
+IPV_ACTIVAR_SYNTAX
+	ACTIVAR <nick> [máscara]
+	
+IPV_ACTIVAR_UNSET
+	ACTIVACION VHOST para 12%s deshabilitada
+	
+IPV_ACTIVAR_SET
+	ACTIVACION VHOST para 12%s cambiada a 12%s
+	
+IPV_SET_SERVADMIN_SYNTAX
+	12SET [nick] <opción> <parámetros>
+	
+IPV_SET_SYNTAX
+	12SET <opción> <parámetros>
+	
+IPV_SET_VHOST_OFF
+	ACTIVACION V-Host deshabilitada.
+	
+IPV_SET_VHOST_ON
+	ACTIVACION V-host cambiada a 12%s
+	
+IPV_HELP_SET_VHOST
+	Sintaxis: 12SET VHOST {<mascara> | OFF}
+
+	Permite añadir/eliminar una entrada en la tabla W del IRCd, lo que
+	facilita una dirección virtual semi-personalizada, con una parte
+	generada a partir de la IP del cliente y otra a elegir medianta
+	el parámetro <máscara>. Usando OFF podemos volver al formato "estándar"
+	
+IPV_HELP_SET
+	Sintaxis: 12SET <opción> <parámetros>
+	
+	Ajusta varios parámetros del IpVirtual. Una opción puede ser:
+	
+	    12VHOST      Permite cambiar parte de la IP virtual.
+	
+	Para utilizar este comando es necesario que te identifiques antes
+	con su contraseña 
+	
+	Escribe 12/msg %S HELP SET <opción> para mas información
+	sobre una opción especifica.
+	
+IPV_SERVADMIN_HELP_SET
+	
+	Adicionalmente, los 4Administradores de Services
+	pueden establecer opciones para cualquier nick sin necesidad
+	de proveer una contraseña, utilizando el formato
+	12SET <nick> <opción> <parámetros>.
+
+	
 ###########################################################################
 #
 # OperServ help messages (mensajes de ayuda de OperServ)
@@ -3120,7 +3265,11 @@ OPER_HELP
 	    12GLOBALN     Envía un mensaje a TODOS los usuarios por notice
 	    12STATS       Muestra el estado de los servicios y de la red
 	    12SERVERS     Muestra los servidores de la red
-	    12OPER LIST   Lista todos los Operadores de los Servicios
+
+	    12PATROCINA LIST  Lista todos los Patrocinadores-Sponsors de Servicios
+	    12OPER LIST   Lista todos los Operadores de  Servicios
+	    12DEVEL LIST  Lista todos los Desarrolladores de Servicios
+	    12CREGADMIN LIST   Lista todos los Co-Administradores de Servicios
 	    12ADMIN LIST  Lista todos los Administradores de Servicios
 	
 	Comandos disponibles solo para Operadores de Servicios y
@@ -3162,6 +3311,10 @@ OPER_HELP
 	servicios:
 	
 	    12ADMIN       Modifica la lista de Administradores de Servicios
+	    12CREGADMIN   Modifica la lista de Co-Administradores de Servicios
+	    12DEVEL       Modifica la lista de Desarrolladores de Servicios
+	    12PATROCINA   Modifica la lista de Patrocinadores de Servicios
+	
 	
 	4Aviso: TODOS los comandos enviados a 12%S son
 	registrados! (log)
@@ -3215,6 +3368,21 @@ OPER_HELP_STATS
 	por lo tanto no abuse de ella.
 	
 	12UPTIME puede ser utilizado como sinónimo de 12STATS.
+	
+OPER_HELP_PATROCINA
+	Sintaxis: 12PATROCINA ADD <nick>
+	          12PATROCINA DEL <nick>
+	          12PATROCINA LIST
+	
+	Habilita a los 4Administradores de Servicios para agregar
+	(ADD), borrar (DEL) o listar (LIST) usuarios de la lista de
+	Patrocinadores. Un usuario que se encuentre en la lista de
+	Patrocinadores y que se identifique ante 12%s podrá acceder
+	a los comandos de Patrocinador de Servicios.
+	
+	Cualquiera de los operadores de IRC (IRCops) puede utilizar
+	el comando 12PATROCINA LIST. Todos los otros comandos solo pueden
+	ser utilizados por los 4Administradores de Servicios.
 
 OPER_HELP_OPER
 	Sintaxis: 12OPER ADD <nick>
@@ -3244,6 +3412,20 @@ OPER_HELP_ADMIN
 	
 	Cualquiera de los operadores de IRC (IRCops) puede utilizar
 	el comando 12ADMIN LIST. Todos los otros comandos solo pueden
+	ser utilizados por el 4súper-usuarios de los Servicios.
+OPER_HELP_DEVEL
+	Sintaxis: 12DEVEL ADD <nick>
+	          12DEVEL DEL <nick>
+	          12DEVEL LIST
+	
+	Habilita a los 4súper-usuarios de los Servicios a agregar
+	(ADD), eliminar (DEL) o listar (LIST) usuarios de la lista
+	de Desarrolladores. Un usuario que se encuentre en la lista
+	de Devels y que se identifique ante 12%s podrá
+	acceder a los comandos de Administrador de Servicios.
+	
+	Cualquiera de los operadores de IRC (IRCops) puede utilizar
+	el comando 12DEVEL LIST. Todos los otros comandos solo pueden
 	ser utilizados por el 4súper-usuarios de los Servicios.
 	
 OPER_HELP_MODE
@@ -3601,7 +3783,24 @@ CREG_HELP
 	el canal no se ajusta a las normas de registro para los canales
 	disponibles en http://www.upworld.org/canales/normas.html
 
-
+CREG_HELP_SEC
+	 12Secciones disponibles en la Red para ser asignadas al canal
+	 
+	       2SOC  SOCIEDAD-ZONAS GEOGRAFICAS
+	       2INF  INFORMATICA
+	       2CI   CIENCIAS
+	       2AYU  AYUDA
+	       2ADU  ADULTOS
+	       2OTR  OTRAS SECCIONES
+	           
+CREG_SERVADMIN_HELP_SEC
+	4Los siguientes comandos están disponibles para los Operadores
+	4de Services
+	
+	       5COM  Canal COMERCIAL de la RED
+	       5OFI  Canal OFICIAL de la RED
+	       5REP  Canal REPRESENTANTES de la RED
+	            
 CREG_HELP_REGISTRA
 	Sintaxis: REGISTRA <canal> <contraseña> <descripción>
 	
@@ -3757,6 +3956,7 @@ CREG_SERVADMIN_HELP
 	Operadores de services pueden también listar los apoyos que ha
 	recibido un canal sin ser el fundador del mismo y los apoyos y
 	registros de cualquier usuario.
+	
 
 SERVICES_CREDITS
 	Services es copyright (c) 1996-2000 de Andrew Church

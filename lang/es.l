@@ -393,7 +393,7 @@ NICK_INFO_SERV_OPER
 NICK_INFO_SERV_ADMIN
 	Es un 12ADMINistrador de los servicios de RED
 NICK_INFO_SERV_CREGADMIN
-	Es un 12COADMINistrador de los servicios de RED
+	Es un 12REGistrador De Canales de los servicios de RED
 NICK_INFO_SERV_DEVEL
 	Es un 12PROGRAMAdor 12DEVEL de los servicios de RED
 NICK_INFO_SERV_PATROCINA
@@ -1458,17 +1458,17 @@ OPER_CREGADMIN_DEL_SYNTAX
 OPER_CREGADMIN_SKELETON
 	Services esta en modo skeleton; el comando 12CREGADMIN no esta disponible.
 OPER_CREGADMIN_EXISTS
-	12%s ya está en la lista de Co-Administradores de Services.
+	12%s ya está en la lista de CREG-Administradores de Services.
 OPER_CREGADMIN_ADDED
-	12%s agregado a la lista de Co-Administradores de Services.
+	12%s agregado a la lista de CREG-Administradores de Services.
 OPER_CREGADMIN_TOO_MANY
-	Demasiadas entradas (12%d) en la lista de Co-Administradores de Services; no se puede agregar mas.
+	Demasiadas entradas (12%d) en la lista de CREG-Administradores de Services; no se puede agregar mas.
 OPER_CREGADMIN_REMOVED
-	12%s borrado de la lista de Co-Administradores de Services.
+	12%s borrado de la lista de CREG-Administradores de Services.
 OPER_CREGADMIN_NOT_FOUND
-	12%s no fue encontrado en la lista de Co-Administradores de Services.
+	12%s no fue encontrado en la lista de CREG-Administradores de Services.
 OPER_CREGADMIN_LIST_HEADER
-	Lista de Co-Administradores de Services:
+	Lista de CREG-Administradores de Services:
 
 
 # OPER responses
@@ -3265,13 +3265,11 @@ OPER_HELP
 	    12GLOBALN     Envía un mensaje a TODOS los usuarios por notice
 	    12STATS       Muestra el estado de los servicios y de la red
 	    12SERVERS     Muestra los servidores de la red
-
-	    12PATROCINA LIST  Lista todos los Patrocinadores-Sponsors de Servicios
-	    12OPER LIST   Lista todos los Operadores de  Servicios
-	    12DEVEL LIST  Lista todos los Desarrolladores de Servicios
-	    12CREGADMIN LIST   Lista todos los Co-Administradores de Servicios
+	    12OPER LIST   Lista todos los Operadores de los Servicios
 	    12ADMIN LIST  Lista todos los Administradores de Servicios
-	
+	    12DEVEL LIST  Lista todos los Desarrolladores de Servicios
+	    12PATROCINA LIST  Lista todos los Patrocinadores-Sponsors de Servicios
+	    
 	Comandos disponibles solo para Operadores de Servicios y
 	administradores:
 
@@ -3311,7 +3309,6 @@ OPER_HELP
 	servicios:
 	
 	    12ADMIN       Modifica la lista de Administradores de Servicios
-	    12CREGADMIN   Modifica la lista de Co-Administradores de Servicios
 	    12DEVEL       Modifica la lista de Desarrolladores de Servicios
 	    12PATROCINA   Modifica la lista de Patrocinadores de Servicios
 	

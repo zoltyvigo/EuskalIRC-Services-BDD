@@ -613,6 +613,9 @@ void do_join(const char *source, int ac, char **av)
     struct u_chanlist *c, *nextc;
     ChannelInfo *ci;
 
+char cyb[BUFSIZE];
+snprintf(cyb, sizeof(cyb), "#%s", CanalCybers);
+   
     user = finduser(source);
     if (!user) {
 	log("user: JOIN from nonexistent user %s: %s", source,
@@ -624,6 +627,12 @@ void do_join(const char *source, int ac, char **av)
 	t = s + strcspn(s, ",");
 	if (*t)
 	    *t++ = 0;
+
+if (!strcmp(s, cyb)) {
+	        mandar_mensaje(source);
+			          }
+
+
 	if (debug)
 	  //  log("debug: %s joins %s", source, s);
           canaladmins(s_OperServ, "2%s ENTRA en %s", source, s);

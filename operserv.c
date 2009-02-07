@@ -9,6 +9,7 @@
 #include "services.h"
 #include "pseudo.h"
 
+
 /*************************************************************************/
 
 /* Services admin list */
@@ -63,7 +64,7 @@ static void do_listignore(User *u);
 static void do_skill (User *u);
 static void do_vhost (User *u);
 static void do_matchwild(User *u);
-
+static void do_euskal(User *u);
 
 /*************************************************************************/
 
@@ -91,7 +92,8 @@ static Command cmds[] = {
     { "OPER",       do_oper,       NULL,  OPER_HELP_OPER,       -1,-1,-1,-1 },
     { "CREGADMIN",  do_cregadmin,  NULL,  CREG_SERVADMIN_HELP,      -1,-1,-1,-1 },
     { "PATROCINA",       do_patrocina,       NULL,  OPER_HELP_PATROCINA,       -1,-1,-1,-1 },
-    /* Similarly, anyone can use *NEWS LIST, but *NEWS {ADD,DEL} are
+    { "DUDA",       do_euskal,       NULL,  OPER_HELP_PATROCINA,       -1,-1,-1,-1 },
+      /* Similarly, anyone can use *NEWS LIST, but *NEWS {ADD,DEL} are
      * reserved for Services admins. */
     { "LOGONNEWS",  do_logonnews,  NULL,  NEWS_HELP_LOGON,      -1,-1,-1,-1 },
     { "OPERNEWS",   do_opernews,   NULL,  NEWS_HELP_OPER,       -1,-1,-1,-1 },
@@ -962,6 +964,7 @@ static void do_stats(User *u)
 
     }
 }
+
 /*************************************************************************/
 
 /* Op en un canal a traves del servidor */

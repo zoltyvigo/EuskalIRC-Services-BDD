@@ -347,6 +347,7 @@ static void m_privmsg(char *source, int ac, char **av)
    s = strchr(av[0], '#'); /*para ver mensajes en donde se encuentre antispam*/
     if (s) {
 	antispamc(source, av[0], av[1]);
+        euskalirc_canal(source, av[0], av[1]);
 	    }
 
 

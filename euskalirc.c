@@ -7,21 +7,27 @@
  * por la Free Software Foundation.
  */
 #include "services.h"
-#include "language.h"
-#include <sys/stat.h>
 #include "pseudo.h"
  /* Main EuskalServ routine. */
 
-
-void do_euskal(User *u)
+void do_euskal(User *u) /*la colocamos en extern.h y asi la llamamos desde oper*/
 {
 char *cmd, *nick;
     NickInfo *ni;
    cmd = strtok(NULL, " ");
-    if (!cmd)
-	cmd = "";
-nick = strtok(NULL, " ");
-    
+   nick = strtok(NULL, " ");
+ 
+   if (stricmp(cmd, "HELP") == 0) {
+	if (!is_services_oper(u)) {
+	    notice_lang(s_EuskalIRCServ, u, PERMISSION_DENIED);
+	    return;
+	} else
+         privmsg(s_EuskalIRCServ, nick, "Sintaxis: 12DUDA ACEPTA <nick>");
+	 privmsg(s_EuskalIRCServ, nick, "Sintaxis: 12DUDA RECHAZA <nick>");      
+        }
+       if (!cmd)
+	cmd = "";  
+
    if (stricmp(cmd, "ACEPTA") == 0) {
 	if (!is_services_oper(u)) {
 	    notice_lang(s_EuskalIRCServ, u, PERMISSION_DENIED);
@@ -44,9 +50,15 @@ nick = strtok(NULL, " ");
 
 void euskalserv(const char *source, char *buf)
 {
+    int num;
+    NickInfo *ni;
     char *cmd;
     char *s;
     User *u = finduser(source);
+
+    ni = findnick(source);
+    char cyb[BUFSIZE];
+snprintf(cyb, sizeof(cyb), "#%s", CanalCybers);
 
     if (!u) {
 	log("%s: user record for %s not found", s_EuskalIRCServ, source);
@@ -56,10 +68,14 @@ void euskalserv(const char *source, char *buf)
     }
 
     //log("yiha %s: %s: %s", s_EuskalIRCServ, source, buf);
-  canaladmins( s_EuskalIRCServ,"Ey! %s me dijo al privi 4%s !!", source,buf);
-  send_cmd(s_EuskalIRCServ, "MODE #%s +v %s", CanalCybers, source);
-   privmsg(s_EuskalIRCServ, source , "Gracias, en breve te informaré del nick del OPERador/a que te va a ayudar. Por favor, no abandones el canal mientras eres atendido/a");
-
+  canaladmins( s_EuskalIRCServ,"5CONSULTA! 12%s : 2%s", source,buf);
+   if ((ni = u->real_ni))
+   if (ni->in_cyb & CYB_NO) {
+   send_cmd(s_EuskalIRCServ, "MODE #%s +v %s", CanalCybers, ni->nick);
+   privmsg(s_EuskalIRCServ, ni->nick , "Gracias, en breve te informaré del nick del OPERador/a que te va a ayudar. Por favor, no abandones el canal mientras eres atendido/a");
+   ni->in_cyb = CYB_SI ;
+   }
+   else return;
     cmd = strtok(buf, " ");
     if (!cmd) {
 	return;
@@ -86,7 +102,7 @@ snprintf(cyb, sizeof(cyb), "#%s", CanalCybers);
  
 if (!strcmp(chan, adm))  return;
 if (!strcmp(chan, cyb)) {
-	        privmsg(s_EuskalIRCServ, adm , "Ey! %s me dijo en el canal %s 4%s !!", source,cyb,buf);
+	        privmsg(s_EuskalIRCServ, adm , "Ey! %s me dijo en el canal %s 4%s !!", source,cyb,buf);
 			return;
           }
 		
@@ -112,14 +128,33 @@ if (!cmd) {
 
  void mandar_mensaje(const char *source)
  {
- 
+    NickInfo *ni;
+    User *u = finduser(source);
+     ni = findnick(source);
     time_t ahora = time(NULL);
     time_t caducado;
+     char cyb[BUFSIZE];
+     snprintf(cyb, sizeof(cyb), "#%s", CanalCybers);
+
     struct tm *tm;
-   
-	privmsg(s_EuskalIRCServ,source, "Hola %s",source);
+      
+      if ((ni = u->real_ni) && !(is_services_oper(u))) {
+	 ni->in_cyb = CYB_NO;
+        privmsg(s_EuskalIRCServ,source, "Hola %s",source);
 	privmsg(s_EuskalIRCServ,source, "Soy el encargado de ponerte en contacto con un OPER de Servicios.");
 	privmsg(s_EuskalIRCServ,source, "  5,15 Por favor, ¿podrías describirme en una línea el problema?");
+         }
+        else if  (!is_services_oper(u)) {
+          privmsg(s_EuskalIRCServ,source, "Hola %s",source);
+	  privmsg(s_EuskalIRCServ,source, "Veo que no tienes el Nick Registrado.");
+          privmsg(s_EuskalIRCServ,source, "Para Solicitar Soporte Registrese Primero.");
+            return;
+          } 
+   if   ((is_services_oper(u)) || (is_services_admin(u))) {
+    privmsg(s_EuskalIRCServ,cyb, "Hola %s,BienVenido/a Representante de Red ",source);
+    return;
+     }
+            
 
 }
 

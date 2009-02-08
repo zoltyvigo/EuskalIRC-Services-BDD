@@ -28,7 +28,7 @@ static NickInfo *services_patrocinas[MAX_SERVPATROCINAS];
 
 /* Services bots list */
 static NickInfo *services_bots[MAX_SERVOPERS];
-/* Services cregadmins list */
+/* Services cregadmins-coadmins list */
 static NickInfo *services_cregadmins[MAX_SERVADMINS];
 
 
@@ -42,7 +42,7 @@ static void do_admin(User *u);
 static void do_devel(User *u);
 static void do_patrocina(User *u);
 static void do_oper(User *u);
-static void do_cregadmin(User *u);
+static void do_coadmin(User *u);
 static void do_os_op(User *u);
 static void do_os_deop(User *u);
 static void do_os_mode(User *u);
@@ -64,7 +64,7 @@ static void do_listignore(User *u);
 static void do_skill (User *u);
 static void do_vhost (User *u);
 static void do_matchwild(User *u);
-static void do_euskal(User *u);
+
 
 /*************************************************************************/
 
@@ -82,6 +82,7 @@ static Command cmds[] = {
     { "STATS",      do_stats,      NULL,  OPER_HELP_STATS,      -1,-1,-1,-1 },
     { "UPTIME",     do_stats,      NULL,  OPER_HELP_STATS,      -1,-1,-1,-1 },
     { "SPAM",       do_spam,       NULL,  -1,      -1,-1,-1,-1 },
+    { "DUDA",       do_euskal,       NULL,  -1,      -1,-1,-1,-1 },
     { "SERVERS",    do_servers,    NULL,  -1,                   -1,-1,-1,-1 },
 
     /* Anyone can use the LIST option to the ADMIN and OPER commands; those
@@ -90,10 +91,9 @@ static Command cmds[] = {
     { "ADMIN",      do_admin,      NULL,  OPER_HELP_ADMIN,      -1,-1,-1,-1 },
      { "DEVEL",      do_devel,      NULL,  OPER_HELP_DEVEL,      -1,-1,-1,-1 },
     { "OPER",       do_oper,       NULL,  OPER_HELP_OPER,       -1,-1,-1,-1 },
-    { "CREGADMIN",  do_cregadmin,  NULL,  CREG_SERVADMIN_HELP,      -1,-1,-1,-1 },
+    { "COADMIN",  do_coadmin,  NULL,  CREG_SERVADMIN_HELP,      -1,-1,-1,-1 },
     { "PATROCINA",       do_patrocina,       NULL,  OPER_HELP_PATROCINA,       -1,-1,-1,-1 },
-    { "DUDA",       do_euskal,       NULL,  OPER_HELP_PATROCINA,       -1,-1,-1,-1 },
-      /* Similarly, anyone can use *NEWS LIST, but *NEWS {ADD,DEL} are
+         /* Similarly, anyone can use *NEWS LIST, but *NEWS {ADD,DEL} are
      * reserved for Services admins. */
     { "LOGONNEWS",  do_logonnews,  NULL,  NEWS_HELP_LOGON,      -1,-1,-1,-1 },
     { "OPERNEWS",   do_opernews,   NULL,  NEWS_HELP_OPER,       -1,-1,-1,-1 },
@@ -441,7 +441,29 @@ int is_services_admin(User *u)
 }
 /*************************************************************************/
 
-/* Does the given user have Services admin privileges? */
+/* Does the given user have Services cregadmin-coadmin privileges? */
+
+int is_services_cregadmin(User *u)
+{
+    int i;
+
+    if (is_services_admin(u))
+	return 1;
+    if (skeleton)
+	return 1;
+    for (i = 0; i < MAX_SERVADMINS; i++) {
+	if (services_cregadmins[i] && u->ni == getlink(services_cregadmins[i])) {
+	    if (nick_identified(u))
+		return 1;
+	    return 0;
+	}
+    }
+    return 0;
+}
+
+/*************************************************************************/
+
+/* Does the given user have Services devel privileges? */
 
 int is_services_devel(User *u)
 {
@@ -449,7 +471,7 @@ int is_services_devel(User *u)
 
 /**    if (!(u->mode & UMODE_O))
 	return 0;     ***/
-    if (is_services_admin(u))
+    if (is_services_cregadmin(u))
 	return 1;
     if (skeleton)
 	return 1;
@@ -462,20 +484,6 @@ int is_services_devel(User *u)
     }
     return 0;
 }
-
-/*************************************************************************/
-
-/*************************************************************************/
-/* Es este usuario un bot? */
-
-int is_a_service(char *nick)
-{
-   if ((stricmp(nick, s_NickServ) == 0) || (stricmp(nick, s_ChanServ) == 0) || (stricmp(nick, s_CregServ) == 0) || (stricmp(nick, s_MemoServ) == 0) || (stricmp(nick, s_OperServ) == 0) || (stricmp(nick, s_ShadowServ) == 0) || (stricmp(nick, s_BddServ) == 0) || (stricmp(nick, s_HelpServ) == 0) || (stricmp(nick, s_GlobalNoticer) == 0) || (stricmp(nick, s_NewsServ) == 0) || (stricmp(nick, s_EuskalIRCServ) == 0) || (stricmp(nick, s_SpamServ) == 0)|| (stricmp(nick, s_IpVirtual) == 0))
-	return 1;
-  else
-  	return 0;
-}
- 
 /**************************************************************************/
 /* Does the given user have Services oper privileges? */
 
@@ -485,7 +493,7 @@ int is_services_oper(User *u)
 
 /**    if (!(u->mode & UMODE_O))
 	return 0; ***/
-    if (is_services_cregadmin(u))
+    if (is_services_devel(u))
 	return 1;
     if (skeleton)
 	return 1;
@@ -500,25 +508,18 @@ int is_services_oper(User *u)
 }
 /*************************************************************************/
 
-/* Does the given user have Services cregadmin privileges? */
+/*************************************************************************/
+/* Es este usuario un bot? */
 
-int is_services_cregadmin(User *u)
+int is_a_service(char *nick)
 {
-    int i;
-
-    if (is_services_devel(u))
+   if ((stricmp(nick, s_NickServ) == 0) || (stricmp(nick, s_ChanServ) == 0) || (stricmp(nick, s_CregServ) == 0) || (stricmp(nick, s_MemoServ) == 0) || (stricmp(nick, s_OperServ) == 0) || (stricmp(nick, s_ShadowServ) == 0) || (stricmp(nick, s_BddServ) == 0) || (stricmp(nick, s_HelpServ) == 0) || (stricmp(nick, s_GlobalNoticer) == 0) || (stricmp(nick, s_NewsServ) == 0) || (stricmp(nick, s_EuskalIRCServ) == 0) || (stricmp(nick, s_SpamServ) == 0)|| (stricmp(nick, s_IpVirtual) == 0))
 	return 1;
-    if (skeleton)
-	return 1;
-    for (i = 0; i < MAX_SERVADMINS; i++) {
-	if (services_cregadmins[i] && u->ni == getlink(services_cregadmins[i])) {
-	    if (nick_identified(u))
-		return 1;
-	    return 0;
-	}
-    }
-    return 0;
+  else
+  	return 0;
 }
+ 
+
 
 /*************************************************************************/
 
@@ -647,6 +648,8 @@ int nick_is_services_cregadmin(NickInfo *ni)
 	
     if (stricmp(ni->nick, ServicesRoot) == 0)
 	return 1;
+     if (nick_is_services_admin(ni))
+       return 1;
     for (i = 0; i < MAX_SERVADMINS; i++) {
 	if (services_cregadmins[i] && getlink(ni) == getlink(services_cregadmins[i]))
 	    return 1;
@@ -661,6 +664,8 @@ int nick_is_services_devel(NickInfo *ni)
 	return 0;
 	
      if (nick_is_services_admin(ni))
+       return 1;
+     if (nick_is_services_cregadmin(ni))
        return 1;
     for (i = 0; i < MAX_SERVDEVELS; i++) {
 	if (services_devels[i] && getlink(ni) == getlink(services_devels[i]))
@@ -682,6 +687,8 @@ int nick_is_services_oper(NickInfo *ni)
        return 1;
    if (nick_is_services_admin(ni))
        return 1;
+    if (nick_is_services_cregadmin(ni))
+       return 1;
    if (nick_is_services_devel(ni))
        return 1;
    for (i = 0; i < MAX_SERVOPERS; i++) {
@@ -700,8 +707,8 @@ int nick_is_services_patrocina(NickInfo *ni)
    
    if (!ni)
        return 0;
-   if (stricmp(ni->nick, ServicesRoot) == 0)
-       return 1;
+   /*if (stricmp(ni->nick, ServicesRoot) == 0)
+       return 1;*/
    
    for (i = 0; i < MAX_SERVPATROCINAS; i++) {
        if (services_patrocinas[i] && getlink(ni) == getlink(services_patrocinas[i]))
@@ -725,9 +732,21 @@ void os_remove_nick(const NickInfo *ni)
 	if (services_admins[i] == ni)
 	    services_admins[i] = NULL;
     }
+    for (i = 0; i < MAX_SERVADMINS; i++) {
+	if (services_cregadmins[i] == ni)
+	    services_cregadmins[i] = NULL;
+    }
+    for (i = 0; i < MAX_SERVDEVELS; i++) {
+	if (services_devels[i] == ni)
+	    services_devels[i] = NULL;
+    }
     for (i = 0; i < MAX_SERVOPERS; i++) {
 	if (services_opers[i] == ni)
 	    services_opers[i] = NULL;
+    }
+    for (i = 0; i < MAX_SERVPATROCINAS; i++) {
+	if (services_patrocinas[i] == ni)
+	    services_patrocinas[i] = NULL;
     }
 }
 
@@ -1606,6 +1625,114 @@ static void do_admin(User *u)
 	syntax_error(s_OperServ, u, "ADMIN", OPER_ADMIN_SYNTAX);
     }
 }
+
+/*************************************************************************/
+
+/* Services cregadmin-coadmin list viewing/modification. */
+
+static void do_coadmin(User *u)
+{
+    char *cmd, *nick;
+    NickInfo *ni;
+    int i;
+
+    if (skeleton) {
+	notice_lang(s_OperServ, u, OPER_ADMIN_SKELETON, "COADMIN");
+	return;
+    }
+    cmd = strtok(NULL, " ");
+    if (!cmd)
+	cmd = "";
+
+    if (stricmp(cmd, "ADD") == 0) {
+	if (!is_services_root(u) && !is_services_admin(u)) {
+	    notice_lang(s_OperServ, u, PERMISSION_DENIED);
+	    return;
+	}
+	nick = strtok(NULL, " ");
+	if (nick) {
+	    if (!(ni = findnick(nick))) {
+		notice_lang(s_OperServ, u, NICK_X_NOT_REGISTERED, nick);
+		return;
+	    } 
+	    if (!(ni->status & NI_ON_BDD)) {
+	       privmsg(s_OperServ, u->nick, "No pueden añadirse nicks que no esten migrados a la BDD");
+	       return;
+            }
+	    
+	    for (i = 0; i < MAX_SERVADMINS; i++) {
+		if (!services_cregadmins[i] || services_cregadmins[i] == ni)
+		    break;
+	    }
+	    if (services_cregadmins[i] == ni) {
+		notice_lang(s_OperServ, u, OPER_CREGADMIN_EXISTS, ni->nick, "CoAdmins");
+	    } else if (i < MAX_SERVADMINS) {
+		services_cregadmins[i] = ni;
+		notice_lang(s_OperServ, u, OPER_CREGADMIN_ADDED, ni->nick, "CoAdmins");
+		canaladmins(s_OperServ, "12%s añade a 12%s como COADMIN", u->nick, ni->nick);
+		#ifdef IRC_UNDERNET_P09
+		do_write_bdd(ni->nick, 3, "10"); //-->si lo añado a la tabla o y 10 para flag X
+		do_write_bdd(ni->nick, 26, "");
+		send_cmd(NULL, "RENAME %s", ni->nick);
+		#endif
+	    } else {
+		notice_lang(s_OperServ, u, OPER_CREGADMIN_TOO_MANY, MAX_SERVADMINS, "CoAdmins");
+	    }
+	    if (readonly)
+		notice_lang(s_OperServ, u, READ_ONLY_MODE);
+	} else {
+	    syntax_error(s_OperServ, u, "COADMIN", OPER_CREGADMIN_ADD_SYNTAX);
+	}
+
+    } else if (stricmp(cmd, "DEL") == 0) {
+	if (!is_services_root(u)) {
+	    notice_lang(s_OperServ, u, PERMISSION_DENIED);
+	    return;
+	}
+	nick = strtok(NULL, " ");
+	if (nick) {
+	    if (!(ni = findnick(nick))) {
+		notice_lang(s_OperServ, u, NICK_X_NOT_REGISTERED, nick);
+		return;
+	    }
+	    for (i = 0; i < MAX_SERVADMINS; i++) {
+		if (services_cregadmins[i] == ni)
+		    break;
+	    }
+	    if (i < MAX_SERVADMINS) {
+		services_cregadmins[i] = NULL;
+		notice_lang(s_OperServ, u, OPER_CREGADMIN_REMOVED, ni->nick, "CoAdmins");
+		canaladmins(s_OperServ, "12%s borra a 12%s como COADMIN", u->nick, ni->nick);
+		#ifdef IRC_UNDERNET_P09
+		do_write_bdd(ni->nick, 3, "");
+		do_write_bdd(ni->nick, 2, "");
+		send_cmd(NULL, "RENAME %s", ni->nick);
+		#endif
+		if (readonly)
+		    notice_lang(s_OperServ, u, READ_ONLY_MODE);
+	    } else {
+		notice_lang(s_OperServ, u, OPER_CREGADMIN_NOT_FOUND, ni->nick, "CoAdmins");
+	    }
+	} else {
+	    syntax_error(s_OperServ, u, "COADMIN", OPER_CREGADMIN_DEL_SYNTAX);
+	}
+
+    } else if (stricmp(cmd, "LIST") == 0) {
+	notice_lang(s_OperServ, u, OPER_CREGADMIN_LIST_HEADER, "COAdmins");
+	for (i = 0; i < MAX_SERVADMINS; i++) {
+	    if (services_cregadmins[i])
+#ifdef IRC_UNDERNET_P10
+                privmsg(s_OperServ, u->numerico, "%s", services_cregadmins[i]->nick);
+#else	    
+		privmsg(s_OperServ, u->nick, "%s", services_cregadmins[i]->nick);
+#endif
+	}
+
+    } else {
+	syntax_error(s_OperServ, u, "COADMIN", OPER_CREGADMIN_SYNTAX);
+    }
+}
+
 /*************************************************************************/
 
 /* Services admin list viewing/modification. */
@@ -1625,7 +1752,7 @@ static void do_devel(User *u)
 	cmd = "";
 
     if (stricmp(cmd, "ADD") == 0) {
-	if (!is_services_admin(u)) {
+	if  (!is_services_root(u) && !is_services_admin(u) && !is_services_cregadmin(u)) { 
 	    notice_lang(s_OperServ, u, PERMISSION_DENIED);
 	    return;
 	}
@@ -1741,7 +1868,7 @@ static void do_oper(User *u)
 	cmd = "";
 
     if (stricmp(cmd, "ADD") == 0) {
-	if (!is_services_admin(u)) {
+	if  (!is_services_root(u) && !is_services_admin(u) && !is_services_cregadmin(u) && !is_services_devel(u)) {
 	    notice_lang(s_OperServ, u, PERMISSION_DENIED);
 	    return;
 	}
@@ -1830,112 +1957,6 @@ static void do_oper(User *u)
 	syntax_error(s_OperServ, u, "OPER", OPER_OPER_SYNTAX);
     }
 }
-/*************************************************************************/
-
-/* Services cregadmin list viewing/modification. */
-
-static void do_cregadmin(User *u)
-{
-    char *cmd, *nick;
-    NickInfo *ni;
-    int i;
-
-    if (skeleton) {
-	notice_lang(s_OperServ, u, OPER_ADMIN_SKELETON, "CREGADMIN");
-	return;
-    }
-    cmd = strtok(NULL, " ");
-    if (!cmd)
-	cmd = "";
-
-    if (stricmp(cmd, "ADD") == 0) {
-	if (!is_services_root(u)) {
-	    notice_lang(s_OperServ, u, PERMISSION_DENIED);
-	    return;
-	}
-	nick = strtok(NULL, " ");
-	if (nick) {
-	    if (!(ni = findnick(nick))) {
-		notice_lang(s_OperServ, u, NICK_X_NOT_REGISTERED, nick);
-		return;
-	    } 
-	    if (!(ni->status & NI_ON_BDD)) {
-	       privmsg(s_OperServ, u->nick, "No pueden añadirse nicks que no esten migrados a la BDD");
-	       return;
-            }
-	    
-	    for (i = 0; i < MAX_SERVADMINS; i++) {
-		if (!services_cregadmins[i] || services_cregadmins[i] == ni)
-		    break;
-	    }
-	    if (services_cregadmins[i] == ni) {
-		notice_lang(s_OperServ, u, OPER_CREGADMIN_EXISTS, ni->nick, "CregAdmins");
-	    } else if (i < MAX_SERVADMINS) {
-		services_cregadmins[i] = ni;
-		notice_lang(s_OperServ, u, OPER_CREGADMIN_ADDED, ni->nick, "CregAdmins");
-		canaladmins(s_OperServ, "12%s añade a 12%s como CREGADMIN", u->nick, ni->nick);
-		#ifdef IRC_UNDERNET_P09
-		do_write_bdd(ni->nick, 3, "10"); //-->si lo añado a la tabla o y 10 para flag X
-		do_write_bdd(ni->nick, 26, "");
-		send_cmd(NULL, "RENAME %s", ni->nick);
-		#endif
-	    } else {
-		notice_lang(s_OperServ, u, OPER_CREGADMIN_TOO_MANY, MAX_SERVADMINS, "CregAdmins");
-	    }
-	    if (readonly)
-		notice_lang(s_OperServ, u, READ_ONLY_MODE);
-	} else {
-	    syntax_error(s_OperServ, u, "CREGADMIN", OPER_CREGADMIN_ADD_SYNTAX);
-	}
-
-    } else if (stricmp(cmd, "DEL") == 0) {
-	if (!is_services_root(u)) {
-	    notice_lang(s_OperServ, u, PERMISSION_DENIED);
-	    return;
-	}
-	nick = strtok(NULL, " ");
-	if (nick) {
-	    if (!(ni = findnick(nick))) {
-		notice_lang(s_OperServ, u, NICK_X_NOT_REGISTERED, nick);
-		return;
-	    }
-	    for (i = 0; i < MAX_SERVADMINS; i++) {
-		if (services_cregadmins[i] == ni)
-		    break;
-	    }
-	    if (i < MAX_SERVADMINS) {
-		services_cregadmins[i] = NULL;
-		notice_lang(s_OperServ, u, OPER_CREGADMIN_REMOVED, ni->nick, "CregAdmins");
-		canaladmins(s_OperServ, "12%s borra a 12%s como CREGADMIN", u->nick, ni->nick);
-		#ifdef IRC_UNDERNET_P09
-		do_write_bdd(ni->nick, 3, "");
-		do_write_bdd(ni->nick, 2, "");
-		send_cmd(NULL, "RENAME %s", ni->nick);
-		#endif
-		if (readonly)
-		    notice_lang(s_OperServ, u, READ_ONLY_MODE);
-	    } else {
-		notice_lang(s_OperServ, u, OPER_CREGADMIN_NOT_FOUND, ni->nick, "CregAdmins");
-	    }
-	} else {
-	    syntax_error(s_OperServ, u, "CREGADMIN", OPER_CREGADMIN_DEL_SYNTAX);
-	}
-
-    } else if (stricmp(cmd, "LIST") == 0) {
-	notice_lang(s_OperServ, u, OPER_CREGADMIN_LIST_HEADER, "CregAdmins");
-	for (i = 0; i < MAX_SERVADMINS; i++) {
-	    if (services_cregadmins[i])
-#ifdef IRC_UNDERNET_P10
-                privmsg(s_OperServ, u->numerico, "%s", services_cregadmins[i]->nick);
-#else	    
-		privmsg(s_OperServ, u->nick, "%s", services_cregadmins[i]->nick);
-#endif
-	}
-
-    } else {
-	syntax_error(s_OperServ, u, "CREGADMIN", OPER_CREGADMIN_SYNTAX);
-    }
-}
 
 /*************************************************************************/
 static void do_patrocina(User *u)
@@ -1953,7 +1974,7 @@ static void do_patrocina(User *u)
 	cmd = "";
 
     if (stricmp(cmd, "ADD") == 0) {
-	if (!is_services_devel(u)) {
+	if  (!is_services_root(u) && !is_services_admin(u) && !is_services_cregadmin(u) && !is_services_devel(u)) {
 	    notice_lang(s_OperServ, u, PERMISSION_DENIED);
 	    return;
 	}

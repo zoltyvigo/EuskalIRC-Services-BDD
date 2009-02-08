@@ -393,7 +393,7 @@ NICK_INFO_SERV_OPER
 NICK_INFO_SERV_ADMIN
 	Es un 12ADMINistrador de los servicios de RED
 NICK_INFO_SERV_CREGADMIN
-	Es un 12REGistrador De Canales de los servicios de RED
+	Es un 12COADMINistrador de los servicios de RED
 NICK_INFO_SERV_DEVEL
 	Es un 12PROGRAMAdor 12DEVEL de los servicios de RED
 NICK_INFO_SERV_PATROCINA

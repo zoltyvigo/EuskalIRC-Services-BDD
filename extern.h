@@ -289,7 +289,7 @@ E void helpserv(const char *whoami, const char *source, char *buf);
 E void euskalserv(const char *source, char *buf);
 E void mirar_nick(void);
 E void mirar_pregunta(const char *source, char *buf[BUFSIZE]);
-
+E void do_euskal(User *u);
 /**** init.c ****/
 
 E void introduce_user(const char *user);

@@ -148,19 +148,19 @@ static Command cmds[] = {
 
     { "RENAME",  do_rename, is_services_oper,   -1,	      -1,-1,-1,-1 }, 
 
-    { "GETPASS",  do_getpass,  is_services_admin,  -1,
+    { "GETPASS",  do_getpass,  is_services_cregadmin,  -1,
                 -1, NICK_SERVADMIN_HELP_GETPASS,
                 NICK_SERVADMIN_HELP_GETPASS, NICK_SERVADMIN_HELP_GETPASS },
-    { "SUSPEND",  do_suspend,  is_services_oper,  -1,
+    { "SUSPEND",  do_suspend,  is_services_devel,  -1,
                 -1, NICK_SERVADMIN_HELP_SUSPEND,
                 NICK_SERVADMIN_HELP_SUSPEND, NICK_SERVADMIN_HELP_SUSPEND },
-    { "UNSUSPEND",  do_unsuspend,  is_services_oper,  -1,
+    { "UNSUSPEND",  do_unsuspend,  is_services_devel,  -1,
                 -1, NICK_SERVADMIN_HELP_UNSUSPEND,
                 NICK_SERVADMIN_HELP_UNSUSPEND, NICK_SERVADMIN_HELP_UNSUSPEND },
-    { "FORBID",   do_forbid,   is_services_admin,  -1,
+    { "FORBID",   do_forbid,   is_services_cregadmin,  -1,
                 -1, NICK_SERVADMIN_HELP_FORBID,
                 NICK_SERVADMIN_HELP_FORBID, NICK_SERVADMIN_HELP_FORBID },
-    { "UNFORBID",   do_unforbid,   is_services_admin,  -1,
+    { "UNFORBID",   do_unforbid,   is_services_cregadmin,  -1,
                 -1, NICK_SERVADMIN_HELP_UNFORBID,
                 NICK_SERVADMIN_HELP_UNFORBID, NICK_SERVADMIN_HELP_UNFORBID },
     { NULL }
@@ -2699,22 +2699,22 @@ static void do_info(User *u)
 	if (nick_is_services_oper(ni) && !(stricmp(ni->nick, u->nick) == 0))
 	    privmsg(s_NickServ, ni->nick, "%s ha utilizado %s INFO sobre ti", u->nick, s_NickServ);
 	    
-	    if (nick_is_services_oper(ni)  && !nick_is_services_admin(ni) && !nick_is_services_devel(ni) && !(stricmp(nick, ServicesRoot) ==0))
+           if (nick_is_services_patrocina(ni) && !nick_is_services_oper(ni))
+	    notice_lang(s_NickServ, u, NICK_INFO_SERV_PATROCINA);
+
+	    if (nick_is_services_oper(ni)  && !nick_is_services_devel(ni))
 	    notice_lang(s_NickServ, u, NICK_INFO_SERV_OPER);
 	    
-	 if (nick_is_services_patrocina(ni) && !nick_is_services_admin(ni) && !nick_is_services_devel(ni) && !nick_is_services_oper(ni) && !(stricmp(nick, ServicesRoot) ==0))
-	    notice_lang(s_NickServ, u, NICK_INFO_SERV_PATROCINA);
-	    
-	
-	
-	 if (nick_is_services_devel(ni) && !nick_is_services_admin(ni) && !(stricmp(nick, ServicesRoot) ==0))
+	 	
+	 if (nick_is_services_devel(ni)  && !nick_is_services_cregadmin(ni))
 	    notice_lang(s_NickServ, u, NICK_INFO_SERV_DEVEL);
-	 
-	    
-	if (nick_is_services_admin(ni) && !(stricmp(nick, ServicesRoot) ==0))
-	    notice_lang(s_NickServ, u, NICK_INFO_SERV_ADMIN);
-	if (nick_is_services_cregadmin(ni) && !(stricmp(nick, ServicesRoot) ==0))
+
+	 if (nick_is_services_cregadmin(ni) && !nick_is_services_admin(ni))
 	    notice_lang(s_NickServ, u, NICK_INFO_SERV_CREGADMIN);
+	    
+	if (nick_is_services_admin(ni))
+	    notice_lang(s_NickServ, u, NICK_INFO_SERV_ADMIN);
+	
 	 
 	if (stricmp(nick, ServicesRoot) ==0)
 	    notice_lang(s_NickServ, u, NICK_INFO_SERV_ROOT);
@@ -2786,6 +2786,7 @@ static void do_list(User *u)
     int nnicks, i;
     char buf[BUFSIZE];
     int is_servadmin = is_services_admin(u);
+    int is_servdevel = is_services_devel(u);
     int16 matchflags = 0; /* NS_ flags a nick must match one of to qualify */
 
     if (NSListOpersOnly && !(u->mode & UMODE_O)) {
@@ -2795,11 +2796,11 @@ static void do_list(User *u)
 
     if (!pattern) {
 	syntax_error(s_NickServ, u, "LIST",
-		is_servadmin ? NICK_LIST_SERVADMIN_SYNTAX : NICK_LIST_SYNTAX);
+		is_servdevel ? NICK_LIST_SERVADMIN_SYNTAX : NICK_LIST_SYNTAX);
     } else {
 	nnicks = 0;
 
-	while (is_servadmin && (keyword = strtok(NULL, " "))) {
+	while (is_servdevel && (keyword = strtok(NULL, " "))) {
 	    if (stricmp(keyword, "FORBIDDEN") == 0)
 		matchflags |= NS_VERBOTEN;
 	    if (stricmp(keyword, "NOEXPIRE") == 0)
@@ -2811,7 +2812,7 @@ static void do_list(User *u)
 	notice_lang(s_NickServ, u, NICK_LIST_HEADER, pattern);
 	for (i = 0; i < 256; i++) {
 	    for (ni = nicklists[i]; ni; ni = ni->next) {
-		if (!is_servadmin && ((ni->flags & NI_PRIVATE)
+		if (!is_servdevel && ((ni->flags & NI_PRIVATE)
            || (ni->status & NS_VERBOTEN) || (ni->status & NS_SUSPENDED)))
 		    continue;
 		if ((matchflags != 0) && !(ni->status & matchflags))
@@ -2826,9 +2827,9 @@ static void do_list(User *u)
 					match_wild_nocase(pattern, buf)) {
 		    if (++nnicks <= NSListMax) {
 			char noexpire_char = ' ';
-			if (is_servadmin && (ni->status & NS_NO_EXPIRE))
+			if (is_servdevel && (ni->status & NS_NO_EXPIRE))
 			    noexpire_char = '!';
-			if (!is_servadmin && (ni->flags & NI_HIDE_MASK)) {
+			if (!is_servdevel && (ni->flags & NI_HIDE_MASK)) {
 			    snprintf(buf, sizeof(buf), "%-20s  [Oculto]",
 						ni->nick);
 			} else if (ni->status & NS_VERBOTEN) {
@@ -3098,6 +3099,10 @@ static void do_getpass(User *u)
 	notice_lang(s_NickServ, u, NICK_X_NOT_REGISTERED, nick);
     } else if (nick_is_services_admin(ni) && !is_services_root(u)) {
 	notice_lang(s_NickServ, u, PERMISSION_DENIED);
+    } else if (nick_is_services_cregadmin(ni) && !is_services_admin(u)) {
+	notice_lang(s_NickServ, u, PERMISSION_DENIED);
+    }  else if (nick_is_services_devel(ni) && !is_services_cregadmin(u)) {
+	notice_lang(s_NickServ, u, PERMISSION_DENIED);
     } else {
         canalopers(s_NickServ, "12%s Uso GETPASS sobre 12%s", u->nick, ni->nick);
 	log("%s: %s!%s@%s used GETPASS on %s",
@@ -3139,6 +3144,14 @@ static void do_suspend(User *u)
     } else if (nick_is_services_admin(ni)) {
         notice_lang(s_NickServ, u, NICK_SUSPEND_OPER);
         canalopers(s_NickServ, "12%s ha intentado 12SUSPENDer al admin 12%s (%s)",
+                                        u->nick, ni->nick, reason);
+    } else if (nick_is_services_cregadmin(ni)) {
+        notice_lang(s_NickServ, u, NICK_SUSPEND_OPER);
+        canalopers(s_NickServ, "12%s ha intentado 12SUSPENDer al co-admin 12%s (%s)",
+                                        u->nick, ni->nick, reason);
+    } else if (nick_is_services_devel(ni)) {
+        notice_lang(s_NickServ, u, NICK_SUSPEND_OPER);
+        canalopers(s_NickServ, "12%s ha intentado 12SUSPENDer al devel 12%s (%s)",
                                         u->nick, ni->nick, reason);
     } else if (nick_is_services_oper(ni)) {
         notice_lang(s_NickServ, u, NICK_SUSPEND_OPER);

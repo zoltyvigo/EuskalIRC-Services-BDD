@@ -82,7 +82,7 @@ static Command cmds[] = {
     { "STATS",      do_stats,      NULL,  OPER_HELP_STATS,      -1,-1,-1,-1 },
     { "UPTIME",     do_stats,      NULL,  OPER_HELP_STATS,      -1,-1,-1,-1 },
     { "SPAM",       do_spam,       NULL,  -1,      -1,-1,-1,-1 },
-    { "DUDA",       do_euskal,       NULL,  -1,      -1,-1,-1,-1 },
+    { "DUDA",	    do_euskal,	   is_services_oper,   OPER_HELP,   -1,-1,-1,-1 },
     { "SERVERS",    do_servers,    NULL,  -1,                   -1,-1,-1,-1 },
 
     /* Anyone can use the LIST option to the ADMIN and OPER commands; those

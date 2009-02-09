@@ -11,40 +11,55 @@
  /* Main EuskalServ routine. */
 
 void do_euskal(User *u) /*la colocamos en extern.h y asi la llamamos desde oper*/
-{
-char *cmd, *nick;
-    NickInfo *ni;
-   cmd = strtok(NULL, " ");
-   nick = strtok(NULL, " ");
- 
-   if (stricmp(cmd, "HELP") == 0) {
-	if (!is_services_oper(u)) {
-	    notice_lang(s_EuskalIRCServ, u, PERMISSION_DENIED);
-	    return;
-	} else
-         privmsg(s_EuskalIRCServ, nick, "Sintaxis: 12DUDA ACEPTA <nick>");
-	 privmsg(s_EuskalIRCServ, nick, "Sintaxis: 12DUDA RECHAZA <nick>");      
-        }
-       if (!cmd)
-	cmd = "";  
+{    
+        char *cmd, *nick;
+        cmd = strtok(NULL, " ");
+        nick = strtok(NULL, " ");
+        NickInfo *ni;
+    
+    char adm[BUFSIZE];
+      
+  
+    /*    User *u2 = NULL; */
 
-   if (stricmp(cmd, "ACEPTA") == 0) {
+    if ((!cmd) || ((!stricmp(cmd, "ACEPTA") == 0) && (!stricmp(cmd, "RECHAZA") == 0))) {
+       privmsg(s_EuskalIRCServ,u->nick, " /msg %s 2DUDA 12ACEPTA/RECHAZA 5<NICK>",s_OperServ);
+    	return;
+    }
+    
+    if (!nick) {
+    	privmsg(s_EuskalIRCServ, u-> nick, "4Falta un Nick /msg %s 2DUDA 12ACEPTA/RECHAZA 5<NICK>",s_OperServ);
+    	return;
+    } else if (!(ni = findnick(nick))) {
+	notice_lang(s_EuskalIRCServ, u, NICK_X_NOT_REGISTERED, nick);
+	return;
+    } else  if (!(ni->status & NI_ON_BDD)) {
+        notice_lang(s_EuskalIRCServ, u, NICK_MUST_BE_ON_BDD);
+	return;
+    }
+    
+    
+   
+      if (stricmp(cmd, "ACEPTA") == 0) {
 	if (!is_services_oper(u)) {
 	    notice_lang(s_EuskalIRCServ, u, PERMISSION_DENIED);
 	    return;
 	} else 
           privmsg(s_EuskalIRCServ, nick, "El OPERador/a 5%s se pondrá en contacto contigo en breve.Por favor, abandone el canal una vez atendido. Gracias.",u->nick);
-	
-            }
-
-       if (stricmp(cmd, "RECHAZA") == 0) {
+	canaladmins( s_EuskalIRCServ,"12OPER 4%s 3ACEPTA DUDA de  2%s",u->nick,nick);
+            } 
+       
+       else if (stricmp(cmd, "RECHAZA") == 0) {
 	if (!is_services_oper(u)) {
 	    notice_lang(s_EuskalIRCServ, u, PERMISSION_DENIED);
 	    return;
 	}  else
           privmsg(s_EuskalIRCServ, nick , "El OPERador/a 5%s ha rechazado la solicitud de ayuda.",u->nick);
+          canaladmins( s_EuskalIRCServ,"12OPER 4%s 5RECHAZA DUDA de  2%s",u->nick,nick);
 	
             }
+  
+      
 }
 
 
@@ -145,16 +160,31 @@ if (!cmd) {
 	privmsg(s_EuskalIRCServ,source, "  5,15 Por favor, ¿podrías describirme en una línea el problema?");
          }
         else if  (!is_services_oper(u)) {
-          privmsg(s_EuskalIRCServ,source, "Hola %s",source);
+          privmsg(s_EuskalIRCServ,source, "Buenas 2%s5",source);
 	  privmsg(s_EuskalIRCServ,source, "Veo que no tienes el Nick Registrado.");
-          privmsg(s_EuskalIRCServ,source, "Para Solicitar Soporte Registrese Primero.");
+          privmsg(s_EuskalIRCServ,source, "Para Solicitar Soporte debe Registrarse Primero.");
+          privmsg(s_EuskalIRCServ,source, "2Instrucciones de Registro: lo encontrara ejecutando el comando 4/msg 2%s %s",s_HelpServ,s_NickServ);
             return;
           } 
-   if   ((is_services_oper(u)) || (is_services_admin(u))) {
-    privmsg(s_EuskalIRCServ,cyb, "Hola %s,BienVenido/a Representante de Red ",source);
+   if   (is_services_root(u))  {
+    privmsg(s_EuskalIRCServ,cyb, "Hola 4%s,BienVenido/a 5Root de Red ",source);
     return;
      }
-            
-
+     else if (is_services_admin(u))  {
+    privmsg(s_EuskalIRCServ,cyb, "Hola 4%s,BienVenido/a 5Administrador de Red ",source);
+    return;
+     }
+     else if (is_services_cregadmin(u))  {
+    privmsg(s_EuskalIRCServ,cyb, "Hola 4%s,BienVenido/a 5Co-Administrador de Red ",source);
+    return;
+     }
+    else if (is_services_devel(u))  {
+    privmsg(s_EuskalIRCServ,cyb, "Hola 4%s,BienVenido/a 5Devel de Red ",source);
+    return;
+    }
+    else if (is_services_oper(u))  {
+    privmsg(s_EuskalIRCServ,cyb, "Hola 4%s,BienVenido/a 5Operador de Red ",source);
+    return;
+    }
+     
 }
-

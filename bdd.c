@@ -237,7 +237,7 @@ void do_write_bdd(char *entrada, int tabla, const char *valor, ...)
 	 	send_cmd(NULL, "DB * %d v %s :3%s%s", tabla_v, nicks, nicks, PatrocinaHost);
 	 	tabla_v++;
 	  } else if (tabla == 26){
-	 	send_cmd(NULL, "DB * %d v %s :5%s.co-admin.euskalirc.net", tabla_v, nicks, nicks);
+	 	send_cmd(NULL, "DB * %d v %s :5%s.co-admin.euskalirc.tk", tabla_v, nicks, nicks);
 	 	tabla_v++;
 	 } else if (tabla == 3) {
 	 	send_cmd(NULL, "DB * %d o %s :%s", tabla_o, nicks, valor);
@@ -364,6 +364,10 @@ static void tocar_tablas(User *u)
 	char *clave = strtok(NULL, " ");
 	char *valor = strtok(NULL, "");
 
+	if (!tabla) {
+		syntax_error(s_BddServ, u, "TOCAR", BDD_TOCAR_SYNTAX);
+		return;
+		}
        /*asi podemos desactivar la ip virtual con bdd*/
 	if (stricmp(tabla, "V") == 0) {
         if (!valor) {

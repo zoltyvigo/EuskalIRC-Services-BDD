@@ -321,12 +321,15 @@ void listchans(int count_only, const char *chan)
 	    }
 	    printf("Candado de modos: ");
 	    if (ci->mlock_on || ci->mlock_key || ci->mlock_limit) {
-		printf("+%s%s%s%s%s%s%s%s%s%s%s%s",
+		printf("+%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s",
 			(ci->mlock_on & CMODE_I) ? "i" : "",
 			(ci->mlock_key         ) ? "k" : "",
 			(ci->mlock_limit       ) ? "l" : "",
 			(ci->mlock_on & CMODE_M) ? "m" : "",
 			(ci->mlock_on & CMODE_N) ? "n" : "",
+			(ci->mlock_on & CMODE_C) ? "C" : "",
+			(ci->mlock_on & CMODE_u) ? "u" : "",
+			(ci->mlock_on & CMODE_n) ? "N" : "",
 			(ci->mlock_on & CMODE_P) ? "p" : "",
 			(ci->mlock_on & CMODE_s) ? "s" : "",
 			(ci->mlock_on & CMODE_T) ? "t" : "",
@@ -346,12 +349,15 @@ void listchans(int count_only, const char *chan)
                         );
 	    }
 	    if (ci->mlock_off)
-		printf("-%s%s%s%s%s%s%s%s%s%s%s%s",
+		printf("-%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s",
 			(ci->mlock_off & CMODE_I) ? "i" : "",
 			(ci->mlock_off & CMODE_K) ? "k" : "",
 			(ci->mlock_off & CMODE_L) ? "l" : "",
 			(ci->mlock_off & CMODE_M) ? "m" : "",
 			(ci->mlock_off & CMODE_N) ? "n" : "",
+			(ci->mlock_off & CMODE_C) ? "C" : "",
+			(ci->mlock_off & CMODE_n) ? "N" : "",
+			(ci->mlock_off & CMODE_u) ? "u" : "",
 			(ci->mlock_off & CMODE_P) ? "p" : "",
 			(ci->mlock_off & CMODE_s) ? "s" : "",
 			(ci->mlock_off & CMODE_T) ? "t" : "",
@@ -1180,6 +1186,18 @@ void check_modes(const char *chan)
 	*end++ = 'n';
 	c->mode |= CMODE_N;
     }
+    if (modes & CMODE_C) {
+	*end++ = 'C';
+	c->mode |= CMODE_C;
+    }
+    if (modes & CMODE_n) {
+	*end++ = 'N';
+	c->mode |= CMODE_n;
+    }
+    if (modes & CMODE_u) {
+	*end++ = 'u';
+	c->mode |= CMODE_u;
+    }
     if (modes & CMODE_P) {
 	*end++ = 'p';
 	c->mode |= CMODE_P;
@@ -1215,7 +1233,19 @@ void check_modes(const char *chan)
     if (modes & CMODE_S) {
         *end++ = 'S';
         c->mode |= CMODE_S;
-    }                        
+    }            
+    if (modes & CMODE_S) {
+        *end++ = 'C';
+        c->mode |= CMODE_C;
+    }
+   if (modes & CMODE_n) {
+        *end++ = 'N';
+        c->mode |= CMODE_n;
+    }      
+   if (modes & CMODE_u) {
+        *end++ = 'u';
+        c->mode |= CMODE_u;
+    }                                       
 #endif
 
     if (ci->mlock_limit && ci->mlock_limit != c->limit) {
@@ -1267,6 +1297,18 @@ void check_modes(const char *chan)
 	*end++ = 'n';
 	c->mode &= ~CMODE_N;
     }
+     if (modes & CMODE_C) {
+	*end++ = 'C';
+	c->mode &= ~CMODE_C;
+    }
+    if (modes & CMODE_n) {
+	*end++ = 'N';
+	c->mode &= ~CMODE_n;
+    }
+    if (modes & CMODE_u) {
+	*end++ = 'u';
+	c->mode &= ~CMODE_u;
+    }
     if (modes & CMODE_P) {
 	*end++ = 'p';
 	c->mode &= ~CMODE_P;
@@ -1288,6 +1330,7 @@ void check_modes(const char *chan)
     	*end++ = 'M';
 	c->mode &= ~CMODE_m;
     }
+   
     if (modes & CMODE_r) {
         *end++ = 'r';
         c->mode &= ~CMODE_r;
@@ -2105,7 +2148,7 @@ void join_shadow(void)
                  if (c->key || c->limit ||
                               (c->mode & (CMODE_I | CMODE_M
 #ifdef IRC_HISPANO
-                              | CMODE_R | CMODE_A | CMODE_S
+                              | CMODE_R | CMODE_A | CMODE_S 
 #elif defined (IRC_TERRA)
                               | CMODE_R
 #endif
@@ -3084,6 +3127,34 @@ static void do_set_mlock(User *u, ChannelInfo *ci, char *param)
 		newlock_on &= ~CMODE_P;
 	    }
 	    break;
+	  case 'C':
+	    if (add) {
+		newlock_on |= CMODE_C;
+		newlock_off &= ~CMODE_C;
+	    } else {
+		newlock_off |= CMODE_C;
+		newlock_on &= ~CMODE_C;
+	    }
+	    break;
+	   case 'N':
+	    if (add) {
+		newlock_on |= CMODE_n;
+		newlock_off &= ~CMODE_n;
+	    } else {
+		newlock_off |= CMODE_n;
+		newlock_on &= ~CMODE_n;
+	    }
+	    break;
+	   case 'u':
+	    if (add) {
+		newlock_on |= CMODE_u;
+		newlock_off &= ~CMODE_u;
+	    } else {
+		newlock_off |= CMODE_u;
+		newlock_on &= ~CMODE_u;
+	    }
+	    break;
+
 	  case 's':
 	    if (add) {
 		newlock_on |= CMODE_s;
@@ -3142,6 +3213,7 @@ static void do_set_mlock(User *u, ChannelInfo *ci, char *param)
                 newlock_on &= ~CMODE_S;
             }
             break;
+	  
                                                                                                                                                                                                                                                     
 #endif
 	  default:
@@ -3163,12 +3235,15 @@ static void do_set_mlock(User *u, ChannelInfo *ci, char *param)
     *end = 0;
     if (ci->mlock_on)
 	end += snprintf(end, sizeof(modebuf)-(end-modebuf), 
-			"+%s%s%s%s%s%s%s%s%s%s%s",
+			"+%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s",
 				(ci->mlock_on & CMODE_I) ? "i" : "",
 				(ci->mlock_key         ) ? "k" : "",
 				(ci->mlock_limit       ) ? "l" : "",
 				(ci->mlock_on & CMODE_M) ? "m" : "",
 				(ci->mlock_on & CMODE_N) ? "n" : "",
+				(ci->mlock_on & CMODE_C) ? "C" : "",
+				(ci->mlock_on & CMODE_n) ? "N" : "",
+			        (ci->mlock_on & CMODE_u) ? "u" : "",
 				(ci->mlock_on & CMODE_P) ? "p" : "",
 				(ci->mlock_on & CMODE_s) ? "s" : "",
 				(ci->mlock_on & CMODE_T) ? "t" : "",
@@ -3188,12 +3263,15 @@ static void do_set_mlock(User *u, ChannelInfo *ci, char *param)
                                 );
     if (ci->mlock_off)
 	end += snprintf(end, sizeof(modebuf)-(end-modebuf), 
-			"-%s%s%s%s%s%s%s%s%s%s%s",
+			"-%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s",
 				(ci->mlock_off & CMODE_I) ? "i" : "",
 				(ci->mlock_off & CMODE_K) ? "k" : "",
 				(ci->mlock_off & CMODE_L) ? "l" : "",
 				(ci->mlock_off & CMODE_M) ? "m" : "",
 				(ci->mlock_off & CMODE_N) ? "n" : "",
+				(ci->mlock_off & CMODE_C) ? "C" : "",
+				(ci->mlock_off & CMODE_n) ? "N" : "",
+				(ci->mlock_off & CMODE_u) ? "u" : "",
 				(ci->mlock_off & CMODE_P) ? "p" : "",
 				(ci->mlock_off & CMODE_s) ? "s" : "",
 				(ci->mlock_off & CMODE_T) ? "t" : "",
@@ -4339,11 +4417,14 @@ static void do_info(User *u)
 	end = buf;
 	*end = 0;
 	if (ci->mlock_on || ci->mlock_key || ci->mlock_limit)
-	    end += snprintf(end, sizeof(buf)-(end-buf), "+%s%s%s%s%s%s%s%s%s%s%s%s",
+	    end += snprintf(end, sizeof(buf)-(end-buf), "+%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s",
 				(ci->mlock_on & CMODE_I) ? "i" : "",
 				(ci->mlock_key         ) ? "k" : "",
 				(ci->mlock_limit       ) ? "l" : "",
 				(ci->mlock_on & CMODE_M) ? "m" : "",
+				(ci->mlock_on & CMODE_C) ? "C" : "",
+				(ci->mlock_on & CMODE_n) ? "N" : "",
+				(ci->mlock_on & CMODE_u) ? "u" : "",
 				(ci->mlock_on & CMODE_N) ? "n" : "",
 				(ci->mlock_on & CMODE_P) ? "p" : "",
 				(ci->mlock_on & CMODE_s) ? "s" : "",
@@ -4365,11 +4446,14 @@ static void do_info(User *u)
 /* #endif */
                                 );
 	if (ci->mlock_off)
-	    end += snprintf(end, sizeof(buf)-(end-buf), "-%s%s%s%s%s%s%s%s%s%s%s%s",
+	    end += snprintf(end, sizeof(buf)-(end-buf), "-%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s",
 				(ci->mlock_off & CMODE_I) ? "i" : "",
 				(ci->mlock_off & CMODE_K) ? "k" : "",
 				(ci->mlock_off & CMODE_L) ? "l" : "",
 				(ci->mlock_off & CMODE_M) ? "m" : "",
+				(ci->mlock_off & CMODE_C) ? "C" : "",
+				(ci->mlock_off & CMODE_n) ? "N" : "",
+				(ci->mlock_off & CMODE_u) ? "u" : "",
 				(ci->mlock_off & CMODE_N) ? "n" : "",
 				(ci->mlock_off & CMODE_P) ? "p" : "",
 				(ci->mlock_off & CMODE_s) ? "s" : "",

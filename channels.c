@@ -67,12 +67,15 @@ void send_channel_list(User *user)
 
     for (c = firstchan(); c; c = nextchan()) {
 	snprintf(s, sizeof(s), " %d", c->limit);
-	privmsg(s_OperServ, source, "%s %lu +%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s %s",
+	privmsg(s_OperServ, source, "%s %lu +%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s %s",
 				c->name, c->creation_time,
 				(c->mode&CMODE_I) ? "i" : "",
 				(c->mode&CMODE_M) ? "m" : "",
 				(c->mode&CMODE_N) ? "n" : "",
 				(c->mode&CMODE_P) ? "p" : "",
+				(c->mode&CMODE_C) ? "C" : "",
+				(c->mode&CMODE_n) ? "N" : "",
+				(c->mode&CMODE_u) ? "u" : "",
 				(c->mode&CMODE_s) ? "s" : "",
 				(c->mode&CMODE_T) ? "t" : "",
                                 				
@@ -600,7 +603,24 @@ void do_cmode(const char *source, int ac, char **av)
 	    else
 		chan->mode &= ~CMODE_M;
 	    break;
-
+	case 'C':
+	    if (add)
+		chan->mode |= CMODE_C;
+	    else
+		chan->mode &= ~CMODE_C;
+	    break;
+	case 'N':
+	    if (add)
+		chan->mode |= CMODE_n;
+	    else
+		chan->mode &= ~CMODE_n;
+	    break;
+	case 'u':
+	    if (add)
+		chan->mode |= CMODE_u;
+	    else
+		chan->mode &= ~CMODE_u;
+	    break;
 	case 'n':
 	    if (add)
 		chan->mode |= CMODE_N;

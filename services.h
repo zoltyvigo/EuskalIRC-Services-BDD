@@ -531,6 +531,9 @@ struct channel_ {
 #define CMODE_A 0x00000400		/* Modo AutoOP */
 #define CMODE_S 0x00000800		/* Modo +S SecureOps */
 #define CMODE_m 0x00001000		/* Solo nicks +r habln en canal (sin +o,v) */
+#define CMODE_C 0x00002000		/* modo +C    */
+#define CMODE_n 0x00004000		/* modo +N    */
+#define CMODE_u 0x00008000		/* modo +u   */ 
 
 /* Who sends channel MODE (and KICK) commands? */
 #if defined(IRC_HISPANO) || defined(IRC_TERRA)

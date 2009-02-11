@@ -593,12 +593,12 @@ int init(int ac, char **av)
 
     /* Announce ourselves to the logfile. */
     if (debug || readonly || skeleton) {
-	log("Services %s (compilados para %s) iniciados (opciones:%s%s%s)",
+	log("euskalirc-services-bdd %s (compilados para %s) iniciados (opciones:%s%s%s)",
 		version_number, version_protocol,
 		debug ? " debug" : "", readonly ? " readonly" : "",
 		skeleton ? " skeleton" : "");
     } else {
-	log("Services %s (compilados para %s) iniciados.",
+	log("euskalirc-services-bdd %s (compilados para %s) iniciados.",
 		version_number, version_protocol);
     }
     start_time = time(NULL);

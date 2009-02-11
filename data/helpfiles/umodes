@@ -10,9 +10,7 @@ En esta red, los usuarios pueden tener los siguientes modos:
 
 Modos sólo para IRCOPS o OPERS:
 
-    12d          (Coder) DEVELoper de la red
     12h          (Helper Operator) OPERador de los servicios de red
-    12a          (Admin) ADMINistrador de los servicios de red
     12o          (IRC Operator) IRCop de la red
     12X          Ver las ips REALES a usuarios que tienen +x
     12k          Modo Channel Service, no pueden ser deopeados o kickeados de un canal

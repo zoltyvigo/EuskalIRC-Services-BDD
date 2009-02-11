@@ -16,7 +16,7 @@ void do_euskal(User *u) /*la colocamos en extern.h y asi la llamamos desde oper*
         cmd = strtok(NULL, " ");
         nick = strtok(NULL, " ");
         NickInfo *ni;
-    
+  
     char adm[BUFSIZE];
       
   
@@ -38,26 +38,32 @@ void do_euskal(User *u) /*la colocamos en extern.h y asi la llamamos desde oper*
 	return;
     }
     
-    
+      ni = findnick(nick);
    
       if (stricmp(cmd, "ACEPTA") == 0) {
 	if (!is_services_oper(u)) {
 	    notice_lang(s_EuskalIRCServ, u, PERMISSION_DENIED);
 	    return;
-	} else 
+	} else if (ni && (ni->status & NS_IDENTIFIED)) {
           privmsg(s_EuskalIRCServ, nick, "El OPERador/a 5%s se pondrá en contacto contigo en breve.Por favor, abandone el canal una vez atendido. Gracias.",u->nick);
 	canaladmins( s_EuskalIRCServ,"12OPER 4%s 3ACEPTA DUDA de  2%s",u->nick,nick);
             } 
+            else 
+               privmsg(s_EuskalIRCServ,u->nick, "El Nick 5%s No esta ONLINE.",ni->nick);
+            }
        
        else if (stricmp(cmd, "RECHAZA") == 0) {
 	if (!is_services_oper(u)) {
 	    notice_lang(s_EuskalIRCServ, u, PERMISSION_DENIED);
 	    return;
-	}  else
+	}  else if (ni && (ni->status & NS_IDENTIFIED)) {
           privmsg(s_EuskalIRCServ, nick , "El OPERador/a 5%s ha rechazado la solicitud de ayuda.",u->nick);
           canaladmins( s_EuskalIRCServ,"12OPER 4%s 5RECHAZA DUDA de  2%s",u->nick,nick);
-	
-            }
+	  }
+          else 
+               privmsg(s_EuskalIRCServ,u->nick, "El Nick 5%s No esta ONLINE.",ni->nick);
+
+          }
   
       
 }
@@ -90,19 +96,6 @@ snprintf(cyb, sizeof(cyb), "#%s", CanalCybers);
    privmsg(s_EuskalIRCServ, ni->nick , "Gracias, en breve te informaré del nick del OPERador/a que te va a ayudar. Por favor, no abandones el canal mientras eres atendido/a");
    ni->in_cyb = CYB_SI ;
    }
-   else return;
-    cmd = strtok(buf, " ");
-    if (!cmd) {
-	return;
-    } else if (stricmp(cmd, "\1PING") == 0) {
-	if (!(s = strtok(NULL, "")))
-	    s = "\1";
-	notice(s_EuskalIRCServ, source, "\1PING %s", s);
-    } else if (stricmp(cmd, "\1VERSION\1") == 0) {
-        notice(s_EuskalIRCServ, source, "\1VERSION %s %s -- %s\1",
-               PNAME, s_EuskalIRCServ, version_build);                
-    }/* else {
-	run_cmd(s_EuskalIRCServ, u, cmds, cmd); }*/
    
 }
 void euskalirc_canal(const char *source,const char *chan, char *buf)

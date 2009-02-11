@@ -223,7 +223,7 @@ E int   ReadTimeout;
 E int   WarningTimeout;
 E int   TimeoutCheck;
 
-#define PNAME "ircservices+UpWorld+BDD 41.2.1"
+#define PNAME "euskalirc-services-bdd"
 
 E int   NSForceNickChange; 
 E char *NSGuestNickPrefix;

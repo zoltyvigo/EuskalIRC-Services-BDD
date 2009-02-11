@@ -1449,26 +1449,26 @@ OPER_ADMIN_LIST_HEADER
 	Lista de Administradores de Services:
 #CREGADMIN responses
 OPER_CREGADMIN_SYNTAX
-	12CREGADMIN {ADD | DEL | LIST} [nick]
+	12COADMIN {ADD | DEL | LIST} [nick]
 OPER_CREGADMIN_ADD_SYNTAX
-	12CREGADMIN ADD <nick>
+	12COADMIN ADD <nick>
 OPER_CREGADMIN_DEL_SYNTAX
-	12CREGADMIN DEL <nick>
+	12COADMIN DEL <nick>
 
 OPER_CREGADMIN_SKELETON
-	Services esta en modo skeleton; el comando 12CREGADMIN no esta disponible.
+	Services esta en modo skeleton; el comando 12COADMIN no esta disponible.
 OPER_CREGADMIN_EXISTS
-	12%s ya está en la lista de CREG-Administradores de Services.
+	12%s ya está en la lista de CO-Administradores de Services.
 OPER_CREGADMIN_ADDED
-	12%s agregado a la lista de CREG-Administradores de Services.
+	12%s agregado a la lista de CO-Administradores de Services.
 OPER_CREGADMIN_TOO_MANY
-	Demasiadas entradas (12%d) en la lista de CREG-Administradores de Services; no se puede agregar mas.
+	Demasiadas entradas (12%d) en la lista de CO-Administradores de Services; no se puede agregar mas.
 OPER_CREGADMIN_REMOVED
-	12%s borrado de la lista de CREG-Administradores de Services.
+	12%s borrado de la lista de CO-Administradores de Services.
 OPER_CREGADMIN_NOT_FOUND
-	12%s no fue encontrado en la lista de CREG-Administradores de Services.
+	12%s no fue encontrado en la lista de CO-Administradores de Services.
 OPER_CREGADMIN_LIST_HEADER
-	Lista de CREG-Administradores de Services:
+	Lista de CO-Administradores de Services:
 
 
 # OPER responses
@@ -1860,9 +1860,6 @@ NICK_HELP
 	
 	    12REGISTER   Registra un nick
 	    12IDENTIFY   Identificarse con tu contraseña
-	    12ACCESS     Modificar la lista de direcciones autorizadas
-	    12LINK       Hacer tu nick sea un alias de otro
-	    12UNLINK     Deshace un link de tu nick
 	    12INFO       Muestra la informacion de un nick
 	    12STATUS     Muestra el estado de un nick
 	    12LIST       Lista los nicks registrados
@@ -1891,9 +1888,6 @@ NICK_HELP_EXPIRE_ZERO
 	
 	    12REGISTER   Registra un nick
 	    12IDENTIFY   Identificarse con tu contraseña
-	    12ACCESS     Modificar la lista de direcciones autorizadas
-	    12LINK       Hacer tu nick sea un alias de otro
-	    12UNLINK	   Deshace un link de tu nick
 	    12INFO       Muestra la informacion de un nick
 	    12STATUS     Muestra el estado de un nick
 	    12LIST       Lista los nicks registrados
@@ -2299,9 +2293,8 @@ NICK_SERVADMIN_HELP_LIST
 	12SUSPEND solo lista los nicks, respectivamente, tienen 
 	el flag 12FORBIDden o el flag 12NOEXPIRE o el flag
 	12SUSPEND
-	
-	Estas opciones son limitados 4Administradores de Services.
-	
+	Estas opciones son limitados menos a 4Desarrolladores de Services.
+	y superiores
 	Ejemplos:
 	
 	    12LIST *!joeuser@foo.com
@@ -2326,8 +2319,8 @@ NICK_SERVADMIN_HELP_GETPASS
 	
 	Muestra la contraseña para el nick dado.
 	
-	Limitado a 4Administradores de Services.
-
+	Limitado a las categorias de 4Desarrolladores ,4Coadministradores 
+	 y 4Administradores  de Services.
 NICK_SERVADMIN_HELP_SUSPEND
 	Sintaxis: 12SUSPEND <nick> <motivo>
 	
@@ -2561,9 +2554,9 @@ CHAN_HELP_SET_MLOCK
 	Fija los distintos modos para el canal. 12%S lo habilita a
 	usted para definir determinados modos del canal y que queden
 	siempre habilitados (o no).  Los modos que pueden ser
-	fijados son: i, k, l, m, n, p, s, y t; cada
-	uno de estos modos puede estar activado (ON), desactivado
-	(OFF) o no fijado.  Los distintos modos se indican
+	fijados son: i, k, l, m, M, n, p, s, t 
+	C,N,u; cada uno de estos modos puede estar activado (ON)
+	, desactivado (OFF) o no fijado.  Los distintos modos se indican
 	exactamente como si se utilizase el comando 12/MODE; esto es,
 	modo seguido de + indica activado (ON), modo seguido de -
 	indica desactivado (OFF).
@@ -2921,8 +2914,8 @@ CHAN_SERVADMIN_HELP
 	Los siguiente comandos están disponibles para los
 	4Administradores de los Servicios:
 	    
-	    12IRCOPS     Ver los Admins/Ircops/Opers on-line
-	    12VERIFY     Verificar si un usuario es Admin/Ircops/Opers o no
+	    12IRCOPS     Ver los  REPRESENTANTES de RED on-line
+	    12VERIFY     Verificar si un usuario es REPRESENTANTE de RED o no
 	    12GETPASS    Devuelve la contraseña del fundador
 	    12SUSPEND    Suspende un canal
 	    12UNSUSPEND  Reactiva un canal suspendido
@@ -3184,7 +3177,7 @@ IPV_HELP
 	Comandos de 4%S:
 	  
 	    12CAMBIAR      Activa Tu Ip Virtual Personalizada
-	    12PONER        Inserta Frases Personalizadas en una Agenda  
+	    12PONER        Inserta Frases Personalizadas en una Agenda(En Desarrollo)
 	    12ACTIVAR      Activa la Ip Virtual Personalizada Con Colores (Solo Admins)
 	    12SET          Activa  IpVirtual  de otros semi-personalizada (Solo Admins)
 	    12HELP         La Ayuda del Comando
@@ -3270,9 +3263,9 @@ OPER_HELP
 	    12DEVEL LIST  Lista todos los Desarrolladores de Servicios
 	    12PATROCINA LIST  Lista todos los Patrocinadores-Sponsors de Servicios
 	    
-	Comandos disponibles solo para Operadores de Servicios y
-	administradores:
-
+	Comandos disponibles solo para 5Operadores de Servicios y
+	5Administradores:
+	
 	    12LOGONNEWS   Añade un LOGONNEWS    
 	    12OPERNNEWS   Añade un OPERNNEWS
 	    12MODE        Cambia los modos de un canal
@@ -3286,12 +3279,30 @@ OPER_HELP
 	    12LIMPIA      MassKick de los usuarios de un canal
 	    12KILL        Expulsa a un usuario de la red anónimamente
 	    12VHOST       Cambia por completo el vhost de un usuario
-
 	
-	Comandos disponibles solo para los Administradores de
-	Servicios:
 	
+	2Comandos disponibles solo para los 4Desarrolladores2 de
+	Servicios:
+	
+	12OPER        Modifica la lista de Operadores de Servicios
+	12PATROCINA   Modifica la lista de Patrocinadores de Servicios
+	
+	2Comandos disponibles solo para los 4CoAdministradores2 de
+	Servicios:
+	
+	12DEVEL       Modifica la lista de Desarrolladores de Servicios
+	12OPER        Modifica la lista de Operadores de Servicios
+	12PATROCINA   Modifica la lista de Patrocinadores de Servicios
+	
+	
+	2Comandos disponibles solo para los4 Administradores2 de
+	Servicios:
+	
+	    12COADMIN     Modifica la lista de CoAdministradores de Servicios
+	    12DEVEL       Modifica la lista de Desarrolladores de Servicios
 	    12OPER        Modifica la lista de Operadores de Servicios
+	    12PATROCINA   Modifica la lista de Patrocinadores de Servicios
+	     
 	    12JUPE        "Jupiter" un servidor
 	    12RAW         Envía un código RAW al servidor IRC
 	    12SET         Establece varias opciones globales de los
@@ -3305,10 +3316,11 @@ OPER_HELP
 	    12RESTART     Graba la base de datos y reinicializa los
 	                Servicios
 	
-	Comandos disponibles únicamente para los súper-usuarios de los
-	servicios:
+	2Comandos disponibles únicamente para los3súper-usuarios(Root)2 de los
+	servicios:
 	
 	    12ADMIN       Modifica la lista de Administradores de Servicios
+	    12COADMIN     Modifica la lista de CoAdministradores de Servicios
 	    12DEVEL       Modifica la lista de Desarrolladores de Servicios
 	    12PATROCINA   Modifica la lista de Patrocinadores de Servicios
 	
@@ -3379,7 +3391,7 @@ OPER_HELP_PATROCINA
 	
 	Cualquiera de los operadores de IRC (IRCops) puede utilizar
 	el comando 12PATROCINA LIST. Todos los otros comandos solo pueden
-	ser utilizados por los 4Administradores de Servicios.
+	ser utilizados por los 4Root,Admins,CoAdmins y Devels.
 
 OPER_HELP_OPER
 	Sintaxis: 12OPER ADD <nick>
@@ -3394,7 +3406,7 @@ OPER_HELP_OPER
 	
 	Cualquiera de los operadores de IRC (IRCops) puede utilizar
 	el comando 12OPER LIST. Todos los otros comandos solo pueden
-	ser utilizados por los 4Administradores de Servicios.
+	ser utilizados por los 4Root,Admins,CoAdmins y Devels.
 
 OPER_HELP_ADMIN
 	Sintaxis: 12ADMIN ADD <nick>
@@ -3409,7 +3421,8 @@ OPER_HELP_ADMIN
 	
 	Cualquiera de los operadores de IRC (IRCops) puede utilizar
 	el comando 12ADMIN LIST. Todos los otros comandos solo pueden
-	ser utilizados por el 4súper-usuarios de los Servicios.
+	ser utilizados por el 4súper-usuarios de los Servicios(Root).
+	
 OPER_HELP_DEVEL
 	Sintaxis: 12DEVEL ADD <nick>
 	          12DEVEL DEL <nick>
@@ -3423,7 +3436,7 @@ OPER_HELP_DEVEL
 	
 	Cualquiera de los operadores de IRC (IRCops) puede utilizar
 	el comando 12DEVEL LIST. Todos los otros comandos solo pueden
-	ser utilizados por el 4súper-usuarios de los Servicios.
+	ser utilizados por el  4Root,Admins,CoAdmins.
 	
 OPER_HELP_MODE
 	Sintaxis: 12MODE <canal> <modos>
@@ -3974,8 +3987,13 @@ SERVICES_CREDITS
 	para interactuar con la Base de Datos Distribuida del IRCd de
 	la red iRC-Hispano. Modificación esctrita por David Martín Díaz
 	[x] - <equis@fuckmicrosoft.com>
-
-
+	
+	----------------------------------------------------------------
+	Es una variación de los botshispanobdd-1.2.1 conocido como Proyecto
+	euskalirc-services-bdd http://euskalirc.wordpress.com
+	por donostiarra - admin.euskalirc@gmail.com http://www.euskalirc.tk
+	----------------------------------------------------------------
+	
 ######## NOTA IMPORTANTE ##########
 ######## NO BORRES NI CAMBIES LAS LINEAS DE LOS CREDITOS
 ########

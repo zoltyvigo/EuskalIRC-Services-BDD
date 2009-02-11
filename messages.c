@@ -108,8 +108,8 @@ static void m_info(char *source, int ac, char **av)
 
     for (i = 0; info_text[i]; i++)
         send_cmd(ServerName, "371 %s :%s", source, info_text[i]);
-    send_cmd(ServerName, "371 %s :ircservices-%s+Upworld %s-BDD1.0, %s", source,
-              version_number, version_upworld, version_build);
+    send_cmd(ServerName, "371 %s :euskalirc-services-bdd %s %s", source,
+              version_number,version_build);
     send_cmd(ServerName, "371 %s :On-line since %s", source, timebuf);
     send_cmd(ServerName, "374 %s :End of /INFO list.", source);
 }    
@@ -226,6 +226,7 @@ static void m_motd(char *source, int ac, char **av)
 		"1996-1999 Andy Church.", source);
     send_cmd(ServerName, "372 %s :- 2000-2001, Toni García, Zoltan. Upworld ", source);
     send_cmd(ServerName, "327 %s :- 2002, David Martin, [x].", source);
+    send_cmd(ServerName, "327 %s :- 2009, http://code.google.com/p/euskalirc-services-bdd ,(donostiarra),admin.euskalirc.", source);
     send_cmd(ServerName, "376 %s :End of /MOTD command.", source);
 }
 

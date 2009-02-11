@@ -2,13 +2,13 @@
 #
 # Increment Services build number
 
-VERSION=4.3.3
+VERSION=0.1
 BRANCHSTATUS=BETA-RELEASE
 
 # Cambiar este siempre
 # Las versiones seran 1.a.b
 
-VERSION_UPWORLD=1.1-release1
+
 
 
 if [ -f version.h ] ; then
@@ -88,6 +88,10 @@ const char *info_text[] =
 	"para interactuar con la Base de Datos Distribuida del IRCd de",
 	"la red iRC-Hispano. Modificación esctrita por David Martín Díaz",
 	"[x] - <equis@fuckmicrosoft.com>",
+	"---------------------------------------------------------------",
+	"Es una variación de los 4botshispanobdd-1.2.1 conocido como Proyecto",
+	"4euskalirc-services-bdd 12,15http://euskalirc.wordpress.com",
+	"por 2donostiarra - admin.euskalirc@gmail.com 12,15http://www.euskalirc.tk",
         0,
     };
 EOF

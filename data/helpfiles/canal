@@ -4,13 +4,20 @@ Primero hay que hacer una peticion de pre-registro del canal,
 necesitas tener el nick registrado para hacer la peticion.
 El pre-registro se solicita al bot 4CReG, la sintaxis es la siguiente:
 
-Sintaxis: 12/msg CReG REGISTRA <canal> <password> <descripcion>
-
+Sintaxis:12/msg CReG REGISTRA <canal> <clave> <seccion[SOC INF CI AYU ADUL OTR]> <descripción>
     12<canal>          El canal que quieres registrar
     12<password>       Una password para identificar como founder
     12<descripcion>    Una descripcion sobre el tematica del canal
+    12<seccion>	 A elegir una palabra entre las siguientes: 
 
-Tienes una semana de plazo para conseguir12 5 apoyos para tu canal,
+		 2SOC:12SOCIEDAD-ZONAS GEOGRAFICAS
+		 2INF:12INFORMATICA
+		 2CIE:12CIENCIAS
+		 2AYU:12AYUDA
+		 2ADUL:12ADULTOS
+		 2OTR:12OTRAS SECCIONES
+
+Tienes una semana de plazo para conseguir12 x apoyos para tu canal,
 para apoyar, necesitan tener el nick registrado y deben poner
 12/msg CReG APOYA <#canal>
 	

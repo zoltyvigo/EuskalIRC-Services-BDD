@@ -6,11 +6,11 @@
  * details.
  */
 
-#define BUILD	"959"
+#define BUILD	"0"
 
 const char version_branchstatus[] = "BETA-RELEASE";
-const char version_number[] = "4.3.3";
-const char version_upworld[] = "1.1-release1";
+const char version_number[] = "0.1";
+const char version_upworld[] = "";
 const char version_build[] =
 	"build #" BUILD ", compilado " __DATE__ " " __TIME__;
 const char version_protocol[] =
@@ -65,5 +65,9 @@ const char *info_text[] =
 	"para interactuar con la Base de Datos Distribuida del IRCd de",
 	"la red iRC-Hispano. Modificación esctrita por David Martín Díaz",
 	"[x] - <equis@fuckmicrosoft.com>",
+	"---------------------------------------------------------------",
+	"Es una variación de los 4botshispanobdd-1.2.1 conocido como Proyecto",
+	"4euskalirc-services-bdd 12,15http://euskalirc.wordpress.com",
+	"por 2donostiarra - admin.euskalirc@gmail.com 12,15http://www.euskalirc.tk",
         0,
     };

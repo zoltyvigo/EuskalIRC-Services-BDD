@@ -8,8 +8,14 @@ En esta red, los canales pueden tener los siguientes modos:
     12l          Con un número, numero máximo de usuarios que pueden entrar
     12R          Canal restringido, solo pueden entrar los registrados
     12m          Canal moderado sólo pueden hablar los operadores (+o) o los moderadores (+v)
+    12M	   Canal moderado sólo pueden hablar los operadores (+o) o los moderadores (+v) o los registrados(+r)
     12t          Solo los operadores (+o) pueden cambiar el topic
     12n          Solo los usuarios que estan dentro pueden hablar
+    12C	   No permite enviar CTCP al canal a excepcion del ACTION (/me)
+    12N 	   No permite enviar NOTICES y WALLCHOPS (son notices al @) al canal
+    12u	   Limpia los mensajes de QUIT y PART en el canal. Mismo funcionamiento
+     		   que +b o +m en el sentido de que si el usuario esta en al menos un 
+     		   canal con +u, se borrara el mensaje comun de QUIT.
 
 
 Modos de usuario dentro del canal:

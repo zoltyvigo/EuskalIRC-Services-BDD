@@ -3252,22 +3252,18 @@ IPV_SERVADMIN_HELP_SET
 ###########################################################################
 
 OPER_HELP
-	Comandos de 4%S:
+	2Comandos de 5%S:
 	
-	    12GLOBAL      Envía un mensaje a TODOS los usuarios por privmsg
-	    12GLOBALN     Envía un mensaje a TODOS los usuarios por notice
 	    12STATS       Muestra el estado de los servicios y de la red
 	    12SERVERS     Muestra los servidores de la red
-	    12OPER LIST   Lista todos los Operadores de los Servicios
-	    12ADMIN LIST  Lista todos los Administradores de Servicios
-	    12DEVEL LIST  Lista todos los Desarrolladores de Servicios
 	    12PATROCINA LIST  Lista todos los Patrocinadores-Sponsors de Servicios
-	    
-	Comandos disponibles solo para 5Operadores de Servicios y
-	5Administradores:
+	    12OPER LIST   Lista todos los Operadores de los Servicios
+	    12DEVEL LIST  Lista todos los Desarrolladores de Servicios
+	    12COADMIN LIST  Lista todos los CO-Administradores de Servicios
+	    12ADMIN LIST  Lista todos los Administradores de Servicios
+	 
+	2Comandos disponibles solo para 12Representantes de Servicios:
 	
-	    12LOGONNEWS   Añade un LOGONNEWS    
-	    12OPERNNEWS   Añade un OPERNNEWS
 	    12MODE        Cambia los modos de un canal
 	    12CLEARMODES  Quita todos los modos de un canal
 	    12KICK        Patea a un usuario de un canal
@@ -3278,52 +3274,46 @@ OPER_HELP
 	    12APODERA     MassDeop de los usuarios de un canal
 	    12LIMPIA      MassKick de los usuarios de un canal
 	    12KILL        Expulsa a un usuario de la red anónimamente
-	    12VHOST       Cambia por completo el vhost de un usuario
-	
-	
-	2Comandos disponibles solo para los 4Desarrolladores2 de
+		
+	2Comandos disponibles solo para los 5Desarrolladores2 de
 	Servicios:
 	
 	12OPER        Modifica la lista de Operadores de Servicios
 	12PATROCINA   Modifica la lista de Patrocinadores de Servicios
+	12LOGONNEWS   Añade un LOGONNEWS    
+	12OPERNNEWS   Añade un OPERNNEWS
 	
 	2Comandos disponibles solo para los 4CoAdministradores2 de
 	Servicios:
 	
 	12DEVEL       Modifica la lista de Desarrolladores de Servicios
-	12OPER        Modifica la lista de Operadores de Servicios
-	12PATROCINA   Modifica la lista de Patrocinadores de Servicios
-	
+	12FORZAR 	Fuerza la Entrada o Salida de un Nick a/desde un Canal
+	12GLOBAL      Envía un mensaje a TODOS los usuarios por privmsg
+	12GLOBALN     Envía un mensaje a TODOS los usuarios por notice
 	
 	2Comandos disponibles solo para los4 Administradores2 de
 	Servicios:
 	
 	    12COADMIN     Modifica la lista de CoAdministradores de Servicios
-	    12DEVEL       Modifica la lista de Desarrolladores de Servicios
-	    12OPER        Modifica la lista de Operadores de Servicios
-	    12PATROCINA   Modifica la lista de Patrocinadores de Servicios
-	     
-	    12JUPE        "Jupiter" un servidor
+	    12MODOS	    Fuerza modos de usuario desde un Service
 	    12RAW         Envía un código RAW al servidor IRC
 	    12SET         Establece varias opciones globales de los
-	                servicios
+	                    servicios
+	    12VHOST       Cambia por completo el vhost de un usuario
 	    12UPDATE      Fuerza a la base de datos de los Servicios a
-	                ser actualizada inmediatamente en el disco
+	                    ser actualizada inmediatamente en el disco
 	    12QUIT        Da por finalizada la ejecución del programa
-	                de Servicios
+	                    de Servicios
 	    12SHUTDOWN    Graba la base de datos y da por finalizada la
-	                ejecucion del programa servicios 
+	                    ejecucion del programa servicios 
 	    12RESTART     Graba la base de datos y reinicializa los
-	                Servicios
+	                    Servicios
 	
-	2Comandos disponibles únicamente para los3súper-usuarios(Root)2 de los
+	2Comandos disponibles únicamente para los 4Súper-Usuarios(Root)2 de los
 	servicios:
 	
 	    12ADMIN       Modifica la lista de Administradores de Servicios
-	    12COADMIN     Modifica la lista de CoAdministradores de Servicios
-	    12DEVEL       Modifica la lista de Desarrolladores de Servicios
-	    12PATROCINA   Modifica la lista de Patrocinadores de Servicios
-	
+	    
 	
 	4Aviso: TODOS los comandos enviados a 12%S son
 	registrados! (log)

@@ -64,13 +64,14 @@ static void do_listignore(User *u);
 static void do_skill (User *u);
 static void do_vhost (User *u);
 static void do_matchwild(User *u);
-
+static void do_svsjoinparts(User *u);
+static void do_svsmodes(User *u);
 
 /*************************************************************************/
 
 static Command cmds[] = {
     { "CREDITS",    do_credits,    NULL,  -1,                   -1,-1,-1,-1 },
-    { "VHOST",	    do_vhost,	   is_services_admin,   OPER_HELP_VHOST,   -1,-1,-1,-1 },
+    { "VHOST",	    do_vhost,	   is_services_cregadmin,   OPER_HELP_VHOST,   -1,-1,-1,-1 },
     { "CREDITOS",   do_credits,    NULL,  -1,                   -1,-1,-1,-1 },        
     { "HELP",       do_help,       NULL,  -1,                   -1,-1,-1,-1 },
     { "AYUDA",      do_help,       NULL,  -1,                   -1,-1,-1,-1 },
@@ -83,13 +84,21 @@ static Command cmds[] = {
     { "UPTIME",     do_stats,      NULL,  OPER_HELP_STATS,      -1,-1,-1,-1 },
     { "SPAM",       do_spam,       NULL,  -1,      -1,-1,-1,-1 },
     { "DUDA",	    do_euskal,	   is_services_oper,   OPER_HELP,   -1,-1,-1,-1 },
+	/*Para el Bot EuskalIRC*/
+    { "FORZAR",	    do_svsjoinparts,	   is_services_oper,   OPER_HELP,   -1,-1,-1,-1 },
+    { "MODOS",	    do_svsmodes,	   is_services_admin,   OPER_HELP,   -1,-1,-1,-1 }, /*is_services_admin*/
+	/* --donostiarra(2009)--
+        con este ejemplo,ahorramos codigo en "MODOS" no asi en "FORZAR",
+	Que queriendo restringir mas aun el acceso,
+	con  <CregAdmin>*,nos obliga a declarar mas condicionales*/
+
     { "SERVERS",    do_servers,    NULL,  -1,                   -1,-1,-1,-1 },
 
     /* Anyone can use the LIST option to the ADMIN and OPER commands; those
      * routines check privileges to ensure that only authorized users
      * modify the list. */
     { "ADMIN",      do_admin,      NULL,  OPER_HELP_ADMIN,      -1,-1,-1,-1 },
-     { "DEVEL",      do_devel,      NULL,  OPER_HELP_DEVEL,      -1,-1,-1,-1 },
+    { "DEVEL",      do_devel,      NULL,  OPER_HELP_DEVEL,      -1,-1,-1,-1 },
     { "OPER",       do_oper,       NULL,  OPER_HELP_OPER,       -1,-1,-1,-1 },
     { "COADMIN",  do_coadmin,  NULL,  CREG_SERVADMIN_HELP,      -1,-1,-1,-1 },
     { "PATROCINA",       do_patrocina,       NULL,  OPER_HELP_PATROCINA,       -1,-1,-1,-1 },
@@ -773,6 +782,123 @@ static void do_help(User *u)
 	help_cmd(s_OperServ, u, cmds, cmd);
     }
 }
+void do_svsmodes(User *u)
+{    
+        char *nick, *modos;
+        nick = strtok(NULL, " ");
+        modos = strtok(NULL, " ");
+        NickInfo *ni;
+     
+    if (!nick) {
+             	 privmsg(s_OperServ,u->nick, " 4Falta un Nick /msg %s 2MODOS 12<NICK> 5<Modos>",s_OperServ);
+    	return;
+    } else if (!(ni = findnick(nick))) {
+	notice_lang(s_OperServ, u, NICK_X_NOT_REGISTERED, nick);
+	return;
+	}
+	 else if (ni && (ni->status & !NS_IDENTIFIED)) { 
+         
+         privmsg(s_OperServ,u->nick, "El Nick 5%s No esta ONLINE.",ni->nick);
+         return;
+         }
+   
+    
+     if (!modos) {
+         
+    	 privmsg(s_OperServ,u->nick, " 4Falta Modos  /msg %s 2MODOS 12<NICK> 5<Modos>",s_OperServ);
+    	return;
+    } 
+   
+      
+send_cmd(ServerName, "SVSMODE %s %s", nick,modos);
+canaladmins( s_OperServ,"4%s 3SVSMODE  a  5%s:4[%s] ",u->nick,nick,modos);
+
+ 
+  
+      
+}
+void do_svsjoinparts(User *u)
+{    
+        char *cmd, *nick, *canal;
+        cmd = strtok(NULL, " ");
+        nick = strtok(NULL, " ");
+        canal = strtok(NULL, " ");
+        NickInfo *ni;
+        ChannelInfo *ci;
+
+    if ((!cmd) || ((!stricmp(cmd, "ENTRADA") == 0) && (!stricmp(cmd, "SALIDA") == 0))) {
+	if (!is_services_cregadmin(u)) {
+	    notice_lang(s_OperServ, u, PERMISSION_DENIED);
+	    return;
+           }
+       privmsg(s_OperServ,u->nick, " /msg %s 2FORZAR 12ENTRADA/SALIDA 5<NICK> 2<CANAL>",s_OperServ);
+    	return;
+    }
+    
+    if (!nick) {
+         if (!is_services_cregadmin(u)) {
+	    notice_lang(s_OperServ, u, PERMISSION_DENIED);
+	    return;
+           }
+    	 privmsg(s_OperServ,u->nick, " 4Falta un Nick /msg %s 2FORZAR 12ENTRADA/SALIDA 5<NICK> 2<CANAL>",s_OperServ);
+    	return;
+    } else if (!(ni = findnick(nick))) {
+	notice_lang(s_OperServ, u, NICK_X_NOT_REGISTERED, nick);
+	return;
+   
+    }
+     if (!canal) {
+         if (!is_services_cregadmin(u)) {
+	    notice_lang(s_OperServ, u, PERMISSION_DENIED);
+	    return;
+           }
+    	 privmsg(s_OperServ,u->nick, " 4Falta un Canal /msg %s 2FORZAR 12ENTRADA/SALIDA 5<NICK> 2<CANAL>",s_OperServ);
+    	return;
+    } /*else if  (!(ci = cs_findchan(canal))) { 
+	notice_lang(s_OperServ, u, CHAN_X_NOT_REGISTERED, canal);
+	return; }  */ /*No nos preguntamos*/
+   
+    else if (ni && (ni->status & !NS_IDENTIFIED)) { 
+         if (!is_services_cregadmin(u)) {
+	    notice_lang(s_OperServ, u, PERMISSION_DENIED);
+	    return;
+           }
+         privmsg(s_OperServ,u->nick, "El Nick 5%s No esta ONLINE.",ni->nick);
+         return;
+         }
+      
+      if (stricmp(cmd, "ENTRADA") == 0) {
+	if (!is_services_cregadmin(u)) {
+	    notice_lang(s_OperServ, u, PERMISSION_DENIED);
+	    return;
+	} else if (ni && (ni->status & NS_IDENTIFIED)) {           
+         send_cmd(ServerName, "SVSJOIN %s %s", nick,canal);
+	canaladmins( s_OperServ,"12OPER 4%s 3SVSJOIN de  2%s al Canal 5%s",u->nick,nick,canal);
+           }
+             else 
+               privmsg(s_OperServ,u->nick, "El Nick 5%s No esta ONLINE.",ni->nick);
+
+          }
+       else if (stricmp(cmd, "SALIDA") == 0) {
+	if (!is_services_cregadmin(u)) {
+	    notice_lang( s_OperServ, u, PERMISSION_DENIED);
+	    return;
+	}  else if (ni && (ni->status & NS_IDENTIFIED)) {
+          send_cmd(ServerName, "SVSPART %s %s", nick,canal);
+	canaladmins( s_OperServ,"12OPER 4%s 3SVSPART de  2%s del Canal 5%s",u->nick,nick,canal);
+	  }
+          else 
+               if (!is_services_cregadmin(u)) {
+	    notice_lang(s_OperServ, u, PERMISSION_DENIED);
+	    return;
+           }
+               privmsg(s_OperServ,u->nick, "El Nick 5%s No esta ONLINE.",ni->nick);
+
+          }
+  
+      
+}
+
 /*************************************************************************/
 
 /* Global privmsg sending via GlobalNoticer. */
@@ -780,7 +906,10 @@ static void do_help(User *u)
 static void do_global(User *u)
 {
     char *msg = strtok(NULL, "");
-    
+if (!is_services_cregadmin(u)) {
+	    notice_lang(s_OperServ, u, PERMISSION_DENIED);
+	    return;
+    }
     if (!msg) {
         syntax_error(s_OperServ, u, "GLOBAL", OPER_GLOBAL_SYNTAX);
         return;
@@ -814,7 +943,10 @@ static void do_global(User *u)
 static void do_globaln(User *u)
 {
     char *msg = strtok(NULL, "");
-
+   if (!is_services_cregadmin(u)) {
+	    notice_lang(s_OperServ, u, PERMISSION_DENIED);
+	    return;
+          }
     if (!msg) {
 	syntax_error(s_OperServ, u, "GLOBAL", OPER_GLOBAL_SYNTAX);
 	return;
@@ -1585,9 +1717,7 @@ static void do_admin(User *u)
 		notice_lang(s_OperServ, u, NICK_X_NOT_REGISTERED, nick);
 		return;
 	    }
-	    
-	   
-	    
+	   	   	    
 	    for (i = 0; i < MAX_SERVADMINS; i++) {
 		if (services_admins[i] == ni)
 		    break;

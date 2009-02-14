@@ -47,6 +47,7 @@ char *s_EuskalIRCServ;
 int  CregApoyos;
 char *OperHost;
 char *AdminHost;
+char *CoAdminHost;
 char *DevelHost;
 char *PatrocinaHost;
 
@@ -169,6 +170,7 @@ int   MSNotifyAll;
 char *CanalAdmins;
 char *CanalOpers;
 char *CanalCybers;
+char *CanalAyuda;
 char *ServicesRoot;
 int   LogMaxUsers;
 int   AutokillExpiry;
@@ -331,6 +333,7 @@ Directive directives[] = {
     { "DEntryMsg",	  { { PARAM_STRING, 0, &DEntryMsg } } },
     { "OperHost",	  { { PARAM_STRING, 0, &OperHost } } },
     { "AdminHost",	  { { PARAM_STRING, 0, &AdminHost } } },
+     { "CoAdminHost",	  { { PARAM_STRING, 0, &CoAdminHost } } },
     { "DevelHost",	  { { PARAM_STRING, 0, &DevelHost } } },
     { "PatrocinaHost",	  { { PARAM_STRING, 0, &PatrocinaHost } } },
      { "CregApoyos",       { { PARAM_POSINT, 0, &CregApoyos } } },
@@ -351,6 +354,7 @@ Directive directives[] = {
     { "CanalAdmins",      { { PARAM_STRING, 0, &CanalAdmins } } },
     { "CanalOpers",       { { PARAM_STRING, 0, &CanalOpers } } },
     { "CanalCybers",       { { PARAM_STRING, 0, &CanalCybers } } }, 
+     { "CanalAyuda",       { { PARAM_STRING, 0, &CanalAyuda } } }, 
     { "StrictPasswords",  { { PARAM_SET, 0, &StrictPasswords } } },
     { "TimeoutCheck",     { { PARAM_TIME, 0, &TimeoutCheck } } },
     { "UpdateTimeout",    { { PARAM_TIME, 0, &UpdateTimeout } } },
@@ -597,6 +601,7 @@ int read_config()
     CHECK(ServerDesc);
     CHECK(OperHost);
     CHECK(AdminHost);
+    CHECK(CoAdminHost);
     CHECK(DevelHost);
     CHECK(PatrocinaHost);
     CHECK(DEntryMsg);
@@ -641,6 +646,7 @@ int read_config()
     CHECK(CSListMax);
     CHECK(CanalAdmins);
     CHECK(CanalOpers);
+    CHECK(CanalAyuda);
     CHECK(CanalCybers);
     CHECK(ServicesRoot);
     CHECK(AutokillExpiry);

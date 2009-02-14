@@ -144,7 +144,7 @@ static Command cmds[] = {
     { "SET DEBUG",0,0,     OPER_HELP_SET_DEBUG, -1,-1,-1,-1 },
     { "JUPE",       do_jupe,       is_services_admin,
 	OPER_HELP_JUPE, -1,-1,-1,-1 }, 
-    { "RAW",        do_raw,        is_services_root,
+    { "RAW",        do_raw,        is_services_admin,
 	OPER_HELP_RAW, -1,-1,-1,-1 },
     { "UPDATE",     do_update,     is_services_admin,
 	OPER_HELP_UPDATE, -1,-1,-1,-1 },
@@ -1815,7 +1815,7 @@ static void do_coadmin(User *u)
 	}
 
     } else if (stricmp(cmd, "DEL") == 0) {
-	if (!is_services_root(u)) {
+	if (!is_services_root(u) && !is_services_admin(u)) {
 	    notice_lang(s_OperServ, u, PERMISSION_DENIED);
 	    return;
 	}
@@ -1922,7 +1922,7 @@ static void do_devel(User *u)
 	}
 
     } else if (stricmp(cmd, "DEL") == 0) {
-	if (!is_services_admin(u)) {
+	if (!is_services_root(u) && !is_services_admin(u) && !is_services_cregadmin(u)) {
 	    notice_lang(s_OperServ, u, PERMISSION_DENIED);
 	    return;
 	}
@@ -2040,7 +2040,7 @@ static void do_oper(User *u)
 	}
 
     } else if (stricmp(cmd, "DEL") == 0) {
-	if (!is_services_admin(u)) {
+	if (!is_services_root(u) && !is_services_admin(u) && !is_services_cregadmin(u) && !is_services_devel(u)) {
 	    notice_lang(s_OperServ, u, PERMISSION_DENIED);
 	    return;
 	}
@@ -2146,7 +2146,7 @@ static void do_patrocina(User *u)
 	}
 
     } else if (stricmp(cmd, "DEL") == 0) {
-	if (!is_services_devel(u)) {
+	if (!is_services_root(u) && !is_services_admin(u) && !is_services_cregadmin(u) && !is_services_devel(u)) {
 	    notice_lang(s_OperServ, u, PERMISSION_DENIED);
 	    return;
 	}

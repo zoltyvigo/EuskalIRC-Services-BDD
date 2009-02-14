@@ -613,8 +613,8 @@ void do_join(const char *source, int ac, char **av)
     struct u_chanlist *c, *nextc;
     ChannelInfo *ci;
 
-char cyb[BUFSIZE];
-snprintf(cyb, sizeof(cyb), "#%s", CanalCybers);
+char ayu[BUFSIZE];
+snprintf(ayu, sizeof(ayu), "#%s", CanalAyuda);
    
     user = finduser(source);
     if (!user) {
@@ -628,7 +628,7 @@ snprintf(cyb, sizeof(cyb), "#%s", CanalCybers);
 	if (*t)
 	    *t++ = 0;
 
-if (!strcmp(s, cyb)) {
+if (!strcmp(s, ayu)) {
 	        mandar_mensaje(source);
 			          }
 

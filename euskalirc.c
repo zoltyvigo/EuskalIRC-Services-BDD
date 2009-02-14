@@ -78,8 +78,8 @@ void euskalserv(const char *source, char *buf)
     User *u = finduser(source);
 
     ni = findnick(source);
-    char cyb[BUFSIZE];
-snprintf(cyb, sizeof(cyb), "#%s", CanalCybers);
+    char ayu[BUFSIZE];
+snprintf(ayu, sizeof(ayu), "#%s", CanalAyuda);
 
     if (!u) {
 	log("%s: user record for %s not found", s_EuskalIRCServ, source);
@@ -91,10 +91,10 @@ snprintf(cyb, sizeof(cyb), "#%s", CanalCybers);
     //log("yiha %s: %s: %s", s_EuskalIRCServ, source, buf);
   canaladmins( s_EuskalIRCServ,"5CONSULTA! 12%s : 2%s", source,buf);
    if ((ni = u->real_ni))
-   if (ni->in_cyb & CYB_NO) {
-   send_cmd(s_EuskalIRCServ, "MODE #%s +v %s", CanalCybers, ni->nick);
+   if (ni->in_ayu & AYU_NO) {
+   send_cmd(s_EuskalIRCServ, "MODE #%s +v %s", CanalAyuda, ni->nick);
    privmsg(s_EuskalIRCServ, ni->nick , "Gracias, en breve te informaré del nick del OPERador/a que te va a ayudar. Por favor, no abandones el canal mientras eres atendido/a");
-   ni->in_cyb = CYB_SI ;
+   ni->in_ayu = AYU_SI ;
    }
    
 }
@@ -103,14 +103,14 @@ void euskalirc_canal(const char *source,const char *chan, char *buf)
  {
  
  char adm[BUFSIZE];
-char cyb[BUFSIZE];
+char ayu[BUFSIZE];
 snprintf(adm, sizeof(adm), "#%s", CanalAdmins);
-snprintf(cyb, sizeof(cyb), "#%s", CanalCybers);
+snprintf(ayu, sizeof(ayu), "#%s", CanalAyuda);
    
  
 if (!strcmp(chan, adm))  return;
-if (!strcmp(chan, cyb)) {
-	        privmsg(s_EuskalIRCServ, adm , "Ey! %s me dijo en el canal %s 4%s !!", source,cyb,buf);
+if (!strcmp(chan, ayu)) {
+	        privmsg(s_EuskalIRCServ, adm , "Ey! %s me dijo en el canal %s 4%s !!", source,ayu,buf);
 			return;
           }
 		
@@ -141,13 +141,14 @@ if (!cmd) {
      ni = findnick(source);
     time_t ahora = time(NULL);
     time_t caducado;
-     char cyb[BUFSIZE];
-     snprintf(cyb, sizeof(cyb), "#%s", CanalCybers);
+     char ayu[BUFSIZE];
+     snprintf(ayu, sizeof(ayu), "#%s", CanalAyuda);
 
     struct tm *tm;
       
       if ((ni = u->real_ni) && !(is_services_oper(u))) {
-	 ni->in_cyb = CYB_NO;
+	// ni->in_cyb = CYB_NO;
+        ni->in_ayu = AYU_NO;
         privmsg(s_EuskalIRCServ,source, "Hola %s",source);
 	privmsg(s_EuskalIRCServ,source, "Soy el encargado de ponerte en contacto con un OPER de Servicios.");
 	privmsg(s_EuskalIRCServ,source, "  5,15 Por favor, ¿podrías describirme en una línea el problema?");
@@ -160,23 +161,23 @@ if (!cmd) {
             return;
           } 
    if   (is_services_root(u))  {
-    privmsg(s_EuskalIRCServ,cyb, "Hola 4%s,BienVenido/a 5Root de Red ",source);
+    privmsg(s_EuskalIRCServ,ayu, "Hola 4%s,BienVenido/a 5Root de Red ",source);
     return;
      }
      else if (is_services_admin(u))  {
-    privmsg(s_EuskalIRCServ,cyb, "Hola 4%s,BienVenido/a 5Administrador de Red ",source);
+    privmsg(s_EuskalIRCServ,ayu, "Hola 4%s,BienVenido/a 5Administrador de Red ",source);
     return;
      }
      else if (is_services_cregadmin(u))  {
-    privmsg(s_EuskalIRCServ,cyb, "Hola 4%s,BienVenido/a 5Co-Administrador de Red ",source);
+    privmsg(s_EuskalIRCServ,ayu, "Hola 4%s,BienVenido/a 5Co-Administrador de Red ",source);
     return;
      }
     else if (is_services_devel(u))  {
-    privmsg(s_EuskalIRCServ,cyb, "Hola 4%s,BienVenido/a 5Devel de Red ",source);
+    privmsg(s_EuskalIRCServ,ayu, "Hola 4%s,BienVenido/a 5Devel de Red ",source);
     return;
     }
     else if (is_services_oper(u))  {
-    privmsg(s_EuskalIRCServ,cyb, "Hola 4%s,BienVenido/a 5Operador de Red ",source);
+    privmsg(s_EuskalIRCServ,ayu, "Hola 4%s,BienVenido/a 5Operador de Red ",source);
     return;
     }
      

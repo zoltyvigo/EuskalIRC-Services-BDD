@@ -65,7 +65,39 @@ void canalopers(const char *source, const char *fmt, ...)
     vsend_cmd(source, buf, args);
 }            
 
+
 /*************************************************************************/
+
+/* Enviar cosas al canal de Ayuda.. */
+
+void canalayuda(const char *source, const char *fmt, ...)
+{
+    va_list args;
+    char buf[BUFSIZE];
+        
+    va_start(args, fmt);
+    snprintf(buf, sizeof(buf), "PRIVMSG #%s :%s", CanalAyuda, fmt);
+    vsend_cmd(source, buf, args);
+}            
+
+/********************************************************************
+/*************************************************************************/
+
+/* Enviar cosas al canal de Cybers.. */
+
+void canalcybers(const char *source, const char *fmt, ...)
+{
+    va_list args;
+    char buf[BUFSIZE];
+        
+    va_start(args, fmt);
+    snprintf(buf, sizeof(buf), "PRIVMSG #%s :%s", CanalCybers, fmt);
+    vsend_cmd(source, buf, args);
+}            
+
+/********************************************************************
+
+
 
 /* Send a NOTICE from the given source to the given nick. */
 void notice(const char *source, const char *dest, const char *fmt, ...)

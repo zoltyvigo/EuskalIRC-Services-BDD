@@ -205,6 +205,7 @@ struct nickinfo_ {
     time_t last_seen;
     int16 status;	/* See NS_* below */
     int16 in_cyb;       /* mirar abajo CYB_ */
+    int16 in_ayu;       /* mirar abajo AYU_ */
     char *suspendby;         /* Quien lo suspendio */
     char *suspendreason;     /* Motivo de la suspension */
     time_t time_suspend;     /* Tiempo cuando suspendio el nick */
@@ -254,8 +255,11 @@ struct nickinfo_ {
 				     * introduced when it does change. */
 #define NS_TEMPORARY	0xFF00      /* All temporary status flags */
 
+/*-- donostiarra--  2009 */
 #define CYB_NO 0x0001  /*No esta en el canal cyb*/
 #define CYB_SI  0x0002  /*Si esta en el canal cyb*/
+#define AYU_NO 0x0001  /*No esta en el canal ayu*/
+#define AYU_SI  0x0002  /*Si esta en el canal ayu*/
 
 
 /* Nickname setting flags: */

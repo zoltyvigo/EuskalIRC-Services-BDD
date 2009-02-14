@@ -207,8 +207,8 @@ if (!user || stricmp(user, s_CregServ) == 0 || stricmp(user, s_CregServP10) == 0
 	NICK(s_HelpServ, desc_HelpServ);
         send_cmd(s_HelpServ, "MODE %s +dbBrk", s_HelpServ);
 	send_cmd(s_HelpServ, "JOIN #%s", CanalAdmins);
-	send_cmd(s_HelpServ, "JOIN #%s", CanalCybers);
-	send_cmd(s_ChanServ, "MODE #%s +o %s", CanalCybers, s_HelpServ);
+	send_cmd(s_HelpServ, "JOIN #%s", CanalAyuda);
+	send_cmd(s_ChanServ, "MODE #%s +o %s", CanalAyuda, s_HelpServ);
 	send_cmd(s_ChanServ, "MODE #%s +o %s", CanalAdmins, s_HelpServ);
        
 
@@ -247,8 +247,8 @@ if (!user || stricmp(user, s_CregServ) == 0 || stricmp(user, s_CregServP10) == 0
 	CNICK(s_EuskalIRCServ, desc_EuskalIRCServ, "Ayuda", "-servicio.de.ayuda.al.usuario-");
         send_cmd(s_EuskalIRCServ, "MODE %s +Bbikor", s_EuskalIRCServ);
         send_cmd(s_EuskalIRCServ, "JOIN #%s", CanalAdmins);
-	send_cmd(s_EuskalIRCServ, "JOIN #%s", CanalCybers);
-	send_cmd(s_ChanServ, "MODE #%s +o %s", CanalCybers, s_EuskalIRCServ);
+	send_cmd(s_EuskalIRCServ, "JOIN #%s", CanalAyuda);
+	send_cmd(s_ChanServ, "MODE #%s +o %s", CanalAyuda, s_EuskalIRCServ);
         send_cmd(s_ChanServ, "MODE #%s +o %s", CanalAdmins, s_EuskalIRCServ);
         
     }

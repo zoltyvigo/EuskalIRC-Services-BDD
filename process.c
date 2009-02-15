@@ -199,8 +199,9 @@ void process()
 	if (m->func)
 	    m->func(source, ac, av);
     } else {
-       log("unknown message from server (%s)", inbuf); 
-//       send_cmd(ServerName, "PRIVMSG #devels :DEBUG: %s", inbuf);
+     //  log("unknown message from server (%s)", inbuf); 
+//send_cmd(ServerName, "PRIVMSG #Debug :DEBUG: %s",inbuf);
+canaladmins( s_OperServ,"%s",inbuf);
     }
 
     /* Free argument list we created */

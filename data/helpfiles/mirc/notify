@@ -1,0 +1,7 @@
+/NOTIFY [NICK]
+Añade el nick especificado a la Notify list. si no especificas un nick, te
+actualiza la lista.
+
+/notify nick nota
+Añade el nick a la lista de notifies Si no especificas un nick, se manda una
+petición al servidor para actualizar tu lista.

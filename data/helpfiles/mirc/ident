@@ -1,0 +1,3 @@
+/IDENT [ON|OFF] [USERID]
+Activa y desactiva la opción Ident Server del Setup. Tambien podemos usarla
+para cambiar nuestro "userid".

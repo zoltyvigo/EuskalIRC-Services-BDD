@@ -1,0 +1,3 @@
+/AMSG nick mensaje
+Manda un mensaje a todos los canales que tengas abiertos, pero cómo el /AME
+sólo a los canales, no los privados.

@@ -1,0 +1,29 @@
+/WHOIS nick
+Te muestra la información disponible sobre el nick especificado.
+/WHOIS NICK Sirve para proporcionarnos alguna información sobre la
+persona en cuestión, por ejemplo, si pones /WHOIS donostiarra, en la ventana
+del status, te saldrá algo así:
+ donostiarra  ircap751@donostiarra.admin.euskalirc.tk [Tokelau] * soy de SnSn
+ Canales  : @#Admins
+ Servidor : irc.euskalirc.tk Servidor de Desarrollo EuskalIRC
+ +info     : donostiarra Tiene el nick Registrado y Protegido
+ +info     : donostiarra Es un OPERador de los servicios de red
+donostiarra ircap751@irc.euskalirc.tk 127.0.0.1 Actual user@host, Actual IP
+ +info     : donostiarra Utiliza los modos [rhxw]
+ Login      : 56mins 15secs  idle : 31mins 25secs
+ donostiarra  .Bot_info. .Query. .Chat. .Whois. .Clones. .Ping. .scanPt. .wPanel.
+end of /WHOIS list.
+
+Ahora vamos a verlo por partes:
+
+donostiarra  ircap751@donostiarra.admin.euskalirc.tk [Tokelau] * soy de SnSn
+
+ircap751@donostiarra.admin.euskalirc.tk Es el userhost, Lo que hay delante de
+la @ lo coge el mIRC de la información que hayas puesto en la casilla Email,
+o de la información que hayas puesto en la casilla "enable ident server". Y la
+parte de detrás es tu proveedor de redes. 
+*soy de SnSn es la información que he puesto en la casilla "Full
+Name" de la pestaña IRC Servers, de la carpeta del Setup.
+Canales  : @#Admins Son los canales en los que estoy
+en ese momento, la @ delante del canal indica que estoy de operador en
+esos canales en el momento de hacerme el /WHOIS

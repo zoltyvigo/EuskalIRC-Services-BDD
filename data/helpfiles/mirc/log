@@ -1,0 +1,2 @@
+/LOG [ON|OFF] window [-f archivo]
+Nos permite activar o desactivar la grabación.

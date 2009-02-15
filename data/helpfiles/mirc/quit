@@ -1,0 +1,5 @@
+/QUIT [razón]
+Esta orden te desconecta de IRC y le puedes añadir ( o no, es opcional) la
+razón del por qué te vas. Este mensaje sólo le aparece a las personas que están
+en los mismos canales que tú.
+ Ejemplo: /quit Hasta Otra!

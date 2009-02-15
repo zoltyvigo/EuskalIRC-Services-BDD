@@ -1,0 +1,9 @@
+Sintxis: LUSERS [<Mascara> [<server>]]
+  Muestra un pequeño listado del numero de usuarios visibles, de los invisibles (marcados con flag UMODE +i), servers y el numero de
+  ircops.
+
+ Si fijamos una mascara tal como
+    LUSERS *.tk
+
+  contara el numero de servers y usuarios de dicha mascara.
+

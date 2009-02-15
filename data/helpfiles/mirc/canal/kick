@@ -1,0 +1,5 @@
+KICK
+
+sintaxis:/kick <#Canal> <nick> <motivo>
+
+Mediante este comando,podemos expulsar-dar una patada, a un usuario del canal, con un motivo indicado.

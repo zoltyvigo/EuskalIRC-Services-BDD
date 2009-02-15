@@ -1,0 +1,14 @@
+/LOADBUF [lineas] [-psglecN] wentana archivo
+Carga el número de líneas indicado (contando desde el final) del fichero a la
+ventana especificada.
+/loadbuf 20 @prueba info.txt
+Nos copiaría las ultimas 20 líneas del archivo info.txt en la ventana
+personalizada @prueba /loadbuf 10-40 @prueba info.txt Nos copiaría las
+líenas 10 a 40 en la ventana personalizada @prueba La -p sirve para forzar que
+ las líneas de texto ocupen toda la ventana.
+ -p fruerza a las lineas a "wrap" (no sé lo que es) cuando se añaden a una
+ ventana
+ -s y -g aplican la orden a la ventana de staatus y de finger respectivamente
+ -l aplica el comando al listbox de las ventanas perrsonalizadas
+ -e evalúa las variables y los identificadores en la línea que se está leyendo
+ -cN espedifica el color de forndo por defecto para las líneas.

@@ -38,6 +38,7 @@ char *s_GlobalNoticer;
 char *s_NewsServ;
 char *s_ShadowServ;
 char *s_IrcIIHelp;
+char *s_mIRCHelp;
 char *s_DevNull;
 char *s_BddServ;
 char *DEntryMsg;
@@ -67,6 +68,7 @@ char s_EuskalIRCServP10[4];
 char s_GlobalNoticerP10[4];
 char s_NewsServP10[4];
 char s_IrcIIHelpP10[4];
+char s_mIRCHelpP10[4];
 char s_DevNullP10[4];
 char s_ShadowServP10[4];
 
@@ -83,6 +85,7 @@ char *desc_EuskalIRCServ;
 char *desc_GlobalNoticer;
 char *desc_NewsServ;
 char *desc_IrcIIHelp;
+char *desc_mIRCHelp;
 char *desc_DevNull;
 char *desc_ShadowServ;
 char *desc_IpVirtual;
@@ -250,6 +253,8 @@ Directive directives[] = {
                             { PARAM_STRING, 0, &desc_HelpServ } } },
     { "IrcIIHelpName",    { { PARAM_STRING, 0, &s_IrcIIHelp },
                             { PARAM_STRING, 0, &desc_IrcIIHelp } } },
+    { "mIRCHelpName",    { { PARAM_STRING, 0, &s_mIRCHelp },
+                            { PARAM_STRING, 0, &desc_mIRCHelp } } },
     { "KillClonesAkillExpire",{{PARAM_TIME, 0, &KillClonesAkillExpire } } },
     { "ListOpersOnly",    { { PARAM_DEPRECATED, 0, dep_ListOpersOnly } } },
     { "LocalAddress",     { { PARAM_STRING, 0, &LocalHost },

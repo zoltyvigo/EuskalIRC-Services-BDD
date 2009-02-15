@@ -150,17 +150,18 @@ void introduce_user(const char *user)
 	send_cmd(s_IrcIIHelp, "J #%s", CanalAdmins);
         send_cmd(ServerName, "M #%s +o %s", CanalAdmins, s_IrcIIHelpP10);
     }    
-    if (s_DevNull && (!user || stricmp(user, s_DevNull) == 0 || stricmp(user, s_DevNullP10) == 0)) {
-        s_DevNullP10[0]=convert2y[ServerNumerico];
-        s_DevNullP10[1]='\0';
-        strcat(s_DevNullP10, "AL");
-        modos="+krdi";
-        NICK(s_DevNull, modos, s_DevNullP10, desc_DevNull);
-        send_cmd(s_DevNull, "J #%s", CanalOpers);
-        send_cmd(ServerName, "M #%s +o %s", CanalOpers, s_DevNullP10);
-	send_cmd(s_DevNull, "J #%s", CanalAdmins);
-        send_cmd(ServerName, "M #%s +o %s", CanalAdmins, s_DevNullP10);
+	if (s_mIRCHelp && (!user || stricmp(user, s_mIRCHelp) == 0 || stricmp(user, s_mIRCHelpP10) == 0)) {
+        s_IrcIIHelpP10[0]=convert2y[ServerNumerico];
+        s_IrcIIHelpP10[1]='\0';
+        strcat(s_IrcIIHelpP10, "AK");
+        modos="+krd";
+        NICK(s_mIRCHelp, modos, s_mIRCHelpP10, desc_mIRCHelp);
+        send_cmd(s_IrcIIHelp, "J #%s", CanalOpers);
+        send_cmd(ServerName, "M #%s +o %s", CanalOpers, s_mIRCHelpP10);
+	send_cmd(s_mIRCHelp, "J #%s", CanalAdmins);
+        send_cmd(ServerName, "M #%s +o %s", CanalAdmins, s_mIRCHelpP10);
     }    
+   
    if (!user || stricmp(user, s_EuskalIRCServ) == 0 || stricmp(user, s_EuskalIRCServP10) == 0) {
         s_EuskalIRCServP10[0]=convert2y[ServerNumerico];
         s_EuskalIRCServP10[1]='\0';
@@ -213,13 +214,22 @@ if (!user || stricmp(user, s_CregServ) == 0 || stricmp(user, s_CregServP10) == 0
        
 
     }
-    if (s_IrcIIHelp && (!user || stricmp(user, s_IrcIIHelp) == 0)) {
+    
+     if (s_IrcIIHelp && (!user || stricmp(user, s_IrcIIHelp) == 0)) {
 	NICK(s_IrcIIHelp, desc_IrcIIHelp);
          send_cmd(s_IrcIIHelp, "JOIN #%s", CanalAdmins);
         send_cmd(s_IrcIIHelp, "MODE %s +dbBrk", s_IrcIIHelp);
 	send_cmd(s_ChanServ, "MODE #%s +o %s", CanalAdmins, s_IrcIIHelp);
               
     }
+    if (s_mIRCHelp && (!user || stricmp(user, s_mIRCHelp) == 0)) {
+	NICK(s_mIRCHelp, desc_mIRCHelp);
+         send_cmd(s_mIRCHelp, "JOIN #%s", CanalAdmins);
+        send_cmd(s_mIRCHelp, "MODE %s +dbBrk", s_mIRCHelp);
+	send_cmd(s_ChanServ, "MODE #%s +o %s", CanalAdmins, s_mIRCHelp);
+              
+    }
+
     if (!user || stricmp(user, s_MemoServ) == 0) {
 	NICK(s_MemoServ, desc_MemoServ);
 	send_cmd(s_MemoServ, "MODE %s +krbdB", s_MemoServ);
@@ -259,13 +269,7 @@ if (!user || stricmp(user, s_CregServ) == 0 || stricmp(user, s_CregServP10) == 0
 	send_cmd(s_ChanServ, "MODE #%s +o %s", CanalAdmins, s_BddServ);
 	
     }
-    if (s_DevNull && (!user || stricmp(user, s_DevNull) == 0)) {
-	NICK(s_DevNull, desc_DevNull);
-	send_cmd(s_DevNull, "MODE %s +iBbrdk", s_DevNull);
-       send_cmd(s_DevNull, "JOIN #%s", CanalAdmins);
-	send_cmd(s_ChanServ, "MODE #%s +o %s", CanalAdmins,s_DevNull);
-                
-    }
+    
     if (!user || stricmp(user, s_GlobalNoticer) == 0) {
 	NICK(s_GlobalNoticer, desc_GlobalNoticer);
 	send_cmd(s_GlobalNoticer, "MODE %s +ikorBd", s_GlobalNoticer);

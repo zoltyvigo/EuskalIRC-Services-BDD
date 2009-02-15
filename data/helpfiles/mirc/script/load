@@ -1,0 +1,11 @@
+/LOAD -a|-pscqnm|-ruvs Fichero
+Carga el fichero especificado, alias, popup, o script -a Aliases, p=popups,
+ru=usuarios, c=comandos y s=scripts, rv= variables rs Scripts
+/load -a aliases.ini carga un archivo de alias
+/load -pc status.ini carga un popup para canales
+/load -pn status.ini carga un popup para la lista de nicks
+/load -ru users.ini carga una archivo de usuarios
+/load -rv vars.ini carga un archivo de variables
+/load -rs script.ini carga un archivo de script.
+ Si intentas cargar un fichero que ya está cargado, su contenido será puesto al
+día y su posición en el orden de procesamiento se mantiene.

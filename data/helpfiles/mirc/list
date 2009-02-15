@@ -1,0 +1,13 @@
+/LIST [#canal] [-MIN #] [-MAX #]
+Con esta orden consigues una lista de los canales que en ese momento están
+abiertos. También le puedes decir al mIRC que te muestre una lista con un
+mínimo y un máximo de personas en él (por ejemplo canales que tengan entr
+15 y 30 personas conectadas. Si Especificas un #canal, entonces el mIRC se
+limitará a darte la información relativa al canal en questión. Si específicas
+palabras con asteriscos a los lados (wildcards, cómodines) el programa te dar
+una lista de todos los canales que contengan el texto especificado entre los
+comodines
+Ejemplo: /list
+Ejemplo: /list -min 5 -max 20
+Ejemplo: /list #euskalirc
+Ejemplo: /list *futbol*

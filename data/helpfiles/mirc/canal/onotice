@@ -1,0 +1,4 @@
+/ONOTICE
+Manda un mensaje notice a todos los operadores de un canal, si no se
+especifica un canal, se mandará el notice a los operadores del canal que esté activo
+

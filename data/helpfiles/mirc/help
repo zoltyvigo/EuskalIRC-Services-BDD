@@ -1,0 +1,27 @@
+Para Conocer de un Comando, haz /msg 4mirc 12<Comando>
+
+ej) /msg 4mirc  12join
+
+Muestra la ayuda del comando 12join
+
+5,15SIN CATEGORIA:
+
+2,15ident,ignore,
+2,15join,part,list,lusers,log,me,ame,msg,amsg,nick,notify,omsg,
+2,15query,quit,time,version,whois
+
+5,15CATEGORIAS:
+
+4,15SCRIPT,4,15CANAL
+
+ej) Para Conocer de un comando de la categoria 4Script
+   /msg mirc 4script 12load
+
+Nos informaria del comando 12load ,que se encuentra en la categoria 4script
+
+Para conocer comandos disponibles por cada categoria:
+
+/msg mirc 5[Categoria] help
+
+*Nota:iremos ampliando la lista,clasificandola por categorias.
+      Hemos empezado por los comandos mas basicos y dos categorias.

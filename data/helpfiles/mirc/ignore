@@ -1,0 +1,4 @@
+/IGNORE nick [tipo]
+Sirve para ignorar los mensajes provinientes de otro usuario, si no
+específicamos un tipo nos limitaremos a ignorar el nick, estableciendo un tipo,
+ignoraremos la dirección. Los tipos coinciden con los de la orden /BAN.

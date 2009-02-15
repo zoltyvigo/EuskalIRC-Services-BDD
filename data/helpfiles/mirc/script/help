@@ -1,0 +1,5 @@
+Comandos disponibles Categoria Script
+
+haga /msg mirc script [comando]
+
+3,15load,loadbuf,writeini

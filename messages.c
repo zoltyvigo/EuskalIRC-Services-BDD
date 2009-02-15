@@ -153,8 +153,8 @@ static void m_kill(char *source, int ac, char **av)
 	stricmp(av[0], s_IpVirtualP10) == 0 ||
         stricmp(av[0], s_NewsServP10) == 0 ||        
         (s_IrcIIHelp && stricmp(av[0], s_IrcIIHelpP10) == 0) ||
-        (s_DevNull && stricmp(av[0], s_DevNullP10) == 0) ||
-        stricmp(av[0], s_GlobalNoticerP10) == 0
+	(s_mIRCHelp && stricmp(av[0], s_mIRCHelpP10) == 0) ||
+         stricmp(av[0], s_GlobalNoticerP10) == 0
 #else
     if (stricmp(av[0], s_ChanServ) == 0) {
         introduce_user(av[0]);    
@@ -169,8 +169,8 @@ static void m_kill(char *source, int ac, char **av)
 	stricmp(av[0], s_IpVirtual) == 0 ||
         stricmp(av[0], s_NewsServ) == 0 ||
         (s_IrcIIHelp && stricmp(av[0], s_IrcIIHelp) == 0) ||
-        (s_DevNull && stricmp(av[0], s_DevNull) == 0) ||
-        stricmp(av[0], s_GlobalNoticer) == 0
+	 (s_mIRCHelp && stricmp(av[0], s_mIRCHelp) == 0) ||
+         stricmp(av[0], s_GlobalNoticer) == 0
 #endif        
     ) {
 	if (!readonly && !skeleton)
@@ -385,7 +385,8 @@ static void m_privmsg(char *source, int ac, char **av)
 	
 /***    } else if (stricmp(av[0], s_NewsServP10) == 0) {
         newsserv(sourde, av[1]); *****/
-    } else if (s_IrcIIHelp && stricmp(av[0], s_IrcIIHelpP10) == 0) {          
+    } else if (s_IrcIIHelp && stricmp(av[0], s_IrcIIHelpP10) == 0) {   
+    } else if (s_mIRCHelp && stricmp(av[0], s_mIRCHelpP10) == 0) { 
 #else                                          	
     } else if (stricmp(av[0], s_NickServ) == 0) {
 	nickserv(source, av[1]);
@@ -422,12 +423,19 @@ static void m_privmsg(char *source, int ac, char **av)
         newsserv(sourde, av[1]); *****/        
     } else if (s_IrcIIHelp && stricmp(av[0], s_IrcIIHelp) == 0) {
 
-#endif    
+
 	char buf[BUFSIZE];
 	snprintf(buf, sizeof(buf), "ircII %s", av[1]);
 	helpserv(s_IrcIIHelp, source, buf);
-    }
+    
+} else if (s_mIRCHelp && stricmp(av[0], s_mIRCHelp) == 0) {
 
+
+	char buf[BUFSIZE];
+	snprintf(buf, sizeof(buf), "mirc %s", av[1]);
+	helpserv(s_mIRCHelp, source, buf);
+    }
+#endif    
     /* Add to ignore list if the command took a significant amount of time. */
     if (allow_ignore) {
 	stoptime = time(NULL);
@@ -572,12 +580,12 @@ void m_whois(char *source, int ac, char **av)
             clientdesc = desc_GlobalNoticer;                    
 	else if (s_IrcIIHelp && stricmp(av[0], s_IrcIIHelp) == 0)
 	    clientdesc = desc_IrcIIHelp;
+	else if (s_mIRCHelp && stricmp(av[0], s_mIRCHelp) == 0)
+	    clientdesc = desc_mIRCHelp;
 	else if (stricmp(av[0], s_OperServ) == 0)
 	    clientdesc = desc_OperServ;
 	else if (stricmp(av[0], s_GlobalNoticer) == 0)
 	    clientdesc = desc_GlobalNoticer;
-	else if (s_DevNull && stricmp(av[0], s_DevNull) == 0)
-	    clientdesc = desc_DevNull;
 	else {
 	    send_cmd(ServerName, "401 %s %s :No such service.", source, av[0]);
 	    return;

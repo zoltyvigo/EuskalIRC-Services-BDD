@@ -1,0 +1,24 @@
+/ban [-ruN] [#canal] [nickname|address] [tipo]
+Banea a alguien del canal utilizando su dirección. Para banear la dirección de un
+usuario, lo primero que hace esta orden es un /userhost al usuario en cuestión,
+lo que le da la dirección, y después hace un /mode # +b dirección@delUsuario.
+Especificando la opción -uN, mIRC espera N segundos antes de quitar el ban.
+Esto es útil para no llenar la lista de banes (hay un límite al número de
+personas que pueden estar baneadas en un canal).
+Especificando la opción -r la orden /ban quita el ban del tipo especificado para
+ese usuario por ejemplo /ban -r nick 2.
+Si no especificas un tipo de ban, entonces se banea el nick y la dirección, por
+ejemplo crcker!*lamer@host.dominio (Con este tipo de ban al usuario
+le basta con cambiarse el nick para poder volver a entrar en el canal).
+Tipos de Banes
+0: *!user@host.dominio
+1: *!*user@host.dominio
+2: *!*@host.dominio
+3: *!*user@*.dominio
+4: *!*@*.dominio
+5: nick!user@host.dominio
+6: nick!*user@host.dominio
+7: nick!*@host.dominio
+8: nick!*user@*.dominio
+9: nick!*@*.dominio
+Esta Orden utiliza la Lista interna de direcciones que mantiene el mIRC(IAL).

@@ -1,0 +1,4 @@
+Sintaxis: TIME [<server>]
+ Muestra el dia actual y su fecha.  Si se especifica un servidor,
+  el dia actual y la fecha son los de dicho server.
+  

@@ -1,0 +1,5 @@
+VERSION
+Puedes averiguar con qué programa se está conectando la otra
+persona, para ello tienes que poner /CTCP NICK VERSION así /CTCP
+donostiarra VERSION y en la pantalla del estatus te saldrá:
+donostiarra VERSION reply: mIRC32 v6.32 K.Mardam-Bey

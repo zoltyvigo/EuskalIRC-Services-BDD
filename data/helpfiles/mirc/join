@@ -1,0 +1,10 @@
+ /JOIN [-inx]#canal
+Entrar en el canal especificado. Ejemplo: /join #EuskalIRC
+ Con esta orden, entrarás en el canal #EuskalIRC, una vez en el canal no tienes más
+que teclear y darle a enter para poder "hablar con los demás. Los operadores
+(esos que llevan la @ delante del nombre) son los moderadores del canal y los
+que te podrán ayudar si tienes algún problema.
+ -i sirve para unirnos al canal al que fuimos invitados -n y -x sirven para
+minimizar o maximizar la ventana del canal al que nos unimos. Algunos
+canales tienen clave para entrar, en este caso tendrías que poner la clave
+después del nombre del canal así: /join #EuskalIRC goraeh

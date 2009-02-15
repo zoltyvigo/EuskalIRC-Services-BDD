@@ -1,0 +1,12 @@
+/WRITEINI archivoini sección [item] [valor]
+Escribe en los archivos con el formato ini standard
+ El aspecto de un archivo ini es el siguiente:
+ [DDE]
+ServerStatus=on
+ServiceName=mirc
+ Para conseguir este mismo resultado podrías escribir:
+ /WRITE my.ini DDE ServerStatus on
+/WRITE my.ini DDE ServiceName mirc
+ Puedes borrar secciones enteras o items usando la orden /REMINI
+ Cuidado: No utilices esta orden para modificar los ini que el mIRC utiliza de
+serie, pues los estropearías y el mIRC dejaría de funcionar correctamente.

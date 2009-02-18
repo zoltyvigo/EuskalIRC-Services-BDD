@@ -1,4 +1,4 @@
-#summary One-sentence summary of this page.
+#summary #summary Descripción del proyecto EuskalIRC-Services-BDD.
 
 ircservices-4.3.3+Upworld-1.1+BDD  (botshispanobdd-1.2.1)
 + services-bdd = euskalirc-services-bdd

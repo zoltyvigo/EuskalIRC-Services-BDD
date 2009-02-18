@@ -1,0 +1,35 @@
+#summary One-sentence summary of this page.
+
+ircservices-4.3.3+Upworld-1.1+BDD  (botshispanobdd-1.2.1)
++ services-bdd = euskalirc-services-bdd
+
+
+Add your content here.
+Son una modificación usando el protocolo p09
+testado para ircuh en versiones u2.10.H.10.42-u2.10.H.10.77
+
+= Details =
+------------features Usuarios-------
+Se añaden a la categoria de usuarios Administrador Y Operador,los de
+Devel y Patrocinador-Sponsor.
+Se Cambia categoria Cregadmin por la de Coadmin
+--------------features Bots -------------
+Se incluye Creg, y se añaden
+secciones-categorias de registro.
+       -creg-
+Usuarios --> REGISTRA <canal> <clave> <seccion[SOC INF CI AYU ADUL OTR]>
+<descripción>
+Admins   --> REG <canal> <clave> <seccion[COM OFI REP]> <descripción>
+
+Se incluye _antispam , y se añaden nuevas
+funcionalidades que aprovechan el u2.10.H.10.x "el SVSJOIN" 
+Se añade ipvirtual ,descentralizandolo del nickserv
+Se añade EuskalIRC como bot auxiliar ,e informativo que tramita dudas de 
+los usuarios.
+Se pueden fijar  los nuevos modos de canal del (u2.10.H.10.13) +C,+N,+u
+por mlock en Chan.
+y un Nuevo Bot de ayuda mIRC con mensajes de ayuda basicos en castellano
+Add your content here.  Format your content with:
+  * Text in *bold* or _italic_
+  * Headings, paragraphs, and lists
+  * Automatic links to other wiki pages

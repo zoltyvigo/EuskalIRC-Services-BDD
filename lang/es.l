@@ -3178,6 +3178,9 @@ IPV_HELP
 	  
 	    12CAMBIAR      Activa Tu Ip Virtual Personalizada
 	    12PONER        Inserta Frases Personalizadas en una Agenda(En Desarrollo)
+	    12USAR	     Activa como Ip Virtual ,una Frase de las puestas. 
+			     El Primer numero es para activar,el segundo entre [] para eliminar
+			     de la lista.
 	    12ACTIVAR      Activa la Ip Virtual Personalizada Con Colores (Solo Admins)
 	    12SET          Activa  IpVirtual  de otros semi-personalizada (Solo Admins)
 	    12HELP         La Ayuda del Comando
@@ -3300,6 +3303,10 @@ OPER_HELP
 	    12SET         Establece varias opciones globales de los
 	                    servicios
 	    12VHOST       Cambia por completo el vhost de un usuario
+	
+	    12SPAM	    Modifica la lista de palabras consideradas Spam
+			    y que se vigilaran en aquellos canales donde se supere
+			    el número de 4 %d  usuarios
 	    12UPDATE      Fuerza a la base de datos de los Servicios a
 	                    ser actualizada inmediatamente en el disco
 	    12QUIT        Da por finalizada la ejecución del programa
@@ -3764,37 +3771,46 @@ OPER_HELP_KILLCLONES
 CREG_HELP
 	4%S le permite realizar una petición de registro de un canal
 	e introducir a éste en la fase de registro. Para poder registrar
-	un canal, necesita el apoyo de12 3 personas. Los siguientes comandos
+	un canal, necesita el apoyo de12 %d personas. Los siguientes comandos
 	le permiten manejar el pre-registro de un canal; para utilizarlos,
 	escriba 12/msg %S comando. Para más información sobre un comando
 	específico, escriba 12/msg %S HELP comando.
 	
 	   12REGISTRA   Realiza una petición de registro de un canal.
+	   12SECCION	  Muestra las secciones disponibles en la red.
 	   12APOYA      Muestra su apoyo al registro de un canal.
 	   12CANCELA    Cancela una petición de registro de un canal.
 	   12ESTADO     Permite consultar el estado de un canal.
 	   12APOYOS     Lista los apoyos recibidos por un canal o
-	              los registros/apoyos emitidos por un usuario.
+	                  los registros/apoyos emitidos por un usuario.
 	 
 	4AVISO: 12%S realiza únicamente funciones de pre-registro de
 	un canal, siendo cada petición revisada por la administración
 	de la red. La red se reserva el derecho a denegar el registro a
 	cualquier canal si sus usuarios se comportan indebidamente o si
 	el canal no se ajusta a las normas de registro para los canales
-	disponibles en http://www.upworld.org/canales/normas.html
+	disponibles en http://www.euskalirc.tk
 
 CREG_HELP_SEC
-	 12Secciones disponibles en la Red para ser asignadas al canal
-	 
-	       2SOC  SOCIEDAD-ZONAS GEOGRAFICAS
-	       2INF  INFORMATICA
-	       2CI   CIENCIAS
-	       2AYU  AYUDA
-	       2ADU  ADULTOS
-	       2OTR  OTRAS SECCIONES
-	           
+	   12Secciones disponibles en la Red para ser asignadas al canal
+	2PRO  De Proyectos,Investigaciones 
+	2AYU 	De Ayuda
+	2JUE  Juegos y Clanes
+	2CUH  Cultura y Humanidades
+	2SOC  Sociedad
+	2CIE  Ciencias
+	2DEP  Deportes
+	2INF  Informatica
+	2LCT  Literatura, Cine y TV
+	2MUS  Musica
+	2OCI  Ocio
+	2PAI  Paises y continentes
+	2PRF  Profesiones-Oficios
+	2ADU  Contenido para Adultos
+	2AMO  Amor y amistad
+	2SEX  Sexo
 CREG_SERVADMIN_HELP_SEC
-	4Los siguientes comandos están disponibles para los Operadores
+	4Los siguientes comandos están disponibles para los CoAdmins
 	4de Services
 	
 	       5COM  Canal COMERCIAL de la RED
@@ -3893,8 +3909,10 @@ CREG_HELP_ESTADO
 	    12REGISTRADO   El canal ya está actualmente registrado.
 	    12SUSPENDIDO   El registro del canal ha sido suspendido.
 	    12COMERCIAL    Es un canal comercial.
+	    12OFICIAL      Es un canal oficial.
+	    12REPRESENTANTES Es un canal de Representantes de Red.
 	    12DROPADO      El registro del canal ha sido elminado por la
-	                 administración de la red.
+	                     administración de la red.
 
 
 CREG_HELP_APOYOS
@@ -3909,55 +3927,31 @@ CREG_HELP_APOYOS
 	el canal si se está utilizando el nick que env¡o la petición de
 	registro (el futuro fundador del canal), y solo es posible
 	listar los apoyos/registros del nick que estamos utilizando.
-
-
 CREG_SERVADMIN_HELP
-	Los siguientes comandos están disponibles para los Operadores
-	de services:
+	4Los siguientes comandos están disponibles para los Representantes
+	de Red:
 	
 	Información sobre Canales:
 	    INFO      Devuelve información ampliada sobre un canal.
-	    LISTA     Lista los canales pendientes, denegados, prohibidos,
+	    LIST      Lista los canales pendientes, denegados, prohibidos,
 	              expirados, enregistro, aceptados, suspendidos,
 	              comerciales o dropados.
-	Administración de Peticiones de Registro:
-	    ACEPTA    Acepta la petici¢n de registro de un canal
-	              y lo registra en el bot CHaN. (Admins)
-	    RESTAURA  Re-registra un canal eT CHaN. (Admins)
-	 REGCOMERCIAL Registra un canal comercial (Restringido)
-	    ANULA     Anula la petici¢n de registro de un canal.
-	    DENIEGA   Deniega la petición de registro de un canal. (Admins)
-	    PROHIBE   Prohibe el registro de un canal. (Admins)
-	    RECHAZA   Rechaza el registro de un canal. (Admins)
-	    PERMITE   Levanta la prohibición de registro de un canal.
 	
-	Administración de Canales:
+	4Administración de Peticiones de Registro:4
+	    ACEPTA    Acepta la petici¢n de registro de un canal
+	              y lo registra en el bot CHaN. (CoAdmins)
+	    DENIEGA   Deniega la petición de registro de un canal. (CoAdmins)
+	 
+	4Administración de Canales:4
 	    SUSPEND   Suspende cautelarmente un canal registrado.
 	    UNSUSPEND Levanta la suspensión de un canal registrado.
 	    DROP      Borra el registro de un canal registrado.
-	    LIMPIA    Glinea a todos los miembros de un canal. (Admins)
-	    APODERA   Se apodera de un canal y lo silencia.
 	    MARCA     Añade un comentario al histórico de un canal.
-	
-	Funciones de Control:
-	    ILIST     Administra la lista de nicks de los cuales se
-	              ignorarán las peticiones de registro.
-	    DNICK     Administra la lista de nicks dropados automáticamente
-	              por estar registrados com mail an¢nimo.
-	    ACTIVA    Activa el registro/apoyo de canales. (Admins)
-	    DESACTIVA Desactiva el registro/apoyo de canales. (Admins)
-	    REFRESCA  Actualiza la lista de nicks con acceso de
-	              operadores/administradores de services a CReG.
-	    REINICIA  Reinicia el bot CReG.
-	Comandos varios:
-	    ILINE     Consulta la DB de ilines.
-	    TESTMAIL  Consulta la DB de dominios an¢nimos.
-	
-	Operadores de services pueden también listar los apoyos que ha
+	    DESMARCAR Elimina un comentario al histórico de un canal.
+		
+	2Representantes de Red pueden también listar los apoyos que ha
 	recibido un canal sin ser el fundador del mismo y los apoyos y
 	registros de cualquier usuario.
-	
-
 SERVICES_CREDITS
 	Services es copyright (c) 1996-2000 de Andrew Church
 	<12achurch@achurch.orgt>.

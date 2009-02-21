@@ -201,7 +201,7 @@ void process()
     } else {
      //  log("unknown message from server (%s)", inbuf); 
 //send_cmd(ServerName, "PRIVMSG #Debug :DEBUG: %s",inbuf);
-canaladmins( s_OperServ,"%s",inbuf);
+
     }
 
     /* Free argument list we created */

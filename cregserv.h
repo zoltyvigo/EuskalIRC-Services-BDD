@@ -61,25 +61,24 @@ struct creginfo_ {
 
 
 
+#define CR_PRO   0x00000002	/*De Proyectos,Investigaciones*/
+#define CR_AYU   0x00000004	/*De Ayuda*/
+#define CR_JUE   0x00000010      /*Juegos y Clanes*/
+#define	CR_CUH   0x00000020     /*Cultura y Humanidades*/
+#define CR_SOC   0x00000040	/*Sociedad*/
+#define CR_CIE   0x00000080	/*Ciencias*/
+#define CR_DEP   0x00000200        /*Deportes*/
+#define CR_INF   0x00000800	   /*Informatica*/
+#define	CR_LCT   0x00002000        /*Literatura, Cine y TV*/
+#define	CR_MUS   0x00004000        /*Musica*/
+#define	CR_OCI   0x00008000        /*Ocio*/
+#define	CR_PAI   0x00020000        /*Paises y continentes*/
+#define	CR_PRF   0x00040000        /*Profesiones-Oficios*/
+#define CR_ADU   0x00080000       /*Contenido para Adultos*/
+#define CR_AMO   0x00100000      /*Amor y amistad*/
+#define CR_SEX   0x00200000     /*Sexo*/
 
-#define CR_AYU   0x00000100	
-#define	CR_CAU   0x00000200	/*Comunidades Autónomas*/
-#define	CR_CUH   0x00000400     /*Cultura y Humanidades*/
-#define CR_SOC   0x00000800
-#define CR_CIE   0x00001600
-#define CR_DEP   0x00003200        /*Deportes*/
-#define	CR_INC   0x00006400        /*Informática y Comunicaciones*/
-#define CR_INF   0x00012800
-#define	CR_LCT   0x00025600        /*Literatura, Cine y TV*/
-#define	CR_MUS   0x00051200        /*Música*/
-#define	CR_OCI   0x00102400        /*Ocio*/
-#define	CR_PAI   0x00204800        /*Países y continentes*/
-#define	CR_PRF   0x00409600        /*Profesiones*/
-#define	 CR_RAD  0x00819200        /*Radios*/
-#define	 CR_VID  0x01638400        /*Video*/
-#define CR_ADU   0x03276800
-#define CR_OTR   0x06553600
-#define CR_DES   0x13107200
+
 
 /* estan en int32 tipo;*/
 #define CR_COM     0x00000001     /*Canales Comerciales*/

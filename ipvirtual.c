@@ -26,6 +26,7 @@ static void do_ipv_add(User *u);
 static void do_ipv_del(User *u);
 
 static void do_ipv_list(User *u);
+static void do_ipv_usar(User *u);
 static void do_credits (User *u);
 static void do_vhost (User *u);
 static void do_cambia_vhost (User *u);
@@ -51,6 +52,7 @@ static Command cmds[] = {
 		-1, IPV_SERVADMIN_HELP_SET,
 		IPV_SERVADMIN_HELP_SET, IPV_SERVADMIN_HELP_SET },
      { "PONER",       do_ipv,       NULL,  -1,      -1,-1,-1,-1 },
+     { "USAR",       do_ipv_usar,       NULL,  -1,      -1,-1,-1,-1 },
    
     /* Fencepost: */
     { NULL }
@@ -333,6 +335,7 @@ static void do_ipv_add(User *u)
 static void do_ipv_list(User *u)
 {
     int i = 0;
+    int cont;
      int is_servadmin = is_services_admin(u);
     char timebuf[64];
     char *cmd = strtok(NULL, " ");
@@ -341,18 +344,19 @@ static void do_ipv_list(User *u)
     #else
     privmsg(s_IpVirtual, u->nick,"ID :: Texto :: Agregado por");
     #endif
-    
-    if ((!cmd) || !(is_servadmin))
+   cont=0;
+        if ((!cmd) || !(is_servadmin))
 	cmd = u->nick;
 
     for (i = 0; i < ipvirt; i++) {
+        cont++;
        #ifdef IRC_UNDERNET_P10
 	   if (stricmp(cmd, ipvirtual[i].titular) == 0) { 
- privmsg(s_IpVirtual, u->numerico, "%d - '%s' - '%s'", ipvirtual[i].numero, ipvirtual[i].cadena, *ipvirtual[i].titular ? ipvirtual[i].titular : "<unknown>");
+ privmsg(s_IpVirtual, u->numerico, "%d [ %d ] - '%s' - '%s'", cont, ipvirtual[i].numero,ipvirtual[i].cadena, *ipvirtual[i].titular ? ipvirtual[i].titular : "<unknown>");
  }
         #else
 	 if (stricmp(cmd, ipvirtual[i].titular) == 0) {
- privmsg(s_IpVirtual, u->nick,"%d - '%s' - '%s'", ipvirtual[i].numero, ipvirtual[i].cadena, *ipvirtual[i].titular ? ipvirtual[i].titular : "<unknown>");
+ privmsg(s_IpVirtual, u->nick,"%d [ %d ] - '%s' - '%s'", cont,  ipvirtual[i].numero,ipvirtual[i].cadena, *ipvirtual[i].titular ? ipvirtual[i].titular : "<unknown>");
 	  }
 	 #endif
        }
@@ -364,6 +368,102 @@ static void do_ipv_list(User *u)
 	 #endif
 	 
 	
+}
+static void do_ipv_usar(User *u)
+{
+     int i = 0;
+    static const char karak[] = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-.";
+    time_t oraingoa = time(NULL);
+    time_t kadukatu;
+    struct tm *tm;
+    char timebuf[32];
+    NickInfo *ni;
+     char *cmd;
+    char *cadena;
+     char *text = strtok(NULL, "");
+     int vhost;
+    
+      
+      if (!text) {
+	privmsg(s_IpVirtual, u->nick,"Sintaxis: USAR [numero]");
+	  return;
+       }
+       else {
+       cmd = u->nick;
+       vhost=atoi(text);
+	vhost--;
+	 cadena=ipvirtual[vhost].cadena; //para que no tenga que copiar toda la linea
+
+       if (stricmp(cmd, ipvirtual[vhost].titular) == 0) {
+          
+        
+        //do_usar_vhost(cmd,ipvirtual[vhost].cadena);
+ ni = findnick(cmd);
+   
+if (oraingoa < ni->time_vhost)
+{
+
+tm = localtime(&ni->time_vhost);
+
+strftime_lang(timebuf, sizeof(timebuf), u, STRFTIME_DATE_TIME_FORMAT, tm);
+#ifdef IRC_UNDERNET_P10
+privmsg(s_IpVirtual, u->numerico, "Solamente se admite un cambio cada 1m. Podras cambiar el vhost a la hora: %s", timebuf);
+#else
+privmsg(s_IpVirtual, u->nick, "Solamente se admite un cambio cada 1m. Podras cambiar el vhost a la hora: %s", timebuf);
+#endif
+return;
+}
+
+if (strlen(cadena) > 125) {
+#ifdef IRC_UNDERNET_P10
+privmsg(s_IpVirtual, u->numerico, "Como maximo puede tener 124 caracteres.");
+#else
+privmsg(s_IpVirtual, u->nick, "Como maximo puede tener 124 caracteres.");
+#endif
+return;
+}
+if ((strstr(cadena, "root")) || (strstr(cadena, "admin")) || (strstr(cadena, "coadmin")) || (strstr(cadena, "devel")) || (strstr(cadena, "oper")) || (strstr(cadena, "patrocina")) || (strstr(cadena, "euskalirc")) || (strstr(cadena, "net")) || (strstr(cadena, "com")) || (strstr(cadena, "org")) || (strstr(cadena, "tk")) || (strstr(cadena, "cat")) || (strstr(cadena, "eu")) || (strstr(cadena, "hisp")) || (strstr(cadena, "http")) || (strstr(cadena, "www")) || (strstr(cadena, "ircop")) || (strstr(cadena, "help"))) {
+ privmsg(s_IpVirtual, u->nick, "contiene palabras no permitidas");
+ return;
+ }
+if (cadena[strspn(cadena, karak)]) {
+#ifdef IRC_UNDERNET_P10
+privmsg(s_IpVirtual, u->numerico, "El vhost solamente admite caracteres entre a-z, y 0-9 incluidas el guion y el punto.");
+#else
+privmsg(s_IpVirtual, u->nick, "El vhost solamente admite caracteres entre a-z, y 0-9 incluidas el guion y el punto.");
+#endif
+
+} else {
+kadukatu = dotime("1m");
+kadukatu += time(NULL);
+ni->time_vhost = kadukatu;
+tm = localtime(&kadukatu);
+
+
+strftime_lang(timebuf, sizeof(timebuf), u, STRFTIME_DATE_TIME_FORMAT, tm);
+//sartu_datua(22, u->nick, vhost);
+#ifdef IRC_UNDERNET_P09
+do_write_bdd(u->nick, 4, cadena);
+#endif
+    notice_lang(s_IpVirtual, u, IPV_ACTIVAR_SET, u->nick, cadena);
+//vhost_aldaketa(u->nick, vhost, 1);
+canaladmins(s_IpVirtual, "2%s4 VHOST[12%s4]", u->nick,cadena);
+#ifdef IRC_UNDERNET_P10
+privmsg(s_IpVirtual, u->numerico, "Acabas de personalizar tu vhost, el proximo cambio podras hacer dentro de 1 minuto");
+privmsg(s_IpVirtual, u->numerico, "Hora exacta: %s", timebuf);
+#else
+privmsg(s_IpVirtual, u->nick, "Acabas de personalizar tu vhost, el proximo cambio podras hacer dentro de 1 minuto");
+privmsg(s_IpVirtual, u->nick, "Hora exacta: %s", timebuf);
+#endif
+	return;
+}
+
+
+}
+     	else
+        privmsg(s_IpVirtual, u->nick, "fuera del rango");
+
+}
 }
 static void do_ipv_del(User *u)
 {
@@ -468,7 +568,7 @@ privmsg(s_IpVirtual, u->nick, "Como maximo puede tener 124 caracteres.");
 #endif
 return;
 }
- if ((strstr(vhost, "root")) || (strstr(vhost, "admin")) || (strstr(vhost, "coadmin")) || (strstr(vhost, "devel")) || (strstr(vhost, "oper")) || (strstr(vhost, "patrocina")) || (strstr(vhost, "euskalirc")) || (strstr(vhost, "net")) || (strstr(vhost, "com")) || (strstr(vhost, "org")) || (strstr(vhost, "tk")) || (strstr(vhost, "es")) || (strstr(vhost, "cat")) || (strstr(vhost, "eu")) || (strstr(vhost, "hisp")) || (strstr(vhost, "http")) || (strstr(vhost, "www")) || (strstr(vhost, "ircop")) || (strstr(vhost, "help"))) {
+ if ((strstr(vhost, "root")) || (strstr(vhost, "admin")) || (strstr(vhost, "coadmin")) || (strstr(vhost, "devel")) || (strstr(vhost, "oper")) || (strstr(vhost, "patrocina")) || (strstr(vhost, "euskalirc")) || (strstr(vhost, "net")) || (strstr(vhost, "com")) || (strstr(vhost, "org")) || (strstr(vhost, "tk")) || (strstr(vhost, "cat")) || (strstr(vhost, "eu")) || (strstr(vhost, "hisp")) || (strstr(vhost, "http")) || (strstr(vhost, "www")) || (strstr(vhost, "ircop")) || (strstr(vhost, "help"))) {
  privmsg(s_IpVirtual, u->nick, "contiene palabras no permitidas");
  return;
  }

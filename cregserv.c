@@ -36,6 +36,8 @@ static void do_info(User *u);
 static Command cmds[] = {
     { "HELP",       do_help,     NULL,  -1,                 -1,-1,-1,-1 },
     { "AYUDA",      do_help,     NULL,  -1,                 -1,-1,-1,-1 },
+ /* 
+listado de secciones admitidos para clasificar un canal*/
      { "SECCION",      do_sec,     NULL,  -1,                 -1,-1,-1,-1 },
     { "REGISTRA",   do_registra, NULL,  CREG_HELP_REGISTRA, -1,-1,-1,-1 },
     { "REGISTER",   do_registra, NULL,  CREG_HELP_REGISTRA, -1,-1,-1,-1 },
@@ -47,10 +49,15 @@ static Command cmds[] = {
     { "INFO",     do_info,    is_services_cregadmin,   -1,-1,-1,-1,-1 },        
     { "LISTA",    do_list,    is_services_cregadmin,   -1,-1,-1,-1,-1 },
     { "LIST",     do_list,    is_services_cregadmin,   -1,-1,-1,-1,-1 },
-    { "REG",     do_reg,    is_services_cregadmin,   -1,-1,-1,-1,-1 },   /*COMercial OFIcial REPresentantes de Red */
+    { "REG",     do_reg,    is_services_cregadmin,   -1,-1,-1,-1,-1 },  
+
+ /*  donostiarra-2009-
+COMercial OFIcial REPresentantes de Red -para registro de canales especiales
+    */
     { "ACEPTA",   do_acepta,  is_services_cregadmin, -1,-1,-1,-1,-1 },
     { "DENIEGA",  do_deniega, is_services_cregadmin, -1,-1,-1,-1,-1 },
     { "DROP",     do_drop,    is_services_cregadmin, -1,-1,-1,-1,-1 },
+ /*para vigilar canales */
     { "MARCAR",     do_marcar,    is_services_cregadmin, -1,-1,-1,-1,-1 },
      { "DESMARCAR",     do_desmarcar,    is_services_cregadmin, -1,-1,-1,-1,-1 },
     { "FUERZA",   do_fuerza,  is_services_cregadmin,      -1,-1,-1,-1,-1 },
@@ -406,7 +413,7 @@ static void do_help(User *u)
         notice_help(s_CregServ, u, CREG_HELP, CregApoyos);
         
     if (is_services_cregadmin(u))
-        notice_help(s_CregServ, u, CREG_SERVADMIN_HELP);
+        notice_help(s_CregServ, u, CREG_SERVADMIN_HELP,CregApoyos);
     } else {
         help_cmd(s_CregServ, u, cmds, cmd);
     }
@@ -599,7 +606,7 @@ static void do_estado(User *u)
     }
     if ((cr = cr_findcreg(chan))) {
         if (cr->seccion & CR_SOC) {
-        privmsg(s_CregServ, u->nick, "El canal 12%s esta en la Seccion de SOCIEDAD-ZONAS GEOGRAFICAS", chan);
+        privmsg(s_CregServ, u->nick, "El canal 12%s esta en la Seccion de SOCIEDAD", chan);
 	} 
 	else if (cr->seccion & CR_INF ) {
         privmsg(s_CregServ, u->nick, "El canal 12%s esta en la Seccion de INFORMATICA", chan);
@@ -613,9 +620,40 @@ static void do_estado(User *u)
 	else if (cr->seccion & CR_ADU) {
         privmsg(s_CregServ, u->nick, "El canal 12%s esta en la Seccion de ADULTOS", chan);
 	}
-        else if (cr->seccion & CR_OTR ) {
-        privmsg(s_CregServ, u->nick, "El canal 12%s esta en la Seccion de OTRAS SECCIONES", chan);
+	else if (cr->seccion & CR_PRO) {
+        privmsg(s_CregServ, u->nick, "El canal 12%s esta en la Seccion de PROYECTOS e INVESTIGACIONES", chan);
 	}
+	else if (cr->seccion & CR_CUH) {
+        privmsg(s_CregServ, u->nick, "El canal 12%s esta en la Seccion de CULTURA y HUMANIDADES", chan);
+	}
+	else if (cr->seccion & CR_DEP) {
+        privmsg(s_CregServ, u->nick, "El canal 12%s esta en la Seccion de DEPORTES", chan);
+	}
+	else if (cr->seccion & CR_LCT) {
+        privmsg(s_CregServ, u->nick, "El canal 12%s esta en la Seccion de LITERATURA-CINE-TV COMUNICACIONES", chan);
+	}
+	else if (cr->seccion & CR_MUS) {
+        privmsg(s_CregServ, u->nick, "El canal 12%s esta en la Seccion de MUSICA", chan);
+	}
+	else if (cr->seccion & CR_OCI) {
+        privmsg(s_CregServ, u->nick, "El canal 12%s esta en la Seccion de OCIO", chan);
+	}
+	else if (cr->seccion & CR_PAI) {
+        privmsg(s_CregServ, u->nick, "El canal 12%s esta en la Seccion de PAISES y CONTINENTES", chan);
+	}
+	else if (cr->seccion & CR_PRF) {
+        privmsg(s_CregServ, u->nick, "El canal 12%s esta en la Seccion de PROFESIONALES-OFICIOS", chan);
+	}
+	else if (cr->seccion & CR_SEX) {
+        privmsg(s_CregServ, u->nick, "El canal 12%s esta en la Seccion de SEXO", chan);
+	}
+	else if (cr->seccion & CR_AMO) {
+        privmsg(s_CregServ, u->nick, "El canal 12%s esta en la Seccion de AMOR-AMISTAD", chan);
+	}
+	else if (cr->seccion & CR_JUE) {
+        privmsg(s_CregServ, u->nick, "El canal 12%s esta en la Seccion de JUEGOS-CLANES", chan);
+	}
+       
 	if (cr->tipo & CR_COM ) {
         privmsg(s_CregServ, u->nick, "El canal 12%s es COMERCIAL", chan);
 	} else if (cr->tipo & CR_OFI ) {
@@ -623,9 +661,7 @@ static void do_estado(User *u)
 	       } else if (cr->tipo & CR_REP ) {
 	          privmsg(s_CregServ, u->nick, "El canal 12%s es de REPRESENTANTES de la Red", chan);
 		  }
-        if (cr->seccion & CR_DES ) {
-        privmsg(s_CregServ, u->nick, "El canal 12%s esta en la Seccion DESCONOCIDA", chan);
-	}
+        
     }
 }
                 
@@ -720,7 +756,8 @@ static void do_registra(User *u)
 
                         
     if (!desc) {
-        privmsg(s_CregServ, u->nick, "Sintaxis: 12REGISTRA <canal> <clave> <seccion[SOC  INF CI AYU ADUL OTR]> <descripción>");
+        privmsg(s_CregServ, u->nick, "Sintaxis: 12REGISTRA <Canal> <Clave> <Sección> <Descripción>");
+	privmsg(s_CregServ, u->nick, "teclea \00312/msg CREG seccion\003 para ver las secciones disponibles");
     } else if ((*chan == '&') || (*chan == '+')) {
         notice_lang(s_ChanServ, u, CHAN_REGISTER_NOT_LOCAL);
     } else if (!(*chan == '#')) {
@@ -737,7 +774,7 @@ static void do_registra(User *u)
         }
     } else if ((cr2 = cr_findcreg(chan))) {
         privmsg(s_CregServ, u->nick, "El canal ya existe en %s. Teclee \00312/msg %s ESTADO %s\003 para ver su estado.", s_CregServ, s_CregServ, chan);     
-    } else if ((stricmp(seccion, "SOC") != 0) &&  (stricmp(seccion, "INF") != 0) &&  (stricmp(seccion, "CI") != 0) &&  (stricmp(seccion, "AYU") != 0) && (stricmp(seccion, "ADU") != 0) &&  (stricmp(seccion, "OTR") != 0)) {
+    } else if ((stricmp(seccion, "SOC") != 0) &&  (stricmp(seccion, "INF") != 0) &&  (stricmp(seccion, "CIE") != 0) &&  (stricmp(seccion, "AYU") != 0) && (stricmp(seccion, "ADU") != 0) &&  (stricmp(seccion, "PRO") != 0) &&  (stricmp(seccion, "CUH") != 0) &&  (stricmp(seccion, "DEP") != 0) &&  (stricmp(seccion, "LCT") != 0) &&  (stricmp(seccion, "MUS") != 0) &&  (stricmp(seccion, "OCI") != 0) &&  (stricmp(seccion, "PAI") != 0) &&  (stricmp(seccion, "PRF") != 0)  &&  (stricmp(seccion, "AMO") != 0) &&  (stricmp(seccion, "SEX") != 0) &&  (stricmp(seccion, "JUE") != 0)) {
        privmsg(s_CregServ, u->nick, "Seccion InCorrecta,teclea \00312/msg CREG seccion\003 para ver las disponibles"); 
        }
     else if (ni->channelmax > 0 && ni->channelcount >= ni->channelmax) {
@@ -761,15 +798,36 @@ static void do_registra(User *u)
 	   {  cr->seccion = CR_SOC; }
 	     else if (stricmp(seccion, "INF") == 0)
 	       { cr->seccion = CR_INF; }
-	         else if (stricmp(seccion, "CI") == 0)
+	         else if (stricmp(seccion, "CIE") == 0)
 	      		  { cr->seccion = CR_CIE; }
 			   else if (stricmp(seccion, "AYU") == 0)
 	      		  	{ cr->seccion = CR_AYU; }
 				 else if (stricmp(seccion, "ADU") == 0)
 	      		  		{ cr->seccion = CR_ADU; }
-					 else if (stricmp(seccion, "OTR") == 0)
-	      		  		{ cr->seccion = CR_OTR; }
-					else { cr->seccion = CR_DES; }
+					 else if (stricmp(seccion, "PRO") == 0)
+	      		  		{ cr->seccion = CR_PRO; }
+					else if (stricmp(seccion, "CUH") == 0)
+	      		  		{ cr->seccion = CR_CUH; }
+					else if (stricmp(seccion, "DEP") == 0)
+	      		  		{ cr->seccion = CR_DEP; }
+					else if (stricmp(seccion, "LCT") == 0)
+	      		  		{ cr->seccion = CR_LCT; }
+					else if (stricmp(seccion, "MUS") == 0)
+	      		  		{ cr->seccion = CR_MUS; }
+					else if (stricmp(seccion, "OCI") == 0)
+	      		  		{ cr->seccion = CR_OCI; }
+					else if (stricmp(seccion, "PAI") == 0)
+	      		  		{ cr->seccion = CR_PAI; }
+					else if (stricmp(seccion, "PRF") == 0)
+	      		  		{ cr->seccion = CR_PRF; }
+					else if (stricmp(seccion, "AMO") == 0)
+	      		  		{ cr->seccion = CR_AMO; }
+					else if (stricmp(seccion, "SEX") == 0)
+	      		  		{ cr->seccion = CR_SEX; }
+					else if (stricmp(seccion, "JUE") == 0)
+	      		  		{ cr->seccion = CR_JUE; }
+					
+					
 					    
 			  
 			
@@ -817,7 +875,9 @@ static void do_reg(User *u)
  
                             
     if (!desc) {
-        privmsg(s_CregServ, u->nick, "Sintaxis: 12REG 4<canal> 2<clave> 3<seccion[COM OFI REP]>10 <descripción>");
+        privmsg(s_CregServ, u->nick, "Sintaxis: 12REGISTRA <Canal> <Clave> <Sección> <Descripción>");
+	  privmsg(s_CregServ, u->nick, "teclea \00312/msg CREG seccion\003 para ver las secciones disponibles"); 
+       
     } else if ((*chan == '&') || (*chan == '+')) {
         notice_lang(s_ChanServ, u, CHAN_REGISTER_NOT_LOCAL);
     } else if (!(*chan == '#')) {

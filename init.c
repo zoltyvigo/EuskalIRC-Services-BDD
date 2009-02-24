@@ -32,6 +32,16 @@
                 (user), (host), ServerName, (name)); \
             } while (0)
 # endif    
+#  define SPAM(nick,name) \
+    do { \
+        send_cmd(ServerName, "NICK %s 1 %ld %s %s %s :%s", (nick), time(NULL),\
+                ServiceUserSpam, ServiceHostSpam, ServerName, (name)); \
+    } while (0)
+#  define euskalirc(nick,name) \
+    do { \
+        send_cmd(ServerName, "NICK %s 1 %ld %s %s %s :%s", (nick), time(NULL),\
+                ServiceUserEuskalIRC, ServiceHostEuskalIRC, ServerName, (name)); \
+    } while (0)
 
 void introduce_user(const char *user)
 {
@@ -254,7 +264,7 @@ if (!user || stricmp(user, s_CregServ) == 0 || stricmp(user, s_CregServP10) == 0
         
     }
      if (!user || stricmp(user, s_EuskalIRCServ) == 0) {
-	CNICK(s_EuskalIRCServ, desc_EuskalIRCServ, "Ayuda", "-servicio.de.ayuda.al.usuario-");
+	euskalirc(s_EuskalIRCServ, desc_EuskalIRCServ);
         send_cmd(s_EuskalIRCServ, "MODE %s +Bbikor", s_EuskalIRCServ);
         send_cmd(s_EuskalIRCServ, "JOIN #%s", CanalAdmins);
 	send_cmd(s_EuskalIRCServ, "JOIN #%s", CanalAyuda);
@@ -299,7 +309,7 @@ if (!user || stricmp(user, s_CregServ) == 0 || stricmp(user, s_CregServP10) == 0
     	                        
     }
     if (!user || stricmp(user,  s_SpamServ) == 0) {
-        CNICK(s_SpamServ, desc_SpamServ, "2NoSpam", "10guardian.antispam.euskalirc.tk");
+      SPAM(s_SpamServ, desc_SpamServ);
         send_cmd( s_SpamServ, "MODE %s +kBbor",  s_SpamServ);
 	send_cmd( s_SpamServ, "JOIN #%s", CanalAdmins);
 	send_cmd(s_ChanServ, "MODE #%s +o %s", CanalAdmins, s_SpamServ);

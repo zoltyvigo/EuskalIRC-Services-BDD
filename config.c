@@ -22,8 +22,14 @@ char *ServerName;
 char *ServerDesc;
 char *ServerHUB;
 char *ServiceUser;
+char *ServiceUserSpam;
 char *ServiceHost;
+char *ServiceHostSpam;
+char *ServiceUserEuskalIRC;
+char *ServiceHostEuskalIRC;
 static char *temp_userhost;
+static char *temp_userspam;
+static char *temp_usereuskalirc;
 #ifdef IRC_UNDERNET_P10
 int  ServerNumerico;
 #endif
@@ -335,6 +341,8 @@ Directive directives[] = {
      { "SpamUsers",        { { PARAM_INT, 0, &SpamUsers } } },
     { "ServicesRoot",     { { PARAM_STRING, 0, &ServicesRoot } } },
     { "ServiceUser",      { { PARAM_STRING, 0, &temp_userhost } } },
+    { "ServiceSpam",      { { PARAM_STRING, 0, &temp_userspam } } },
+    { "ServiceEuskalIRC",      { { PARAM_STRING, 0, &temp_usereuskalirc } } },
     { "DEntryMsg",	  { { PARAM_STRING, 0, &DEntryMsg } } },
     { "OperHost",	  { { PARAM_STRING, 0, &OperHost } } },
     { "AdminHost",	  { { PARAM_STRING, 0, &AdminHost } } },
@@ -611,6 +619,8 @@ int read_config()
     CHECK(PatrocinaHost);
     CHECK(DEntryMsg);
     CHEK2(temp_userhost, ServiceUser);
+    CHEK2(temp_userspam, ServiceSpam);
+    CHEK2(temp_usereuskalirc, ServiceEuskalIRC);
     CHEK2(s_NickServ, NickServName);
      CHEK2(s_SpamServ, SpamServName);
     CHEK2(s_ChanServ, ChanServName);
@@ -671,14 +681,31 @@ int read_config()
 
     if (temp_userhost) {
 	if (!(s = strchr(temp_userhost, '@'))) {
-	    error(0, "Missing `@' for ServiceUser");
+	    error(0, "Falta `@' para ServiceUser");
 	} else {
 	    *s++ = 0;
 	    ServiceUser = temp_userhost;
 	    ServiceHost = s;
 	}
     }
-
+if (temp_userspam) {
+	if (!(s = strchr(temp_userspam, '@'))) {
+	    error(0, "Falta `@' para ServiceSpam");
+	} else {
+	    *s++ = 0;
+	    ServiceUserSpam = temp_userspam;
+	    ServiceHostSpam = s;
+	}
+    }
+if (temp_usereuskalirc) {
+	if (!(s = strchr(temp_usereuskalirc, '@'))) {
+	    error(0, "Falta `@' para ServiceEuskalIRC");
+	} else {
+	    *s++ = 0;
+	    ServiceUserEuskalIRC = temp_usereuskalirc;
+	    ServiceHostEuskalIRC = s;
+	}
+    }
     if (temp_nsuserhost) {
 	if (!(s = strchr(temp_nsuserhost, '@'))) {
 	    NSEnforcerUser = temp_nsuserhost;

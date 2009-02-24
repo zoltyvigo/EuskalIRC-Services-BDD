@@ -8,7 +8,11 @@
  * DarkuBots es una adaptación de Javier Fernández Viña, ZipBreake.
  * E-Mail: javier@jfv.es || Web: http://jfv.es/
  *
- */
+ * Modificaciones -donostiarra- admin.euskalirc@gmail.com   
+ *					
+ *						*/
+
+
 #include "services.h"
 #include "pseudo.h"
 
@@ -22,6 +26,8 @@ static void do_reg(User *u);
 static void do_acepta(User *u);
 static void do_drop(User *u);
 static void do_marcar(User *u);
+static void do_suspend(User *u);
+static void do_unsuspend(User *u);
 static void do_desmarcar(User *u);
 static void do_deniega(User *u);
 static void do_cancela(User *u);
@@ -60,6 +66,13 @@ COMercial OFIcial REPresentantes de Red -para registro de canales especiales
  /*para vigilar canales */
     { "MARCAR",     do_marcar,    is_services_cregadmin, -1,-1,-1,-1,-1 },
      { "DESMARCAR",     do_desmarcar,    is_services_cregadmin, -1,-1,-1,-1,-1 },
+/*
+     donostiarra-2009-
+
+las suspensiones y unsuspensiones tambien las recoge chan*/
+  
+    { "SUSPEND",     do_suspend,    is_services_cregadmin, -1,-1,-1,-1,-1 },
+    { "UNSUSPEND",     do_unsuspend,    is_services_cregadmin, -1,-1,-1,-1,-1 },
     { "FUERZA",   do_fuerza,  is_services_cregadmin,      -1,-1,-1,-1,-1 },
     { NULL }
 };
@@ -595,8 +608,18 @@ static void do_estado(User *u)
         if (cr->motivo)        
              privmsg(s_CregServ, u->nick, "Motivo: 12%s", cr->motivo);
 
-    } else if (cr->estado & CR_MARCADO) {
+      /*para que lo vean todos los helpers ,que ha sido marcado el canal y su motivo*/
+
+    } else if ((cr->estado & CR_MARCADO) &&  is_services_oper(u)){
         privmsg(s_CregServ, u->nick, "El canal 12%s ha sido 12MARCADO", chan);
+        if (cr->motivo)        
+             privmsg(s_CregServ, u->nick, "Motivo: 12%s", cr->motivo);
+        /*un usuario normal ve el canal marcado,como registrado*/
+    } else if  (cr->estado & CR_MARCADO) {
+        privmsg(s_CregServ, u->nick, "El canal 12%s esta 12REGISTRADO", chan);
+        
+    } else if (cr->estado & CR_SUSPENDIDO) {
+        privmsg(s_CregServ, u->nick, "El canal 12%s ha sido 12SUSPENDIDO", chan);
         if (cr->motivo)        
              privmsg(s_CregServ, u->nick, "Motivo: 12%s", cr->motivo);
     } else if (cr->estado & CR_EXPIRADO) {
@@ -1088,6 +1111,8 @@ static void do_info(User *u)
                statu="DENEGADO";
 	} else if (cr->estado & CR_MARCADO) {
                statu="MARCADO";
+	} else if (cr->estado & CR_SUSPENDIDO) {
+               statu="SUSPENDIDO";
         } else if (cr->estado & CR_DROPADO) {
                statu="DROPADO EN CHAN";
         } else if (cr->estado & CR_EXPIRADO) {
@@ -1114,8 +1139,11 @@ static void do_info(User *u)
         strftime_lang(buf, sizeof(buf), u, STRFTIME_DATE_TIME_FORMAT, tm);
         privmsg(s_CregServ, u->nick, "Ultimo apoyo: 12%s", buf);
         }
-	if (cr->motivo)        
-             privmsg(s_CregServ, u->nick, "Motivo: 12%s", cr->motivo);
+         if ((cr->estado & CR_MARCADO) || (cr->estado & CR_SUSPENDIDO)) {
+       		if (cr->motivo)        
+             		privmsg(s_CregServ, u->nick, "Motivo: 12%s", cr->motivo);
+        	 }
+
         if (cr->nickoper)        
              privmsg(s_CregServ, u->nick, "Ultimo cambio por: 12%s", cr->nickoper);
         if (cr->time_motivo) {
@@ -1157,9 +1185,10 @@ static void do_deniega(User *u)
         cr->estado |= CR_RECHAZADO;
         privmsg(s_CregServ, u->nick, "Al canal 12%s se le ha denegado el registro", chan);
         canalopers(s_CregServ, "12%s ha denegado el registro de 12%s", u->nick, chan);
+	send_cmd(s_CregServ,"TOPIC %s :Este canal ha sido 5RECHAZADO en su Registro(12%s)", chan,razon);
     } 
 }                                                                        
-/******************SUSPENSION DE UN CANAL *********/
+/******************MARCADO DE UN CANAL *********/
 static void do_marcar(User *u)
 {
    char *chan = strtok(NULL, " ");
@@ -1171,11 +1200,24 @@ static void do_marcar(User *u)
         privmsg(s_CregServ, u->nick, "Sintaxis: 12MARCAR <canal> 2 <motivo>");
     } else if (!(cr = cr_findcreg(chan))) {
         privmsg(s_CregServ, u->nick, "El canal 12%s no registrado en CReG", chan);
+    } else if ((cr->estado & CR_PROCESO_REG))  {
+        privmsg(s_CregServ, u->nick, "El canal 12%s esta en proceso de registro con CReG", chan);
+    } else if ((cr->estado & CR_EXPIRADO))  {
+        privmsg(s_CregServ, u->nick, "El canal 12%s esta expirado con CReG", chan);
+     } else if ((cr->estado & CR_RECHAZADO))  {
+        privmsg(s_CregServ, u->nick, "El canal 12%s esta rechazado con CReG", chan);
+      } else if ((cr->estado & CR_DROPADO))  {
+        privmsg(s_CregServ, u->nick, "El canal 12%s esta dropado con CReG", chan);
+      } else if ((cr->estado & CR_ACEPTADO))  {
+        privmsg(s_CregServ, u->nick, "El canal 12%s esta pendiente de 12APROBACION por parte de la administración de la red", chan);
+
     } else if ((cr->estado & CR_MARCADO))  {
         privmsg(s_CregServ, u->nick, "El canal 12%s Ya esta MARCADO  en CReG", chan);
-      } else {
-        if (cr->motivo)
-	free(cr->motivo);
+     } else if ((cr->estado & CR_SUSPENDIDO))  {
+        privmsg(s_CregServ, u->nick, "El canal 12%s esta SUSPENDIDO  en CReG", chan);
+      /*si esta suspendido el canal ,no necesario marcarlo porque ya tiene su razon*/
+     } else {
+      
         cr->motivo = sstrdup(razon);
         cr->time_motivo = time(NULL);
         cr->nickoper = sstrdup(u->nick);
@@ -1185,30 +1227,94 @@ static void do_marcar(User *u)
         canaladmins(s_CregServ, "12%s ha MARCADO el Canal  12%s", u->nick, chan);; 
     }
 }
-/******************UN-SUSPENSION DE UN CANAL *********/
+/******************DESMARCAR UN CANAL *********/
 static void do_desmarcar(User *u)
 {
    char *chan = strtok(NULL, " ");
-    CregInfo *cr;
-
+      CregInfo *cr;
+     NickInfo *ni;
+  
     if (!chan) {
         privmsg(s_CregServ, u->nick, "Sintaxis: 12DESMARCAR <canal>");
-    } else if (!(cr = cr_findcreg(chan))) {
-        privmsg(s_CregServ, u->nick, "El canal 12%s no registrado en CReG", chan);
+        return;
+      }
     
-    } else if ((cr->estado & CR_MARCADO))  {
-        cr->nickoper = sstrdup(u->nick);
-	if (cr->motivo)
+    if (!(cr = cr_findcreg(chan))) {
+        privmsg(s_CregServ, u->nick, "El canal 12%s no registrado en CReG", chan);
+         return;
+        
+    } else if (!(cr->estado & CR_MARCADO))  {
+        privmsg(s_CregServ, u->nick, "El canal 12%s no esta MARCADO  en CReG", chan);
+     
+     } else {
+        if (cr->motivo)
 	free(cr->motivo);
-        cr->estado = 0;
+        cr->nickoper = sstrdup(u->nick);
+        cr->estado  &= ~CR_MARCADO;
         cr->estado |= CR_REGISTRADO;
         privmsg(s_CregServ, u->nick, "Al canal 12%s se le ha DESMARCADO", chan);
-        canaladmins(s_CregServ, "12%s ha DESMARCADO al canal 12%s", u->nick, chan);
+        canaladmins(s_CregServ, "12%s ha DESMARCADO el Canal  12%s", u->nick, chan);; 
+    }
+}
+/******************SUSPENSION DE UN CANAL *********/
+static void do_suspend(User *u)
+{
+   char *chan = strtok(NULL, " ");
+    char *razon = strtok(NULL, "");
+    CregInfo *cr;
+     NickInfo *ni;
+
+    if (!razon) {
+        privmsg(s_CregServ, u->nick, "Sintaxis: 12SUSPEND <canal> 2 <motivo>");
+    } else if (!(cr = cr_findcreg(chan))) {
+        privmsg(s_CregServ, u->nick, "El canal 12%s no registrado en CReG", chan);
+    } else if ((cr->estado & CR_SUSPENDIDO))  {
+        privmsg(s_CregServ, u->nick, "El canal 12%s Ya esta SUSPENDIDO  en CReG", chan);
+      } else if (!suspende_con_creg(u, chan,  razon)) {
+        privmsg(s_CregServ, u->nick, "La Suspension del canal 12%s en %s ha fallado", chan, s_ChanServ);
+     } else {
+        if (cr->motivo)
+	free(cr->motivo);
+        cr->motivo = sstrdup(razon);
+        cr->time_motivo = time(NULL);
+        cr->nickoper = sstrdup(u->nick);
+        cr->estado = 0;
+        cr->estado |= CR_SUSPENDIDO;
+        privmsg(s_CregServ, u->nick, "Al canal 12%s se le ha SUSPENDIDO", chan);
+        canaladmins(s_CregServ, "12%s ha SUSPENDIDO el Canal  12%s", u->nick, chan);; 
+    }
+}
+/******************UNSUSPENSION DE UN CANAL *********/
+static void do_unsuspend(User *u)
+{
+   char *chan = strtok(NULL, " ");
+      CregInfo *cr;
+     NickInfo *ni;
+  
+    if (!chan) {
+        privmsg(s_CregServ, u->nick, "Sintaxis: 12UNSUSPEND <canal>");
+        return;
+      }
     
-   } else {
-   		 privmsg(s_CregServ, u->nick, "El canal 12%s no esta marcado", chan); 
-		 }
-   }
+    if (!(cr = cr_findcreg(chan))) {
+        privmsg(s_CregServ, u->nick, "El canal 12%s no registrado en CReG", chan);
+         return;
+        
+    } else if ((cr->estado & CR_REGISTRADO))  {
+        privmsg(s_CregServ, u->nick, "El canal 12%s no esta SUSPENDIDO  en CReG", chan);
+      } else if (!reactiva_con_creg(u, chan)) {
+        privmsg(s_CregServ, u->nick, "La unSuspension del canal 12%s en %s ha fallado", chan, s_ChanServ);
+     } else {
+        if (cr->motivo)
+	free(cr->motivo);
+        cr->nickoper = sstrdup(u->nick);
+        cr->estado = 0;
+        cr->estado |= CR_REGISTRADO;
+        privmsg(s_CregServ, u->nick, "Al canal 12%s se le ha REACTIVADO", chan);
+        canaladmins(s_CregServ, "12%s ha REACTIVADO el Canal  12%s", u->nick, chan);; 
+    }
+}
+
 /******************ACEPTACION DE UN CANAL Y REG EN CHAN**********/
 static void do_acepta(User *u)
 {
@@ -1238,7 +1344,7 @@ static void do_acepta(User *u)
  
         canalopers(s_CregServ, "12%s ha aceptado el canal 12%s", u->nick, chan);
         privmsg(s_CregServ, u->nick, "12%s ha sido aceptado en %s", chan, s_ChanServ); 
-	send_cmd(s_CregServ,"TOPIC %s :Este canal ha sido ACEPTADO en su Registro", chan);
+	send_cmd(s_CregServ,"TOPIC %s :Este canal ha sido 12ACEPTADO en su Registro", chan);
     }
 }
 
@@ -1256,11 +1362,13 @@ static void do_drop(User *u)
         privmsg(s_CregServ, u->nick, "El canal 12%s no registrado en CReG", chan);
     } else if ((cr2 = cs_findchan(chan))) {                                           
         privmsg(s_CregServ, u->nick, "El canal 12%s está registrado en CHaN y no puede ser dropado por CReG", chan); 
+
     } else {
         cr=cr_findcreg(chan);
         delcreg(cr);    
         privmsg(s_CregServ, u->nick, "El canal 12%s ha sido dropado de CReG", chan); 
         canalopers(s_CregServ, "12%s ha dropado el canal 12%s", u->nick, chan);
+      
     }
 }
 
@@ -1290,8 +1398,8 @@ static void do_fuerza(User *u)
         cr->estado = 0;
         cr->estado |= CR_REGISTRADO;
 	send_cmd(s_CregServ, "PRIVMSG  %s  :Felicidades Por el Registro De Su Nuevo Canal %s",cr->founder,chan);
+	send_cmd(s_CregServ,"TOPIC %s :Este canal ha sido ACEPTADO en su Registro", chan);
 	
-	/* el envio de un memo*/
 	
 
 	canalopers(s_CregServ, "12%s ha forzado la aceptación del canal 12%s", u->nick, chan);

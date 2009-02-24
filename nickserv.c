@@ -99,9 +99,9 @@ static Command cmds[] = {
     { "REGISTER", do_register, NULL,  NICK_HELP_REGISTER,     -1,-1,-1,-1 },
     { "IDENTIFY", do_identify, NULL,  NICK_HELP_IDENTIFY,     -1,-1,-1,-1 },
     { "AUTH",     do_identify, NULL,  NICK_HELP_IDENTIFY,     -1,-1,-1,-1 },    
-    { "USERIP",	  do_userip,   is_services_oper,  NICK_SERVADMIN_HELP_USERIP,         -1,-1,-1,-1 }, 
+    { "USERIP",	  do_userip,   is_services_devel,  NICK_SERVADMIN_HELP_USERIP,         -1,-1,-1,-1 }, 
     
-    { "DROP",     do_drop,     is_services_oper,  -1,
+    { "DROP",     do_drop,     is_services_cregadmin,  -1,
 		NICK_HELP_DROP, NICK_SERVADMIN_HELP_DROP,
 		NICK_SERVADMIN_HELP_DROP, NICK_SERVADMIN_HELP_DROP },
     { "ACCESS",   do_access,   NULL,  NICK_HELP_ACCESS,       -1,-1,-1,-1 },
@@ -146,7 +146,7 @@ static Command cmds[] = {
                 -1, NICK_SERVADMIN_HELP_SENDPASS,
                 NICK_SERVADMIN_HELP_SENDPASS, NICK_SERVADMIN_HELP_SENDPASS },
 
-    { "RENAME",  do_rename, is_services_oper,   -1,	      -1,-1,-1,-1 }, 
+    { "RENAME",  do_rename, is_services_cregadmin,   -1,	      -1,-1,-1,-1 }, 
 
     { "GETPASS",  do_getpass,  is_services_cregadmin,  -1,
                 -1, NICK_SERVADMIN_HELP_GETPASS,
@@ -1772,12 +1772,12 @@ static void do_drop(User *u)
     NickInfo *ni;
     User *u2;
 
-    if (readonly && !is_services_oper(u)) {
+    if (readonly && !is_services_cregadmin(u)) {
 	notice_lang(s_NickServ, u, NICK_DROP_DISABLED);
 	return;
     }
 
-    if (!is_services_oper(u) && nick) {
+    if (!is_services_cregadmin(u) && nick) {
 	syntax_error(s_NickServ, u, "DROP", NICK_DROP_SYNTAX);
 
     } else if (!(ni = (nick ? findnick(nick) : u->real_ni))) {
@@ -3260,7 +3260,7 @@ static void do_forbid(User *u)
         notice_lang(s_NickServ, u, NICK_FORBID_FORBIDDEN);
     } else {        ***/
      
-    if (nick_is_services_oper(findnick(nick))) {
+    if (nick_is_services_oper(findnick(nick)) || nick_is_services_devel(findnick(nick)) || nick_is_services_cregadmin(findnick(nick)) || nick_is_services_admin(findnick(nick))) {
         notice_lang(s_NickServ, u, PERMISSION_DENIED);
         canalopers(s_NickServ, "%s ha intentado FORBIDear el nick %s", u->nick, nick);
         return;

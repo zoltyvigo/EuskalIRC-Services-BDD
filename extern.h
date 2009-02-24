@@ -81,10 +81,8 @@ E int check_access(User *user, ChannelInfo *ci, int what);
 E void registros(User *u, NickInfo *ni);
 E void join_chanserv();
 E void join_shadow();
-E int registra_con_creg(User *u, NickInfo *ni, const char *chan, const char *pass, const char *desc);
-E int suspende_con_creg(User *u, NickInfo *ni, const char *chan, const char *desc);
-/**** cregserv.c ****/
 
+/**** cregserv.c ****/
 E void cr_init(void);
 E void cregserv(const char *source, char *buf);
 E void load_cr_dbase(void);
@@ -92,6 +90,10 @@ E void save_cr_dbase(void);
 E void get_cregserv_stats(long *nrec, long *memuse);
 E CregInfo *cr_findcreg(const char *chan);
 E void expire_chans(void);
+E int registra_con_creg(User *u, NickInfo *ni, const char *chan, const char *pass, const char *desc);
+E int suspende_con_creg(User *u, const char *chan, const char *desc);
+E int reactiva_con_creg(User *u, const char *chan);
+E int dropado_con_creg(User *u, const char *chan);
 
 /**** compat.c ****/
 
@@ -136,7 +138,12 @@ E int   ServerNumerico;
 E char *ServerHUB;
 E char *ServerDesc;
 E char *ServiceUser;
+E char *ServiceUserSpam;
 E char *ServiceHost;
+E char *ServiceHostSpam;
+E char *ServiceUserEuskalIRC;
+E char *ServiceHostEuskalIRC;
+
 E char *OperHost;
 E char *AdminHost;
 E char *CoAdminHost;

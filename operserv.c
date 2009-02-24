@@ -777,7 +777,7 @@ static void do_help(User *u)
     const char *cmd = strtok(NULL, "");
 
     if (!cmd) {
-	notice_help(s_OperServ, u, OPER_HELP);
+	notice_help(s_OperServ, u, OPER_HELP,SpamUsers);
     } else {
 	help_cmd(s_OperServ, u, cmds, cmd);
     }

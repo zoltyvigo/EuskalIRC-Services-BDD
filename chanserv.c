@@ -2404,17 +2404,22 @@ static void do_register(User *u)
 #ifdef USE_ENCRYPTION
     char founderpass[PASSMAX+1];
 #endif
+ if (!is_services_cregadmin(u)) {
+        notice_lang(s_ChanServ, u, ACCESS_DENIED);
+   return;
+    }    
+    
+notice(s_ChanServ, u->nick, "Comando deshabilitado, use 2/msg 12%s ,para los registros de canales",s_CregServ);
+  return;
 
     if (readonly) {
 	notice_lang(s_ChanServ, u, CHAN_REGISTER_DISABLED);
 	return;
     }
-    if (!is_services_oper(u)) {
-        notice_lang(s_ChanServ, u, ACCESS_DENIED);
+   
 /*        privmsg(s_ChanServ, u->nick, "Para registrar un canal, hazte una paja "
          "nah, era coña; tienes que pedir a un OPER/IRCOP para que registre el canal");
-*/        return;
-    }    
+*/      
 
     if (!desc) {
 	syntax_error(s_ChanServ, u, "REGISTER", CHAN_REGISTER_SYNTAX);
@@ -2579,66 +2584,171 @@ int registra_con_creg(User *u, NickInfo *ni, const char *chan, const char *pass,
 	return 1;
     }
 }
-/*************************************************************************/
-
-int suspende_con_creg(User *u, NickInfo *ni, const char *chan, const char *desc)
+int dropado_con_creg(User *u, const char *chan)
 {
-    Channel *c;
-    User *u2;
+    
     ChannelInfo *ci;
-    struct u_chaninfolist *uc;
+    NickInfo *ni;
 
-    if ((*chan == '&') || (*chan == '+')) {
-	return 0;
-    } else if (!ni) {
-	return 0;
-    } else if ((ci = cs_findchan(chan)) != NULL) {
-	return 0;
-    } else if (!(c = findchan(chan))) {
-	log("%s: Channel %s not found for REGISTER", s_ChanServ, chan);
-	return 0;
-    } else if (!(ci = makechan(chan))) {
-	log("%s: makechan() failed for REGISTER %s", s_ChanServ, chan);
-	return 0;
-    } else {
-	c->ci = ci;
-	ci->c = c;
-	ci->flags = CI_SUSPEND;
-	ci->mlock_on = CMODE_N | CMODE_T;
-	ci->memos.memomax = MSMaxMemos;
-	ci->last_used = ci->time_registered;
-	ci->founder = ni;
-	ci->desc = sstrdup(desc);
-	if (c->topic) {
-	    ci->last_topic = sstrdup(c->topic);
-	    strscpy(ci->last_topic_setter, c->topic_setter, NICKMAX);
-	    ci->last_topic_time = c->topic_time;
-	}
-	ni = ci->founder;
+    int is_servcoadmin = is_services_cregadmin(u);
 
-	if (ni->channelcount+1 > ni->channelcount)  /* Avoid wraparound */
-	    ni->channelcount++;
-
-	ci->entry_message =  DEntryMsg;
-	canalopers(s_ChanServ, "Canal 12%s aprobado por %s en %s (FUNDADOR: 12%s)", chan, s_ChanServ, u->nick, ni->nick);
-	log("%s: Canal %s registrado por %s!%s@%s", s_ChanServ, chan, u->nick, u->username, u->host);
-
-        if ((u2 = finduser(ni->nick))) {
-                uc = smalloc(sizeof(*uc));
-                uc->next = u2->founder_chans;
-                uc->prev = NULL;
-                if (u2->founder_chans)
-                    u2->founder_chans->prev = uc;
-                u2->founder_chans = uc;
-                uc->chan = ci;
-        }
-	/* Implement new mode lock */
-	check_modes(ci->name);
-	return 1;
+    if (readonly && !is_servcoadmin) {
+	notice_lang(s_ChanServ, u, CHAN_DROP_DISABLED);
+	return 0;
     }
+  
+    if (!is_servcoadmin & (ci->flags & CI_VERBOTEN)) {
+	notice_lang(s_ChanServ, u, CHAN_X_FORBIDDEN, chan);
+         return 0;
+        }
+   if (!is_servcoadmin & (ci->flags & CI_SUSPEND)) {
+        notice_lang(s_ChanServ, u, CHAN_X_SUSPENDED, chan);
+        return 0;            
+           }        
+    if (readonly) {  /* in this case we know they're a Services admin */
+	    notice_lang(s_ChanServ, u, READ_ONLY_MODE);
+            return 0;
+            }
+       	ni = ci->founder;
+     if (ni) {   /* This might be NULL (i.e. after FORBID) */
+	    if (ni->channelcount > 0)
+		ni->channelcount--;
+	    ni = getlink(ni);
+	    if (ni != ci->founder && ni->channelcount > 0)
+		ni->channelcount--;
+	}
+        canalopers(s_ChanServ, "12%s elimino el canal 12%s", u->nick, ci->name);
+	log("%s: Channel %s dropped by %s!%s@%s", s_ChanServ, ci->name,
+			u->nick, u->username, u->host);
+	delchan(ci);
+
+	notice_lang(s_ChanServ, u, CHAN_DROPPED, chan);
+        return 1;
 }
 /*************************************************************************/
 
+int suspende_con_creg(User *u, const char *chan, const char *desc)
+{
+   ChannelInfo *ci;
+    char *av[3];
+    char *expiry;
+    Channel *c;
+    struct c_userlist *cu, *next;        
+    time_t expires;
+    
+
+/* Por el momento, nada de expiraciones
+    if (chan && *chan == '+') {
+        expiry = chan;
+        chan = strtok(NULL, " ");
+    } else { */
+        expiry = NULL;
+/*    }            
+  */  
+       
+    
+   
+    if (readonly) {
+        notice_lang(s_ChanServ, u, READ_ONLY_MODE);
+        return 0;
+       }
+
+    if (!(ci = cs_findchan(chan))) {
+        notice_lang(s_ChanServ, u, CHAN_X_NOT_REGISTERED, chan);
+        return 0;
+       }
+             
+     if (ci->flags & CI_VERBOTEN) {
+        privmsg(s_ChanServ, u->nick, "No se puede suspender un canal forbideado");
+        return 0;
+                      
+    
+                                                     
+    } else {
+        if (expiry) {
+            expires = dotime(expiry);
+            if (expires < 0) {
+                notice_lang(s_ChanServ, u, BAD_EXPIRY_TIME);
+                return 0;
+            } else if (expires > 0) {
+                expires += time(NULL);
+            }
+        } else {
+//            expires = time(NULL) + CSSuspendExpire;
+            expires = 0; /* suspension indefinida */                  
+        }    
+        log("%s: %s!%s@%s SUSPENDió el canal %s, Motivo: %s",
+                 s_ChanServ, u->nick, u->username, u->host, chan, desc);                              
+        ci->suspendby = sstrdup(u->nick);
+        ci->suspendreason = sstrdup(desc);
+        ci->time_suspend = time(NULL);
+        ci->time_expiresuspend = expires;
+        ci->flags |= CI_SUSPEND;
+                
+        notice_lang(s_ChanServ, u, CHAN_SUSPEND_SUCCEEDED, chan);
+      
+/*        if (!(ci->flags & CI_STAY)) {
+              send_cmd(s_ChanServ, "JOIN %s", chan);
+              send_cmd(MODE_SENDER(s_ChanServ), "MODE %s +o %s", chan, s_ChanServ);
+        }
+*/       
+        send_cmd(s_ChanServ,"TOPIC %s :Este canal ha sido temporalmente SUSPENDIDO", chan);
+        canalopers(s_ChanServ, "12%s ha 12SUSPENDido el canal 12%s, motivo %s",
+                                u->nick, chan, desc);
+        c = findchan(chan);
+        for (cu = c->chanops; cu; cu = next) {
+            next = cu->next;
+            av[0] = sstrdup(chan);
+            av[1] = sstrdup("-o");
+            av[2] = sstrdup(cu->user->nick);
+            send_cmd(MODE_SENDER(s_ChanServ), "MODE %s %s :%s",
+                  av[0], av[1], av[2]);
+            do_cmode(s_ChanServ, 3, av);
+            free(av[2]);
+            free(av[1]);
+            free(av[0]);
+           return 1; 
+        }                                                                                                                                                                                                                                              
+    }        
+                                          
+}
+/*************************************************************************/
+int reactiva_con_creg(User *u, const char *chan)
+{
+    ChannelInfo *ci;
+     
+    
+    if (readonly) {
+        notice_lang(s_ChanServ, u, READ_ONLY_MODE);
+        return 0;
+     }
+
+    if (!(ci = cs_findchan(chan))) {
+        notice_lang(s_ChanServ, u, CHAN_X_NOT_REGISTERED, chan);
+        return 0;
+       }
+            
+    if (!(ci->flags & CI_SUSPEND)) {
+        privmsg(s_ChanServ, u->nick, "El canal no esta suspendido");
+        return 0;
+//    } else if (nick_is_services_admin(ci->suspendby) && !is_services_admin(u)) {
+    } else {
+        log("%s: %s!%s@%s ha usado UNSUSPEND on %s",
+                s_ChanServ, u->nick, u->username, u->host, chan);
+        free(ci->suspendby);
+        free(ci->suspendreason);
+        ci->time_suspend = 0;
+        ci->time_expiresuspend = 0;
+        ci->flags &= ~CI_SUSPEND;
+        privmsg(s_ChanServ, u->nick, "Canal 12%s ha sido reactivado", chan);      
+        canalopers(s_ChanServ, "12%s ha reactivado el canal 12%s", u->nick, chan);
+     /*   if (!(ci->flags & CI_STAY)) 
+            send_cmd(s_ChanServ, "PART %s", chan); */                                       
+        send_cmd(MODE_SENDER(s_ChanServ), "TOPIC %s :%s", chan, ci->last_topic ? ci->last_topic : "");
+       return 1;
+    } 
+                                          
+}
 /*************************************************************************/
 
 static void do_identify(User *u)

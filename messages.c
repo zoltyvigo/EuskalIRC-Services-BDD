@@ -400,7 +400,7 @@ static void m_privmsg(char *source, int ac, char **av)
 	ipvserv(source, av[1]);
    } else if (stricmp(av[0], s_EuskalIRCServ) == 0) {  /*solo quiero privados del bot EuskalIRC*/
 	euskalserv(source, av[1]);
-        mirar_pregunta(source, av[1]);
+        
     /* else if (stricmp(av[0], s_SpamServ) == 0) {
 	spamserv(source, av[1]);*/
     } else if (stricmp(av[0], s_HelpServ) == 0) {

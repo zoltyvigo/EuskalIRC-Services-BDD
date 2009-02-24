@@ -10,17 +10,32 @@ Q DB * 1 z p09:deep.space 50
 Q DB * 2 z clave.de.cifrado.de.ips [Ristra-De-Letras-y-Numeros]
 Q DB * 3  z auto.invisible off  <--- para que los usuarios no entren con el flag +i
 Q DB * 4 z numero.maximo.de.clones.por.defecto 4
-Q DB * 5  z activar.ident on <-- se activa
+Q DB * 5  z activar.ident <-- se activa
 Q DB * 6  z nicklen 15  <--- si queremos cambiar el de por defecto que es 9
+Q DB * 7 z ocultar.servidores 1 <---- no permitir /map /links...
+Q DB * 8 z servidor.oculto [server]  <-- ofuscamos el servidor real creando uno ficticio
+Q DB * 9 z servidor.info.oculto [info-server] <-- ofuscamos la info servidor ficticio
 
 salir del telnet
 
-NOTA
+NOTAS
 -----
 *[Ristra-De-Letras-y-Numeros] 
 Es una secuencia de letras y numeros que sirve de clave para cifrar las ips 
 Es un Dato que no debe ser revelado
 ejemplo) GfDsRSzZ56124BNmHM
+
+*[server]
+Es un servidor ficticio
+ej) irc.servidor.org
+
+*[info-server]
+Es la info del servidor ficticio
+ej) servidor de usuarios
+
+
+
+
 
 en el ircd
 -----------
@@ -29,5 +44,22 @@ como ircop global /stats b --> y ver si se han escrito los 6 registros en la tab
 
 
 Si al menos se ha escrito el primero,podras linkar los services (los hemos llamado deep.space)
+
+Resumen:
+--------
+s_bdd.h (del u2.10.H.10.77)
+/*
+** Registros de configuracion en la tabla 'z'
+*/
+#define BDD_NUMERO_MAXIMO_DE_CLONES_POR_DEFECTO	"numero.maximo.de.clones.por.defecto"
+#define BDD_MENSAJE_DE_DEMASIADOS_CLONES	"mensaje.de.demasiados.clones"
+#define BDD_MENSAJE_DE_CAPACIDAD_SUPERADA	"mensaje.de.capacidad.superada"
+#define BDD_CLAVE_DE_CIFRADO_DE_IPS		"clave.de.cifrado.de.ips"
+#define BDD_OCULTAR_SERVIDORES			"ocultar.servidores"
+#define BDD_SERVER_NAME				"servidor.oculto"
+#define BDD_SERVER_INFO				"servidor.info.oculto"
+#define BDD_ACTIVAR_IDENT			"activar.ident"
+#define BDD_AUTOINVISIBLE     "auto.invisible"
+#define BDD_NICKLEN           "nicklen"
 
 

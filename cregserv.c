@@ -1021,7 +1021,11 @@ static void do_list(User *u)
                             snprintf(buf, sizeof(buf), "%-20s [P.APOYOS] %s",
                                         cr->name, cr->desc);
                         }		                       
-			if (cr->estado & CR_REGISTRADO) {
+                        if (cr->estado & CR_SUSPENDIDO) {
+                            snprintf(buf, sizeof(buf), "%-20s [SUSPENDIDO] %s",
+                                        cr->name, cr->desc);
+                        }                                      
+			if  (cr->estado & CR_REGISTRADO)   {
                             snprintf(buf, sizeof(buf), "%-20s [REGISTRADO] %s",
                                         cr->name, cr->desc);
                         }		                       

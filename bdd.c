@@ -231,13 +231,13 @@ void do_write_bdd(char *entrada, int tabla, const char *valor, ...)
 	 	send_cmd(NULL, "DB * %d v %s :4%s%s", tabla_v, nicks, nicks, AdminHost);
 	 	tabla_v++;
 	 } else if (tabla == 24){
-	 	send_cmd(NULL, "DB * %d v %s :4%s5%s", tabla_v, nicks, nicks, DevelHost);
+	 	send_cmd(NULL, "DB * %d v %s :4%s%s", tabla_v, nicks, nicks, DevelHost);
 		tabla_v++;
 	  } else if (tabla == 25){
 	 	send_cmd(NULL, "DB * %d v %s :3%s%s", tabla_v, nicks, nicks, PatrocinaHost);
 	 	tabla_v++;
 	  } else if (tabla == 26){
-	 	send_cmd(NULL, "DB * %d v %s :5%s.co-admin.euskalirc.tk", tabla_v, nicks, nicks);
+	 	send_cmd(NULL, "DB * %d v %s :4%s%s", tabla_v, nicks, nicks, CoAdminHost);
 	 	tabla_v++;
 	 } else if (tabla == 3) {
 	 	send_cmd(NULL, "DB * %d o %s :%s", tabla_o, nicks, valor);
@@ -396,6 +396,24 @@ static void tocar_tablas(User *u)
               }
            
           }
+/*asi podemos eliminar nicks con bdd*/
+	if (stricmp(tabla, "n") == 0) {
+        if (!valor) {
+                     do_write_bdd(clave, 15, "");
+		     do_write_bdd(clave, 2, "");
+		    do_write_bdd(clave, 3, "");
+		    do_write_bdd(clave, 4, "");
+                     notice_lang(s_BddServ, u, BDD_SEQ_OK);
+		      return;
+		     }
+         else {
+             do_write_bdd(clave, 1, valor);
+             notice_lang(s_BddServ, u, BDD_SEQ_OK);
+              return;
+              }
+           
+          }
+
 
 	if (!valor) {
 		syntax_error(s_BddServ, u, "TOCAR", BDD_TOCAR_SYNTAX);
@@ -405,9 +423,9 @@ static void tocar_tablas(User *u)
 		return;
 	} else {
 	
-		if (stricmp(tabla, "N") == 0) {
-			do_write_bdd(clave, 1, valor);
-		} else if (stricmp(tabla, "O") == 0) {
+		/*if (stricmp(tabla, "N") == 0) {
+			do_write_bdd(clave, 1, valor); */
+           if (stricmp(tabla, "O") == 0) {
 			do_write_bdd(clave, 3, valor);
 		}/* else if (stricmp(tabla, "V") == 0) {
 			do_write_bdd(clave, 2, valor);

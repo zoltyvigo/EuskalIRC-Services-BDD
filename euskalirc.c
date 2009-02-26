@@ -1,6 +1,6 @@
 /* Servicio EuskalIRC, botshispanobdd
  *
- * (C) 2009 donostiarra 
+ * (C) 2009 donostiarra  admin.euskalirc@gmail.com  http://euskalirc.wordpress.com
  *
  * Este programa es software libre. Puede redistribuirlo y/o modificarlo
  * bajo los términos de la Licencia Pública General de GNU según es publicada
@@ -20,13 +20,12 @@ void do_euskal(User *u) /*la colocamos en extern.h y asi la llamamos desde oper*
     char adm[BUFSIZE];
       
   
-    /*    User *u2 = NULL; */
 
     if ((!cmd) || ((!stricmp(cmd, "ACEPTA") == 0) && (!stricmp(cmd, "RECHAZA") == 0))) {
        privmsg(s_EuskalIRCServ,u->nick, " /msg %s 2DUDA 12ACEPTA/RECHAZA 5<NICK>",s_OperServ);
     	return;
     }
-    
+   
     if (!nick) {
     	privmsg(s_EuskalIRCServ, u-> nick, "4Falta un Nick /msg %s 2DUDA 12ACEPTA/RECHAZA 5<NICK>",s_OperServ);
     	return;
@@ -37,37 +36,54 @@ void do_euskal(User *u) /*la colocamos en extern.h y asi la llamamos desde oper*
         notice_lang(s_EuskalIRCServ, u, NICK_MUST_BE_ON_BDD);
 	return;
     }
-    
+     
+
+
       ni = findnick(nick);
    
-      if (stricmp(cmd, "ACEPTA") == 0) {
+      if  ((stricmp(cmd, "ACEPTA") == 0) &&  (ni->in_ayu & AYU_SI)) {
 	if (!is_services_oper(u)) {
 	    notice_lang(s_EuskalIRCServ, u, PERMISSION_DENIED);
 	    return;
 	} else if (ni && (ni->status & NS_IDENTIFIED)) {
           privmsg(s_EuskalIRCServ, nick, "El OPERador/a 5%s se pondrá en contacto contigo en breve.Por favor, abandone el canal una vez atendido. Gracias.",u->nick);
 	canaladmins( s_EuskalIRCServ,"12OPER 4%s 3ACEPTA DUDA de  2%s",u->nick,nick);
+	ni->in_ayu = AYU_NO ;
+	return;
             } 
-            else 
+            else {
                privmsg(s_EuskalIRCServ,u->nick, "El Nick 5%s No esta ONLINE.",ni->nick);
+		return;
+              }
             }
        
-       else if (stricmp(cmd, "RECHAZA") == 0) {
+       else if ((stricmp(cmd, "RECHAZA") == 0) && (ni->in_ayu & AYU_SI))  {
 	if (!is_services_oper(u)) {
 	    notice_lang(s_EuskalIRCServ, u, PERMISSION_DENIED);
 	    return;
 	}  else if (ni && (ni->status & NS_IDENTIFIED)) {
           privmsg(s_EuskalIRCServ, nick , "El OPERador/a 5%s ha rechazado la solicitud de ayuda.",u->nick);
           canaladmins( s_EuskalIRCServ,"12OPER 4%s 5RECHAZA DUDA de  2%s",u->nick,nick);
+	ni->in_ayu = AYU_NO ;
+        return;
 	  }
-          else 
+          else  {
                privmsg(s_EuskalIRCServ,u->nick, "El Nick 5%s No esta ONLINE.",ni->nick);
+		return; }
 
           }
-  
-      
+if ((stricmp(cmd, "ACEPTA") == 0) && (ni->in_ayu & AYU_NO))  { 
+    
+       privmsg(s_EuskalIRCServ,u->nick, " 2El Nick 12%s 2Ni Solicita ni Precisa Asistencia!.5 ACEPTACION3 ilógica!",ni->nick);
+	return;
+     }
+ else if ((stricmp(cmd, "RECHAZA") == 0) && (ni->in_ayu & AYU_NO))  { 
+    
+       privmsg(s_EuskalIRCServ,u->nick, " 2El Nick 12%s 2Ni Solicita ni Precisa Asistencia!.5 RECHAZO3 ilógico!",ni->nick);
+	return;
+     }
+       
 }
-
 
 void euskalserv(const char *source, char *buf)
 {
@@ -117,37 +133,18 @@ if (!strcmp(chan, ayu)) {
 	
 	
  }
-    
- void mirar_pregunta(const char *source, char *buf[BUFSIZE])
- {
- int i;
- User *u = finduser(source);
- const char *cmd = strtok(NULL, "");
-if (!cmd) {
-	//notice_help(s_OperServ, u, OPER_HELP);
-    } else {
-	/*help_cmd(s_OperServ, u, cmds, cmd);*/
-    }
 
-       //canalopers( s_EuskalIRCServ,"Ey! %s me dijo al privi 4%s !!", source,buf);
-			return;
-
- }
 
  void mandar_mensaje(const char *source)
  {
     NickInfo *ni;
     User *u = finduser(source);
      ni = findnick(source);
-    time_t ahora = time(NULL);
-    time_t caducado;
-     char ayu[BUFSIZE];
+        char ayu[BUFSIZE];
      snprintf(ayu, sizeof(ayu), "#%s", CanalAyuda);
 
-    struct tm *tm;
-      
+          
       if ((ni = u->real_ni) && !(is_services_oper(u))) {
-	// ni->in_cyb = CYB_NO;
         ni->in_ayu = AYU_NO;
         privmsg(s_EuskalIRCServ,source, "Hola %s",source);
 	privmsg(s_EuskalIRCServ,source, "Soy el encargado de ponerte en contacto con un OPER de Servicios.");

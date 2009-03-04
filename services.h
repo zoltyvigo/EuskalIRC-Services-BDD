@@ -203,15 +203,19 @@ struct nickinfo_ {
     char *last_quit;
     time_t time_registered;
     time_t last_seen;
+    time_t expira_min;   /*tiempo expiracion minima --donostiarra 2009-*/
     int16 status;	/* See NS_* below */
-    int16 in_cyb;       /* mirar abajo CYB_ */
-    int16 in_ayu;       /* mirar abajo AYU_ */
+/*donostiarra 2009*/
+    int16 env_mail;
+    int16 in_cyb;       /* mirar abajo CYB_ *  que un bot de servicios este en canal cybers*/
+    int16 in_ayu;       /* mirar abajo AYU_    que el bot EuskalIRC este en canal de ayuda*/
+
+/*---------------*/
     char *suspendby;         /* Quien lo suspendio */
     char *suspendreason;     /* Motivo de la suspension */
     time_t time_suspend;     /* Tiempo cuando suspendio el nick */
     time_t time_expiresuspend; /* Expiracion suspension */
-    time_t time_vhost; /* Tiempo para el proximo cambio de vhost --->24 horas y tal */
-    time_t time_cnick; /* Tiempo para cambiarse el nick no registrado--->1 minuto y tal */
+   time_t time_vhost; /* Tiempo para el proximo cambio de vhost --->24 horas y tal */
     char *forbidby;          /* Quien lo forbideo */
     char *forbidreason;      /* Motivo del forbid */
 
@@ -256,9 +260,12 @@ struct nickinfo_ {
 #define NS_TEMPORARY	0xFF00      /* All temporary status flags */
 
 /*-- donostiarra--  2009 */
-#define CYB_NO 0x0001  /*No esta en el canal cyb*/
+#define MAIL_NOREC 0x0000 /* No ha recibido mail recordatorio*/
+#define MAIL_REC 0x0002 /* SI ha recibido mail recordatorio*/
+
+#define CYB_NO 0x0000  /*No esta en el canal cyb*/
 #define CYB_SI  0x0002  /*Si esta en el canal cyb*/
-#define AYU_NO 0x0001  /*No esta en el canal ayu*/
+#define AYU_NO 0x0000  /*No esta en el canal ayu*/
 #define AYU_SI  0x0002  /*Si esta en el canal ayu*/
 
 

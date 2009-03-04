@@ -214,6 +214,9 @@ void listnicks(int count_only, const char *nick)
 	tm = localtime(&ni->last_seen);
 	strftime(buf, sizeof(buf), getstring((NickInfo *)NULL,STRFTIME_DATE_TIME_FORMAT), tm);
 	printf("Ultima hora por la red: %s\n", buf);
+	tm = localtime(&ni->expira_min);
+	strftime(buf, sizeof(buf), getstring((NickInfo *)NULL,STRFTIME_DATE_TIME_FORMAT), tm);
+	printf("Tiempo Mínimo Expiración: %s\n", buf);
 	if (ni->url)
 	    printf("URL: %s\n", ni->url);
 	if (ni->email)
@@ -236,6 +239,11 @@ void listnicks(int count_only, const char *nick)
 	}
 	if (ni->status & NS_NO_EXPIRE) {
 	    end += snprintf(buf, sizeof(buf)-(end-buf), "%sNo Expira",
+			need_comma ? commastr : "");
+	    need_comma = 1;
+	}
+	if (ni->env_mail & MAIL_REC) {
+	    end += snprintf(buf, sizeof(buf)-(end-buf), "%sRecibió mail recordatorio",
 			need_comma ? commastr : "");
 	    need_comma = 1;
 	}
@@ -388,6 +396,7 @@ static void load_old_ns_dbase(dbFILE *f, int ver)
 	char *last_realname;
 	time_t time_registered;
 	time_t last_seen;
+	time_t expira_min;
 	long accesscount;
 	char **access;
 	long flags;
@@ -420,6 +429,7 @@ static void load_old_ns_dbase(dbFILE *f, int ver)
 	    strscpy(ni->pass, old_nickinfo.pass, PASSMAX);
 	    ni->time_registered = old_nickinfo.time_registered;
 	    ni->last_seen = old_nickinfo.last_seen;
+	   ni->expira_min = old_nickinfo.expira_min;
 	    ni->accesscount = old_nickinfo.accesscount;
 	    ni->flags = old_nickinfo.flags;
 	    if (ver < 3)	/* Memo max field created in ver 3 */
@@ -542,9 +552,12 @@ void load_ns_dbase(void)
 		ni->time_registered = tmp32;
 		SAFE(read_int32(&tmp32, f));
 		ni->last_seen = tmp32;
+		SAFE(read_int32(&tmp32, f));
+		ni->expira_min = tmp32;
 		SAFE(read_int16(&ni->status, f));
 		ni->status &= ~NS_TEMPORARY;
-#ifdef USE_ENCRYPTION
+		SAFE(read_int16(&ni->env_mail, f));  /*mail recordando que se le expira el nick*/
+		#ifdef USE_ENCRYPTION
 		if (!(ni->status & (NS_ENCRYPTEDPW | NS_VERBOTEN))) {
 		    if (debug)
 			log("debug: %s: encrypting password for `%s' on load",
@@ -703,7 +716,9 @@ void save_ns_dbase(void)
 	    SAFE(write_string(ni->last_quit, f));
 	    SAFE(write_int32(ni->time_registered, f));
 	    SAFE(write_int32(ni->last_seen, f));
+	    SAFE(write_int32(ni->expira_min, f));
 	    SAFE(write_int16(ni->status, f));
+	   SAFE(write_int16(ni->env_mail, f));
             SAFE(write_string(ni->suspendby, f));
             SAFE(write_string(ni->suspendreason, f));
             SAFE(write_int32(ni->time_suspend, f));
@@ -805,6 +820,7 @@ int validate_user(User *u)
     if (!(u->ni->flags & NI_SECURE) && on_access) {
 	ni->status |= NS_RECOGNIZED;
 	ni->last_seen = time(NULL);
+	ni->expira_min = time(NULL)+NSExpire;
 	if (ni->last_usermask)
 	    free(ni->last_usermask);
 	ni->last_usermask = smalloc(strlen(u->username)+strlen(u->host)+2);
@@ -914,6 +930,8 @@ void expire_nicks()
     NickInfo *ni, *next;
     int i;
     time_t now = time(NULL);
+    char *buf;
+    char subject[BUFSIZE];  
 
     /* Assumption: this routine takes less than NSExpire seconds to run.
      * If it doesn't, some users may end up with invalid user->ni pointers. */
@@ -922,6 +940,7 @@ void expire_nicks()
 	    if (debug >= 2)
 		log("debug: NickServ: updating last seen time for %s", u->nick);
 	    u->real_ni->last_seen = time(NULL);
+	     u->real_ni->expira_min = time(NULL)+NSExpire;
 	}
     }
     if (!NSExpire)
@@ -935,6 +954,33 @@ void expire_nicks()
 		canalopers(s_NickServ, "El nick 12%s ha expirado", ni->nick);
 		delnick(ni);
 	    }
+	    if (now - ni->last_seen >=  (NSExpire - 7)
+			&& !(ni->status & (NS_VERBOTEN | NS_NO_EXPIRE | NS_SUSPENDED)) && !(ni->env_mail & ( MAIL_REC))) {
+		canalopers(s_NickServ, "Quedan 7 dias para expirar  12%s (Le Enviamos email %s)", ni->nick,ni->email);
+               ni->env_mail = MAIL_REC ;
+                if (fork()==0) {
+				 buf = smalloc(sizeof(char *) * 1024);
+               sprintf(buf,"\n   Hola  NiCK: %s\n"
+				"Quedan 7 dias para expirar tu nick.\n"
+				"De no entrar con tu alias identificado, en uno de nuestros servidores de Chat\n"
+				"Nos Veremos Obligados a dar de baja tu registro ,con lo que perderías tu antiguedad,\n"
+				"Así como todos los recursos que venían aparejados a tu nick registrado.\n"
+				"No nos olvides y sigue entrando en nuestra red de chat,te esperamos\n"
+				"Disponemos de servicios exclusivos y un selecto grupo de canales.\n"
+				"Te recordamos los datos que disponemos de tu registro:\n\n" 
+                             "Password: %s\n\n"
+                             "Para identificarte   -> /nick %s:%s\n"
+                             "Para cambio de clave -> /msg %s SET PASSWORD nueva_password\n\n"
+                             "Página de Información %s\n",
+                       ni->nick, ni->pass, ni->nick, ni->pass, s_NickServ, WebNetwork);
+       
+               snprintf(subject, sizeof(subject), "Recordatorio del NiCK '%s'", ni->nick);
+		           }
+		 enviar_correo(ni->email, subject, buf);
+          	    }
+            else if (now - ni->last_seen < (NSExpire - 7)
+			&& !(ni->status & (NS_VERBOTEN | NS_NO_EXPIRE | NS_SUSPENDED)) && !(ni->env_mail & ( MAIL_REC)))
+		 ni->env_mail  = ~ MAIL_REC ;
 	    /* AQUI EXPIRACION NICKS SUSPENDIDOS */
 	}
     }
@@ -1676,6 +1722,7 @@ static void do_register(User *u)
 	    sprintf(ni->last_usermask, "%s@%s", u->username, u->host);
 	    ni->last_realname = sstrdup(u->realname);
 	    ni->time_registered = ni->last_seen = time(NULL);
+	   ni->expira_min = time(NULL)+NSExpire;
 	    ni->accesscount = 1;
 	    ni->access = smalloc(sizeof(char *));
 	    ni->access[0] = create_mask(u);
@@ -1741,6 +1788,7 @@ static void do_identify(User *u)
 	ni->id_timestamp = u->signon;
 	if (!(ni->status & NS_RECOGNIZED)) {
 	    ni->last_seen = time(NULL);
+	   ni->expira_min = time(NULL)+NSExpire;
 	    if (ni->last_usermask)
 		free(ni->last_usermask);
 	    ni->last_usermask = smalloc(strlen(u->username)+strlen(u->host)+2);
@@ -2654,7 +2702,17 @@ static void do_info(User *u)
 		if (is_services_admin(u))
 			notice_lang(s_NickServ, u, NICK_INFO_ADDRESS, ni->last_usermask);
 	}
-				  /*			
+          if (!(ni->status & NS_NO_EXPIRE)  && (stricmp(ni->nick, u->nick) == 0)  && !(is_services_admin(u) &&  is_services_cregadmin(u) && is_services_devel(u) &&  is_services_oper(u))) {
+		     tm = localtime(&ni->expira_min);
+            strftime_lang(buf, sizeof(buf), u, STRFTIME_DATE_TIME_FORMAT, tm);
+            privmsg(s_NickServ,u->nick, "Tiempo Mínimo Expiración:4,15%s", buf);
+	   }	
+             if (!(ni->status & NS_NO_EXPIRE)    && (is_services_admin(u) ||  is_services_cregadmin(u) || is_services_devel(u) ||  is_services_oper(u))) {
+		     tm = localtime(&ni->expira_min);
+            strftime_lang(buf, sizeof(buf), u, STRFTIME_DATE_TIME_FORMAT, tm);
+            privmsg(s_NickServ,u->nick, "Tiempo Mínimo Expiración:4,15%s", buf);
+	   }	
+	  /*			
 #ifdef DB_NETWORKS
             if (show_hidden)
 #else
@@ -2679,7 +2737,7 @@ static void do_info(User *u)
             strftime_lang(buf, sizeof(buf), u, STRFTIME_DATE_TIME_FORMAT, tm);
             notice_lang(s_NickServ, u, NICK_INFO_LAST_SEEN, buf);
 //	} 	    
-	    
+	  
 /***/
 	if ((ni->last_quit && (show_hidden || !(real->flags & NI_HIDE_QUIT))) && !(ni->status & NS_SUSPENDED))
 	    notice_lang(s_NickServ, u, NICK_INFO_LAST_QUIT, ni->last_quit);

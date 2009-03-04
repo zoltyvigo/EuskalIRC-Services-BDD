@@ -6,7 +6,7 @@
  * details.
  */
 
-#define BUILD	"3"
+#define BUILD	"0"
 
 const char version_branchstatus[] = "BETA-RELEASE";
 const char version_number[] = "0.1";

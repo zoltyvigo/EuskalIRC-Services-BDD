@@ -72,12 +72,12 @@ void do_euskal(User *u) /*la colocamos en extern.h y asi la llamamos desde oper*
 		return; }
 
           }
-if ((stricmp(cmd, "ACEPTA") == 0) && (ni->in_ayu & AYU_NO))  { 
+if ((stricmp(cmd, "ACEPTA") == 0) && !(ni->in_ayu & AYU_SI))  { 
     
        privmsg(s_EuskalIRCServ,u->nick, " 2El Nick 12%s 2Ni Solicita ni Precisa Asistencia!.5 ACEPTACION3 ilógica!",ni->nick);
 	return;
      }
- else if ((stricmp(cmd, "RECHAZA") == 0) && (ni->in_ayu & AYU_NO))  { 
+ else if ((stricmp(cmd, "RECHAZA") == 0) && !(ni->in_ayu & AYU_SI))  { 
     
        privmsg(s_EuskalIRCServ,u->nick, " 2El Nick 12%s 2Ni Solicita ni Precisa Asistencia!.5 RECHAZO3 ilógico!",ni->nick);
 	return;

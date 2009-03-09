@@ -233,7 +233,7 @@ void get_user_stats(long *nusers, long *memuse)
 
 /*************************************************************************/
 
-#ifdef DEBUG_COMMANDS
+
 
 /* Send the current list of users to the named user. */
 
@@ -258,8 +258,8 @@ void send_user_list(User *user)
                 (u->mode&UMODE_R)?"r":"", (u->mode&UMODE_X)?"x":"",
                 (u->mode&UMODE_H)?"h":"", (u->mode&UMODE_Z)?"X":"",
                 (u->mode&UMODE_W)?"w":"", (u->mode&UMODE_K)?"k":"",
-//                  u->signon, u->server, u->realname);                                                                 		
-                    u->signon, servers[u->server].name, u->realname);
+      u->signon, u->server, u->realname);                                                                 		
+     //  u->signon, servers[u->server].name, u->realname);
 	buf[0] = 0;
 	s = buf;
 	for (c = u->chans; c; c = c->next)
@@ -267,9 +267,9 @@ void send_user_list(User *user)
 	privmsg(s_OperServ, source, "%s esta en canales:%s", u->nick, buf);
 	buf[0] = 0;
 	s = buf;
-	for (ci = u->founder_chans; ci; ci = ci->next)
+	/*for (ci = u->founder_chans; ci; ci = ci->next)
 	    s += snprintf(s, sizeof(buf)-(s-buf), " %s", ci->chan->name);
-	privmsg(s_OperServ, source, "%s es founder en%s", u->nick, buf);
+	privmsg(s_OperServ, source, "%s es founder en%s", u->nick, buf); */
     }
 }
 
@@ -311,12 +311,12 @@ void send_user_info(User *user)
     privmsg(s_OperServ, source, "%s esta en canales:%s", u->nick, buf);
     buf[0] = 0;
     s = buf;
-    for (ci = u->founder_chans; ci; ci = ci->next)
+ /*   for (ci = u->founder_chans; ci; ci = ci->next)
 	s += snprintf(s, sizeof(buf)-(s-buf), " %s", ci->chan->name);
-    privmsg(s_OperServ, source, "%s es founder en%s", u->nick, buf);
+    privmsg(s_OperServ, source, "%s es founder en%s", u->nick, buf);*/
 }
 
-#endif	/* DEBUG_COMMANDS */
+
 
 /*************************************************************************/
 

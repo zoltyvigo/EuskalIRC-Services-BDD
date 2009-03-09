@@ -154,23 +154,28 @@ static Command cmds[] = {
 	OPER_HELP_SHUTDOWN, -1,-1,-1,-1 },
     { "RESTART",    do_restart,    is_services_admin,
 	OPER_HELP_RESTART, -1,-1,-1,-1 },
-    { "LISTIGNORE", do_listignore, is_services_admin,
-	-1,-1,-1,-1, -1 },	
-    { "MATCHWILD",  do_matchwild,       is_services_root, -1,-1,-1,-1,-1 },
+    /*{ "LISTIGNORE", do_listignore, is_services_admin,
+	-1,-1,-1,-1, -1 },*/	
+   // { "MATCHWILD",  do_matchwild,       is_services_root, -1,-1,-1,-1,-1 },
 
-    /* Commands for Services root: */
+    /* Commands for Services CoAdmins: */
 
-    { "ROTATELOG",  rotate_log,  is_services_root, -1,-1,-1,-1,
+  /* de channels.c */
+{ "CHANLIST",  send_channel_list,  is_services_cregadmin, -1,-1,-1,-1,-1 },
+{ "CHANUSERS",   send_channel_users, is_services_cregadmin, -1,-1,-1,-1,-1 },
+/*de users.c*/
+{ "USERLIST",  send_user_list,     is_services_cregadmin, -1,-1,-1,-1,-1 },
+ { "USERINFO",   send_user_info,     is_services_cregadmin, -1,-1,-1,-1,-1 },
+
+ /* Commands for Services Roots: */
+
+ { "ROTATELOG",  rotate_log,  is_services_root, -1,-1,-1,-1,
 	OPER_HELP_ROTATELOG },
 
-
 #ifdef DEBUG_COMMANDS
-    { "LISTCHANS",  send_channel_list,  is_services_root, -1,-1,-1,-1,-1 },
-    { "LISTCHAN",   send_channel_users, is_services_root, -1,-1,-1,-1,-1 },
-    { "LISTUSERS",  send_user_list,     is_services_root, -1,-1,-1,-1,-1 },
-    { "LISTUSER",   send_user_info,     is_services_root, -1,-1,-1,-1,-1 },
-    { "LISTTIMERS", send_timeout_list,  is_services_root, -1,-1,-1,-1,-1 },
-   
+
+  //  { "LISTTIMERS", send_timeout_list,  is_services_root, -1,-1,-1,-1,-1 },
+
 #endif
 
     /* Fencepost: */

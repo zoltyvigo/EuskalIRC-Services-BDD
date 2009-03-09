@@ -180,6 +180,7 @@ char *CanalAdmins;
 char *CanalOpers;
 char *CanalCybers;
 char *CanalAyuda;
+char *CanalSpamers;
 char *ServicesRoot;
 int   LogMaxUsers;
 int   AutokillExpiry;
@@ -368,6 +369,7 @@ Directive directives[] = {
     { "CanalOpers",       { { PARAM_STRING, 0, &CanalOpers } } },
     { "CanalCybers",       { { PARAM_STRING, 0, &CanalCybers } } }, 
      { "CanalAyuda",       { { PARAM_STRING, 0, &CanalAyuda } } }, 
+	  { "CanalSpamers",       { { PARAM_STRING, 0, &CanalSpamers } } }, 
     { "StrictPasswords",  { { PARAM_SET, 0, &StrictPasswords } } },
     { "TimeoutCheck",     { { PARAM_TIME, 0, &TimeoutCheck } } },
     { "UpdateTimeout",    { { PARAM_TIME, 0, &UpdateTimeout } } },
@@ -663,6 +665,7 @@ int read_config()
     CHECK(CanalOpers);
     CHECK(CanalAyuda);
     CHECK(CanalCybers);
+    CHECK(CanalSpamers);
     CHECK(ServicesRoot);
     CHECK(AutokillExpiry);
 #ifdef REG_NICK_MAIL

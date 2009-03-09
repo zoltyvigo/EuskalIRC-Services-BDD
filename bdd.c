@@ -382,6 +382,23 @@ static void tocar_tablas(User *u)
               }
            
           }
+
+ /*asi podemos desactivar registros  en tabla z*/
+	if (stricmp(tabla, "z") == 0) {
+        if (!valor) {
+                     do_write_bdd(clave, 6, "");
+                     notice_lang(s_BddServ, u, BDD_SEQ_OK);
+		      return;
+		     }
+         else {
+             do_write_bdd(clave, 6, valor);
+             notice_lang(s_BddServ, u, BDD_SEQ_OK);
+              return;
+              }
+           
+          }
+
+
        /*asi podemos desactivar los canales persistentes-tabla c- con bdd*/
 	if (stricmp(tabla, "c") == 0) {
         if (!valor) {
@@ -433,9 +450,9 @@ static void tocar_tablas(User *u)
 			do_write_bdd(clave, 4, valor);
 		} else if (stricmp(tabla, "I") == 0) {
 			do_write_bdd(clave, 5, valor);
-		} else if (stricmp(tabla, "Z") == 0) {
+		} /*else if (stricmp(tabla, "Z") == 0) {
 			do_write_bdd(clave, 6, valor);
-		} else {
+		}*/ else {
 			notice_lang(s_BddServ, u, BDD_ERR_TABLE);
 			return;
 		}

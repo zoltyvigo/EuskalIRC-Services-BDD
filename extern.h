@@ -32,10 +32,10 @@ E void add_akill(const char *mask, const char *reason, const char *who,
 
 /**** channels.c ****/
 
-#ifdef DEBUG_COMMANDS
+
 E void send_channel_list(User *user);
 E void send_channel_users(User *user);
-#endif
+
 
 E void get_channel_stats(long *nrec, long *memuse);
 E Channel *findchan(const char *chan);
@@ -277,6 +277,7 @@ E char *CanalAdmins;
 E char *CanalOpers;
 E char *CanalCybers;
 E char *CanalAyuda;
+E char *CanalSpamers;
 E char *ServicesRoot;
 E int   LogMaxUsers;
 E int   AutokillExpiry;
@@ -575,10 +576,10 @@ E const char *inttobase64(unsigned int i);
 E int usercnt, opcnt, maxusercnt, servercnt;
 E time_t maxusertime;
 
-#ifdef DEBUG_COMMANDS
+
 E void send_user_list(User *user);
 E void send_user_info(User *user);
-#endif
+
 
 E void get_user_stats(long *nusers, long *memuse);
 E User *finduser(const char *nick);

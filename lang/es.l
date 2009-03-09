@@ -3291,8 +3291,12 @@ OPER_HELP
 	
 	12DEVEL       Modifica la lista de Desarrolladores de Servicios
 	12FORZAR 	Fuerza la Entrada o Salida de un Nick a/desde un Canal
-	12GLOBAL      Envía un mensaje a TODOS los usuarios por privmsg
-	12GLOBALN     Envía un mensaje a TODOS los usuarios por notice
+	12GLOBAL      Envía un mensaje a TODOS los Usuarios por Privmsg
+	12GLOBALN     Envía un mensaje a TODOS los Usuarios por Notice
+	12CHANLIST	Lista los Canales con sus modos Y Usuarios con sus Status en cada canal
+	12CHANUSERS	Listado de Usuarios con sus Status de un canal determinado
+	12USERLIST	Listado de Usuarios con información más detallada y sus canales
+	12USERINFO	Información más detallada de un usuario y sus canales
 	
 	2Comandos disponibles solo para los4 Administradores2 de
 	Servicios:
@@ -3305,7 +3309,7 @@ OPER_HELP
 	    12VHOST       Cambia por completo el vhost de un usuario
 	
 	    12SPAM	    Modifica la lista de palabras consideradas Spam
-			    y que se vigilaran en aquellos canales donde se supere
+			    y que se vigilaran en aquellos canales donde se alcance
 			    el número de 4 %d  usuarios
 	    12UPDATE      Fuerza a la base de datos de los Servicios a
 	                    ser actualizada inmediatamente en el disco
@@ -3320,7 +3324,7 @@ OPER_HELP
 	servicios:
 	
 	    12ADMIN       Modifica la lista de Administradores de Servicios
-	    
+	    12ROTATELOG     Renombrar el Archivo Logs de los Servicios
 	
 	4Aviso: TODOS los comandos enviados a 12%S son
 	registrados! (log)

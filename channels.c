@@ -8,6 +8,7 @@
 
 #include "services.h"
 
+
 #define HASH(chan)	((chan)[1] ? ((chan)[1]&31)<<5 | ((chan)[2]&31) : 0)
 static Channel *chanlist[1024];
 
@@ -49,7 +50,7 @@ void get_channel_stats(long *nrec, long *memuse)
 
 /*************************************************************************/
 
-#ifdef DEBUG_COMMANDS
+
 
 /* Send the current list of channels to the named user. */
 
@@ -67,7 +68,7 @@ void send_channel_list(User *user)
 
     for (c = firstchan(); c; c = nextchan()) {
 	snprintf(s, sizeof(s), " %d", c->limit);
-	privmsg(s_OperServ, source, "%s %lu +%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s %s",
+	privmsg(s_OperServ, source, "%s %lu +%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s %s",
 				c->name, c->creation_time,
 				(c->mode&CMODE_I) ? "i" : "",
 				(c->mode&CMODE_M) ? "m" : "",
@@ -117,8 +118,8 @@ void send_channel_list(User *user)
 		}
 	    }
 	    end += snprintf(end, sizeof(buf)-(end-buf),
-					" Modos en %s Ops:%s Voices:%s", isvoice ? "+" : "",
-					isop ? "@" : "", u->user->nick);
+					"12 %s5 %s1%s", isvoice ? "+" : "",
+					isop ? "@" : "2", u->user->nick);
 	}
 	privmsg(s_OperServ, source, buf);
     }
@@ -154,7 +155,6 @@ void send_channel_users(User *user)
 	privmsg(s_OperServ, source, "%s", u->user->nick);
 }
 
-#endif	/* DEBUG_COMMANDS */
 
 /*************************************************************************/
 

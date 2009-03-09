@@ -1,3 +1,7 @@
+Usamos TELNET:
+
+
+
 telnet localhost [port] <---ej) telnet 127.0.0.1 4400
 
 
@@ -8,9 +12,9 @@ PASS lapass-del-link  <---tener en cuenta si es encriptada (recomendado desactiv
 SERVER deep.space 1 1267253624 1267253624 J10 Q]] :Servicios Primarios
 Q DB * 1 z p09:deep.space 50
 Q DB * 2 z clave.de.cifrado.de.ips [Ristra-De-Letras-y-Numeros]
-Q DB * 3  z auto.invisible off  <--- para que los usuarios no entren con el flag +i
-Q DB * 4 z numero.maximo.de.clones.por.defecto 4
-Q DB * 5  z activar.ident <-- se activa
+Q DB * 3  z auto.invisible  <--- para que los usuarios  entren o no con el flag +i
+Q DB * 4 z numero.maximo.de.clones.por.defecto 4 <---este ejemplo, es el caso general, en el que sólo se permite 4 conexiones por host
+Q DB * 5  z activar.ident  1 <-- se activa
 Q DB * 6  z nicklen 15  <--- si queremos cambiar el de por defecto que es 9
 Q DB * 7 z ocultar.servidores 1 <---- no permitir /map /links...
 Q DB * 8 z servidor.oculto [server]  <-- ofuscamos el servidor real creando uno ficticio
@@ -32,8 +36,6 @@ ej) irc.servidor.org
 *[info-server]
 Es la info del servidor ficticio
 ej) servidor de usuarios
-
-
 
 
 
@@ -62,4 +64,11 @@ s_bdd.h (del u2.10.H.10.77)
 #define BDD_AUTOINVISIBLE     "auto.invisible"
 #define BDD_NICKLEN           "nicklen"
 
+La pista de los tipos de valores que son de cada registro en la tabla "z" viene más abajo:(enteros y caracteres)
 
+extern int numero_maximo_de_clones_por_defecto;
+extern char *clave_de_cifrado_de_ips;
+extern unsigned int clave_de_cifrado_binaria[2];
+extern int ocultar_servidores;
+extern int activar_ident;
+extern int auto_invisible;

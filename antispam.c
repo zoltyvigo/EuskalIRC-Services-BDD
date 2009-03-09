@@ -343,19 +343,23 @@ else if (ci->erab >= SpamUsers) {
 send_cmd(s_SpamServ, "JOIN %s", ci->name);
 #endif
 
-if (ci->erab = SpamUsers)
-canaladmins(s_SpamServ, "Entrando a %s , usuarios: %d", ci->name, ci->erab);
+if (ci->erab == SpamUsers)
+ canaladmins(s_OperServ, "5<%s> 12,15 %s  3 Usuarios: 2 %d", s_SpamServ,ci->name, ci->erab);
 }
 else 
 { 
- //canaladmins(s_SpamServ, "PART CHANNEL: %s , COUNT: %d", ci->name, ci->erab);
-  
+if (ci->erab < SpamUsers)
+
 #ifdef IRC_UNDERNET_P10
 send_cmd(s_SpamServ, "L %s", ci->name);
 #else
 send_cmd(s_SpamServ, "PART %s", ci->name);
 #endif
+if   (ci->erab  == SpamUsers-1)
+ canaladmins(s_OperServ, "5<%s> 4,15%s   3 Usuarios: 2 %d", s_SpamServ,ci->name, ci->erab);
 } 
+
+
 
 }
 
@@ -397,24 +401,29 @@ if (!strcmp(kanala, adm_kanala) || !strcmp(kanala, opr_kanala)) return;
  void antispamc(const char *source,const char *chan, char *buf)
  {
  int i;
- char adm_kanala[BUFSIZE];
-char opr_kanala[BUFSIZE];
-snprintf(adm_kanala, sizeof(adm_kanala), "#%s", CanalAdmins);
-snprintf(opr_kanala, sizeof(opr_kanala), "#%s", CanalOpers);
- 
+ char adm_canal[BUFSIZE];
+char op_canal[BUFSIZE];
+snprintf(adm_canal, sizeof(adm_canal), "#%s", CanalAdmins);
+snprintf(op_canal, sizeof(op_canal), "#%s", CanalOpers);
+  User *u = finduser(source);
    
 if (SpamUsers == 0)
 return;
  
-if (!strcmp(chan, adm_kanala) || !strcmp(chan, opr_kanala)) return;
+if (!strcmp(chan, adm_canal) || !strcmp(chan, op_canal)) return;
 
 
 for (i = 0; i < sspam; i++) {
  	if (strstr(buf, spam[i].hitza)) {
-	        privmsg(s_SpamServ, chan, "Ey! %s dijo 4%s !!", source,spam[i].hitza);
+	       
+		if   (is_services_root(u) || is_services_admin(u) || is_services_cregadmin(u) || is_services_devel(u) || is_services_oper(u))  {
+ 		 privmsg(s_SpamServ, chan, "El Representante de Red 12%s  dijo 4%s !! ", source,spam[i].hitza);
+		return;
+		}
+		 privmsg(s_SpamServ, chan, "Ey! %s dijo 4%s !!", source,spam[i].hitza);
 		send_cmd(s_SpamServ, "MODE %s +b :%s", chan , source);
 	        send_cmd(s_SpamServ, "KICK %s %s : _antispam 4(Publicidad No Autorizada.Forma Parte Del Listado Censurado Por La Red)", chan, source);
-		send_cmd(ServerName, "SVSJOIN  %s #Spamers", source);
+		send_cmd(ServerName, "SVSJOIN  %s #%s", source,CanalSpamers);
 		return;
 		}
 	

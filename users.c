@@ -15,6 +15,9 @@ static User *userlist[1024];
 time_t maxusertime;
 int  servercnt = 0, usercnt = 0, opcnt = 0, maxusercnt = 0;
 
+/* hacemos estadísticas de helpers=representantes de red*/
+int helpcnt =0, invcnt = 0;
+
 /*************************************************************************/
 /*************************************************************************/
 
@@ -97,6 +100,8 @@ static void delete_user(User *user)
     usercnt--;
     if (user->mode & UMODE_O)
 	opcnt--;
+ if (user->mode & UMODE_H)
+	helpcnt--;
     cancel_user(user);
     if (debug >= 2)
 	log("debug: delete_user(): free user data");
@@ -157,6 +162,10 @@ void del_users_server(Server *server)
                
             if (user->mode & UMODE_O)
                 opcnt--;
+	 if (user->mode & UMODE_H)
+                helpcnt--;
+	 if (user->mode & UMODE_I)
+		invcnt--;
                                           
             cancel_user(user);
             free(user->username);
@@ -251,13 +260,14 @@ void send_user_list(User *user)
 	struct u_chanlist *c;
 	struct u_chaninfolist *ci;
 
-	privmsg(s_OperServ, source, "%s!%s@%s +%s%s%s%s%s%s%s%s%s%s %ld %s :%s",
+	privmsg(s_OperServ, source, "%s!%s@%s +%s%s%s%s%s%s%s%s%s%s%s  %ld %s :%s",
 		u->nick, u->username, u->host,
 		(u->mode&UMODE_G)?"g":"", (u->mode&UMODE_I)?"i":"",
 		(u->mode&UMODE_O)?"o":"", (u->mode&UMODE_S)?"s":"",
                 (u->mode&UMODE_R)?"r":"", (u->mode&UMODE_X)?"x":"",
                 (u->mode&UMODE_H)?"h":"", (u->mode&UMODE_Z)?"X":"",
                 (u->mode&UMODE_W)?"w":"", (u->mode&UMODE_K)?"k":"",
+		(u->mode& UMODE_r)?"R":"",
       u->signon, u->server, u->realname);                                                                 		
      //  u->signon, servers[u->server].name, u->realname);
 	buf[0] = 0;
@@ -267,9 +277,9 @@ void send_user_list(User *user)
 	privmsg(s_OperServ, source, "%s esta en canales:%s", u->nick, buf);
 	buf[0] = 0;
 	s = buf;
-	/*for (ci = u->founder_chans; ci; ci = ci->next)
+	for (ci = u->founder_chans; ci; ci = ci->next)
 	    s += snprintf(s, sizeof(buf)-(s-buf), " %s", ci->chan->name);
-	privmsg(s_OperServ, source, "%s es founder en%s", u->nick, buf); */
+	privmsg(s_OperServ, source, "%s identificado como  FUNDADOR en: %s", u->nick, buf); 
     }
 }
 
@@ -295,13 +305,14 @@ void send_user_info(User *user)
 		nick ? nick : "(null)");
 	return;
     }
-    privmsg(s_OperServ, source, "%s!%s@%s +%s%s%s%s%s%s%s%s%s%s %ld %s :%s",
+    privmsg(s_OperServ, source, "%s!%s@%s +%s%s%s%s%s%s%s%s%s%s%s  %ld %s :%s",
 		u->nick, u->username, u->host,
 		(u->mode&UMODE_G)?"g":"", (u->mode&UMODE_I)?"i":"",
 		(u->mode&UMODE_O)?"o":"", (u->mode&UMODE_S)?"s":"",
                 (u->mode&UMODE_R)?"r":"", (u->mode&UMODE_X)?"x":"",
                 (u->mode&UMODE_H)?"h":"", (u->mode&UMODE_Z)?"X":"",
                 (u->mode&UMODE_W)?"w":"", (u->mode&UMODE_K)?"k":"",
+		(u->mode&UMODE_r)?"R":"",
                     u->signon, u->server, u->realname);
                                                                 		
     buf[0] = 0;
@@ -311,9 +322,9 @@ void send_user_info(User *user)
     privmsg(s_OperServ, source, "%s esta en canales:%s", u->nick, buf);
     buf[0] = 0;
     s = buf;
- /*   for (ci = u->founder_chans; ci; ci = ci->next)
+   for (ci = u->founder_chans; ci; ci = ci->next)
 	s += snprintf(s, sizeof(buf)-(s-buf), " %s", ci->chan->name);
-    privmsg(s_OperServ, source, "%s es founder en%s", u->nick, buf);*/
+       privmsg(s_OperServ, source, "%s identificado como  FUNDADOR en: %s", u->nick, buf);
 }
 
 
@@ -812,8 +823,8 @@ void do_umode(const char *source, int ac, char **av)
 		}
 		break;
 #endif
-	    case 'i': add ? (user->mode |= UMODE_I) : (user->mode &= ~UMODE_I);
-	              break;
+	   /* case 'i': add ? (user->mode |= UMODE_I) : (user->mode &= ~UMODE_I);
+	              break; */ /*lo desarrollo abajo porque me interesa contar invisibles*/
 	    case 'w': add ? (user->mode |= UMODE_W) : (user->mode &= ~UMODE_W);
 	              break;
 	    case 'g': add ? (user->mode |= UMODE_G) : (user->mode &= ~UMODE_G);
@@ -826,6 +837,8 @@ void do_umode(const char *source, int ac, char **av)
             case 'X': add ? (user->mode |= UMODE_Z) : (user->mode &= ~UMODE_Z);
                       break;
             case 'k': add ? (user->mode |= UMODE_K) : (user->mode &= ~UMODE_K);
+                      break;       
+	   case 'R': add ? (user->mode |= UMODE_r) : (user->mode &= ~UMODE_r);
                       break;       
             case 'S':
                 if (add) {
@@ -901,14 +914,26 @@ void do_umode(const char *source, int ac, char **av)
 		    opcnt--;
 		}
 		break;
+/*contamos también los usuarios invisibles de la red ,para estadísticas --donostiarra(2009)--*/
+	case 'i':
+		if (add) {
+		    user->mode |= UMODE_I;
+		      invcnt++;
+		} else {
+		    user->mode &= ~UMODE_I;
+		    invcnt--;
+		}
+		break;
 #if defined (IRC_HISPANO) || defined (IRC_TERRA)
            case 'h':
                if (add) {
                    user->mode |= UMODE_H;
-                   canaladmins(s_OperServ, "12%s es ahora un 12OPER.", user->nick);
+                   canaladmins(s_OperServ, "12%s es ahora un 12REPRESENTANTE.", user->nick);
                    display_news(user, NEWS_OPER);
+		  helpcnt++;
                 } else {
                     user->mode &= ~UMODE_H;
+		   helpcnt--;
                 }
                 break;
 #endif                                                                                                                                                                                                                              		

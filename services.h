@@ -494,6 +494,7 @@ struct user_ {
 #define UMODE_X 0x00000080
 #define UMODE_Z 0x00000100
 #define UMODE_K 0x00000200
+#define UMODE_r  0x00000400 /*modo +R*/
 
 
 struct channel_ {

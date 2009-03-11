@@ -1340,7 +1340,7 @@ OPER_GLOBAL_SYNTAX
 OPER_STATS_UNKNOWN_OPTION
 	4Opción STATS 12%s desconocida.
 OPER_STATS_CURRENT_USERS
-	Usuarios actuales : 12%d (12%d ircops)
+	Usuarios actuales : 12 %d (4 %d ircops) (5 %d Reps) (5 %d Invs)
 OPER_STATS_MAX_USERS
 	Máximo de usuarios: 12%d (12%s)
 # This is ugly, but at least it's language-portable...
@@ -3319,12 +3319,13 @@ OPER_HELP
 	                    ejecucion del programa servicios 
 	    12RESTART     Graba la base de datos y reinicializa los
 	                    Servicios
+	     12ROTATELOG     Renombra el Archivo Logs de los Servicios
 	
 	2Comandos disponibles únicamente para los 4Súper-Usuarios(Root)2 de los
 	servicios:
 	
 	    12ADMIN       Modifica la lista de Administradores de Servicios
-	    12ROTATELOG     Renombrar el Archivo Logs de los Servicios
+	  
 	
 	4Aviso: TODOS los comandos enviados a 12%S son
 	registrados! (log)

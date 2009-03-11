@@ -157,7 +157,8 @@ static Command cmds[] = {
     /*{ "LISTIGNORE", do_listignore, is_services_admin,
 	-1,-1,-1,-1, -1 },*/	
    // { "MATCHWILD",  do_matchwild,       is_services_root, -1,-1,-1,-1,-1 },
-
+{ "ROTATELOG",  rotate_log,  is_services_admin, -1,-1,-1,-1,
+	OPER_HELP_ROTATELOG },
     /* Commands for Services CoAdmins: */
 
   /* de channels.c */
@@ -166,11 +167,8 @@ static Command cmds[] = {
 /*de users.c*/
 { "USERLIST",  send_user_list,     is_services_cregadmin, -1,-1,-1,-1,-1 },
  { "USERINFO",   send_user_info,     is_services_cregadmin, -1,-1,-1,-1,-1 },
-
+ 
  /* Commands for Services Roots: */
-
- { "ROTATELOG",  rotate_log,  is_services_root, -1,-1,-1,-1,
-	OPER_HELP_ROTATELOG },
 
 #ifdef DEBUG_COMMANDS
 
@@ -580,9 +578,9 @@ for (i = 0; i < MAX_SERVADMINS; i++) {
              ni = findnick(services_cregadmins[i]->nick);
              if (ni && (ni->status & NS_IDENTIFIED)) {
 #ifdef IRC_UNDERNET_P10
-                 privmsg(s_ChanServ, u->numerico, "%-10s es 12COADMINISTRADOR de 4%s y 4%s",
+                 privmsg(s_ChanServ, u->numerico, "%-10s es 12COADMIN de 4%s y 4%s",
 #else
-                 privmsg(s_ChanServ, u->nick, "%-10s es 12COADMINISTRADOR de 4%s y 4%s",
+                 privmsg(s_ChanServ, u->nick, "%-10s es 12COADMIN de 4%s y 4%s",
 #endif
                      services_cregadmins[i]->nick, s_NickServ, s_ChanServ);
                  online++;
@@ -595,9 +593,9 @@ for (i = 0; i < MAX_SERVADMINS; i++) {
              ni = findnick(services_devels[i]->nick);
              if (ni && (ni->status & NS_IDENTIFIED)) {
 #ifdef IRC_UNDERNET_P10
-                 privmsg(s_ChanServ, u->numerico, "%-10s es 12DESARROLLADOR de 4%s y 4%s",
+                 privmsg(s_ChanServ, u->numerico, "%-10s es 12DEVEL de 4%s y 4%s",
 #else
-                 privmsg(s_ChanServ, u->nick, "%-10s es 12DESARROLLADOR de 4%s y 4%s",
+                 privmsg(s_ChanServ, u->nick, "%-10s es 12DEVEL de 4%s y 4%s",
 #endif
                      services_devels[i]->nick, s_NickServ, s_ChanServ);
                  online++;
@@ -1019,7 +1017,7 @@ static void do_stats(User *u)
 	}
     }
 
-    notice_lang(s_OperServ, u, OPER_STATS_CURRENT_USERS, usercnt, opcnt);
+    notice_lang(s_OperServ, u, OPER_STATS_CURRENT_USERS, usercnt, opcnt,helpcnt,invcnt);
     tm = localtime(&maxusertime);
     strftime_lang(timebuf, sizeof(timebuf), u, STRFTIME_DATE_TIME_FORMAT, tm);
     notice_lang(s_OperServ, u, OPER_STATS_MAX_USERS, maxusercnt, timebuf);

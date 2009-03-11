@@ -573,7 +573,7 @@ E const char *inttobase64(unsigned int i);
 
 /**** users.c ****/
 
-E int usercnt, opcnt, maxusercnt, servercnt;
+E int usercnt, opcnt, maxusercnt, servercnt,helpcnt,invcnt;
 E time_t maxusertime;
 
 

@@ -228,15 +228,19 @@ if (!user || stricmp(user, s_CregServ) == 0 || stricmp(user, s_CregServP10) == 0
      if (s_IrcIIHelp && (!user || stricmp(user, s_IrcIIHelp) == 0)) {
 	NICK(s_IrcIIHelp, desc_IrcIIHelp);
          send_cmd(s_IrcIIHelp, "JOIN #%s", CanalAdmins);
+	  send_cmd(s_IrcIIHelp, "JOIN #%s", CanalAyuda);
         send_cmd(s_IrcIIHelp, "MODE %s +dbBrk", s_IrcIIHelp);
 	send_cmd(s_ChanServ, "MODE #%s +o %s", CanalAdmins, s_IrcIIHelp);
+	send_cmd(s_ChanServ, "MODE #%s +o %s", CanalAyuda, s_IrcIIHelp);
               
     }
     if (s_mIRCHelp && (!user || stricmp(user, s_mIRCHelp) == 0)) {
 	NICK(s_mIRCHelp, desc_mIRCHelp);
          send_cmd(s_mIRCHelp, "JOIN #%s", CanalAdmins);
+	send_cmd(s_mIRCHelp, "JOIN #%s", CanalAyuda);
         send_cmd(s_mIRCHelp, "MODE %s +dbBrk", s_mIRCHelp);
 	send_cmd(s_ChanServ, "MODE #%s +o %s", CanalAdmins, s_mIRCHelp);
+	send_cmd(s_ChanServ, "MODE #%s +o %s", CanalAyuda, s_mIRCHelp);
               
     }
 

@@ -2206,20 +2206,38 @@ NICK_HELP_STATUS
 
 NICK_SERVADMIN_HELP
 	
-	Los siguientes comandos están disponibles para los
-	4Operadores y Administradores de Services:
+	2Los siguientes comandos están disponibles para los
+	5Representantes5 2de Servicios:
 	    
-	    12EMAIL      Asocia una dirección de E-mail con un nick
-	    12SENDPASS   Manda la contraseña al mail
-	    12GETPASS    Muestra la contraseña para un nick
+	     12SENDPASS   Manda la contraseña al mail
+	    	    
+	2Comandos disponibles solo para los 5Desarrolladores2 de
+	2Servicios:
+	
+	    12USERIP     Obtiene la dirección IP/Host del usuario.
 	    12SUSPEND    Suspende el nick
 	    12UNSUSPEND  Reactiva un nick suspendido
+	    12MARCAR/DESMARCAR Añade o elimina un comentario al histórico de un nick
+	
+	2Comandos disponibles solo para los 5Coadministradores2 de
+	2Servicios:
+	
 	    12FORBID     Evita que un nick sea utilizado
 	    12UNFORBID   Libera un nick prohibido
 	    12RENAME     Cambia un nick por otro generado aleatoriamente.
-	    12USERIP     Obtiene la dirección IP/Host del usuario.
 	
-	4Administradores de Services pueden cancelar cualquier nick
+	2Comandos disponibles solo para los 5Administradores y 5Súper-Usuarios(Root) 2 de
+	2Servicios:
+	
+	    12SET(3EMAIL)       Asocia una dirección de E-mail con un nick
+	    12SET(3LANGUAGE)    Asocia un Lenguaje con un nick
+	    12SET(3URL)    	    Asocia una URL con un nick
+	    12SET(3PASS)        Asocia una Clave-Password con un nick
+	    12SET(3NOEXPIRE)    Asocia estado NOEXPIRE con un nick
+	    12GETPASS   	    Muestra la contraseña para un nick
+	
+	
+	5Administradores de Services pueden cancelar cualquier nick
 	sin necesidad de identificarse por el mismo, y pueden ver la
 	lista de acceso de cualquier nick (12/msg %S ACCESS LIST <nick>).
 
@@ -3247,8 +3265,32 @@ IPV_SERVADMIN_HELP_SET
 	pueden establecer opciones para cualquier nick sin necesidad
 	de proveer una contraseña, utilizando el formato
 	12SET <nick> <opción> <parámetros>.
-
 	
+###########################################################################
+#
+# EuskalIRC help messages (mensajes de ayuda de EuskalIRC)
+###########################################################################
+
+EUSKALIRC_HELP_DUDA
+		Sintaxis:2DUDA 12ACEPTA/RECHAZA 5<NICK>
+	
+		Acepta o Rechaza una consulta de un Usuario Registrado
+		(Comando Habilitado Para Helpers)
+	
+EUSKALIRC_FALTA_NICK
+		4Falta un Nick /msg %s 2DUDA 12ACEPTA/RECHAZA 5<NICK>
+	
+EUSKALIRC_MENSAJE_ENTRADA
+		Hola 12%s
+		Soy el encargado de ponerte en contacto con un OPER de Servicios.
+		Por favor, ¿podrías describirme en una línea el problema?
+EUSKALIRC_MENSAJE_NOREG
+		Buenas 12%s
+		Veo que no tienes el Nick Registrado.
+		Para Solicitar Soporte debe Registrarse Primero.
+		2Instrucciones de Registro: lo encontrará ejecutando el comando 4/msg 2%s %s
+
+
 ###########################################################################
 #
 # OperServ help messages (mensajes de ayuda de OperServ)
@@ -3278,16 +3320,16 @@ OPER_HELP
 	    12LIMPIA      MassKick de los usuarios de un canal
 	    12KILL        Expulsa a un usuario de la red anónimamente
 		
-	2Comandos disponibles solo para los 5Desarrolladores2 de
-	Servicios:
+	2Comandos disponibles solo para los 5Desarrolladores2 de
+	2Servicios:
 	
 	12OPER        Modifica la lista de Operadores de Servicios
 	12PATROCINA   Modifica la lista de Patrocinadores de Servicios
 	12LOGONNEWS   Añade un LOGONNEWS    
 	12OPERNNEWS   Añade un OPERNNEWS
 	
-	2Comandos disponibles solo para los 4CoAdministradores2 de
-	Servicios:
+	2Comandos disponibles solo para los 4CoAdministradores2 de
+	2Servicios:
 	
 	12DEVEL       Modifica la lista de Desarrolladores de Servicios
 	12FORZAR 	Fuerza la Entrada o Salida de un Nick a/desde un Canal
@@ -3298,8 +3340,8 @@ OPER_HELP
 	12USERLIST	Listado de Usuarios con información más detallada y sus canales
 	12USERINFO	Información más detallada de un usuario y sus canales
 	
-	2Comandos disponibles solo para los4 Administradores2 de
-	Servicios:
+	2Comandos disponibles solo para los4 Administradores2 de
+	2Servicios:
 	
 	    12COADMIN     Modifica la lista de CoAdministradores de Servicios
 	    12MODOS	    Fuerza modos de usuario desde un Service
@@ -3319,10 +3361,10 @@ OPER_HELP
 	                    ejecucion del programa servicios 
 	    12RESTART     Graba la base de datos y reinicializa los
 	                    Servicios
-	     12ROTATELOG     Renombra el Archivo Logs de los Servicios
+	    12ROTATELOG     Renombra el Archivo Logs de los Servicios
 	
-	2Comandos disponibles únicamente para los 4Súper-Usuarios(Root)2 de los
-	servicios:
+	2Comandos disponibles únicamente para los 4Súper-Usuarios(Root)2 de los
+	2servicios:
 	
 	    12ADMIN       Modifica la lista de Administradores de Servicios
 	  
@@ -3951,7 +3993,7 @@ CREG_SERVADMIN_HELP
 	    SUSPEND   Suspende cautelarmente un canal registrado.
 	    UNSUSPEND Levanta la suspensión de un canal registrado.
 	    DROP      Borra el registro de un canal registrado.
-	    MARCA     Añade un comentario al histórico de un canal.
+	    MARCAR     Añade un comentario al histórico de un canal.
 	    DESMARCAR Elimina un comentario al histórico de un canal.
 		
 	2Representantes de Red pueden también listar los apoyos que ha

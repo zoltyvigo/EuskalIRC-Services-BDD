@@ -53,6 +53,10 @@ static void do_help(User *u);
 static void do_register(User *u);
 static void do_identify(User *u);
 static void do_drop(User *u);
+  /*donostiarra 2009*/
+static void do_marcar(User *u);
+static void do_desmarcar(User *u);
+
 static void do_set(User *u);
 static void do_set_password(User *u, NickInfo *ni, char *param);
 static void do_set_language(User *u, NickInfo *ni, char *param);
@@ -104,6 +108,11 @@ static Command cmds[] = {
     { "DROP",     do_drop,     is_services_cregadmin,  -1,
 		NICK_HELP_DROP, NICK_SERVADMIN_HELP_DROP,
 		NICK_SERVADMIN_HELP_DROP, NICK_SERVADMIN_HELP_DROP },
+
+     /*para seguimiento de nicks*/
+    { "MARCAR",     do_marcar,    is_services_devel, -1,-1,-1,-1,-1 },
+     { "DESMARCAR",     do_desmarcar,    is_services_devel, -1,-1,-1,-1,-1 },
+
     { "ACCESS",   do_access,   NULL,  NICK_HELP_ACCESS,       -1,-1,-1,-1 },
     { "LINK",     do_link,     NULL,  NICK_HELP_LINK,         -1,-1,-1,-1 },
     { "UNLINK",   do_unlink,   NULL,  NICK_HELP_UNLINK,       -1,-1,-1,-1 },
@@ -148,7 +157,7 @@ static Command cmds[] = {
 
     { "RENAME",  do_rename, is_services_cregadmin,   -1,	      -1,-1,-1,-1 }, 
 
-    { "GETPASS",  do_getpass,  is_services_cregadmin,  -1,
+    { "GETPASS",  do_getpass,  is_services_root,  -1,
                 -1, NICK_SERVADMIN_HELP_GETPASS,
                 NICK_SERVADMIN_HELP_GETPASS, NICK_SERVADMIN_HELP_GETPASS },
     { "SUSPEND",  do_suspend,  is_services_devel,  -1,
@@ -237,6 +246,11 @@ void listnicks(int count_only, const char *nick)
 			need_comma ? commastr : "");
 	    need_comma = 1;
 	}
+	if (ni->estado & NS_MARCADO) {
+	    end += snprintf(buf, sizeof(buf)-(end-buf), "%sMarcado",
+			need_comma ? commastr : "");
+	    need_comma = 1;
+	}
 	if (ni->status & NS_NO_EXPIRE) {
 	    end += snprintf(buf, sizeof(buf)-(end-buf), "%sNo Expira",
 			need_comma ? commastr : "");
@@ -298,8 +312,12 @@ void get_nickserv_stats(long *nrec, long *memuse)
 		mem += strlen(ni->last_quit)+1;
             if (ni->suspendby)
                 mem += strlen(ni->suspendby)+1;
+	    if (ni->nickoper)
+                mem += strlen(ni->nickoper)+1;
             if (ni->suspendreason)
                 mem += strlen(ni->suspendreason)+1;
+	   if (ni->motivo)
+                mem += strlen(ni->motivo)+1;
             if (ni->forbidby)
                 mem += strlen(ni->forbidby)+1;
             if (ni->forbidreason)
@@ -400,6 +418,7 @@ static void load_old_ns_dbase(dbFILE *f, int ver)
 	long accesscount;
 	char **access;
 	long flags;
+	long estado;
 	time_t id_timestamp;
 	unsigned short memomax;
 	unsigned short channelcount;
@@ -432,6 +451,7 @@ static void load_old_ns_dbase(dbFILE *f, int ver)
 	   ni->expira_min = old_nickinfo.expira_min;
 	    ni->accesscount = old_nickinfo.accesscount;
 	    ni->flags = old_nickinfo.flags;
+	     ni->estado = old_nickinfo.estado;
 	    if (ver < 3)	/* Memo max field created in ver 3 */
 		ni->memos.memomax = MSMaxMemos;
 	    else if (old_nickinfo.memomax)
@@ -578,17 +598,24 @@ void load_ns_dbase(void)
 #endif
                 if (ver >= 8) {
                     SAFE(read_string(&ni->suspendby, f));
+		       SAFE(read_string(&ni->nickoper, f));
                     SAFE(read_string(&ni->suspendreason, f));
+		    SAFE(read_string(&ni->motivo, f));
                     SAFE(read_int32(&tmp32, f));
                     ni->time_suspend = tmp32;
+			SAFE(read_int32(&tmp32, f));
+                    ni->time_motivo = tmp32;
                     SAFE(read_int32(&tmp32, f));
                     ni->time_expiresuspend = tmp32;
                     SAFE(read_string(&ni->forbidby, f));
                     SAFE(read_string(&ni->forbidreason, f));
                 } else {
                     ni->suspendby = NULL;
+		    ni->nickoper = NULL;
                     ni->suspendreason = NULL;
+		       ni->motivo = NULL;
                     ni->time_suspend = 0;
+		     ni->time_motivo = 0;
                     ni->time_expiresuspend = 0;
                     ni->forbidby = NULL;
                     ni->forbidreason = NULL;
@@ -602,6 +629,7 @@ void load_ns_dbase(void)
 		    /* No other information saved for linked nicks, since
 		     * they get it all from their link target */
 		    ni->flags = 0;
+		    ni->estado = 0;
 		    ni->accesscount = 0;
 		    ni->access = NULL;
 		    ni->memos.memocount = 0;
@@ -611,6 +639,7 @@ void load_ns_dbase(void)
 		    ni->language = DEF_LANGUAGE;
 		} else {
 		    SAFE(read_int32(&ni->flags, f));
+		    SAFE(read_int32(&ni->estado, f));
 		    if (!NSAllowKillImmed)
 			ni->flags &= ~NI_KILL_IMMED;
 		    SAFE(read_int16(&ni->accesscount, f));
@@ -720,8 +749,11 @@ void save_ns_dbase(void)
 	    SAFE(write_int16(ni->status, f));
 	   SAFE(write_int16(ni->env_mail, f));
             SAFE(write_string(ni->suspendby, f));
+	    SAFE(write_string(ni->nickoper, f));
             SAFE(write_string(ni->suspendreason, f));
+	    SAFE(write_string(ni->motivo, f));
             SAFE(write_int32(ni->time_suspend, f));
+	  SAFE(write_int32(ni->time_motivo, f));
             SAFE(write_int32(ni->time_expiresuspend, f));
             SAFE(write_string(ni->forbidby, f));
             SAFE(write_string(ni->forbidreason, f));                                                              
@@ -733,6 +765,7 @@ void save_ns_dbase(void)
 		SAFE(write_string(NULL, f));
 		SAFE(write_int16(ni->linkcount, f));
 		SAFE(write_int32(ni->flags, f));
+	         SAFE(write_int32(ni->estado, f));
 		SAFE(write_int16(ni->accesscount, f));
 		for (j=0, access=ni->access; j<ni->accesscount; j++, access++)
 		    SAFE(write_string(*access, f));
@@ -1166,8 +1199,12 @@ static int delnick(NickInfo *ni)
         free (ni->url);    
     if (ni->suspendby)
         free (ni->suspendby);
+    if (ni->nickoper)
+        free (ni->nickoper);
     if (ni->suspendreason)
         free (ni->suspendreason); 
+ if (ni->motivo)
+        free (ni->motivo); 
     if (ni->forbidby)
         free (ni->forbidby);        
     if (ni->forbidreason)
@@ -1697,6 +1734,7 @@ static void do_register(User *u)
 #endif /* REG_NICK_MAIL */
 
 	    ni->flags = 0;
+	    ni->estado = 0;
 	    if (NSDefKill)
 		ni->flags |= NI_KILLPROTECT;
 	    if (NSDefKillQuick)
@@ -1869,7 +1907,64 @@ static void do_drop(User *u)
 	    u->ni = u->real_ni = NULL;
     }
 }
+/******************MARCADO DE UN NICK *********/
+static void do_marcar(User *u)
+{
+   char *nick = strtok(NULL, " ");
+    char *razon = strtok(NULL, "");
+    
+     NickInfo *ni;
 
+    if (!razon) {
+        privmsg(s_NickServ, u->nick, "Sintaxis: 12MARCAR <Nick> 2 <motivo>");
+    } else if  (!(ni = findnick(nick))) {
+        privmsg(s_NickServ, u->nick, "El Nick  12%s no registrado", nick);
+   
+    } else if ((ni->estado & NS_MARCADO))  {
+        privmsg(s_NickServ, u->nick, "El Nick 12%s Ya esta MARCADO ", nick);
+     } else if ((ni->status &  NS_SUSPENDED))  {
+        privmsg(s_NickServ, u->nick, "El Nick  12%s esta SUSPENDIDO",nick );
+      /*si esta suspendido el nick,no necesario marcarlo porque ya tiene su razon*/
+     } else {
+      
+      ni->motivo = sstrdup(razon);
+       ni->time_motivo = time(NULL);
+       ni->nickoper = sstrdup(u->nick);
+        ni->estado = 0;
+        ni->estado |= NS_MARCADO;
+        privmsg(s_NickServ, u->nick, "Al Nick 12%s se le ha MARCADO", nick);
+        canaladmins(s_NickServ, "12%s ha MARCADO el Nick  12%s Motivo:5%s", u->nick, nick,ni->motivo); 
+    }
+}
+/******************DESMARCAR UN CANAL *********/
+static void do_desmarcar(User *u)
+{
+   char *nick = strtok(NULL, " ");
+      
+     NickInfo *ni;
+  
+    if (!nick) {
+        privmsg(s_NickServ, u->nick, "Sintaxis: 12DESMARCAR <Nick>");
+        return;
+      }
+    
+    if (!(ni = findnick(nick))) {
+        privmsg(s_NickServ, u->nick, "El Nick 12%s no está registrado", nick);
+         return;
+        
+    } else if (!(ni->estado & NS_MARCADO))  {
+        privmsg(s_NickServ, u->nick, "El nickl 12%s no está MARCADO", nick);
+     
+     } else {
+        if (ni->motivo)
+	free(ni->motivo);
+        ni->nickoper = sstrdup(u->nick);
+        ni->estado  &= ~NS_MARCADO;
+        
+        privmsg(s_NickServ, u->nick, "Al nick 12%s se le ha DESMARCADO", nick);
+        canaladmins(s_NickServ, "12%s ha DESMARCADO el nick  12%s", u->nick, nick); 
+    }
+}
 /*************************************************************************/
 
 static void do_set(User *u)
@@ -2663,6 +2758,20 @@ static void do_info(User *u)
 
         if(stricmp(ni->nick,real->nick)!=0)
             notice_lang(s_NickServ, u, NICK_INFO_LINKED, real->nick);
+
+
+ if ((ni->estado & NS_MARCADO)   && (is_services_admin(u) ||  is_services_cregadmin(u) || is_services_devel(u) ||  is_services_oper(u))) {
+           privmsg(s_NickServ, u->nick, "5MARCADO2(Por 3 %s)   con 5Motivo : 2%s",ni->nickoper,ni->motivo);
+                     char timebuf[32];
+//                time_t now = time(NULL);            
+                 tm = localtime(&ni->time_motivo);
+                strftime_lang(timebuf, sizeof(timebuf), u, STRFTIME_DATE_TIME_FORMAT, tm);
+                privmsg(s_NickServ, u->nick, "5Fecha del MARCADO: 2 %s", timebuf);
+
+            }  
+        
+
+
 
         if (ni->status & NS_SUSPENDED) {
             notice_lang(s_NickServ, u, NICK_INFO_SUSPENDED, ni->suspendreason);

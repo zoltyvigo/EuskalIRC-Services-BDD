@@ -22,13 +22,13 @@ void do_euskal(User *u) /*la colocamos en extern.h y asi la llamamos desde oper*
   
 
     if ((!cmd) || ((!stricmp(cmd, "ACEPTA") == 0) && (!stricmp(cmd, "RECHAZA") == 0))) {
-       privmsg(s_EuskalIRCServ,u->nick, " /msg %s 2DUDA 12ACEPTA/RECHAZA 5<NICK>",s_OperServ);
+      	 notice_lang(s_EuskalIRCServ, u, EUSKALIRC_HELP_DUDA);
     	return;
     }
    
     if (!nick) {
-    	privmsg(s_EuskalIRCServ, u-> nick, "4Falta un Nick /msg %s 2DUDA 12ACEPTA/RECHAZA 5<NICK>",s_OperServ);
-    	return;
+    	notice_lang(s_EuskalIRCServ, u, EUSKALIRC_FALTA_NICK);
+	 return;
     } else if (!(ni = findnick(nick))) {
 	notice_lang(s_EuskalIRCServ, u, NICK_X_NOT_REGISTERED, nick);
 	return;
@@ -41,14 +41,15 @@ void do_euskal(User *u) /*la colocamos en extern.h y asi la llamamos desde oper*
 
       ni = findnick(nick);
    
-      if  ((stricmp(cmd, "ACEPTA") == 0) &&  (ni->in_ayu & AYU_SI)) {
+      if  ((stricmp(cmd, "ACEPTA") == 0) &&  (ni->in_ayu & AYU_PROCESO)) {
 	if (!is_services_oper(u)) {
 	    notice_lang(s_EuskalIRCServ, u, PERMISSION_DENIED);
 	    return;
 	} else if (ni && (ni->status & NS_IDENTIFIED)) {
-          privmsg(s_EuskalIRCServ, nick, "El OPERador/a 5%s se pondrá en contacto contigo en breve.Por favor, abandone el canal una vez atendido. Gracias.",u->nick);
+         privmsg(s_EuskalIRCServ, nick, "El OPERador/a 5%s se pondrá en contacto contigo en breve.Por favor, abandone el canal una vez atendido. Gracias.",u->nick);
 	canaladmins( s_EuskalIRCServ,"12OPER 4%s 3ACEPTA DUDA de  2%s",u->nick,nick);
-	ni->in_ayu = AYU_NO ;
+	ni->in_ayu   &= ~AYU_PROCESO;
+	ni->in_ayu |= AYU_ACEPTA ;
 	return;
             } 
             else {
@@ -57,14 +58,15 @@ void do_euskal(User *u) /*la colocamos en extern.h y asi la llamamos desde oper*
               }
             }
        
-       else if ((stricmp(cmd, "RECHAZA") == 0) && (ni->in_ayu & AYU_SI))  {
+       else if ((stricmp(cmd, "RECHAZA") == 0) && (ni->in_ayu & AYU_PROCESO))  {
 	if (!is_services_oper(u)) {
 	    notice_lang(s_EuskalIRCServ, u, PERMISSION_DENIED);
 	    return;
 	}  else if (ni && (ni->status & NS_IDENTIFIED)) {
           privmsg(s_EuskalIRCServ, nick , "El OPERador/a 5%s ha rechazado la solicitud de ayuda.",u->nick);
           canaladmins( s_EuskalIRCServ,"12OPER 4%s 5RECHAZA DUDA de  2%s",u->nick,nick);
-	ni->in_ayu = AYU_NO ;
+	ni->in_ayu   &= ~AYU_PROCESO;
+	ni->in_ayu |= AYU_RECHAZA ;
         return;
 	  }
           else  {
@@ -72,12 +74,12 @@ void do_euskal(User *u) /*la colocamos en extern.h y asi la llamamos desde oper*
 		return; }
 
           }
-if ((stricmp(cmd, "ACEPTA") == 0) && !(ni->in_ayu & AYU_SI))  { 
+if ((stricmp(cmd, "ACEPTA") == 0) && !(ni->in_ayu & AYU_PROCESO))  { 
     
        privmsg(s_EuskalIRCServ,u->nick, " 2El Nick 12%s 2Ni Solicita ni Precisa Asistencia!.5 ACEPTACION3 ilógica!",ni->nick);
 	return;
      }
- else if ((stricmp(cmd, "RECHAZA") == 0) && !(ni->in_ayu & AYU_SI))  { 
+ else if ((stricmp(cmd, "RECHAZA") == 0) && !(ni->in_ayu & AYU_PROCESO))  { 
     
        privmsg(s_EuskalIRCServ,u->nick, " 2El Nick 12%s 2Ni Solicita ni Precisa Asistencia!.5 RECHAZO3 ilógico!",ni->nick);
 	return;
@@ -107,11 +109,12 @@ snprintf(ayu, sizeof(ayu), "#%s", CanalAyuda);
     //log("yiha %s: %s: %s", s_EuskalIRCServ, source, buf);
   canaladmins( s_EuskalIRCServ,"5CONSULTA! 12%s : 2%s", source,buf);
    if ((ni = u->real_ni))
-   if (ni->in_ayu & AYU_NO) {
+   if (ni->in_ayu & AYU_ENTRA) {
    send_cmd(s_EuskalIRCServ, "MODE #%s +v %s", CanalAyuda, ni->nick);
    privmsg(s_EuskalIRCServ, ni->nick , "Gracias, en breve te informaré del nick del OPERador/a que te va a ayudar. Por favor, no abandones el canal mientras eres atendido/a");
-   ni->in_ayu = AYU_SI ;
-   }
+    ni->in_ayu   &= ~AYU_ENTRA;
+   ni->in_ayu |= AYU_PROCESO ;
+      }
    
 }
 void euskalirc_canal(const char *source,const char *chan, char *buf)
@@ -145,17 +148,13 @@ if (!strcmp(chan, ayu)) {
 
           
       if ((ni = u->real_ni) && !(is_services_oper(u))) {
-        ni->in_ayu = AYU_NO;
-        privmsg(s_EuskalIRCServ,source, "Hola %s",source);
-	privmsg(s_EuskalIRCServ,source, "Soy el encargado de ponerte en contacto con un OPER de Servicios.");
-	privmsg(s_EuskalIRCServ,source, "  5,15 Por favor, ¿podrías describirme en una línea el problema?");
-         }
+	 ni->in_ayu = 0;
+          ni->in_ayu |= AYU_ENTRA;
+	notice_lang(s_EuskalIRCServ, u, EUSKALIRC_MENSAJE_ENTRADA,source);
+             }
         else if  (!is_services_oper(u)) {
-          privmsg(s_EuskalIRCServ,source, "Buenas 2%s5",source);
-	  privmsg(s_EuskalIRCServ,source, "Veo que no tienes el Nick Registrado.");
-          privmsg(s_EuskalIRCServ,source, "Para Solicitar Soporte debe Registrarse Primero.");
-          privmsg(s_EuskalIRCServ,source, "2Instrucciones de Registro: lo encontrara ejecutando el comando 4/msg 2%s %s",s_HelpServ,s_NickServ);
-            return;
+	notice_lang(s_EuskalIRCServ, u, EUSKALIRC_MENSAJE_NOREG,source,s_HelpServ,s_NickServ);
+         return;
           } 
    if   (is_services_root(u))  {
     privmsg(s_EuskalIRCServ,ayu, "Hola 4%s,BienVenido/a 5Root de Red ",source);

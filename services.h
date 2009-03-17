@@ -205,11 +205,14 @@ struct nickinfo_ {
     time_t last_seen;
     time_t expira_min;   /*tiempo expiracion minima --donostiarra 2009-*/
     int16 status;	/* See NS_* below */
-/*donostiarra 2009*/
+   /*donostiarra 2009*/
     int16 env_mail;
     int16 in_cyb;       /* mirar abajo CYB_ *  que un bot de servicios este en canal cybers*/
-    int16 in_ayu;       /* mirar abajo AYU_    que el bot EuskalIRC este en canal de ayuda*/
-
+    int32 in_ayu;      /* mirar abajo AYU_    que el bot EuskalIRC este en canal de ayuda*/
+    char *nickoper;              /* Nick del OPER */
+  int32 estado;   /*Marcado,etc...y abro la posibilidad de muchos campos-perfiles*/
+     time_t time_motivo;          /* Hora del cambio de estado del nick*/
+   char *motivo;                /* Motivo del  marcado, etc.. */
 /*---------------*/
     char *suspendby;         /* Quien lo suspendio */
     char *suspendreason;     /* Motivo de la suspension */
@@ -241,7 +244,19 @@ struct nickinfo_ {
     time_t id_timestamp;/* TS8 timestamp of user who last ID'd for nick */
 /*     char *msuspend; */
 };
+#define AYU_ENTRA 0x00000001
+#define AYU_PROCESO  0x00000002
+#define AYU_ACEPTA     0x00000004
+#define AYU_RECHAZA    0x00000008
 
+
+
+/* --------------donostiarra(2009)----------------------------------------------------*/
+/* en el futuro puede servir para rellenar muchos campos-perfiles del nick*/
+
+#define NS_MARCADO    0x00000001
+
+/*-------------------------------------------------------------------------------------------*/
 
 /* Nickname status flags: */
 #define NS_ENCRYPTEDPW	0x0001      /* Nickname password is encrypted */

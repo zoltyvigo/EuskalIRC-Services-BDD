@@ -1941,7 +1941,14 @@ NICK_HELP_DROP
 	Para utilizar este comando , tienes que identificarte
 	con tu contraseña (12/msg %S HELP IDENTIFY para mas
 	información).
-
+NICK_HELP_MARCAR
+	Sintaxis: 12MARCAR 3<NICK> Añade un comentario al histórico de un nick
+	
+	Sólo podrán usarlos desde 4Desarrolladores de Services
+NICK_HELP_DESMARCAR
+	Sintaxis: 12DESMARCAR 3<NICK> Elimina un comentario al histórico de un nick
+	
+	Sólo podrán usarlos desde 4Desarrolladores de Services
 NICK_HELP_ACCESS
 	Sintaxis: 12ACCESS ADD <mascara>
 	          12ACCESS DEL <mascara>
@@ -2211,22 +2218,23 @@ NICK_SERVADMIN_HELP
 	    
 	     12SENDPASS   Manda la contraseña al mail
 	    	    
-	2Comandos disponibles solo para los 5Desarrolladores2 de
+	2Comandos disponibles sólo para los 5Desarrolladores2 de
 	2Servicios:
 	
 	    12USERIP     Obtiene la dirección IP/Host del usuario.
 	    12SUSPEND    Suspende el nick
 	    12UNSUSPEND  Reactiva un nick suspendido
-	    12MARCAR/DESMARCAR Añade o elimina un comentario al histórico de un nick
+	    12MARCAR     Añade un comentario al histórico de un nick
+	    12DESMARCAR  Elimina un comentario al histórico de un nick
 	
-	2Comandos disponibles solo para los 5Coadministradores2 de
+	2Comandos disponibles sólo para los 5Coadministradores2 de
 	2Servicios:
 	
 	    12FORBID     Evita que un nick sea utilizado
 	    12UNFORBID   Libera un nick prohibido
 	    12RENAME     Cambia un nick por otro generado aleatoriamente.
 	
-	2Comandos disponibles solo para los 5Administradores y 5Súper-Usuarios(Root) 2 de
+	2Comandos disponibles sólo para los 5Administradores y 5Súper-Usuarios(Root) 2 de
 	2Servicios:
 	
 	    12SET(3EMAIL)       Asocia una dirección de E-mail con un nick
@@ -2261,7 +2269,7 @@ NICK_SERVADMIN_HELP_DROP
 	Con un parámetro, cancela el registro de ese nick en la base
 	de datos.
 	 
-	Limitado a 4Operadores de Services.
+	Limitado a 4CoAdministradores de Services.
 
 NICK_SERVADMIN_HELP_SET
 	
@@ -2924,8 +2932,8 @@ CHAN_MSG_DELACCESS_NEG
 CHAN_HELP_IRCOPS
 	Sintaxis: 12IRCOPS
 
-	Lista todos los usuarios on-line que son operadores o
-	administradores de los servicios de la red. 
+	Lista todos los usuarios on-line que son Representantes
+	de los servicios de la red. 
 
 CHAN_SERVADMIN_HELP
 	
@@ -3320,6 +3328,182 @@ OPER_HELP
 	    12LIMPIA      MassKick de los usuarios de un canal
 	    12KILL        Expulsa a un usuario de la red anónimamente
 		
+	4Aviso: TODOS los comandos enviados a 12%S son
+	registrados! (log)
+OPER_DEVEL_HELP
+	2Comandos de 5%S:
+	
+	    12STATS       Muestra el estado de los servicios y de la red
+	    12SERVERS     Muestra los servidores de la red
+	    12PATROCINA LIST  Lista todos los Patrocinadores-Sponsors de Servicios
+	    12OPER LIST   Lista todos los Operadores de los Servicios
+	    12DEVEL LIST  Lista todos los Desarrolladores de Servicios
+	    12COADMIN LIST  Lista todos los CO-Administradores de Servicios
+	    12ADMIN LIST  Lista todos los Administradores de Servicios
+	 
+	2Comandos disponibles solo para 12Representantes de Servicios:
+	
+	    12MODE        Cambia los modos de un canal
+	    12CLEARMODES  Quita todos los modos de un canal
+	    12KICK        Patea a un usuario de un canal
+	    12BLOCK       Expulsa 5 minutos a un tipejo
+	    12UNGLINE     Elimina un BLOCK/GLINE
+	    12GLINE       Manipula la lista de GLINEs
+	    12SETTIME     Sincroniza la RED a tiempo real
+	    12APODERA     MassDeop de los usuarios de un canal
+	    12LIMPIA      MassKick de los usuarios de un canal
+	    12KILL        Expulsa a un usuario de la red anónimamente
+		
+	2Comandos disponibles solo para los 5Desarrolladores2 de
+	2Servicios:
+	
+	12OPER        Modifica la lista de Operadores de Servicios
+	12PATROCINA   Modifica la lista de Patrocinadores de Servicios
+	12LOGONNEWS   Añade un LOGONNEWS    
+	12OPERNNEWS   Añade un OPERNNEWS
+	
+	4Aviso: TODOS los comandos enviados a 12%S son
+	registrados! (log)
+OPER_COADMIN_HELP
+		2Comandos de 5%S:
+	
+	    12STATS       Muestra el estado de los servicios y de la red
+	    12SERVERS     Muestra los servidores de la red
+	    12PATROCINA LIST  Lista todos los Patrocinadores-Sponsors de Servicios
+	    12OPER LIST   Lista todos los Operadores de los Servicios
+	    12DEVEL LIST  Lista todos los Desarrolladores de Servicios
+	    12COADMIN LIST  Lista todos los CO-Administradores de Servicios
+	    12ADMIN LIST  Lista todos los Administradores de Servicios
+	 
+	2Comandos disponibles solo para 12Representantes de Servicios:
+	
+	    12MODE        Cambia los modos de un canal
+	    12CLEARMODES  Quita todos los modos de un canal
+	    12KICK        Patea a un usuario de un canal
+	    12BLOCK       Expulsa 5 minutos a un tipejo
+	    12UNGLINE     Elimina un BLOCK/GLINE
+	    12GLINE       Manipula la lista de GLINEs
+	    12SETTIME     Sincroniza la RED a tiempo real
+	    12APODERA     MassDeop de los usuarios de un canal
+	    12LIMPIA      MassKick de los usuarios de un canal
+	    12KILL        Expulsa a un usuario de la red anónimamente
+		
+	2Comandos disponibles solo para los 5Desarrolladores2 de
+	2Servicios:
+	
+	12OPER        Modifica la lista de Operadores de Servicios
+	12PATROCINA   Modifica la lista de Patrocinadores de Servicios
+	12LOGONNEWS   Añade un LOGONNEWS    
+	12OPERNNEWS   Añade un OPERNNEWS
+	
+	2Comandos disponibles solo para los 4CoAdministradores2 de
+	2Servicios:
+	
+	12DEVEL       Modifica la lista de Desarrolladores de Servicios
+	12FORZAR 	Fuerza la Entrada o Salida de un Nick a/desde un Canal
+	12GLOBAL      Envía un mensaje a TODOS los Usuarios por Privmsg
+	12GLOBALN     Envía un mensaje a TODOS los Usuarios por Notice
+	12CHANLIST	Lista los Canales con sus modos Y Usuarios con sus Status en cada canal
+	12CHANUSERS	Listado de Usuarios con sus Status de un canal determinado
+	12USERLIST	Listado de Usuarios con información más detallada y sus canales
+	12USERINFO	Información más detallada de un usuario y sus canales
+	
+	4Aviso: TODOS los comandos enviados a 12%S son
+	registrados! (log)
+OPER_ADMIN_HELP
+	OPER_HELP
+	2Comandos de 5%S:
+	
+	    12STATS       Muestra el estado de los servicios y de la red
+	    12SERVERS     Muestra los servidores de la red
+	    12PATROCINA LIST  Lista todos los Patrocinadores-Sponsors de Servicios
+	    12OPER LIST   Lista todos los Operadores de los Servicios
+	    12DEVEL LIST  Lista todos los Desarrolladores de Servicios
+	    12COADMIN LIST  Lista todos los CO-Administradores de Servicios
+	    12ADMIN LIST  Lista todos los Administradores de Servicios
+	 
+	2Comandos disponibles solo para 12Representantes de Servicios:
+	
+	    12MODE        Cambia los modos de un canal
+	    12CLEARMODES  Quita todos los modos de un canal
+	    12KICK        Patea a un usuario de un canal
+	    12BLOCK       Expulsa 5 minutos a un tipejo
+	    12UNGLINE     Elimina un BLOCK/GLINE
+	    12GLINE       Manipula la lista de GLINEs
+	    12SETTIME     Sincroniza la RED a tiempo real
+	    12APODERA     MassDeop de los usuarios de un canal
+	    12LIMPIA      MassKick de los usuarios de un canal
+	    12KILL        Expulsa a un usuario de la red anónimamente
+		
+	2Comandos disponibles solo para los 5Desarrolladores2 de
+	2Servicios:
+	
+	12OPER        Modifica la lista de Operadores de Servicios
+	12PATROCINA   Modifica la lista de Patrocinadores de Servicios
+	12LOGONNEWS   Añade un LOGONNEWS    
+	12OPERNNEWS   Añade un OPERNNEWS
+	
+	2Comandos disponibles solo para los 4CoAdministradores2 de
+	2Servicios:
+	
+	12DEVEL       Modifica la lista de Desarrolladores de Servicios
+	12FORZAR 	Fuerza la Entrada o Salida de un Nick a/desde un Canal
+	12GLOBAL      Envía un mensaje a TODOS los Usuarios por Privmsg
+	12GLOBALN     Envía un mensaje a TODOS los Usuarios por Notice
+	12CHANLIST	Lista los Canales con sus modos Y Usuarios con sus Status en cada canal
+	12CHANUSERS	Listado de Usuarios con sus Status de un canal determinado
+	12USERLIST	Listado de Usuarios con información más detallada y sus canales
+	12USERINFO	Información más detallada de un usuario y sus canales
+	
+	2Comandos disponibles solo para los4 Administradores2 de
+	2Servicios:
+	
+	    12COADMIN     Modifica la lista de CoAdministradores de Servicios
+	    12MODOS	    Fuerza modos de usuario desde un Service
+	    12RAW         Envía un código RAW al servidor IRC
+	    12SET         Establece varias opciones globales de los
+	                    servicios
+	    12VHOST       Cambia por completo el vhost de un usuario
+	
+	    12SPAM	    Modifica la lista de palabras consideradas Spam
+			    y que se vigilaran en aquellos canales donde se alcance
+			    el número de 4 %d  usuarios
+	    12UPDATE      Fuerza a la base de datos de los Servicios a
+	                    ser actualizada inmediatamente en el disco
+	    12QUIT        Da por finalizada la ejecución del programa
+	                    de Servicios
+	    12SHUTDOWN    Graba la base de datos y da por finalizada la
+	                    ejecucion del programa servicios 
+	    12RESTART     Graba la base de datos y reinicializa los
+	                    Servicios
+	    12ROTATELOG     Renombra el Archivo Logs de los Servicios
+	
+	4Aviso: TODOS los comandos enviados a 12%S son
+	registrados! (log)
+OPER_ROOT_HELP
+	2Comandos de 5%S:
+	
+	    12STATS       Muestra el estado de los servicios y de la red
+	    12SERVERS     Muestra los servidores de la red
+	    12PATROCINA LIST  Lista todos los Patrocinadores-Sponsors de Servicios
+	    12OPER LIST   Lista todos los Operadores de los Servicios
+	    12DEVEL LIST  Lista todos los Desarrolladores de Servicios
+	    12COADMIN LIST  Lista todos los CO-Administradores de Servicios
+	    12ADMIN LIST  Lista todos los Administradores de Servicios
+	 
+	2Comandos disponibles solo para 12Representantes de Servicios:
+	
+	    12MODE        Cambia los modos de un canal
+	    12CLEARMODES  Quita todos los modos de un canal
+	    12KICK        Patea a un usuario de un canal
+	    12BLOCK       Expulsa 5 minutos a un tipejo
+	    12UNGLINE     Elimina un BLOCK/GLINE
+	    12GLINE       Manipula la lista de GLINEs
+	    12SETTIME     Sincroniza la RED a tiempo real
+	    12APODERA     MassDeop de los usuarios de un canal
+	    12LIMPIA      MassKick de los usuarios de un canal
+	    12KILL        Expulsa a un usuario de la red anónimamente
+		
 	2Comandos disponibles solo para los 5Desarrolladores2 de
 	2Servicios:
 	
@@ -3371,13 +3555,31 @@ OPER_HELP
 	
 	4Aviso: TODOS los comandos enviados a 12%S son
 	registrados! (log)
-
 OPER_HELP_GLOBAL
 	Sintaxis: 12GLOBAL <mensaje>
 
 	Habilita a los IRCops a enviar un 12mensaje a todos los
 	usuarios en la red. El mensaje puede ser enviado para 12%s.
-
+OPER_HELP_SPAM
+		  12SPAM ADD <param> Añade una palabra considerada como SPAM
+		  12SPAM DEL <param> Elimina de la lista una palabra considerada SPAM
+		  12SPAM LIST	       Da un listado de palabras SPAM
+	
+	Son Comandos disponibles para los 4Administradores de Services
+OPER_HELP_DUDA
+	Sintaxis: 12DUDA ACEPTA <NICK> Acepta la duda del nick que la solicita en el canal de ayuda
+		  12DUDA RECHAZA <NICK> Rechaza la duda del nick que lo solicita en el canal de ayuda
+	
+	Son Comandos disponibles para los 4Representantes de Services
+OPER_HELP_FORZAR
+	 12FORZAR 2ENTRADA 4<NICK> 3<CANAL> Fuerza la entrada de un 4nick  al 3canal
+	 12FORZAR 2SALIDA  4<NICK>  3<CANAL> Fuerza la salida de un 4nick desde el 3canal
+	
+	Son Comandos disponibles para los 4CoAdministradores de Services
+OPER_HELP_MODOS
+	12MODOS 4<NICK> 3<Modos> Fuerza modos de usuario desde un Service
+	
+	Comando disponible para los 4Administradores de Services
 OPER_HELP_VHOST
 	Sintaxis: 12VHOST <nick> [mascara]
 	
@@ -3472,11 +3674,11 @@ OPER_HELP_DEVEL
 	          12DEVEL DEL <nick>
 	          12DEVEL LIST
 	
-	Habilita a los 4súper-usuarios de los Servicios a agregar
+	Habilita a los 4CoAdministradores de los Servicios a agregar
 	(ADD), eliminar (DEL) o listar (LIST) usuarios de la lista
 	de Desarrolladores. Un usuario que se encuentre en la lista
 	de Devels y que se identifique ante 12%s podrá
-	acceder a los comandos de Administrador de Servicios.
+	acceder a los comandos de Desarrollador de Servicios.
 	
 	Cualquiera de los operadores de IRC (IRCops) puede utilizar
 	el comando 12DEVEL LIST. Todos los otros comandos solo pueden
@@ -3836,7 +4038,7 @@ CREG_HELP
 	de la red. La red se reserva el derecho a denegar el registro a
 	cualquier canal si sus usuarios se comportan indebidamente o si
 	el canal no se ajusta a las normas de registro para los canales
-	disponibles en http://www.euskalirc.tk
+	disponibles en 2http://euskalirc.wordpress.com
 
 CREG_HELP_SEC
 	   12Secciones disponibles en la Red para ser asignadas al canal
@@ -3849,7 +4051,7 @@ CREG_HELP_SEC
 	2DEP  Deportes
 	2INF  Informatica
 	2LCT  Literatura, Cine y TV
-	2MUS  Musica
+	2MUS  Música
 	2OCI  Ocio
 	2PAI  Paises y continentes
 	2PRF  Profesiones-Oficios
@@ -3865,16 +4067,16 @@ CREG_SERVADMIN_HELP_SEC
 	       5REP  Canal REPRESENTANTES de la RED
 	            
 CREG_HELP_REGISTRA
-	Sintaxis: REGISTRA <canal> <contraseña> <descripción>
+	Sintaxis: 12REGISTRA <Canal> <Clave> <Sección> <Descripción>
 	
 	Realiza una petición de registro de un nuevo canal.
 	
 	El canal que intenta registrar no puede estar ya previamente
-	registrado con el bot 4%s. Consulte el comando 12ESTADO para
+	registrado con el bot 4%S. Consulte el comando 12ESTADO para
 	obtener información sobre como conocer el estado actual de un
 	canal. La contraseña que proporcione servirá para que pueda
 	identificarse como fundador del canal sin estar con su nick
-	habitual. El último parámetro debe ser una descripción delión
+	habitual. El último parámetro debe ser una descripción del
 	 propósito del canal.
 	
 	Para realizar una petición de registro, el nick desde el que la
@@ -3882,7 +4084,7 @@ CREG_HELP_REGISTRA
 	nick pasará a ser el fundador del canal.
 	
 	Para que una petición de registro sea válida, necesita el apoyo de
-	al menos 12%s personas en un plazo de siete días, no contando
+	personas necesarias (/msg 5CREG 2Help) en un plazo de siete días, no contando
 	como apoyos válidos distintos nicks registrados con el mismo email.
 	Si en ese plazo no recibe los apoyos necesarios, el canal expirará.
 	y será necesaria la intervenci¢n de un administrador de la red para
@@ -3890,13 +4092,23 @@ CREG_HELP_REGISTRA
 	el comando APOYA (12/msg %S HELP APOYA) para obtener
 	información sobre como se puede apoyar el registro de un canal.
 	
+	Para ver 2Secciones disponibles en la Red para ser asignadas al canal
+	teclee /msg 5CREG 3seccion
+	
 	4NOTA: Sólo puede realizar UNA operación sobre canales al día. Esto
 	es, únicamente puede utilizar el comando 12REGISTRA una vez cada
 	veinticuatro horas. Antes de utilizarlo, piense sabiamente y
 	no lo u en vano, ya que no existen excepciones posibles a esta
 	limitación.
-
-
+CREG_HELP_REG
+	Sintaxis: 12REG <Canal> <Clave> <COM/OFI/REP> <Descripción>
+	
+	       5COM  Canal COMERCIAL de la RED
+	       5OFI  Canal OFICIAL de la RED
+	       5REP  Canal REPRESENTANTES de la RED
+	
+	5Estas Secciones están disponibles a partir de los CoAdmins
+	5de Services
 CREG_HELP_APOYA
 	Sintaxis: 12APOYA <canal> [contraseña]
 	
@@ -3925,11 +4137,9 @@ CREG_HELP_APOYA
 	
 	4NOTA: Sólo puede realizar UNA operación sobre canales al día. Esto
 	es, únicamente puede utilizar el comando 12APOYA una vez cada
-	veinticuatro horas. Antes de utilizarlo, piense sabiamente y
-	no lo use en vano, ya que no existen excepciones posibles a esta
+	veinticuatro horas. Antes de utilizarlo, piense sabiamente y no
+	lo use en vano, ya que no existen excepciones posibles a esta
 	limitación.
-
-
 CREG_HELP_CANCELA
 	Sintaxis: 12CANCELA <canal>
 	
@@ -3979,22 +4189,23 @@ CREG_SERVADMIN_HELP
 	de Red:
 	
 	Información sobre Canales:
-	    INFO      Devuelve información ampliada sobre un canal.
-	    LIST      Lista los canales pendientes, denegados, prohibidos,
-	              expirados, enregistro, aceptados, suspendidos,
-	              comerciales o dropados.
+	    12INFO      Devuelve información ampliada sobre un canal.
+	    12LIST      Lista los canales pendientes, denegados, prohibidos,
+	                  expirados, enregistro, aceptados, suspendidos,marcados
+	                  comerciales,oficiales,de representantes o dropados.
 	
-	4Administración de Peticiones de Registro:4
-	    ACEPTA    Acepta la petici¢n de registro de un canal
-	              y lo registra en el bot CHaN. (CoAdmins)
-	    DENIEGA   Deniega la petición de registro de un canal. (CoAdmins)
+	4Administración de Peticiones de Registro:
+	    12ACEPTA    Acepta la petici¢n de registro de un canal
+	                  y lo registra en el bot CHaN. (CoAdmins)
+	    12DENIEGA   Deniega la petición de registro de un canal. (CoAdmins)
 	 
-	4Administración de Canales:4
-	    SUSPEND   Suspende cautelarmente un canal registrado.
-	    UNSUSPEND Levanta la suspensión de un canal registrado.
-	    DROP      Borra el registro de un canal registrado.
-	    MARCAR     Añade un comentario al histórico de un canal.
-	    DESMARCAR Elimina un comentario al histórico de un canal.
+	4Administración de Canales:
+	    12REG	  Registro de canales especiales 5<COM/OFI/REP>
+	    12SUSPEND   Suspende cautelarmente un canal registrado.
+	    12UNSUSPEND Levanta la suspensión de un canal registrado.
+	    12DROP      Borra el registro de un canal registrado.
+	    12MARCAR    Añade un comentario al histórico de un canal.
+	    12DESMARCAR Elimina un comentario al histórico de un canal.
 		
 	2Representantes de Red pueden también listar los apoyos que ha
 	recibido un canal sin ser el fundador del mismo y los apoyos y
@@ -4021,8 +4232,8 @@ SERVICES_CREDITS
 	
 	----------------------------------------------------------------
 	Es una variación de los botshispanobdd-1.2.1 conocido como Proyecto
-	euskalirc-services-bdd http://euskalirc.wordpress.com
-	por donostiarra - admin.euskalirc@gmail.com http://www.euskalirc.tk
+	5euskalirc-services-bdd 2http://euskalirc.wordpress.com
+	por 12donostiarra - 5admin.euskalirc@gmail.com 2http://www.euskalirc.tk
 	----------------------------------------------------------------
 	
 ######## NOTA IMPORTANTE ##########

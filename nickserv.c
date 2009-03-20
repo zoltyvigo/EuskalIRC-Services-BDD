@@ -110,8 +110,8 @@ static Command cmds[] = {
 		NICK_SERVADMIN_HELP_DROP, NICK_SERVADMIN_HELP_DROP },
 
      /*para seguimiento de nicks*/
-    { "MARCAR",     do_marcar,    is_services_devel, -1,-1,-1,-1,-1 },
-     { "DESMARCAR",     do_desmarcar,    is_services_devel, -1,-1,-1,-1,-1 },
+    { "MARCAR",     do_marcar,    is_services_devel, NICK_HELP_MARCAR,-1,-1,-1,-1 },
+     { "DESMARCAR",     do_desmarcar,    is_services_devel, NICK_HELP_DESMARCAR,-1,-1,-1,-1 },
 
     { "ACCESS",   do_access,   NULL,  NICK_HELP_ACCESS,       -1,-1,-1,-1 },
     { "LINK",     do_link,     NULL,  NICK_HELP_LINK,         -1,-1,-1,-1 },
@@ -2816,7 +2816,7 @@ static void do_info(User *u)
             strftime_lang(buf, sizeof(buf), u, STRFTIME_DATE_TIME_FORMAT, tm);
             privmsg(s_NickServ,u->nick, "Tiempo Mínimo Expiración:4,15%s", buf);
 	   }	
-             if (!(ni->status & NS_NO_EXPIRE)    && (is_services_admin(u) ||  is_services_cregadmin(u) || is_services_devel(u) ||  is_services_oper(u))) {
+             else if (!(ni->status & NS_NO_EXPIRE)    && (is_services_admin(u) ||  is_services_cregadmin(u) || is_services_devel(u) ||  is_services_oper(u))) {
 		     tm = localtime(&ni->expira_min);
             strftime_lang(buf, sizeof(buf), u, STRFTIME_DATE_TIME_FORMAT, tm);
             privmsg(s_NickServ,u->nick, "Tiempo Mínimo Expiración:4,15%s", buf);

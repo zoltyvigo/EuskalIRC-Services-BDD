@@ -110,8 +110,8 @@ static Command cmds[] = {
 		NICK_SERVADMIN_HELP_DROP, NICK_SERVADMIN_HELP_DROP },
 
      /*para seguimiento de nicks*/
-    { "MARCAR",     do_marcar,    is_services_devel, NICK_HELP_MARCAR,-1,-1,-1,-1 },
-     { "DESMARCAR",     do_desmarcar,    is_services_devel, NICK_HELP_DESMARCAR,-1,-1,-1,-1 },
+    { "MARCAR",     do_marcar,    is_services_devel,-1,-1,-1,-1 },
+     { "DESMARCAR",     do_desmarcar,    is_services_devel,-1,-1,-1,-1 },
 
     { "ACCESS",   do_access,   NULL,  NICK_HELP_ACCESS,       -1,-1,-1,-1 },
     { "LINK",     do_link,     NULL,  NICK_HELP_LINK,         -1,-1,-1,-1 },

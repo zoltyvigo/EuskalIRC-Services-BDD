@@ -6,10 +6,10 @@
  * details.
  */
 
-#define BUILD	"6"
+#define BUILD	"1"
 
 const char version_branchstatus[] = "BETA-RELEASE";
-const char version_number[] = "0.1";
+const char version_number[] = "0.2";
 const char version_upworld[] = "";
 const char version_build[] =
 	"build #" BUILD ", compilado " __DATE__ " " __TIME__;

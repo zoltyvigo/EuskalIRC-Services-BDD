@@ -195,6 +195,7 @@ if (!user || stricmp(user, s_CregServ) == 0 || stricmp(user, s_CregServP10) == 0
 	send_cmd(s_CregServ, "J #%s", CanalAdmins);
         send_cmd(ServerName, "M #%s +o %s", CanalAdmins, s_CregServP10);
     }
+	
 #else
     if (!user || stricmp(user, s_ChanServ) == 0) {
 	NICK(s_ChanServ, desc_ChanServ);
@@ -302,7 +303,7 @@ if (!user || stricmp(user, s_CregServ) == 0 || stricmp(user, s_CregServP10) == 0
     	CNICK(s_IpVirtual, desc_IpVirtual, "ipvirtual", ServerName);
  	send_cmd(s_IpVirtual, "MODE %s +rokhBX", s_IpVirtual);
 	send_cmd(s_IpVirtual, "JOIN #%s", CanalAdmins);
-	send_cmd(s_IpVirtual, "MODE #%s +o %s", CanalAdmins, s_IpVirtual);
+	send_cmd(s_ChanServ, "MODE #%s +o %s", CanalAdmins, s_IpVirtual);
     }
  
     if (!user || stricmp(user, s_NewsServ) == 0) {
@@ -310,6 +311,13 @@ if (!user || stricmp(user, s_CregServ) == 0 || stricmp(user, s_CregServP10) == 0
         send_cmd(s_NewsServ, "MODE %s +kBbord", s_NewsServ);
 	send_cmd(s_NewsServ, "JOIN #%s", CanalAdmins);
 	send_cmd(s_ChanServ, "MODE #%s +o %s", CanalAdmins, s_NewsServ);
+    	                        
+    }
+   	 if (!user || stricmp(user, s_JokuServ) == 0) {
+        NICK(s_JokuServ, desc_JokuServ);
+        send_cmd(s_JokuServ, "MODE %s +kBbor", s_JokuServ);
+	send_cmd(s_JokuServ, "JOIN #%s", CanalAdmins);
+	send_cmd(s_ChanServ, "MODE #%s +o %s", CanalAdmins, s_JokuServ);
     	                        
     }
     if (!user || stricmp(user,  s_SpamServ) == 0) {
@@ -667,6 +675,7 @@ int init(int ac, char **av)
     load_spam();
     load_ipv();   /*leyendo datos de frases*/
     /* Load up databases */
+ 
     if (!skeleton) {
 	load_ns_dbase();
 	if (debug)
@@ -680,6 +689,7 @@ int init(int ac, char **av)
     }
 	
     load_os_dbase();
+load_jok_dbase();
     if (debug)
 	log("debug: Cargando la DB de %s (4/7)", s_OperServ);
     load_akill();
@@ -747,7 +757,7 @@ int init(int ac, char **av)
 #endif
         
     join_chanserv();
-      
+     join_jokuserv(); 
 
     /* Success! */
     return 0;

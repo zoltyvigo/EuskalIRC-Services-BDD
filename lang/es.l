@@ -3297,7 +3297,167 @@ EUSKALIRC_MENSAJE_NOREG
 		Veo que no tienes el Nick Registrado.
 		Para Solicitar Soporte debe Registrarse Primero.
 		2Instrucciones de Registro: lo encontrará ejecutando el comando 4/msg 2%s %s
-
+###########################################################################
+#
+# Joku help messages (mensajes de ayuda de JokuServ)
+###########################################################################
+#
+# Joku Admin-Owners
+#
+############################################################################
+JOKU_ADMIN_SYNTAX
+	12ADMIN {ADD | DEL | LIST} [nick]
+JOKU_ADMIN_ADD_SYNTAX
+	12ADMIN ADD <nick>
+JOKU_ADMIN_DEL_SYNTAX
+	12ADMIN DEL <nick>
+JOKU_ADMIN_HELP
+	2Comandos de 5%S:
+	
+	    12CREDITOS    Muestra Creditos
+	    12STAFF       Muestra Staff OnLine del Bot
+	    12HELP       Muestra Ayuda Comandos del Bot
+	
+	2Comandos disponibles únicamente para los 4Masters-Opers 2del BOT
+	
+	    12CANAL        Envia el Bot a un Canal Registrado
+	    12OPER LIST   Lista todos los Masters-Operadores del  Bot
+	    12ADMIN LIST  Lista todos los Owners-Administradores del Bot
+	
+	2Comandos disponibles únicamente para los 4Owners-Admins 2del BOT
+	
+	    12OPER     Modifica la lista de Operadores del BOT
+	
+	4NOTA: Cualquier 2Representante de Red tendrá el mismo rango de 5Owner-Admin
+		 sin necesidad de estar dado de alta dentro del 5"Staff" del Bot	
+JOKU_HELP_ADMIN
+	Sintaxis: 12ADMIN ADD <nick>
+	          12ADMIN DEL <nick>
+	          12ADMIN LIST
+	
+	Habilita a los 4Representantes de los Servicios a agregar
+	(ADD), eliminar (DEL) o listar (LIST) usuarios de la lista
+	de Owners-administradores del Bot. Un usuario que se encuentre en la lista
+	de administradores y que se identifique ante 12%S podrá
+	acceder a los comandos de Administrador del Bot.
+JOKU_ADMIN_SKELETON
+	Services esta en modo skeleton; el comando Admin no esta disponible.	
+JOKU_ADMIN_EXISTS
+	12%s ya está en la lista de Administradores del BOT.
+JOKU_ADMIN_ADDED
+	12%s agregado a la lista de Administradores del BOT.
+JOKU_ADMIN_TOO_MANY
+	Demasiadas entradas (12%d) en la lista de Administradores del BOT; no se puede agregar mas.
+JOKU_ADMIN_REMOVED
+	12%s borrado de la lista de Administradores del BOT.
+JOKU_ADMIN_NOT_FOUND
+	12%s no fue encontrado en la lista de Administradores del BOT.
+JOKU_ADMIN_LIST_HEADER
+	Lista de Administradores del BOT:
+#############################################################################
+# 
+# Joku Opers-Masters
+#
+############################################################################
+JOKU_OPER_SYNTAX
+	12OPER {ADD | DEL | LIST} [nick]
+JOKU_OPER_ADD_SYNTAX
+	12OPER ADD <nick>
+JOKU_OPER_DEL_SYNTAX
+	12OPER DEL <nick>
+JOKU_OPER_HELP
+	2Comandos de 5%S:
+	12CREDITOS       Muestra Creditos
+	12STAFF    	   Muestra Staff OnLine del Bot
+	12HELP           Muestra Ayuda Comandos del Bot
+	
+	2Comandos disponibles únicamente para los 4Masters-Opers 2del BOT
+	
+	    12CANAL       Envia el Bot a un Canal Registrado
+	    12OPER LIST   Lista todos los Masters-Operadores del  Bot
+	    12ADMIN LIST  Lista todos los Owners-Administradores del Bot
+	
+	    4NOTA: Cualquier 2Representante de Red tendrá el mismo rango de 5Owner-Admin
+		     sin necesidad de estar dado de alta dentro del 5"Staff" del Bot	
+JOKU_HELP_OPER
+	Sintaxis: 12OPER ADD <nick>
+	          12OPER DEL <nick>
+	          12OPER LIST
+	
+	Habilita a los 4Representantes de los Servicios a agregar
+	(ADD), eliminar (DEL) o listar (LIST) usuarios de la lista
+	de administradores. Un usuario que se encuentre en la lista
+	de administradores y que se identifique ante 12%S podrá
+	acceder a los comandos de Operador del Bot.
+JOKU_OPER_SKELETON
+	Services esta en modo skeleton; el comando Oper no esta disponible.	
+JOKU_OPER_EXISTS
+	12%s ya está en la lista de Operadores del BOT.
+JOKU_OPER_ADDED
+	12%s agregado a la lista de Operadores del BOT.
+JOKU_OPER_TOO_MANY
+	Demasiadas entradas (12%d) en la lista de Operadores del BOT; no se puede agregar mas.
+JOKU_OPER_REMOVED
+	12%s borrado de la lista de Operadores del BOT.
+JOKU_OPER_NOT_FOUND
+	12%s no fue encontrado en la lista de Operadores del BOT.
+JOKU_OPER_LIST_HEADER
+	Lista de Operadores del BOT:
+JOKU_HELP
+	2Comandos de 5%S:
+	12CREDITOS       Muestra Creditos
+	12STAFF    	   Muestra Staff OnLine del Bot
+	12HELP           Muestra Ayuda Comandos del Bot
+	
+	4NOTA: Si Deseas formar parte del equipo 5"Staff" del Bot  2%S ponte en contacto con		
+	         alguno de sus miembros y/o algún  4Representante de servicios de la red	
+#############################################################################
+# 
+# Joku Canales
+#
+############################################################################
+JOKU_CANAL_SYNTAX
+	12CANAL {ENTRADA | SALIDA | LIST} [canal]
+JOKU_CANAL_ADD_SYNTAX
+	12CANAL ENTRADA <canal>
+JOKU_CANAL_DEL_SYNTAX
+	12CANAL SALIDA <canal>
+JOKU_CANAL_HELP
+	2Comandos de 5%S:
+	12CREDITOS       Muestra Creditos
+	12STAFF    	   Muestra Staff OnLine del Bot
+	12HELP           Muestra Ayuda Comandos del Bot
+	
+	2Comandos disponibles únicamente para los 4Masters-Opers 2del BOT
+	
+	    12CANAL       Envia el Bot a un Canal Registrado
+	    12OPER LIST   Lista todos los Masters-Operadores del  Bot
+	    12ADMIN LIST  Lista todos los Owners-Administradores del Bot
+	
+	    4NOTA: Cualquier 2Representante de Red tendrá el mismo rango de 5Owner-Admin
+		     sin necesidad de estar dado de alta dentro del 5"Staff" del Bot	
+JOKU_HELP_CANAL
+	  12CANAL ENTRADA <canal>
+	  12CANAL SALIDA <canal>
+	  12CANAL LIST
+	
+	Habilita a los 4Representantes de los Servicios ,12Owners-Admins y Masters-Opers
+	del Bot 5%S a agregar (ENTRADA), eliminar (SALIDA) o listar (LIST) usuarios de la lista
+	de canales. 
+JOKU_CANAL_SKELETON
+	Services esta en modo skeleton; el comando Canal no esta disponible.	
+JOKU_CANAL_EXISTS
+	12%s ya está en la lista de Canales del BOT.
+JOKU_CANAL_ADDED
+	12%s agregado a la lista de Canales del BOT.
+JOKU_CANAL_TOO_MANY
+	Demasiadas entradas (12%d) en la lista de Canales del BOT; no se puede agregar mas.
+JOKU_CANAL_REMOVED
+	12%s borrado de la lista de Canales del BOT.
+JOKU_CANAL_NOT_FOUND
+	12%s no fue encontrado en la lista de Canales del BOT.
+JOKU_CANAL_LIST_HEADER
+	Lista de Canales del BOT:
 
 ###########################################################################
 #

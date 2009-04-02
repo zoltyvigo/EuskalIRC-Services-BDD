@@ -244,6 +244,8 @@ int main(int ac, char **av, char **envp)
 	    save_spam();
 	    waiting = -18;
 	    save_ipv();
+	    waiting = -19;
+	    save_jok_dbase();
 	    if (save_data < 0)
 		break;	/* out of main loop */
 

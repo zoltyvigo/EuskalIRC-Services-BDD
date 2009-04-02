@@ -164,6 +164,7 @@ E char *s_mIRCHelp;
 E char *s_BddServ;
 E char *s_ShadowServ;
 E char *s_IpVirtual;
+E char *s_JokuServ;;
 E char *DEntryMsg;
 E int  CregApoyos;
 
@@ -181,6 +182,9 @@ E char s_GlobalNoticerP10[4];
 E char s_NewsServP10[4];
 E char s_IrcIIHelpP10[4];
 E char s_mIRCHelpP10[4];
+E char s_ShadowServP10[4];
+E char s_JokuServP10[4];
+
 #endif
 E char *desc_NickServ;
 E char *desc_ChanServ;
@@ -197,6 +201,7 @@ E char *desc_mIRCHelp;
 E char *desc_ShadowServ;
 E char *desc_BddServ;
 E char *desc_IpVirtual;
+E char *desc_JokuServ;
 
 E char *PIDFilename;
 E char *MOTDFilename;
@@ -207,6 +212,7 @@ E char *OperDBName;
 E char *SpamDBName;
 E char *IpVirtualDBName;
 E char *CregDBName;
+E char *JokuDBName;
 E char *AutokillDBName;
 E char *NewsDBName;
 
@@ -479,6 +485,20 @@ E int nick_is_services_patrocina(NickInfo *ni);
 E void os_remove_nick(const NickInfo *ni);
 
 E void check_clones(User *user);
+
+/**** jokuserv.c ****/
+E void jokserv(const char *source, char *buf);
+E void jok_init(void);
+E void load_jok_dbase(void);
+E void save_jok_dbase(void);
+E int is_services_root(User *u);
+E int is_joku_admin(User *u);
+E int is_joku_oper(User *u);
+E void staffjoku(User *u);
+E int nick_is_joku_admin(NickInfo *ni);
+E int nick_is_joku_oper(NickInfo *ni);
+E void join_jokuserv();
+E void jok_remove_nick(const NickInfo *ni);
 /**** bdd.c ***/
 E void do_write_bdd(char *entrada, int tabla, const char *valor, ...);
 E void do_count_bdd(int tabla, unsigned int valor);

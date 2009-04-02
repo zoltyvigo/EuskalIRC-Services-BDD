@@ -45,6 +45,7 @@ char *s_NewsServ;
 char *s_ShadowServ;
 char *s_IrcIIHelp;
 char *s_mIRCHelp;
+char *s_JokuServ;;
 char *s_DevNull;
 char *s_BddServ;
 char *DEntryMsg;
@@ -75,6 +76,7 @@ char s_GlobalNoticerP10[4];
 char s_NewsServP10[4];
 char s_IrcIIHelpP10[4];
 char s_mIRCHelpP10[4];
+char  s_JokuServP10[4];
 char s_DevNullP10[4];
 char s_ShadowServP10[4];
 
@@ -92,6 +94,7 @@ char *desc_GlobalNoticer;
 char *desc_NewsServ;
 char *desc_IrcIIHelp;
 char *desc_mIRCHelp;
+char *desc_JokuServ;
 char *desc_DevNull;
 char *desc_ShadowServ;
 char *desc_IpVirtual;
@@ -107,6 +110,7 @@ char *SpamDBName;
 char *OperDBName;
 char *IpVirtualDBName;
 char *EuskalIRCDBName;
+char *JokuDBName;
 char *AutokillDBName;
 char *NewsDBName;
 
@@ -282,6 +286,9 @@ Directive directives[] = {
      { "SpamServDB",       { { PARAM_STRING, 0, &SpamDBName } } },
     { "SpamServName",     { { PARAM_STRING, 0, &s_SpamServ },
                             { PARAM_STRING, 0, &desc_SpamServ } } },
+     { "JokuServDB",       { { PARAM_STRING, 0, &JokuDBName } } },
+    { "JokuServName",     { { PARAM_STRING, 0, &s_JokuServ },
+                            { PARAM_STRING, 0, &desc_JokuServ } } },
     { "NoBackupOkay",     { { PARAM_SET, 0, &NoBackupOkay } } },
 
     { "BddServName",	  { { PARAM_STRING, 0, &s_BddServ },
@@ -332,6 +339,9 @@ Directive directives[] = {
     { "EuskalIRCServDB",       { { PARAM_STRING, 0, &EuskalIRCDBName } } },
     { "EuskalIRCServName",     { { PARAM_STRING, 0, &s_EuskalIRCServ },
                             { PARAM_STRING, 0, &desc_EuskalIRCServ } } },
+    { "JokuServDB",       { { PARAM_STRING, 0, &JokuDBName } } },
+    { "JokuServName",     { { PARAM_STRING, 0, &s_JokuServ },
+                            { PARAM_STRING, 0, &desc_JokuServ } } },
     { "PIDFile",          { { PARAM_STRING, 0, &PIDFilename } } },
     { "ReadTimeout",      { { PARAM_TIME, 0, &ReadTimeout } } },
     { "RemoteServer",     { { PARAM_STRING, 0, &RemoteServer },
@@ -632,6 +642,7 @@ int read_config()
     CHEK2(s_CregServ, CregServName);
     CHEK2(s_IpVirtual, IPVirtualName);
     CHEK2(s_EuskalIRCServ, EuskalIRCServName);
+    CHEK2(s_JokuServ, JokuServName);
     CHEK2(s_GlobalNoticer, GlobalName);
     CHEK2(s_NewsServ, NewsServName);
     CHEK2(s_BddServ, BddServName);
@@ -645,6 +656,7 @@ int read_config()
     CHEK2(CregDBName, CregServDB);
     CHEK2(IpVirtualDBName, IpVirtualDB);
     CHEK2(EuskalIRCDBName, EuskalIRCServDB);
+    CHEK2(s_JokuServ, JokuServName);
     CHEK2(AutokillDBName, AutokillDB);
     CHEK2(NewsDBName, NewsDB);
     CHECK(UpdateTimeout);

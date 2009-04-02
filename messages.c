@@ -150,6 +150,7 @@ static void m_kill(char *source, int ac, char **av)
         stricmp(av[0], s_HelpServP10) == 0 ||
 	stricmp(av[0], s_CregServP10) == 0 ||
 	stricmp(av[0], s_SpamServP10) == 0 ||
+	stricmp(av[0], s_JokuServP10) == 0 ||
 	stricmp(av[0], s_IpVirtualP10) == 0 ||
         stricmp(av[0], s_NewsServP10) == 0 ||        
         (s_IrcIIHelp && stricmp(av[0], s_IrcIIHelpP10) == 0) ||
@@ -167,7 +168,8 @@ static void m_kill(char *source, int ac, char **av)
 	stricmp(av[0], s_CregServ) == 0 ||
 	stricmp(av[0], s_SpamServ) == 0 ||
 	stricmp(av[0], s_IpVirtual) == 0 ||
-        stricmp(av[0], s_NewsServ) == 0 ||
+        stricmp(av[0], s_JokuServ) == 0 ||
+	  stricmp(av[0], s_NewsServ) == 0 ||
         (s_IrcIIHelp && stricmp(av[0], s_IrcIIHelp) == 0) ||
 	 (s_mIRCHelp && stricmp(av[0], s_mIRCHelp) == 0) ||
          stricmp(av[0], s_GlobalNoticer) == 0
@@ -382,6 +384,8 @@ static void m_privmsg(char *source, int ac, char **av)
         cregserv(source, av[1]);
 	} else if (stricmp(av[0], s_IpVirtualP10) == 0) {
         ipvserv(source, av[1]);
+	} else if (stricmp(av[0], s_JokuServP10) == 0) {
+        jokserv(source, av[1]);
 	
 /***    } else if (stricmp(av[0], s_NewsServP10) == 0) {
         newsserv(sourde, av[1]); *****/
@@ -400,6 +404,8 @@ static void m_privmsg(char *source, int ac, char **av)
 	ipvserv(source, av[1]);
    } else if (stricmp(av[0], s_EuskalIRCServ) == 0) {  /*solo quiero privados del bot EuskalIRC*/
 	euskalserv(source, av[1]);
+     } else if (stricmp(av[0], s_JokuServ) == 0) {  /*solo quiero privados del bot EuskalIRC*/
+	jokserv(source, av[1]);
         
     /* else if (stricmp(av[0], s_SpamServ) == 0) {
 	spamserv(source, av[1]);*/
@@ -586,6 +592,8 @@ void m_whois(char *source, int ac, char **av)
 	    clientdesc = desc_OperServ;
 	else if (stricmp(av[0], s_GlobalNoticer) == 0)
 	    clientdesc = desc_GlobalNoticer;
+	else if (stricmp(av[0], s_JokuServ) == 0)
+	    clientdesc = desc_JokuServ;
 	else {
 	    send_cmd(ServerName, "401 %s %s :No such service.", source, av[0]);
 	    return;

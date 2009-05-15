@@ -156,6 +156,7 @@ NETWORK_DOMAIN=
 IRCTYPE="no default"
 IRCTYPE_DEF=
 IRCTYPE_DEF2=
+IRCTYPE_DEF3=
 NETWORK=
 ENCRYPTION=
 REG_NICK_MAIL="REG_NICK_MAIL"
@@ -257,9 +258,13 @@ EOT
 done
 
 ###########################################################################
-
+echo "Empezando la configuración de los Services."
+echo "EuskalIRC-Services-BDD"
 echo ""
-echo "Empezando la configuracion de los Services."
+echo "http://euskalirc.wordpress.com"
+echo "svn co https://services-bdd.svn.sourceforge.net/svnroot/services-bdd/trunk  services-bdd"
+echo "Adaptación a ircuh más modernos por donostiarra"
+echo ""
 echo ""
 echo "Traducido por Toni García - Zoltan."
 echo ""
@@ -441,8 +446,8 @@ ok=0
 #echo "    20)  TerraIrcu 2.23 o superior Soporte P9"
 #echo "    21)  TerraIrcu 2.23 o superior Soporte P10"
 #echo "    30) ESNET-Hispano 2.10.H.02.50 o superior, Soporte P9"
-echo "    30) ESNET-Hispano ircd-u2.10.H.10.58 o superior, Soporte P9"
-echo "    31) ESNET-Hispano ircd-u2.10.H.10.76 o superior, Soporte P10"
+echo "    30) ESNET-Hispano ircd-u2.10.H.10.77, Soporte P9"
+echo "    31) ESNET-Hispano ircd-u2.10.H.10.77+PATCHS, Soporte P09"
 while [ $ok -eq 0 ] ; do
 	echo2 "[$IRCTYPE] "
 	if read INPUT ; then : ; else echo "" ; exit 1 ; fi
@@ -488,10 +493,11 @@ while [ $ok -eq 0 ] ; do
 			ok=1
 			;;
                 31)
-                        IRCTYPE_DEF="IRC_UNDERNET"
-                        IRCTYPE_DEF2="IRC_UNDERNET_P10"
-                        NETWORK="IRC_HISPANO"
-                        ok=1
+                        IRCTYPE_DEF="IRC_UNDERNET_P09"
+                        IRCTYPE_DEF2="IRC_PATCHS_P09"
+			IRCTYPE_DEF3="IRC_UNDERNET"
+			NETWORK="IRC_HISPANO"
+			ok=1
                         ;;
 		*)
 			echo "Por favor, escoja un numero de opcion valida."
@@ -1263,6 +1269,10 @@ cat >>sysconf.h <<EOT
 EOT
 if [ "$IRCTYPE_DEF2" ] ; then cat >>sysconf.h <<EOT ; fi
 #define $IRCTYPE_DEF2
+#define SERVICES_BDD
+EOT
+if [ "$IRCTYPE_DEF3" ] ; then cat >>sysconf.h <<EOT ; fi
+#define $IRCTYPE_DEF3
 #define DB_NETWORKS
 EOT
 if [ "$NETWORK" ] ; then cat >>sysconf.h <<EOT ; fi

@@ -1716,11 +1716,13 @@ static void do_admin(User *u)
 		services_admins[i] = ni;
 		notice_lang(s_OperServ, u, OPER_ADMIN_ADDED, ni->nick);
 		canaladmins(s_OperServ, "12%s añade a 12%s como ADMIN", u->nick, ni->nick);
-		#ifdef IRC_UNDERNET_P09
-	    	do_write_bdd(ni->nick, 3, "10");
-	    	do_write_bdd(ni->nick, 23, "");
-	        send_cmd(NULL, "RENAME %s", ni->nick);
-		#endif
+		#ifdef IRC_PATCHS_P09
+	    	do_write_bdd(ni->nick, 3, "khaX");
+	    	#else
+		do_write_bdd(ni->nick, 3, "10");
+	    	#endif
+		do_write_bdd(ni->nick, 23, "");
+		send_cmd(NULL, "RENAME %s", ni->nick);
 	    } else {
 		notice_lang(s_OperServ, u, OPER_ADMIN_TOO_MANY, MAX_SERVADMINS);
 	    }
@@ -1824,11 +1826,13 @@ static void do_coadmin(User *u)
 		services_cregadmins[i] = ni;
 		notice_lang(s_OperServ, u, OPER_CREGADMIN_ADDED, ni->nick, "CoAdmins");
 		canaladmins(s_OperServ, "12%s añade a 12%s como COADMIN", u->nick, ni->nick);
-		#ifdef IRC_UNDERNET_P09
-		do_write_bdd(ni->nick, 3, "10"); //-->si lo añado a la tabla o y 10 para flag X
-		do_write_bdd(ni->nick, 26, "");
-		send_cmd(NULL, "RENAME %s", ni->nick);
+		#ifdef IRC_PATCHS_P09
+		do_write_bdd(ni->nick, 3, "khcX"); //-->si lo añado a la tabla o y 10 para flag X,"en este parche es modo +c"
+		#else 
+		do_write_bdd(ni->nick, 3, "10");
 		#endif
+		do_write_bdd(ni->nick, 26, "");
+ 		send_cmd(NULL, "RENAME %s", ni->nick);
 	    } else {
 		notice_lang(s_OperServ, u, OPER_CREGADMIN_TOO_MANY, MAX_SERVADMINS, "CoAdmins");
 	    }
@@ -1931,11 +1935,13 @@ static void do_devel(User *u)
 		services_devels[i] = ni;
 		notice_lang(s_OperServ, u, OPER_DEVEL_ADDED, ni->nick);
 		canaladmins(s_OperServ, "12%s añade a 12%s como DEVEL", u->nick, ni->nick);
-		#ifdef IRC_UNDERNET_P09
-	    	do_write_bdd(ni->nick, 3, "10");
-	    	do_write_bdd(ni->nick, 24, "");
+		#ifdef IRC_PATCHS_P09
+	        do_write_bdd(ni->nick, 3, "khDX");
+	    	#else
+		do_write_bdd(ni->nick, 3, "10");
+	    	#endif
+		do_write_bdd(ni->nick, 24, "");
 	        send_cmd(NULL, "RENAME %s", ni->nick);
-		#endif
 	    } else {
 		notice_lang(s_OperServ, u, OPER_DEVEL_TOO_MANY, MAX_SERVDEVELS);
 	    }
@@ -2049,11 +2055,13 @@ static void do_oper(User *u)
 		services_opers[i] = ni;
 		notice_lang(s_OperServ, u, OPER_OPER_ADDED, ni->nick);
 		canaladmins(s_OperServ, "12%s añade a 12%s como OPER", u->nick, ni->nick);
-		#ifdef IRC_UNDERNET_P09
+		#ifdef IRC_PATCHS_P09
+		do_write_bdd(ni->nick, 3, "kh");
+		#else
 	    	do_write_bdd(ni->nick, 3, "5");
+		#endif
 		do_write_bdd(ni->nick, 22, "");
 		send_cmd(NULL, "RENAME %s", ni->nick);
-		#endif
 	    } else {
 		notice_lang(s_OperServ, u, OPER_OPER_TOO_MANY, MAX_SERVOPERS);
 	    }
@@ -2155,11 +2163,13 @@ static void do_patrocina(User *u)
 		services_patrocinas[i] = ni;
 		notice_lang(s_OperServ, u, OPER_PATROCINA_ADDED, ni->nick);
 		canaladmins(s_OperServ, "12%s añade a 12%s como PATROCINADOR", u->nick, ni->nick);
-		#ifdef IRC_UNDERNET_P09
+                #ifdef IRC_PATCHS_P09
+		do_write_bdd(ni->nick, 3, "kp"); //-->En este parche,es modo +p de Patrocinador
+		#else
 	    	do_write_bdd(ni->nick, 3, ""); //-->No lo añado a la tabla o
+		#endif
 		do_write_bdd(ni->nick, 25, "");
 		send_cmd(NULL, "RENAME %s", ni->nick);
-		#endif
 	    } else {
 		notice_lang(s_OperServ, u, OPER_PATROCINA_TOO_MANY, MAX_SERVOPERS);
 	    }

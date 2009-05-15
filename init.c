@@ -744,15 +744,16 @@ load_jok_dbase();
 # ifdef NETWORK_DOMAIN
     send_cmd(s_OperServ, "NOTICE $*.%s :Establecidos los servicios de la RED.", NETWORK_DOMAIN);
 # else
-     Go through all common top-level domains.  If you have others,
-     * add them here.
+    /*Go through all common top-level domains.  If you have others,
+     add them here.*/
      
     send_cmd(s_OperServ, "NOTICE $*.es :Establecidos los servicios de la RED.");
     send_cmd(s_OperServ, "NOTICE $*.com :Establecidos los servicios de la RED.");
     send_cmd(s_OperServ, "NOTICE $*.net :Establecidos los servicios de la RED.");
     send_cmd(s_OperServ, "NOTICE $*.org :Establecidos los servicios de la RED.");    
     send_cmd(s_OperServ, "NOTICE $*.edu :Establecidos los servicios de la RED.");
-    send_cmd(s_OperServ, "NOTICE $*.tk :Establecidos los servicios de la RED.");
+    send_cmd(s_OperServ, "NOTICE $*.cat :Establecidos los servicios de la RED.");
+    send_cmd(s_OperServ, "NOTICE $*.eus :Establecidos los servicios de la RED.");
 # endif
 #endif
         

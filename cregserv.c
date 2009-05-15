@@ -55,7 +55,7 @@ listado de secciones admitidos para clasificar un canal*/
     { "INFO",     do_info,    is_services_cregadmin,   -1,-1,-1,-1,-1 },        
     { "LISTA",    do_list,    is_services_cregadmin,   -1,-1,-1,-1,-1 },
     { "LIST",     do_list,    is_services_cregadmin,   -1,-1,-1,-1,-1 },
-    { "REG",     do_reg,    is_services_cregadmin,  CREG_HELP_REG,-1,-1,-1,-1 },  
+    { "REG",     do_reg,    is_services_cregadmin,   -1,-1,-1,-1,-1 },  
 
  /*  donostiarra-2009-
 COMercial OFIcial REPresentantes de Red -para registro de canales especiales
@@ -898,8 +898,8 @@ static void do_reg(User *u)
  
                             
     if (!desc) {
-        privmsg(s_CregServ, u->nick, "Sintaxis: 12REG <Canal> <Clave> <<COM/OFI/REP>> <Descripción>");
-	 
+        privmsg(s_CregServ, u->nick, "Sintaxis: 12REGISTRA <Canal> <Clave> <Sección> <Descripción>");
+	  privmsg(s_CregServ, u->nick, "teclea \00312/msg CREG seccion\003 para ver las secciones disponibles"); 
        
     } else if ((*chan == '&') || (*chan == '+')) {
         notice_lang(s_ChanServ, u, CHAN_REGISTER_NOT_LOCAL);
@@ -1021,11 +1021,7 @@ static void do_list(User *u)
                             snprintf(buf, sizeof(buf), "%-20s [P.APOYOS] %s",
                                         cr->name, cr->desc);
                         }		                       
-                        if (cr->estado & CR_SUSPENDIDO) {
-                            snprintf(buf, sizeof(buf), "%-20s [SUSPENDIDO] %s",
-                                        cr->name, cr->desc);
-                        }                                      
-			if  (cr->estado & CR_REGISTRADO)   {
+			if (cr->estado & CR_REGISTRADO) {
                             snprintf(buf, sizeof(buf), "%-20s [REGISTRADO] %s",
                                         cr->name, cr->desc);
                         }		                       

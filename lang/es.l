@@ -3458,6 +3458,21 @@ JOKU_CANAL_NOT_FOUND
 	12%s no fue encontrado en la lista de Canales del BOT.
 JOKU_CANAL_LIST_HEADER
 	Lista de Canales del BOT:
+###########################################################################
+#
+# STATS help messages (mensajes de ayuda de STATS)
+###########################################################################
+STATS_ADMIN_HELP
+	12Comandos de 5%S:
+	
+	    12STATS       Muestra el estado de los servicios y de la red (4ALL Ampliada)
+	    12STATS AKILL Muestra los GLINEs Activos
+	    12SERVERS     Muestra los Servidores de la red
+	    12CHANLIST    Lista los Canales con sus modos Y Usuarios con sus Status en cada canal
+	    12CHANUSERS   Listado de Usuarios con sus Status 3de un 4canal3 determinado
+	    12USERLIST    Listado de Usuarios con información más detallada y sus canales
+	    12USERINFO    Listado con Información más detallada 3de un 4usuario3 y sus canales
+	    12HELP        Muestra Ayuda Comandos del Bot	
 
 ###########################################################################
 #
@@ -3467,8 +3482,6 @@ JOKU_CANAL_LIST_HEADER
 OPER_HELP
 	2Comandos de 5%S:
 	
-	    12STATS       Muestra el estado de los servicios y de la red
-	    12SERVERS     Muestra los servidores de la red
 	    12PATROCINA LIST  Lista todos los Patrocinadores-Sponsors de Servicios
 	    12OPER LIST   Lista todos los Operadores de los Servicios
 	    12DEVEL LIST  Lista todos los Desarrolladores de Servicios
@@ -3493,8 +3506,6 @@ OPER_HELP
 OPER_DEVEL_HELP
 	2Comandos de 5%S:
 	
-	    12STATS       Muestra el estado de los servicios y de la red
-	    12SERVERS     Muestra los servidores de la red
 	    12PATROCINA LIST  Lista todos los Patrocinadores-Sponsors de Servicios
 	    12OPER LIST   Lista todos los Operadores de los Servicios
 	    12DEVEL LIST  Lista todos los Desarrolladores de Servicios
@@ -3527,8 +3538,6 @@ OPER_DEVEL_HELP
 OPER_COADMIN_HELP
 		2Comandos de 5%S:
 	
-	    12STATS       Muestra el estado de los servicios y de la red
-	    12SERVERS     Muestra los servidores de la red
 	    12PATROCINA LIST  Lista todos los Patrocinadores-Sponsors de Servicios
 	    12OPER LIST   Lista todos los Operadores de los Servicios
 	    12DEVEL LIST  Lista todos los Desarrolladores de Servicios
@@ -3563,19 +3572,13 @@ OPER_COADMIN_HELP
 	12FORZAR 	Fuerza la Entrada o Salida de un Nick a/desde un Canal
 	12GLOBAL      Envía un mensaje a TODOS los Usuarios por Privmsg
 	12GLOBALN     Envía un mensaje a TODOS los Usuarios por Notice
-	12CHANLIST	Lista los Canales con sus modos Y Usuarios con sus Status en cada canal
-	12CHANUSERS	Listado de Usuarios con sus Status de un canal determinado
-	12USERLIST	Listado de Usuarios con información más detallada y sus canales
-	12USERINFO	Información más detallada de un usuario y sus canales
+
 	
 	4Aviso: TODOS los comandos enviados a 12%S son
 	registrados! (log)
 OPER_ADMIN_HELP
-	OPER_HELP
 	2Comandos de 5%S:
 	
-	    12STATS       Muestra el estado de los servicios y de la red
-	    12SERVERS     Muestra los servidores de la red
 	    12PATROCINA LIST  Lista todos los Patrocinadores-Sponsors de Servicios
 	    12OPER LIST   Lista todos los Operadores de los Servicios
 	    12DEVEL LIST  Lista todos los Desarrolladores de Servicios
@@ -3610,10 +3613,7 @@ OPER_ADMIN_HELP
 	12FORZAR 	Fuerza la Entrada o Salida de un Nick a/desde un Canal
 	12GLOBAL      Envía un mensaje a TODOS los Usuarios por Privmsg
 	12GLOBALN     Envía un mensaje a TODOS los Usuarios por Notice
-	12CHANLIST	Lista los Canales con sus modos Y Usuarios con sus Status en cada canal
-	12CHANUSERS	Listado de Usuarios con sus Status de un canal determinado
-	12USERLIST	Listado de Usuarios con información más detallada y sus canales
-	12USERINFO	Información más detallada de un usuario y sus canales
+		
 	
 	2Comandos disponibles solo para los4 Administradores2 de
 	2Servicios:
@@ -3643,8 +3643,6 @@ OPER_ADMIN_HELP
 OPER_ROOT_HELP
 	2Comandos de 5%S:
 	
-	    12STATS       Muestra el estado de los servicios y de la red
-	    12SERVERS     Muestra los servidores de la red
 	    12PATROCINA LIST  Lista todos los Patrocinadores-Sponsors de Servicios
 	    12OPER LIST   Lista todos los Operadores de los Servicios
 	    12DEVEL LIST  Lista todos los Desarrolladores de Servicios
@@ -3679,11 +3677,8 @@ OPER_ROOT_HELP
 	12FORZAR 	Fuerza la Entrada o Salida de un Nick a/desde un Canal
 	12GLOBAL      Envía un mensaje a TODOS los Usuarios por Privmsg
 	12GLOBALN     Envía un mensaje a TODOS los Usuarios por Notice
-	12CHANLIST	Lista los Canales con sus modos Y Usuarios con sus Status en cada canal
-	12CHANUSERS	Listado de Usuarios con sus Status de un canal determinado
-	12USERLIST	Listado de Usuarios con información más detallada y sus canales
-	12USERINFO	Información más detallada de un usuario y sus canales
-	
+
+		
 	2Comandos disponibles solo para los4 Administradores2 de
 	2Servicios:
 	

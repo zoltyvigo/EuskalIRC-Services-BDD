@@ -265,16 +265,20 @@ if (!user || stricmp(user, s_CregServ) == 0 || stricmp(user, s_CregServP10) == 0
 	NICK(s_CregServ, desc_CregServ);
         send_cmd(s_CregServ, "MODE %s +Bbikdor", s_CregServ);
         send_cmd(s_CregServ, "JOIN #%s", CanalAdmins);
+	 send_cmd(s_CregServ, "JOIN #%s", CanalOpers);
         send_cmd(s_ChanServ, "MODE #%s +o %s", CanalAdmins, s_CregServ);
+	 send_cmd(s_ChanServ, "MODE #%s +o %s", CanalOpers, s_CregServ);
         
     }
      if (!user || stricmp(user, s_EuskalIRCServ) == 0) {
 	euskalirc(s_EuskalIRCServ, desc_EuskalIRCServ);
         send_cmd(s_EuskalIRCServ, "MODE %s +Bbikor", s_EuskalIRCServ);
         send_cmd(s_EuskalIRCServ, "JOIN #%s", CanalAdmins);
+	send_cmd(s_EuskalIRCServ, "JOIN #%s", CanalOpers);
 	send_cmd(s_EuskalIRCServ, "JOIN #%s", CanalAyuda);
 	send_cmd(s_ChanServ, "MODE #%s +o %s", CanalAyuda, s_EuskalIRCServ);
         send_cmd(s_ChanServ, "MODE #%s +o %s", CanalAdmins, s_EuskalIRCServ);
+	send_cmd(s_ChanServ, "MODE #%s +o %s", CanalOpers, s_EuskalIRCServ);
         
     }
     if (!user || stricmp(user, s_BddServ) == 0) {
@@ -325,6 +329,16 @@ if (!user || stricmp(user, s_CregServ) == 0 || stricmp(user, s_CregServP10) == 0
         send_cmd( s_SpamServ, "MODE %s +kBbor",  s_SpamServ);
 	send_cmd( s_SpamServ, "JOIN #%s", CanalAdmins);
 	send_cmd(s_ChanServ, "MODE #%s +o %s", CanalAdmins, s_SpamServ);
+    	
+                        
+    }
+     if (!user || stricmp(user,  s_StatServ) == 0) {
+       NICK(s_StatServ, desc_StatServ);
+        send_cmd( s_StatServ, "MODE %s +kBbor",  s_StatServ);
+	send_cmd( s_StatServ, "JOIN #%s", CanalAdmins);
+	send_cmd( s_StatServ, "JOIN #%s", CanalOpers);
+	send_cmd(s_ChanServ, "MODE #%s +o %s", CanalAdmins, s_StatServ);
+	send_cmd(s_ChanServ, "MODE #%s +o %s", CanalOpers, s_StatServ);
     	send_cmd(NULL, "STATS b");
                         
     }

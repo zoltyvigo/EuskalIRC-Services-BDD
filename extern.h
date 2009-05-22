@@ -156,6 +156,7 @@ E char *s_HelpServ;
 E char *s_OperServ;
 E char *s_CregServ;
 E char *s_SpamServ;
+E char *s_StatServ;
 E char *s_EuskalIRCServ;
 E char *s_GlobalNoticer;
 E char *s_NewsServ;
@@ -176,6 +177,7 @@ E char s_HelpServP10[4];
 E char s_OperServP10[4];
 E char s_CregServP10[4];
 E char s_SpamServP10[4];
+E char s_StatServP10[4];
 E char s_IpVirtualP10[4];
 E char s_EuskalIRCServP10[4];
 E char s_GlobalNoticerP10[4];
@@ -202,6 +204,7 @@ E char *desc_ShadowServ;
 E char *desc_BddServ;
 E char *desc_IpVirtual;
 E char *desc_JokuServ;
+E char *desc_StatServ;
 
 E char *PIDFilename;
 E char *MOTDFilename;
@@ -215,6 +218,7 @@ E char *CregDBName;
 E char *JokuDBName;
 E char *AutokillDBName;
 E char *NewsDBName;
+E char *StatDBName;
 
 #ifdef REG_NICK_MAIL
 E int  *NicksMail;

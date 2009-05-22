@@ -48,7 +48,7 @@ static User *new_user(const char *nick)
 	maxusercnt = usercnt;
 	maxusertime = time(NULL);
 	if (LogMaxUsers)
-	    canalopers(s_EuskalIRCServ, "user: Nuevo record de usuarios: %d", maxusercnt);
+	    canalopers(s_StatServ, "user: Nuevo record de usuarios: %d", maxusercnt);
 	    log("user: Nuevo record de usuarios: %d", maxusercnt);
     }
     return user;
@@ -260,26 +260,30 @@ void send_user_list(User *user)
 	struct u_chanlist *c;
 	struct u_chaninfolist *ci;
 
-	privmsg(s_OperServ, source, "%s!%s@%s +%s%s%s%s%s%s%s%s%s%s%s  %ld %s :%s",
+	privmsg(s_StatServ, source, "%s!%s@%s +%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s  %ld %s :%s",
 		u->nick, u->username, u->host,
-		(u->mode&UMODE_G)?"g":"", (u->mode&UMODE_I)?"i":"",
+             
+		(u->mode&UMODE_a)?"a":"",(u->mode&UMODE_c)?"c":"",
+		(u->mode&UMODE_D)?"D":"",(u->mode&UMODE_p)?"p":"",
+               	(u->mode&UMODE_G)?"g":"", (u->mode&UMODE_I)?"i":"",
 		(u->mode&UMODE_O)?"o":"", (u->mode&UMODE_S)?"s":"",
                 (u->mode&UMODE_R)?"r":"", (u->mode&UMODE_X)?"x":"",
                 (u->mode&UMODE_H)?"h":"", (u->mode&UMODE_Z)?"X":"",
                 (u->mode&UMODE_W)?"w":"", (u->mode&UMODE_K)?"k":"",
 		(u->mode& UMODE_r)?"R":"",
+		
       u->signon, u->server, u->realname);                                                                 		
      //  u->signon, servers[u->server].name, u->realname);
 	buf[0] = 0;
 	s = buf;
 	for (c = u->chans; c; c = c->next)
 	    s += snprintf(s, sizeof(buf)-(s-buf), " %s", c->chan->name);
-	privmsg(s_OperServ, source, "%s esta en canales:%s", u->nick, buf);
+	privmsg(s_StatServ, source, "%s esta en canales:%s", u->nick, buf);
 	buf[0] = 0;
 	s = buf;
 	for (ci = u->founder_chans; ci; ci = ci->next)
 	    s += snprintf(s, sizeof(buf)-(s-buf), " %s", ci->chan->name);
-	privmsg(s_OperServ, source, "%s identificado como  FUNDADOR en: %s", u->nick, buf); 
+	privmsg(s_StatServ, source, "%s identificado como  FUNDADOR en: %s", u->nick, buf); 
     }
 }
 
@@ -301,12 +305,14 @@ void send_user_info(User *user)
 #endif
 
     if (!u) {
-	privmsg(s_OperServ, source, "Usuario %s no encontrado!",
+	privmsg(s_StatServ, source, "Usuario %s no encontrado!",
 		nick ? nick : "(null)");
 	return;
     }
-    privmsg(s_OperServ, source, "%s!%s@%s +%s%s%s%s%s%s%s%s%s%s%s  %ld %s :%s",
+    privmsg(s_StatServ, source, "%s!%s@%s +%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s  %ld %s :%s",
 		u->nick, u->username, u->host,
+                (u->mode&UMODE_a)?"a":"",(u->mode&UMODE_c)?"c":"",
+		(u->mode&UMODE_D)?"D":"",(u->mode&UMODE_p)?"p":"",
 		(u->mode&UMODE_G)?"g":"", (u->mode&UMODE_I)?"i":"",
 		(u->mode&UMODE_O)?"o":"", (u->mode&UMODE_S)?"s":"",
                 (u->mode&UMODE_R)?"r":"", (u->mode&UMODE_X)?"x":"",
@@ -319,12 +325,12 @@ void send_user_info(User *user)
     s = buf;
     for (c = u->chans; c; c = c->next)
 	s += snprintf(s, sizeof(buf)-(s-buf), " %s", c->chan->name);
-    privmsg(s_OperServ, source, "%s esta en canales:%s", u->nick, buf);
+    privmsg(s_StatServ, source, "%s esta en canales:%s", u->nick, buf);
     buf[0] = 0;
     s = buf;
    for (ci = u->founder_chans; ci; ci = ci->next)
 	s += snprintf(s, sizeof(buf)-(s-buf), " %s", ci->chan->name);
-       privmsg(s_OperServ, source, "%s identificado como  FUNDADOR en: %s", u->nick, buf);
+       privmsg(s_StatServ, source, "%s identificado como  FUNDADOR en: %s", u->nick, buf);
 }
 
 
@@ -484,7 +490,7 @@ void do_nick(const char *source, int ac, char **av)
 	  
     
 	/* This is a new user; create a User structure for it. */
- canaladmins(s_OperServ, "2ENTRA: %s 12HOST[%s]", av[0],av[4]);
+ canaladmins(s_StatServ, "2ENTRA: %s 12HOST[%s]", av[0],av[4]);
 	if (debug)
 	   // log("debug: new user: %s", av[0]);
 	  
@@ -574,7 +580,7 @@ void do_nick(const char *source, int ac, char **av)
 	
 	if (debug)
 	   // log("debug: %s changes nick to %s", user->nick, av[0]);
-	   canaladmins(s_OperServ, "2%s Cambia nick a 12%s", user->nick, av[0]);
+	   canaladmins(s_StatServ, "2%s Cambia nick a 12%s", user->nick, av[0]);
 	/* Changing nickname case isn't a real change.  Only update
 	 * my_signon if the nicks aren't the same, case-insensitively. */
 	if (stricmp(av[0], user->nick) != 0)
@@ -646,7 +652,7 @@ if (!strcmp(s, ayu)) {
 
 	if (debug)
 	  //  log("debug: %s joins %s", source, s);
-          canaladmins(s_OperServ, "2%s ENTRA en %s", source, s);
+          canaladmins(s_StatServ, "2%s ENTRA en %s", source, s);
 /* Soporte para JOIN #,0 */
 
 	if ((*s == '0') || (*s == '+')) {
@@ -713,7 +719,7 @@ void do_part(const char *source, int ac, char **av)
 	    *t++ = 0;
 	if (debug)
 	    // log("debug: %s leaves %s", source, s);
-	     canaladmins(s_OperServ, "2%s SALE de %s", source, s);
+	     canaladmins(s_StatServ, "2%s SALE de %s", source, s);
 	for (c = user->chans; c && stricmp(s, c->chan->name) != 0; c = c->next)
 	    ;
 	if (c) {
@@ -831,6 +837,16 @@ void do_umode(const char *source, int ac, char **av)
 	              break;
 	    case 's': add ? (user->mode |= UMODE_S) : (user->mode &= ~UMODE_S);
 	              break;
+#ifdef IRC_PATCHS_P09
+	    case 'a': add ? (user->mode |= UMODE_a) : (user->mode &= ~UMODE_a);
+	              break;
+	    case 'c': add ? (user->mode |= UMODE_c) : (user->mode &= ~UMODE_c);
+	              break;
+	    case 'D': add ? (user->mode |= UMODE_D) : (user->mode &= ~UMODE_D);
+	              break;
+             case 'p': add ? (user->mode |= UMODE_p) : (user->mode &= ~UMODE_p);
+	              break;
+#endif
 #if defined (IRC_HISPANO) || defined (IRC_TERRA)	              
             case 'x': add ? (user->mode |= UMODE_X) : (user->mode &= ~UMODE_X);
                       break;
@@ -860,7 +876,7 @@ void do_umode(const char *source, int ac, char **av)
                         }
                        /* log("%s: %s!%s@%s AUTO-identified for nick %s", s_NickServ,
                         user->nick, user->username, user->host, user->nick);*/
-			canaladmins(s_OperServ, "%s: %s!%s@%s AUTO-identified for nick %s", s_NickServ, user->nick, user->username, user->host, user->nick);
+			canaladmins(s_StatServ, "%s: %s!%s@%s AUTO-identified for nick %s", s_NickServ, user->nick, user->username, user->host, user->nick);
                         /* notice_lang(s_NickServ, user, NICK_IDENTIFY_X_MODE_R);*/
                         if (!(new_ni->status & NS_RECOGNIZED))
                             check_memos(user);
@@ -962,10 +978,10 @@ void do_quit(const char *source, int ac, char **av)
 #endif
 	return;
     }
-    canaladmins(s_OperServ, "5%s SALE", source);
+    canaladmins(s_StatServ, "5%s SALE", source);
     if (debug)
 	//log("debug: %s quits", source);
-	canaladmins(s_OperServ, "5%s SALE", source);
+	canaladmins(s_StatServ, "5%s SALE", source);
     if ((ni = user->ni) && (!(ni->status & NS_VERBOTEN)) &&
 			(ni->status & (NS_IDENTIFIED | NS_RECOGNIZED))
 		&& !(ni->status & NS_SUSPENDED)) {

@@ -1330,9 +1330,9 @@ static void do_acepta(User *u)
         privmsg(s_CregServ, u->nick, "El fundador del canal 12%s no tiene el nick registrado", chan);
     } else if (!(cr->estado & CR_ACEPTADO)) {                                           
         privmsg(s_CregServ, u->nick, "El canal 12%s no esta pendiente de aprobacion", chan); 
-    } else if (!is_chanop(u->nick, chan)) {                                           
+    /*} else if (!is_chanop(u->nick, chan)) {                                           
         privmsg(s_CregServ, u->nick, "Debes estar en el canal 12%s y tener OP para aceptarlo", chan);
-    } else if (!registra_con_creg(u, ni, cr->name, cr->founderpass, cr->desc)) {
+    */} else if (!registra_con_creg(u, ni, cr->name, cr->founderpass, cr->desc)) {
         privmsg(s_CregServ, u->nick, "El registro del canal 12%s en %s ha fallado", chan, s_ChanServ); 
     } else {
         cr=cr_findcreg(chan);
@@ -1345,6 +1345,7 @@ static void do_acepta(User *u)
         canalopers(s_CregServ, "12%s ha aceptado el canal 12%s", u->nick, chan);
         privmsg(s_CregServ, u->nick, "12%s ha sido aceptado en %s", chan, s_ChanServ); 
 	send_cmd(s_CregServ,"TOPIC %s :Este canal ha sido 12ACEPTADO en su Registro", chan);
+	send_cmd(MODE_SENDER(s_CregServ), "PRIVMSG  REGISTRATE :MEMO  %s REGCANAL %s",cr->founder,chan);
     }
 }
 
@@ -1387,9 +1388,9 @@ static void do_fuerza(User *u)
         privmsg(s_CregServ, u->nick, "El fundador del canal 12%s no tiene el nick registrado", chan);
     } /*else if (!((cr->estado & CR_RECHAZADO) || (cr->estado & CR_PROCESO_REG))) {
         privmsg(s_CregServ, u->nick, "El canal 12%s no puede ser registrado de forma forzada", chan); 
-    }*/ else if (!is_chanop(u->nick, chan)) {              
+    } else if (!is_chanop(u->nick, chan)) {              
         privmsg(s_CregServ, u->nick, "Debes estar en el canal 12%s y tener OP para aceptarlo", chan); 
-     } else if (!registra_con_creg(u, ni, cr->name, cr->founderpass, cr->desc)) {
+     }*/ else if (!registra_con_creg(u, ni, cr->name, cr->founderpass, cr->desc)) {
         privmsg(s_CregServ, u->nick, "El registro del canal 12%s en %s ha fallado", chan, s_ChanServ); 
     } else {
         cr=cr_findcreg(chan);
@@ -1399,7 +1400,7 @@ static void do_fuerza(User *u)
         cr->estado |= CR_REGISTRADO;
 	send_cmd(s_CregServ, "PRIVMSG  %s  :Felicidades Por el Registro De Su Nuevo Canal %s",cr->founder,chan);
 	send_cmd(s_CregServ,"TOPIC %s :Este canal ha sido ACEPTADO en su Registro", chan);
-	
+        send_cmd(MODE_SENDER(s_CregServ), "PRIVMSG  REGISTRATE :MEMO  %s REGCANAL %s",cr->founder,chan);
 	
 
 	canalopers(s_CregServ, "12%s ha forzado la aceptación del canal 12%s", u->nick, chan);

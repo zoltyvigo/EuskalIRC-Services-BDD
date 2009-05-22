@@ -499,6 +499,8 @@ struct user_ {
     
 };
 
+
+
 #define UMODE_O 0x00000001
 #define UMODE_I 0x00000002
 #define UMODE_S 0x00000004
@@ -510,6 +512,14 @@ struct user_ {
 #define UMODE_Z 0x00000100
 #define UMODE_K 0x00000200
 #define UMODE_r  0x00000400 /*modo +R*/
+
+/* IRC_PATCHS_P09 */
+#define UMODE_a  0x00000800 /*administrador*/
+#define UMODE_c  0x00002000 /*coadmin*/
+#define UMODE_D  0x00004000 /*Devel*/
+#define UMODE_p  0x00008000 /*patrocinador*/
+
+
 
 
 struct channel_ {
@@ -542,6 +552,7 @@ struct channel_ {
     int erab;
 };
 
+
 #define CMODE_I 0x00000001
 #define CMODE_M 0x00000002
 #define CMODE_N 0x00000004
@@ -561,6 +572,10 @@ struct channel_ {
 #define CMODE_C 0x00002000		/* modo +C    */
 #define CMODE_n 0x00004000		/* modo +N    */
 #define CMODE_u 0x00008000		/* modo +u   */ 
+
+/* Modos IRC_PATCHS_P09 */
+#define CMODE_a 0x00020000	/* modo +a   */
+#define CMODE_O 0x00040000	/* modo +O   */
 
 /* Who sends channel MODE (and KICK) commands? */
 #if defined(IRC_HISPANO) || defined(IRC_TERRA)

@@ -68,7 +68,7 @@ void send_channel_list(User *user)
 
     for (c = firstchan(); c; c = nextchan()) {
 	snprintf(s, sizeof(s), " %d", c->limit);
-	privmsg(s_OperServ, source, "%s %lu +%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s %s",
+	privmsg(s_StatServ, source, "%s %lu +%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s %s",
 				c->name, c->creation_time,
 				(c->mode&CMODE_I) ? "i" : "",
 				(c->mode&CMODE_M) ? "m" : "",
@@ -86,6 +86,14 @@ void send_channel_list(User *user)
 #else
 				"",
 				"",
+#endif
+#ifdef IRC_PATCHS_P09
+				(c->mode&CMODE_a) ? "a" : "",
+				(c->mode&CMODE_O) ? "O" : "",
+#else
+				"",
+				"",
+
 #endif
 #ifdef IRC_HISPANO
                                 (c->mode&CMODE_A) ? "A" : "",
@@ -121,7 +129,7 @@ void send_channel_list(User *user)
 					"12 %s5 %s1%s", isvoice ? "+" : "",
 					isop ? "@" : "2", u->user->nick);
 	}
-	privmsg(s_OperServ, source, buf);
+	privmsg(s_StatServ, source, buf);
     }
 }
 
@@ -140,19 +148,19 @@ void send_channel_users(User *user)
 #endif
 
     if (!c) {
-	privmsg(s_OperServ, source, "Canal %s no encontrado!",
+	privmsg(s_StatServ, source, "Canal %s no encontrado!",
 		chan ? chan : "(null)");
 	return;
     }
-    privmsg(s_OperServ, source, "Canal %s usuarios:", chan);
+    privmsg(s_StatServ, source, "Canal %s usuarios:", chan);
     for (u = c->users; u; u = u->next)
-	privmsg(s_OperServ, source, "%s", u->user->nick);
-      privmsg(s_OperServ, source, "Canal %s operadores:", chan);
+	privmsg(s_StatServ, source, "%s", u->user->nick);
+      privmsg(s_StatServ, source, "Canal %s operadores:", chan);
     for (u = c->chanops; u; u = u->next)
-	privmsg(s_OperServ, source, "%s", u->user->nick);
-    privmsg(s_OperServ, source, "Canal %s moderadores:", chan);
+	privmsg(s_StatServ, source, "%s", u->user->nick);
+    privmsg(s_StatServ, source, "Canal %s moderadores:", chan);
     for (u = c->voices; u; u = u->next)
-	privmsg(s_OperServ, source, "%s", u->user->nick);
+	privmsg(s_StatServ, source, "%s", u->user->nick);
 }
 
 
@@ -648,6 +656,24 @@ void do_cmode(const char *source, int ac, char **av)
 	    else
 		chan->mode &= ~CMODE_T;
 	    break;
+
+#ifdef IRC_PATCHS_P09
+	case 'a':
+	    if (add)
+		chan->mode |= CMODE_a;
+	    else
+		chan->mode &= ~CMODE_a;
+	    break;
+
+	case 'O':
+	    if (add)
+		chan->mode |= CMODE_O;
+	    else
+		chan->mode &= ~CMODE_O;
+	    break;
+#endif
+	
+
 
 #if defined (IRC_HISPANO) || defined (IRC_TERRA)
 /* Soporte para redes con BDD como Hispano, Globalchat o Upworld */

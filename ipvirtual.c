@@ -407,9 +407,9 @@ tm = localtime(&ni->time_vhost);
 
 strftime_lang(timebuf, sizeof(timebuf), u, STRFTIME_DATE_TIME_FORMAT, tm);
 #ifdef IRC_UNDERNET_P10
-privmsg(s_IpVirtual, u->numerico, "Solamente se admite un cambio cada 1m. Podras cambiar el vhost a la hora: %s", timebuf);
+privmsg(s_IpVirtual, u->numerico, "Solamente se admite un cambio cada 6h. Podras cambiar el vhost a la hora: %s", timebuf);
 #else
-privmsg(s_IpVirtual, u->nick, "Solamente se admite un cambio cada 1m. Podras cambiar el vhost a la hora: %s", timebuf);
+privmsg(s_IpVirtual, u->nick, "Solamente se admite un cambio cada 6h. Podras cambiar el vhost a la hora: %s", timebuf);
 #endif
 return;
 }
@@ -434,7 +434,7 @@ privmsg(s_IpVirtual, u->nick, "El vhost solamente admite caracteres entre a-z, y
 #endif
 
 } else {
-kadukatu = dotime("1m");
+kadukatu = dotime("3600m");
 kadukatu += time(NULL);
 ni->time_vhost = kadukatu;
 tm = localtime(&kadukatu);
@@ -449,10 +449,10 @@ do_write_bdd(u->nick, 4, cadena);
 //vhost_aldaketa(u->nick, vhost, 1);
 canaladmins(s_IpVirtual, "2%s4 VHOST[12%s4]", u->nick,cadena);
 #ifdef IRC_UNDERNET_P10
-privmsg(s_IpVirtual, u->numerico, "Acabas de personalizar tu vhost, el proximo cambio podras hacer dentro de 1 minuto");
+privmsg(s_IpVirtual, u->numerico, "Acabas de personalizar tu vhost, el proximo cambio podras hacer dentro de 6 horas");
 privmsg(s_IpVirtual, u->numerico, "Hora exacta: %s", timebuf);
 #else
-privmsg(s_IpVirtual, u->nick, "Acabas de personalizar tu vhost, el proximo cambio podras hacer dentro de 1 minuto");
+privmsg(s_IpVirtual, u->nick, "Acabas de personalizar tu vhost, el proximo cambio podras hacer dentro de 6 horas");
 privmsg(s_IpVirtual, u->nick, "Hora exacta: %s", timebuf);
 #endif
 	return;
@@ -540,9 +540,9 @@ tm = localtime(&ni->time_vhost);
 
 strftime_lang(timebuf, sizeof(timebuf), u, STRFTIME_DATE_TIME_FORMAT, tm);
 #ifdef IRC_UNDERNET_P10
-privmsg(s_IpVirtual, u->numerico, "Solamente se admite un cambio cada 1m. Podras cambiar el vhost a la hora: %s", timebuf);
+privmsg(s_IpVirtual, u->numerico, "Solamente se admite un cambio cada 6h. Podras cambiar el vhost a la hora: %s", timebuf);
 #else
-privmsg(s_IpVirtual, u->nick, "Solamente se admite un cambio cada 1m. Podras cambiar el vhost a la hora: %s", timebuf);
+privmsg(s_IpVirtual, u->nick, "Solamente se admite un cambio cada 6h. Podras cambiar el vhost a la hora: %s", timebuf);
 #endif
 return;
 }
@@ -581,7 +581,7 @@ privmsg(s_IpVirtual, u->nick, "El vhost solamente admite caracteres entre a-z, y
 #endif
 
 } else {
-kadukatu = dotime("1m");
+kadukatu = dotime("3600m");
 kadukatu += time(NULL);
 ni->time_vhost = kadukatu;
 tm = localtime(&kadukatu);
@@ -596,10 +596,10 @@ do_write_bdd(u->nick, 4, vhost);
 //vhost_aldaketa(u->nick, vhost, 1);
 canaladmins(s_IpVirtual, "2%s4 VHOST[12%s4]", u->nick,vhost);
 #ifdef IRC_UNDERNET_P10
-privmsg(s_IpVirtual, u->numerico, "Acabas de personalizar tu vhost, el proximo cambio podras hacer dentro de 1 minuto");
+privmsg(s_IpVirtual, u->numerico, "Acabas de personalizar tu vhost, el proximo cambio podras hacer dentro de 6 horas");
 privmsg(s_IpVirtual, u->numerico, "Hora exacta: %s", timebuf);
 #else
-privmsg(s_IpVirtual, u->nick, "Acabas de personalizar tu vhost, el proximo cambio podras hacer dentro de 1 minuto");
+privmsg(s_IpVirtual, u->nick, "Acabas de personalizar tu vhost, el proximo cambio podras hacer dentro de 6 horas");
 privmsg(s_IpVirtual, u->nick, "Hora exacta: %s", timebuf);
 #endif
 	return;
@@ -761,65 +761,7 @@ static void do_set_vhost(User *u, NickInfo *ni, char *param)
     }
 }
 	
-/*************************************************************************/
 
-/**************************************************************************/
-/* Kill basico */
-/*
-static void do_skill(User *u)
-{
-    char *nick = strtok(NULL, " ");
-    char *text = strtok(NULL, "");
-    User *u2 = NULL;
-    
-    
-    
-    if (!nick) {
-        return;
-    }
-    
-    u2 = finduser(nick);
-
-    if (!u2) {
-        notice_lang(s_OperServ, u, NICK_X_NOT_IN_USE, nick);
-    } else if (is_a_service(nick)) {
-        notice_lang(s_OperServ, u, PERMISSION_DENIED);
-    } else if (!text) {
-        send_cmd(ServerName, "KILL %s :Have a nice day!", nick);
-	return;
-    } else {
-   	send_cmd(ServerName, "KILL %s :%s", nick, text);
-    }
-	canalopers(s_OperServ, "12%s utilizó KILL sobre 12%s", u->nick, nick);
-}
-
-
-/* Gline de 5 minutos */
-
-/*static void do_block(User *u)
-{
-    char *nick = strtok(NULL, " ");
-    char *text = strtok(NULL, "");
-    User *u2 = NULL; 
-    
-    if (!text) {
-        privmsg(s_OperServ, u->nick, "Sintaxis: 12BLOCK <nick> <motivo>");    
-        return;
-    }         
-    
-    u2 = finduser(nick);   
-        
-    if (!u2) {
-        notice_lang(s_OperServ, u, NICK_X_NOT_IN_USE, nick);
-    } else {
-    
-        send_cmd(ServerName, "GLINE * +*@%s 300 :%s", u2->host, text);
- 
-        privmsg(s_OperServ, u->nick, "Has cepillado a 12%s", nick);
-        canalopers(s_OperServ, "12%s ha cepillado a 12%s (%s)", u->nick, nick, text);
-    }
-                                          
-}*/
 
 
 

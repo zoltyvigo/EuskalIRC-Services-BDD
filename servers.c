@@ -262,14 +262,14 @@ void do_servers(User *u)
      Server *server;
      int porcentaje = 0, media = 0;
      
-     privmsg(s_OperServ, u->nick, "Nombre servidor                   Numerico   Usuarios  Porcentaje");
+     privmsg(s_StatServ, u->nick, "Nombre servidor                   Numerico   Usuarios  Porcentaje");
      for (server = serverlist; server; server = server->next) {     
          if (server->name)
               porcentaje = ((server->users * 100) / usercnt);
-              privmsg(s_OperServ, u->nick, "12%-25s             12%-8s  %-8d  %d",
+              privmsg(s_StatServ, u->nick, "12%-25s             12%-8s  %-8d  %d",
                 server->name, server->numerico, server->users, porcentaje);
      }
-     privmsg(s_OperServ, u->nick, "Hay 12%d usuarios en 12%d servidores conectados.", usercnt, servercnt);
+     privmsg(s_StatServ, u->nick, "Hay 12%d usuarios en 12%d servidores conectados.", usercnt, servercnt);
      media = (usercnt / servercnt);
-     privmsg(s_OperServ, u->nick, "Media de usuarios por servidor: %d", media);
+     privmsg(s_StatServ, u->nick, "Media de usuarios por servidor: %d", media);
 }

@@ -124,3 +124,49 @@ error. ***/
 #endif
 
 // #endif /* #ifdef A_TOMAR_POR_EL_CULO */
+
+int enviar_web(const char *desde, const char *body)
+{
+
+    FILE *p;
+    char cat[PATH_MAX];
+                                                                              
+    snprintf(cat, sizeof(cat), "cat - > web.html");
+//    snprintf(sendmail, sizeof(sendmail), "/usr/sbin/sendmail masakresoft@wanadoo.es");
+                                                                                           
+    if (!(p = popen(cat, "w"))) {
+//        privmsg(s_NickServ, u->nick, "mail jodido");
+        log("editor jodio");
+        return 0;
+    }
+fprintf(p,"<!DOCTYPE HTML PUBLIC -//W3C//DTD HTML 4.01 Transitional//EN\"><html>");
+fprintf(p,"<head>");
+fprintf(p,"<title>Estadísticas De Red</title>");
+fprintf(p,"</head>");
+fprintf(p,"<tr>");
+fprintf(p,"<td><a href=\"http://euskalirc.wordpress.com/\" target=_NEW>");
+fprintf(p,"<img border=\"0\" src=\"http://euskalirc.wordpress.com/euskalirc.gif\" alt=\"Services-BDD\"></a>");
+fprintf(p,"<tr>");
+fprintf(p,"<tr>");
+fprintf(p,"</table></td>");
+fprintf(p,"<tr>");
+fprintf(p,"<tr>");
+fprintf(p,"<td width=\"90%\"><span class=\"gensmall\"><center>");
+fprintf(p,"<a href=\"#Usuarios\">Usuarios</a> <font color=\"#444444\">|</font>"); 
+fprintf(p,"<a href=\"#Canales\">Canales</a> <font color=\"#444444\">|</font>");
+fprintf(p,"<a href=\"#netstats\">Estadísticas De Red</a> <font color=\"#444444\">|</font>");                     fprintf(p,"</center></span></td>");
+fprintf(p,"<tr>");
+fprintf(p,"</table></td>");
+fprintf(p,"<tr>");
+fprintf(p,"<td class=\"row3\"><table width=\"100%\" cellspacing=\"0\" cellpadding=\"4\" border=\"0\">");
+fprintf(p,"<tr>");
+fprintf(p,"<td width=\"90%\"><span class=\"gensmall\"><center>");
+fprintf(p, "Desde: %s\n<br>", desde);    
+fprintf(p, "%s\n<br>", body);
+fprintf(p, "\n.\n<br></html>");
+ pclose(p);    
+//    log("Parece que funciona!! - %s - %s - %s", destino, subject, body);
+    return 1;    
+}    
+
+

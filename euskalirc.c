@@ -107,7 +107,7 @@ snprintf(ayu, sizeof(ayu), "#%s", CanalAyuda);
     }
 
     //log("yiha %s: %s: %s", s_EuskalIRCServ, source, buf);
-  canaladmins( s_EuskalIRCServ,"5CONSULTA! 12%s : 2%s", source,buf);
+  canalopers( s_EuskalIRCServ,"5CONSULTA! 12%s : 2%s", source,buf);
    if ((ni = u->real_ni))
    if (ni->in_ayu & AYU_ENTRA) {
    send_cmd(s_EuskalIRCServ, "MODE #%s +v %s", CanalAyuda, ni->nick);
@@ -121,15 +121,15 @@ void euskalirc_canal(const char *source,const char *chan, char *buf)
  
  {
  
- char adm[BUFSIZE];
+ char opr[BUFSIZE];
 char ayu[BUFSIZE];
-snprintf(adm, sizeof(adm), "#%s", CanalAdmins);
+snprintf(opr, sizeof(opr), "#%s", CanalOpers);
 snprintf(ayu, sizeof(ayu), "#%s", CanalAyuda);
    
  
-if (!strcmp(chan, adm))  return;
+if (!strcmp(chan, opr))  return;
 if (!strcmp(chan, ayu)) {
-	        privmsg(s_EuskalIRCServ, adm , "Ey! %s me dijo en el canal %s 4%s !!", source,ayu,buf);
+	        privmsg(s_EuskalIRCServ, opr , "Ey! %s me dijo en el canal %s 4%s !!", source,ayu,buf);
 			return;
           }
 		

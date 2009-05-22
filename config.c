@@ -45,13 +45,14 @@ char *s_NewsServ;
 char *s_ShadowServ;
 char *s_IrcIIHelp;
 char *s_mIRCHelp;
-char *s_JokuServ;;
+char *s_JokuServ;
 char *s_DevNull;
 char *s_BddServ;
 char *DEntryMsg;
 char *s_CregServ;
 char *s_IpVirtual;
 char *s_EuskalIRCServ;
+char *s_StatServ;
 int  CregApoyos;
 char *OperHost;
 char *AdminHost;
@@ -70,6 +71,7 @@ char s_HelpServP10[4];
 char s_OperServP10[4];
 char s_CregServP10[4];
 char s_SpamServP10[4];
+char s_StatServP10[4];
 char s_IpVirtualP10[4];
 char s_EuskalIRCServP10[4];
 char s_GlobalNoticerP10[4];
@@ -77,6 +79,7 @@ char s_NewsServP10[4];
 char s_IrcIIHelpP10[4];
 char s_mIRCHelpP10[4];
 char  s_JokuServP10[4];
+char  s_StatServP10[4];
 char s_DevNullP10[4];
 char s_ShadowServP10[4];
 
@@ -88,6 +91,7 @@ char *desc_HelpServ;
 char *desc_OperServ;
 char *desc_SpamServ;
 char *desc_CregServ;
+char *desc_StatServ;
 char *desc_IpVirtual;
 char *desc_EuskalIRCServ;
 char *desc_GlobalNoticer;
@@ -111,6 +115,7 @@ char *OperDBName;
 char *IpVirtualDBName;
 char *EuskalIRCDBName;
 char *JokuDBName;
+char *StatDBName;
 char *AutokillDBName;
 char *NewsDBName;
 
@@ -289,6 +294,9 @@ Directive directives[] = {
      { "JokuServDB",       { { PARAM_STRING, 0, &JokuDBName } } },
     { "JokuServName",     { { PARAM_STRING, 0, &s_JokuServ },
                             { PARAM_STRING, 0, &desc_JokuServ } } },
+     { "StatServDB",       { { PARAM_STRING, 0, &StatDBName } } },
+    { "StatServName",     { { PARAM_STRING, 0, &s_StatServ },
+                            { PARAM_STRING, 0, &desc_StatServ } } },
     { "NoBackupOkay",     { { PARAM_SET, 0, &NoBackupOkay } } },
 
     { "BddServName",	  { { PARAM_STRING, 0, &s_BddServ },
@@ -342,6 +350,9 @@ Directive directives[] = {
     { "JokuServDB",       { { PARAM_STRING, 0, &JokuDBName } } },
     { "JokuServName",     { { PARAM_STRING, 0, &s_JokuServ },
                             { PARAM_STRING, 0, &desc_JokuServ } } },
+    { "StatServDB",       { { PARAM_STRING, 0, &StatDBName } } },
+    { "StatServName",     { { PARAM_STRING, 0, &s_StatServ },
+                            { PARAM_STRING, 0, &desc_StatServ } } },
     { "PIDFile",          { { PARAM_STRING, 0, &PIDFilename } } },
     { "ReadTimeout",      { { PARAM_TIME, 0, &ReadTimeout } } },
     { "RemoteServer",     { { PARAM_STRING, 0, &RemoteServer },
@@ -643,6 +654,7 @@ int read_config()
     CHEK2(s_IpVirtual, IPVirtualName);
     CHEK2(s_EuskalIRCServ, EuskalIRCServName);
     CHEK2(s_JokuServ, JokuServName);
+    CHEK2(s_StatServ, StatServName);
     CHEK2(s_GlobalNoticer, GlobalName);
     CHEK2(s_NewsServ, NewsServName);
     CHEK2(s_BddServ, BddServName);
@@ -654,9 +666,10 @@ int read_config()
     CHEK2(OperDBName, OperServDB);
     CHEK2(SpamDBName, SpamServDB);
     CHEK2(CregDBName, CregServDB);
+    CHEK2(JokuDBName, JokuServDB);
+    CHEK2(StatDBName, StatServDB);	
     CHEK2(IpVirtualDBName, IpVirtualDB);
     CHEK2(EuskalIRCDBName, EuskalIRCServDB);
-    CHEK2(s_JokuServ, JokuServName);
     CHEK2(AutokillDBName, AutokillDB);
     CHEK2(NewsDBName, NewsDB);
     CHECK(UpdateTimeout);

@@ -154,7 +154,7 @@ static Command cmds[] = {
     { "SENDPASS",  do_sendpass,  is_services_oper,  -1,
                 -1, NICK_SERVADMIN_HELP_SENDPASS,
                 NICK_SERVADMIN_HELP_SENDPASS, NICK_SERVADMIN_HELP_SENDPASS },
-
+    
     { "RENAME",  do_rename, is_services_cregadmin,   -1,	      -1,-1,-1,-1 }, 
 
     { "GETPASS",  do_getpass,  is_services_root,  -1,
@@ -1693,6 +1693,7 @@ static void do_register(User *u)
 		
 		ni->status |= NI_ON_BDD;
 		do_write_bdd(ni->nick, 1, ni->pass);
+		canalopers( s_NickServ,"5Registrado:12%s2(%s)",ni->nick,ni->email);
                #endif
                  	  		       
                  #ifdef IRC_UNDERNET_P10
@@ -3187,7 +3188,7 @@ static void do_status(User *u)
       }
    }
 }
-
+                                                                  
 
 /*************************************************************************/
 
@@ -3239,6 +3240,8 @@ static void do_rename(User *u)
    if (!nick) {
        privmsg(s_NickServ, u->nick, "No se ha especificado un nick");
    } else if (!(ni = findnick(nick))) {
+       privmsg(s_NickServ, u->nick, "2Nick 12%s 4No Registrado",nick);
+       privmsg(s_NickServ,u->nick,"10Pruebe 3/msg 2OPER 5RAW 4RENAME 12%s",nick);
        return;
    } else if (nick_is_services_admin(ni) && !is_services_root(u)) {
        notice_lang(s_NickServ, u, PERMISSION_DENIED);

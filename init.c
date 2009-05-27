@@ -707,6 +707,7 @@ load_jok_dbase();
     if (debug)
 	log("debug: Cargando la DB de %s (4/7)", s_OperServ);
     load_akill();
+     load_aregistra();
     if (debug)
 	log("debug: Cargando la DB de GLINES (5/7)");
     load_news();

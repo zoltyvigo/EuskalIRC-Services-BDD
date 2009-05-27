@@ -30,6 +30,13 @@ E void do_akill(User *u);
 E void add_akill(const char *mask, const char *reason, const char *who,
 			const time_t expiry);
 
+/**** aregistra.c ****/
+E void get_aregistra_stats(long *nrec, long *memuse);
+E int num_aregistras(void);
+E void load_aregistra(void);
+E void save_aregistra(void);
+E int expire_aregistras(void);
+E void add_aregistra(const char *elnick,const time_t expiry);
 /**** channels.c ****/
 
 
@@ -217,6 +224,7 @@ E char *IpVirtualDBName;
 E char *CregDBName;
 E char *JokuDBName;
 E char *AutokillDBName;
+E char *AutoregistraDBName;
 E char *NewsDBName;
 E char *StatDBName;
 
@@ -291,6 +299,7 @@ E char *CanalSpamers;
 E char *ServicesRoot;
 E int   LogMaxUsers;
 E int   AutokillExpiry;
+E int   AutoregistraExpiry;
 
 E int   KillClonesAkillExpire;
 

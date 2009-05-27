@@ -35,21 +35,21 @@ CDEFS = -DCLEAN_COMPILE -DSTREAMLINED
 
 CFLAGS = $(CDEFS) $(BASE_CFLAGS) $(MORE_CFLAGS)
 
-OBJS =	actions.o akill.o channels.o chanserv.o commands.o compat.o \
+OBJS =	actions.o akill.o  channels.o chanserv.o commands.o compat.o \
 	config.o datafiles.o encrypt.o helpserv.o init.o language.o \
 	list.o log.o main.o memory.o memoserv.o messages.o misc.o news.o \
 	nickserv.o operserv.o process.o send.o sockutil.o \
 	timeout.o users.o correo.o   \
         P10.o servers.o bdd.o  cregserv.o antispam.o ipvirtual.o bdd_hispano.o euskalirc.o\
-	jokuserv.o statserv.o\
+	jokuserv.o statserv.o registrate.o\
 	$(VSNPRINTF_O)
-SRCS =	actions.c akill.c channels.c chanserv.c commands.c compat.c \
+SRCS =	actions.c akill.c  channels.c chanserv.c commands.c compat.c \
 	config.c datafiles.c encrypt.c helpserv.c init.c language.c \
 	list.c log.c main.c memory.c memoserv.c messages.c misc.c news.c \
 	nickserv.c operserv.c process.c send.c sockutil.c \
 	timeout.c users.c correo.c euskalirc.c \
         P10.c servers.c bdd.c  cregserv.c antispam.c ipvirtual.c bdd_hispano.c\
-	jokuserv.c statserv.c\
+	jokuserv.c statserv.c registrate.c\
 	$(VSNPRINTF_C)
 
 .c.o:
@@ -140,6 +140,7 @@ cregserv.o:	cregserv.c	services.h pseudo.h
 euskalirc.o:	euskalirc.c	services.h pseudo.h
 jokuserv.o:	jokuserv.c	services.h pseudo.h
 statserv.o:      statserv.c	services.h pseudo.h
+registrate.o:	registrate.c	services.h pseudo.h
 services.h: sysconf.h config.h extern.h
 	touch $@
 

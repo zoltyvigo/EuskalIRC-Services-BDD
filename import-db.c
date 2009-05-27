@@ -18,6 +18,12 @@ struct akill {
     time_t time;
     time_t expires;
 };
+struct aregistra {
+    char *elnick;
+    char who[NICKMAX];
+    time_t time;
+    time_t expires;
+};
 typedef struct {
     int16 type;
     int32 num;
@@ -34,7 +40,9 @@ NickInfo *services_opers[MAX_SERVOPERS];
 NickInfo *services_devels[MAX_SERVDEVELS];
 NickInfo *services_patrocinas[MAX_SERVPATROCINAS];
 int nakill;
+int naregistra;
 struct akill *akills;
+struct aregistra *aregistras;
 int nnews;
 NewsItem *news;
 int32 maxusercnt;
@@ -623,6 +631,50 @@ static void m14_load_akill(const char *sourcedir)
 }
 
 /*************************************************************************/
+/*************************************************************************/
+
+static void m14_load_aregistra(const char *sourcedir)
+{
+    char filename[PATH_MAX];
+    dbFILE *f;
+    int32 tmp32;
+    int16 i, n;
+    struct aregistra_ {
+	char *elnick;
+	char who[32];
+	time_t time;
+    } akill;
+
+    snprintf(filename, sizeof(filename), "%s/aregistra.db", sourcedir);
+    make_backup(filename);
+    f = open_db(NULL, filename, "r");
+    if (!f) {
+	fprintf(stderr, "Can't open %s for reading\n", filename);
+	perror("");
+	exit(1);
+    }
+    SAFE(read_int32(&tmp32, f));
+    if (tmp32 != 5) {
+	fprintf(stderr, "Wrong version number on %s\n", filename);
+	exit(1);
+    }
+    SAFE(read_int16(&n, f));
+    naregistra = n;
+    aregistras = smalloc(n * sizeof(*aregistras));
+    for (i = 0; i < n; i++) {
+	SAFE(read_variable(aregistra, f));
+	strscpy(aregistras[i].who, aregistra.who, NICKMAX);
+	aregistras[i].time = aregistra.time;
+	aregistras[i].expires = 0;
+    }
+    for (i = 0; i < n; i++) {
+	SAFE(read_string(&aregistras[i].elnick, f));
+	
+    }
+    close_db(f);
+}
+
+/*************************************************************************/
 
 static void m14_load_clone(const char *sourcedir)
 {
@@ -733,6 +785,9 @@ void load_magick_14b2(const char *sourcedir, int verbose)
     if (verbose)
 	printf("Loading akill.db...\n");
     m14_load_akill(sourcedir);
+    if (verbose)
+	printf("Loading aregistra.db...\n");
+    m14_load_aregistra(sourcedir);
     if (verbose)
 	printf("Loading clone.db...\n");
     m14_load_clone(sourcedir);
@@ -994,7 +1049,36 @@ void save_akill(void)
 }
 
 #undef SAFE
+/*************************************************************************/
 
+#define SAFE(x) do {						\
+    if ((x) < 0) {						\
+	fprintf(stderr, "Write error on " SERVICES_DIR "/");	\
+	perror(AutoregistraDBName);					\
+	exit(1);						\
+    }								\
+} while (0)
+
+void save_aregistra(void)
+{
+    char buf[256];
+    dbFILE *f;
+    int i;
+
+    snprintf(buf, sizeof(buf), "%s/%s", SERVICES_DIR, AutoregistraDBName);
+    if (!(f = open_db(NULL, buf, "w")))
+	return;
+    write_int16(naregistra, f);
+    for (i = 0; i < naregistra; i++) {
+	SAFE(write_string(aregistras[i].elnick, f));
+	SAFE(write_buffer(aregistras[i].who, f));
+	SAFE(write_int32(aregistras[i].time, f));
+	SAFE(write_int32(aregistras[i].expires, f));
+    }
+    close_db(f);
+}
+
+#undef SAFE
 /*************************************************************************/
 
 #define SAFE(x) do {						\
@@ -1106,6 +1190,7 @@ int main(int ac, char **av)
     if (verbose)
 	printf("Saving new AKILL database\n");
     save_akill();
+    save_aregistra();
     if (verbose)
 	printf("Saving new news database\n");
     save_news();

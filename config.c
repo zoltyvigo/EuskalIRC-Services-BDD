@@ -117,6 +117,7 @@ char *EuskalIRCDBName;
 char *JokuDBName;
 char *StatDBName;
 char *AutokillDBName;
+char *AutoregistraDBName;
 char *NewsDBName;
 
 int   SpamUsers;
@@ -193,6 +194,7 @@ char *CanalSpamers;
 char *ServicesRoot;
 int   LogMaxUsers;
 int   AutokillExpiry;
+int   AutoregistraExpiry;
 
 int   KillClonesAkillExpire;
 
@@ -239,7 +241,9 @@ typedef struct {
 
 Directive directives[] = {
     { "AutokillDB",       { { PARAM_STRING, 0, &AutokillDBName } } },
+    { "AutoregistraDB",       { { PARAM_STRING, 0, &AutoregistraDBName } } },
     { "AutokillExpiry",   { { PARAM_TIME, 0, &AutokillExpiry } } },
+     { "AutoregistraExpiry",   { { PARAM_TIME, 0, &AutoregistraExpiry } } },
     { "BadPassLimit",     { { PARAM_POSINT, 0, &BadPassLimit } } },
     { "BadPassTimeout",   { { PARAM_TIME, 0, &BadPassTimeout } } },
     { "ChanServDB",       { { PARAM_STRING, 0, &ChanDBName } } },
@@ -389,8 +393,8 @@ Directive directives[] = {
     { "CanalAdmins",      { { PARAM_STRING, 0, &CanalAdmins } } },
     { "CanalOpers",       { { PARAM_STRING, 0, &CanalOpers } } },
     { "CanalCybers",       { { PARAM_STRING, 0, &CanalCybers } } }, 
-     { "CanalAyuda",       { { PARAM_STRING, 0, &CanalAyuda } } }, 
-	  { "CanalSpamers",       { { PARAM_STRING, 0, &CanalSpamers } } }, 
+    { "CanalAyuda",       { { PARAM_STRING, 0, &CanalAyuda } } }, 
+    { "CanalSpamers",       { { PARAM_STRING, 0, &CanalSpamers } } }, 
     { "StrictPasswords",  { { PARAM_SET, 0, &StrictPasswords } } },
     { "TimeoutCheck",     { { PARAM_TIME, 0, &TimeoutCheck } } },
     { "UpdateTimeout",    { { PARAM_TIME, 0, &UpdateTimeout } } },
@@ -645,7 +649,7 @@ int read_config()
     CHEK2(temp_userspam, ServiceSpam);
     CHEK2(temp_usereuskalirc, ServiceEuskalIRC);
     CHEK2(s_NickServ, NickServName);
-     CHEK2(s_SpamServ, SpamServName);
+    CHEK2(s_SpamServ, SpamServName);
     CHEK2(s_ChanServ, ChanServName);
     CHEK2(s_MemoServ, MemoServName);
     CHEK2(s_HelpServ, HelpServName);
@@ -671,6 +675,7 @@ int read_config()
     CHEK2(IpVirtualDBName, IpVirtualDB);
     CHEK2(EuskalIRCDBName, EuskalIRCServDB);
     CHEK2(AutokillDBName, AutokillDB);
+    CHEK2(AutoregistraDBName, AutoregistraDB);
     CHEK2(NewsDBName, NewsDB);
     CHECK(UpdateTimeout);
     CHECK(ExpireTimeout);
@@ -693,6 +698,7 @@ int read_config()
     CHECK(CanalSpamers);
     CHECK(ServicesRoot);
     CHECK(AutokillExpiry);
+    CHECK(AutoregistraExpiry);
 #ifdef REG_NICK_MAIL
 #ifdef SENDMAIL
     CHECK(SendMailPatch);

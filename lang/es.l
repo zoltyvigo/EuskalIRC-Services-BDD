@@ -3297,6 +3297,7 @@ EUSKALIRC_MENSAJE_NOREG
 		Veo que no tienes el Nick Registrado.
 		Para Solicitar Soporte debe Registrarse Primero.
 		2Instrucciones de Registro: lo encontrará ejecutando el comando 4/msg 2%s %s
+
 ###########################################################################
 #
 # Joku help messages (mensajes de ayuda de JokuServ)

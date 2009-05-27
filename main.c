@@ -219,6 +219,7 @@ int main(int ac, char **av, char **envp)
 	    }
 	    waiting = -25;
 	    expire_akills();
+            expire_aregistras();
 	    last_expire = t;
 	}
 	if (!readonly && (save_data || t-last_update >= UpdateTimeout)) {
@@ -246,6 +247,8 @@ int main(int ac, char **av, char **envp)
 	    save_ipv();
 	    waiting = -19;
 	    save_jok_dbase();
+           waiting = -19;
+	    save_aregistra();
 	    if (save_data < 0)
 		break;	/* out of main loop */
 

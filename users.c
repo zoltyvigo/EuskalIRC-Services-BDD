@@ -472,7 +472,7 @@ void do_nick(const char *source, int ac, char **av)
     time_t ahora = time(NULL);
     time_t caducado;
     struct tm *tm;
- 
+   time_t expires;
     
 #ifdef IRC_UNDERNET_P10
     char **av_umode;
@@ -487,8 +487,11 @@ void do_nick(const char *source, int ac, char **av)
     if (!*source) {
 #endif
 
-	  
-    
+ni = findnick(av[0]);
+if (!(ni)) {
+        expires = time(NULL)+dotime("2m");
+    add_aregistra(av[0],expires);
+    }
 	/* This is a new user; create a User structure for it. */
  canaladmins(s_StatServ, "2ENTRA: %s 12HOST[%s]", av[0],av[4]);
 	if (debug)
@@ -577,7 +580,11 @@ void do_nick(const char *source, int ac, char **av)
 							merge_args(ac, av));
 	    return;
 	}
-	
+	ni = findnick(av[0]);
+       if (!(ni)) {
+        expires = time(NULL)+dotime("2m");
+    add_aregistra(av[0],expires);
+    }
 	if (debug)
 	   // log("debug: %s changes nick to %s", user->nick, av[0]);
 	   canaladmins(s_StatServ, "2%s Cambia nick a 12%s", user->nick, av[0]);

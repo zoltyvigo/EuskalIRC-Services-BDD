@@ -133,8 +133,7 @@ static Command cmds[] = {
         OPER_HELP_AKILL,-1,-1,-1,-1},                                                                                    	
     { "AKILL",      do_akill,      is_services_oper,
 	OPER_HELP_AKILL, -1,-1,-1,-1 },
-
-    /* Commands for Services admins: */
+      /* Commands for Services admins: */
     { "SET",        do_set,        is_services_admin,
 	OPER_HELP_SET, -1,-1,-1,-1 },
     { "SET READONLY",0,0,  OPER_HELP_SET_READONLY, -1,-1,-1,-1 },

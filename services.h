@@ -559,19 +559,20 @@ struct channel_ {
 #define CMODE_P 0x00000008
 #define CMODE_s 0x00000010
 #define CMODE_T 0x00000020
-#define CMODE_K 0x00000040		/* These two used only by ChanServ */
+#define CMODE_K 0x00000040	/* These two used only by ChanServ */
 #define CMODE_L 0x00000080
 
 /* Tambien Modos Hispano y Terra */
-#define CMODE_R 0x00000100		/* Only identified users can join */
-#define CMODE_r 0x00000200		/* Set for all registered channels */
+#define CMODE_R 0x00000100	/* Only identified users can join */
+#define CMODE_r 0x00000200	/* Set for all registered channels */
 /* Modos hispano */
-#define CMODE_A 0x00000400		/* Modo AutoOP */
-#define CMODE_S 0x00000800		/* Modo +S SecureOps */
-#define CMODE_m 0x00001000		/* Solo nicks +r habln en canal (sin +o,v) */
-#define CMODE_C 0x00002000		/* modo +C    */
-#define CMODE_n 0x00004000		/* modo +N    */
-#define CMODE_u 0x00008000		/* modo +u   */ 
+#define CMODE_A 0x00000400	/* Modo AutoOP */
+#define CMODE_S 0x00000800	/* Modo +S SecureOps */
+#define CMODE_m 0x00001000	/* Solo nicks +r hablan en canal (sin +o,v) */
+#define CMODE_C 0x00002000	/* modo +C No permite enviar CTCP al canal a excepcion del ACTION (/me). */
+#define CMODE_n 0x00004000	/* modo +N No permite enviar NOTICES y WALLCHOPS (son notices al @) al Canal.*/
+#define CMODE_u 0x00008000	/* modo +u Limpia los mensajes de QUIT y PART en el canal. */ 
+#define CMODE_c 0x00020000	/* modo +c Elimina colores hacia un canal.(NO_IRCHISPANO)*/ 
 
 /* Modos IRC_PATCHS_P09 */
 #define CMODE_a 0x00020000	/* modo +a   */

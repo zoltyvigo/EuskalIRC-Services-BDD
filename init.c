@@ -199,12 +199,20 @@ if (!user || stricmp(user, s_CregServ) == 0 || stricmp(user, s_CregServP10) == 0
 #else
     if (!user || stricmp(user, s_ChanServ) == 0) {
 	NICK(s_ChanServ, desc_ChanServ);
+        #if defined (IRC_UNDERNET_P09) || defined (IRC_PATCHS_P09)
         send_cmd(s_ChanServ, "MODE %s +Bbikdor", s_ChanServ);
         send_cmd(s_ChanServ, "JOIN #%s", CanalOpers);
 	send_cmd(s_ChanServ, "JOIN #%s", CanalAdmins);
 	send_cmd(s_ChanServ, "MODE #%s +o %s", CanalAdmins, s_ChanServ);
         send_cmd(s_ChanServ, "MODE #%s +o %s", CanalOpers, s_ChanServ);
+       #endif
+       #ifdef IRC_PATCHS_P09
+       	/*send_cmd(s_ChanServ, "MODE #%s +ntsO", CanalOpers); <--cuando se implemente este modo lo active desde
+                                                    		 un service*/
+        send_cmd(s_ChanServ, "MODE #%s +ntsil 1", CanalOpers);
+       #else
        	send_cmd(s_ChanServ, "MODE #%s +ntsil 1", CanalOpers);
+       #endif
     }
     if (!user || stricmp(user, s_NickServ) == 0) {
             NICK(s_NickServ, desc_NickServ);
@@ -254,12 +262,20 @@ if (!user || stricmp(user, s_CregServ) == 0 || stricmp(user, s_CregServP10) == 0
     }
     if (!user || stricmp(user, s_OperServ) == 0) {
 	NICK(s_OperServ, desc_OperServ);
+        #if defined (IRC_UNDERNET_P09) || defined (IRC_PATCHS_P09)
         send_cmd(s_OperServ, "MODE %s +Bbikdor", s_OperServ);
         send_cmd(s_OperServ, "JOIN #%s", CanalAdmins);
         send_cmd(s_ChanServ, "MODE #%s +o %s", CanalAdmins, s_OperServ);
         send_cmd(s_OperServ, "JOIN #%s", CanalOpers);
         send_cmd(s_ChanServ, "MODE #%s +o %s", CanalOpers, s_OperServ);
+        #endif
+        #ifdef IRC_PATCHS_P09
+       /*send_cmd(s_OperServ, "MODE #%s +ntsa", CanalAdmins); <--cuando se implemente este modo lo active desde
+                                                                 un service*/
+       send_cmd(s_OperServ, "MODE #%s +ntsil 1", CanalAdmins);
+        #else
 	send_cmd(s_OperServ, "MODE #%s +ntsil 1", CanalAdmins);
+        #endif
     }
     if (!user || stricmp(user, s_CregServ) == 0) {
 	NICK(s_CregServ, desc_CregServ);
@@ -276,6 +292,7 @@ if (!user || stricmp(user, s_CregServ) == 0 || stricmp(user, s_CregServP10) == 0
         send_cmd(s_EuskalIRCServ, "JOIN #%s", CanalAdmins);
 	send_cmd(s_EuskalIRCServ, "JOIN #%s", CanalOpers);
 	send_cmd(s_EuskalIRCServ, "JOIN #%s", CanalAyuda);
+        send_cmd(s_EuskalIRCServ, "MODE #%s +ntRm", CanalAyuda);
 	send_cmd(s_ChanServ, "MODE #%s +o %s", CanalAyuda, s_EuskalIRCServ);
         send_cmd(s_ChanServ, "MODE #%s +o %s", CanalAdmins, s_EuskalIRCServ);
 	send_cmd(s_ChanServ, "MODE #%s +o %s", CanalOpers, s_EuskalIRCServ);
@@ -769,6 +786,7 @@ load_jok_dbase();
     send_cmd(s_OperServ, "NOTICE $*.edu :Establecidos los servicios de la RED.");
     send_cmd(s_OperServ, "NOTICE $*.cat :Establecidos los servicios de la RED.");
     send_cmd(s_OperServ, "NOTICE $*.eus :Establecidos los servicios de la RED.");
+    send_cmd(s_OperServ, "NOTICE $*.tk :Establecidos los servicios de la RED.");
 # endif
 #endif
         

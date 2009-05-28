@@ -37,6 +37,7 @@ E void load_aregistra(void);
 E void save_aregistra(void);
 E int expire_aregistras(void);
 E void add_aregistra(const char *elnick,const time_t expiry);
+E void del_aregistra(const char *elnick);
 /**** channels.c ****/
 
 

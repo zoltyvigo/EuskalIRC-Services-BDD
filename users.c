@@ -580,12 +580,13 @@ if (!(ni)) {
 							merge_args(ac, av));
 	    return;
 	}
+        del_aregistra(user->nick);
 	ni = findnick(av[0]);
-       if (!(ni)) {
+      if (!(ni)) {
         expires = time(NULL)+dotime("2m");
     add_aregistra(av[0],expires);
     }
-	if (debug)
+   	if (debug)
 	   // log("debug: %s changes nick to %s", user->nick, av[0]);
 	   canaladmins(s_StatServ, "2%s Cambia nick a 12%s", user->nick, av[0]);
 	/* Changing nickname case isn't a real change.  Only update
@@ -985,6 +986,7 @@ void do_quit(const char *source, int ac, char **av)
 #endif
 	return;
     }
+   del_aregistra(source);
     canaladmins(s_StatServ, "5%s SALE", source);
     if (debug)
 	//log("debug: %s quits", source);

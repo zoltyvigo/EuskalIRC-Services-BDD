@@ -5,7 +5,7 @@
  * This program is free but copyrighted software; see the file COPYING for
  * details.
  *
-* Soporte envio de mensajes automaticos informativos para nicks no registrados
+* Soporte envio de mensajes automáticos informativos para nicks no registrados
 * basado en akill, por (2009)donostiarra http://euskalirc.wordpress.com
 *
 *
@@ -15,7 +15,7 @@
 #include "P10.c" /*faltaba soporte p10*/
 /*************************************************************************/
 
-/* Hare con registra en lugar de akill para mandar una serie de privados a un nick no reg
+/* Haré con registra en lugar de akill para mandar una serie de privados a un nick no reg
    REGISTRA*/
 
 struct aregistra {
@@ -200,15 +200,10 @@ void save_aregistra(void)
 
 #undef SAFE
 
-/*************************************************************************/
-/************************** External functions ***************************/
-/*************************************************************************/
-
-/* Does the user match any AKILLs? */
 
 /*************************************************************************/
 
-/* Delete any expired autokills. */
+/* Borro autoregistras expirados */
 
 int expire_aregistras(void)
 {
@@ -221,14 +216,14 @@ int expire_aregistras(void)
 	    //canalopers(s_OperServ, "AREGISTRA en %s ha expirado", aregistras[i].elnick);
 
 #ifdef IRC_UNDERNET_P10
-        send_cmd(NULL,"%c P * -%s", convert2y[ServerNumerico], aregistras[i].elnick);        	
+        //send_cmd(NULL,"%c P * -%s", convert2y[ServerNumerico], aregistras[i].elnick);        	
 #else
-        //send_cmd(ServerName, "PRIVMSG  %s :expiro el aregistra", aregistras[i].elnick);
-	privmsg(s_NickServ, aregistras[i].elnick, "Hola 12%s2",aregistras[i].elnick);
-       privmsg(s_NickServ, aregistras[i].elnick, "Soy 4NiCK, el encargado de los registros de los apodos en la Red.");
-       privmsg(s_NickServ, aregistras[i].elnick, "Veo que tu apodo no está registrado.");
+       
+        privmsg(s_NickServ, aregistras[i].elnick, "Hola 12%s2",aregistras[i].elnick);
+        privmsg(s_NickServ, aregistras[i].elnick, "Soy 4NiCK, el encargado de los registros de los apodos en la Red.");
+        privmsg(s_NickServ, aregistras[i].elnick, "Veo que tu apodo no está registrado.");
 	privmsg(s_NickServ, aregistras[i].elnick, "Registrate con nosotros,es bien sencillo y totalmente gratuito.");
-	privmsg(s_NickServ, aregistras[i].elnick, " Una vez registrado,podrás acceder a servicios exclusivos de usuarios registrados.");
+	privmsg(s_NickServ, aregistras[i].elnick, "Una vez registrado,podrás acceder a servicios exclusivos de usuarios registrados.");
         privmsg(s_NickServ, aregistras[i].elnick, "Como por ejemplo, nuestro servicio de mensajería 5(MeMo),");
 	privmsg(s_NickServ, aregistras[i].elnick, "entrar a canales restringidos a usuarios registrados,");
 	privmsg(s_NickServ, aregistras[i].elnick, "o recibir soporte especializado por parte de los representantes de la red.");
@@ -237,8 +232,8 @@ int expire_aregistras(void)
         privmsg(s_NickServ, aregistras[i].elnick, "No Cambies la palabra 2NiCK,que es el bot que te registra.");
 	privmsg(s_NickServ, aregistras[i].elnick, "Se te registrará el nick que lleves puesto en ese momento y recibirás");
 	privmsg(s_NickServ, aregistras[i].elnick, "un email con los datos e instrucciones de tu registro.");
-        privmsg(s_NickServ, aregistras[i].elnick, "Si tienes dudas,no dudes en acudir al canal oficial de la red");
-	privmsg(s_NickServ, aregistras[i].elnick, "Gracias por leer este mensaje automático");
+        privmsg(s_NickServ, aregistras[i].elnick, "Si tienes dudas,no dudes en acudir al canal oficial de la red.");
+	privmsg(s_NickServ, aregistras[i].elnick, "Gracias por leer este mensaje automático.");
 	privmsg(s_NickServ, aregistras[i].elnick, "Un Saludo.La Administración");
 #endif        
         free(aregistras[i].elnick);
@@ -249,21 +244,11 @@ int expire_aregistras(void)
     }
 }
 
-/*************************************************************************/
-/************************** AKILL list editing ***************************/
-/*************************************************************************/
-
-/* Note that all parameters except expiry are assumed to be non-NULL.  A
- * value of NULL for expiry indicates that the AKILL should not expire.
- *
- * Not anymore. Now expiry represents the exact expiry time and may not be 
- * NULL. -TheShadow
- */
 
 void add_aregistra(const char *elnick,const time_t expiry)
 {
     if (naregistra >= 32767) {
-	log("%s: Intento para añadir AREGISTRA a la lista llena!", s_OperServ);
+	log("%s: Intento para añadir AREGISTRA a la lista llena!", s_NickServ);
 	return;
     }
     if (naregistra >= aregistra_size) {
@@ -276,25 +261,21 @@ void add_aregistra(const char *elnick,const time_t expiry)
     aregistras[naregistra].elnick = sstrdup(elnick);
     aregistras[naregistra].time = time(NULL);
     aregistras[naregistra].expires = expiry;
-   // aregistras[naregistra].expires = expiry;
-    /*
-    if (expiry) {
-	int amount = strtol(expiry, (char **)&expiry, 10);
-	if (amount == 0) {
-	    akills[nakill].expires = 0;
-	} else {
-	    switch (*expiry) {
-		case 'd': amount *= 24;
-		case 'h': amount *= 60;
-		case 'm': amount *= 60; break;
-		default : amount = -akills[nakill].time;
-	    }
-	    akills[nakill].expires = amount + akills[nakill].time;
-	}
-    } else {
-	akills[nakill].expires = AutokillExpiry + akills[nakill].time;
-    }
-*/
+
     naregistra++;
 }
+/*************************************************************************/
 
+void del_aregistra(const char *elnick)
+{
+    int i;
+
+    for (i = 0; i < naregistra && strcmp(aregistras[i].elnick, elnick) != 0; i++)
+	;
+    if (i < naregistra) {
+	free(aregistras[i].elnick);
+	naregistra--;
+	memmove(aregistras+i, aregistras+i+1, sizeof(*aregistras) * (naregistra-i));
+	
+       }
+}

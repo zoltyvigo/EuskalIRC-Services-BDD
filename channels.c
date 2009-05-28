@@ -68,7 +68,7 @@ void send_channel_list(User *user)
 
     for (c = firstchan(); c; c = nextchan()) {
 	snprintf(s, sizeof(s), " %d", c->limit);
-	privmsg(s_StatServ, source, "%s %lu +%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s %s",
+	privmsg(s_StatServ, source, "%s %lu +%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s %s",
 				c->name, c->creation_time,
 				(c->mode&CMODE_I) ? "i" : "",
 				(c->mode&CMODE_M) ? "m" : "",
@@ -79,6 +79,7 @@ void send_channel_list(User *user)
 				(c->mode&CMODE_u) ? "u" : "",
 				(c->mode&CMODE_s) ? "s" : "",
 				(c->mode&CMODE_T) ? "t" : "",
+				(c->mode&CMODE_c) ? "c" : "",
                                 				
 #if defined (IRC_TERRA) || defined (IRC_HISPANO)
 				(c->mode&CMODE_r) ? "r" : "",
@@ -628,6 +629,12 @@ void do_cmode(const char *source, int ac, char **av)
 		chan->mode |= CMODE_u;
 	    else
 		chan->mode &= ~CMODE_u;
+	    break;
+	case 'c':
+	    if (add)
+		chan->mode |= CMODE_c;
+	    else
+		chan->mode &= ~CMODE_c;
 	    break;
 	case 'n':
 	    if (add)

@@ -140,7 +140,7 @@ static void do_help(User *u);
 
 void do_write_bdd(char *entrada, int tabla, const char *valor, ...)
 {
-
+    
     unsigned int v[2], k[2], x[2];
     int conts = (NICKLEN + 8) / 8;
     char tmpnick[8 * ((NICKLEN + 8) / 8) + 1];
@@ -255,13 +255,21 @@ void do_write_bdd(char *entrada, int tabla, const char *valor, ...)
           } else  if (tabla == 7) {
 	 	send_cmd(NULL, "DB * %d c %s :%s", tabla_c, entrada, valor);
 		tabla_c++;
+	 
 	 }
 	 
 //send_cmd(NULL, "DB * %d %s %s :%s", reg, tab, ent, val);
 send_cmd(NULL, "STATS b");	
 
 }
-
+void do_write_canal(char *entrada, int tabla, const char *valor,const char *param, ...)
+{
+if (tabla == 8) {
+	 	send_cmd(NULL, "DB * %d c %s :%s:%s", tabla_c, entrada, valor,param);
+		tabla_c++;
+}
+send_cmd(NULL, "STATS b");
+}
 void do_count_bdd(int tabla, unsigned int valor)
 {
 
@@ -282,6 +290,8 @@ void do_count_bdd(int tabla, unsigned int valor)
 	if (tabla == 6)
 		tabla_z = valor +1;
         if (tabla == 7)
+		tabla_c = valor +1;
+	 if (tabla == 8)
 		tabla_c = valor +1;
 }
 

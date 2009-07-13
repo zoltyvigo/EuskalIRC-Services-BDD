@@ -1400,9 +1400,7 @@ static void do_fuerza(User *u)
         cr->estado |= CR_REGISTRADO;
 	send_cmd(s_CregServ, "PRIVMSG  %s  :Felicidades Por el Registro De Su Nuevo Canal %s",cr->founder,chan);
 	send_cmd(s_CregServ,"TOPIC %s :Este canal ha sido ACEPTADO en su Registro", chan);
-        send_cmd(MODE_SENDER(s_CregServ), "PRIVMSG  REGISTRATE :MEMO  %s REGCANAL %s",cr->founder,chan);
-	
-
+      
 	canalopers(s_CregServ, "12%s ha forzado la aceptación del canal 12%s", u->nick, chan);
         privmsg(s_CregServ, u->nick, "12%s ha sido registrado en %s", chan, s_ChanServ); 
     

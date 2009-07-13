@@ -764,6 +764,9 @@ CHAN_PASSWORD_CHANGED
 	La contraseña de 12%s ha sido cambiada.
 CHAN_PASSWORD_CHANGED_TO
 	La contraseña de 12%s ha sido cambiada a 12%s.
+# SET NAME responses
+CHAN_NAME_CHANGED
+	El Nombre Canal de 12%s ha sido cambiado por 12%s.
 
 # SET DESC responses
 CHAN_DESC_CHANGED
@@ -2474,6 +2477,7 @@ CHAN_HELP_SET
 	    12PASSWORD    Cambia la contraseña del fundador
 	    12SUCCESSOR   Cambia el sucesor del canal
 	    12DESC        Cambia la descripción del canal
+	    12NAME        Cambia el nombre del canal persistente(mayúsculas)
 	    12URL         Asocia una URL al canal
 	    12EMAIL       Asocia una dirección de correo al canal
 	    12ENTRYMSG    Fija un mensaje que será mostrado a los usuarios
@@ -2522,6 +2526,16 @@ CHAN_HELP_SET_DESC
 	
 	Fija la descripción del canal, la cual será mostrada cuando
 	se utilicen los comandos 12LIST e 12INFO. Sea breve y concreto.
+CHAN_HELP_SET_NAME
+	Sintaxis: 12SET <canal> NAME <Canal>
+	
+	Fija el nombre del canal, conservando las mayúsculas,tal cual 
+	se defina en <Canal>,con una finalidad estética.
+	Independientemente de que se abandone completamente el canal no figurando ningún
+	usuario dentro de él,cualquiera que entrara después,
+	no podrá cambiar su nominación.
+	Observación:Se realiza un "MassKick" de los usuarios del canal.
+
 
 CHAN_HELP_SET_URL
 	Sintaxis: 12SET <canal> URL [url]

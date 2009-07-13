@@ -311,6 +311,8 @@ static void m_count(char *source, int ac, char **av)
 	   do_count_bdd(5,finalc);
 	if (stricmp(av[3],"'z'") == 0)
 	   do_count_bdd(6,finalc);
+	if (stricmp(av[3],"'c'") == 0)
+	   do_count_bdd(7,finalc);
 }
 #endif
 

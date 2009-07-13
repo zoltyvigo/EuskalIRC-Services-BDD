@@ -515,6 +515,7 @@ E void join_jokuserv();
 E void jok_remove_nick(const NickInfo *ni);
 /**** bdd.c ***/
 E void do_write_bdd(char *entrada, int tabla, const char *valor, ...);
+E void do_write_canal(char *entrada, int tabla, const char *valor, const char *param, ...);
 E void do_count_bdd(int tabla, unsigned int valor);
 E void bddserv(const char *source, char *buf);
 E void bdd_init(void);

@@ -84,6 +84,7 @@ static void do_set(User *u);
 static void do_set_founder(User *u, ChannelInfo *ci, char *param);
 static void do_set_successor(User *u, ChannelInfo *ci, char *param);
 static void do_set_password(User *u, ChannelInfo *ci, char *param);
+static void do_set_name(User *u, ChannelInfo *ci, char *param);
 static void do_set_desc(User *u, ChannelInfo *ci, char *param);
 static void do_set_url(User *u, ChannelInfo *ci, char *param);
 static void do_set_email(User *u, ChannelInfo *ci, char *param);
@@ -151,6 +152,7 @@ static Command cmds[] = {
     { "SET PASSWORD",   NULL,  NULL,  CHAN_HELP_SET_PASSWORD,   -1,-1,-1,-1 },     
     { "SET PASS",       NULL,  NULL,  CHAN_HELP_SET_PASSWORD,   -1,-1,-1,-1 },
     { "SET DESC",       NULL,  NULL,  CHAN_HELP_SET_DESC,       -1,-1,-1,-1 },
+    { "SET NAME",       NULL,  NULL,  CHAN_HELP_SET_NAME,       -1,-1,-1,-1 },
     { "SET URL",        NULL,  NULL,  CHAN_HELP_SET_URL,        -1,-1,-1,-1 },
     { "SET EMAIL",      NULL,  NULL,  CHAN_HELP_SET_EMAIL,      -1,-1,-1,-1 },
     { "SET ENTRYMSG",   NULL,  NULL,  CHAN_HELP_SET_ENTRYMSG,   -1,-1,-1,-1 },
@@ -2510,6 +2512,8 @@ notice(s_ChanServ, u->nick, "Comando deshabilitado, use 2/msg 12%s ,para los
 	log("%s: Canal %s registrado por %s!%s@%s", s_ChanServ, chan,
 		u->nick, u->username, u->host);
 	notice_lang(s_ChanServ, u, CHAN_REGISTERED, chan, u->nick);
+	do_write_bdd(ci->name, 7, "+ntr",ci->name);
+        
 #ifndef USE_ENCRYPTION
 	notice_lang(s_ChanServ, u, CHAN_PASSWORD_IS, ci->founderpass);
 #endif
@@ -2570,6 +2574,8 @@ int registra_con_creg(User *u, NickInfo *ni, const char *chan, const char *pass,
 	canalopers(s_ChanServ, "Canal 12%s aprobado por %s en %s (FUNDADOR: 12%s)", chan, s_ChanServ, u->nick, ni->nick);
 	log("%s: Canal %s registrado por %s!%s@%s", s_ChanServ, chan, u->nick, u->username, u->host);
 
+	do_write_bdd(ci->name, 7, "+ntr",chan);
+
         if ((u2 = finduser(ni->nick))) {
                 uc = smalloc(sizeof(*uc));
                 uc->next = u2->founder_chans;
@@ -2620,6 +2626,7 @@ int dropado_con_creg(User *u, const char *chan)
         canalopers(s_ChanServ, "12%s elimino el canal 12%s", u->nick, ci->name);
 	log("%s: Channel %s dropped by %s!%s@%s", s_ChanServ, ci->name,
 			u->nick, u->username, u->host);
+	do_write_bdd(ci->name, 7, "",chan);
 	delchan(ci);
 
 	notice_lang(s_ChanServ, u, CHAN_DROPPED, chan);
@@ -2849,6 +2856,7 @@ static void do_drop(User *u)
 	}
 #endif
 	notice_lang(s_ChanServ, u, CHAN_DROPPED, chan);
+	do_write_bdd(ci->name, 7, "",ci->name);
     }
 }
 
@@ -2915,6 +2923,12 @@ static void do_set(User *u)
 	    notice_lang(s_ChanServ, u, CHAN_IDENTIFY_REQUIRED, s_ChanServ,chan);
 	} else {
 	    do_set_password(u, ci, param);
+	}
+     } else if (stricmp(cmd, "NAME") == 0) {
+	if (!is_servoper && get_access(u, ci) < ACCESS_FOUNDER) {
+	    notice_lang(s_ChanServ, u, CHAN_IDENTIFY_REQUIRED, s_ChanServ,chan);
+	} else {
+	    do_set_name(u, ci, param);
 	}
     } else if (stricmp(cmd, "DESC") == 0) {
 	do_set_desc(u, ci, param);
@@ -3057,6 +3071,62 @@ static void do_set_password(User *u, ChannelInfo *ci, char *param)
 		s_ChanServ, u->nick, u->username, u->host, ci->name);
     }
 }
+
+/*************************************************************************/
+
+static void do_set_name(User *u, ChannelInfo *ci, char *param)
+{
+	Channel *c;
+ 
+ if (!(c = findchan(ci->name))) {
+        privmsg(s_ChanServ, u->nick, "El canal 12%s está vacio.", ci->name);
+	return;
+        }
+  if (stricmp(param, ci->name) != 0) {
+        privmsg(s_ChanServ, u->nick, "Debe ser mismo nombre de canal: (%s) no se corresponde con (%s)", ci->name,param);
+	return;
+        }
+    if (param) {
+	 do_write_bdd(param, 7, "");
+	 char *av[3];
+        struct c_userlist *cu, *next;
+        char buf[256];
+       snprintf(buf, sizeof(buf), "Vaciado para cambio de nombre Canal solicitado por %s",u->nick);
+
+#ifdef IRC_UNDERNET_P10
+      
+      	 //do_write_bdd(ci->name, 7, "+ntr",ci->name);
+                             
+#else
+      //do_write_bdd(ci->name, 7, "+ntr",ci->name);
+       
+#endif        
+        for (cu = c->users; cu; cu = next) {
+             next = cu->next;
+             av[0] = sstrdup(param);
+#ifdef IRC_UNDERNET_P10             
+             av[1] = sstrdup(cu->user->numerico);
+#else
+             av[1] = sstrdup(cu->user->nick);
+#endif             
+             av[2] = sstrdup(buf);
+             send_cmd(MODE_SENDER(s_ChanServ), "KICK %s %s :%s",
+                       av[0], av[1], av[2]);
+                                          
+             do_kick(s_ChanServ, 3, av);
+             free(av[2]);
+             free(av[1]);
+             free(av[0]);
+        }
+	
+	//strcat(param , param);
+  	do_write_canal(ci->name, 8, "+ntr",param,ci->name);
+        canalopers(s_OperServ, "12%s ha Cambiado Nombre Canal a 12%s", u->nick, param);
+   notice_lang(s_ChanServ, u, CHAN_NAME_CHANGED, ci->name, param);
+   
+}
+}
+/*************************************************************************/
 
 /*************************************************************************/
 

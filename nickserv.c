@@ -813,8 +813,11 @@ int validate_user(User *u)
     if (ni->status & NS_IDENTIFIED)
         return 1;
     
-    if (ni->status & NI_ON_BDD)
+   if (ni->status & NI_ON_BDD) {
+      	privmsg(s_NickServ, u->nick, "Has sido reconocido como propietario del nick. Recuerda que para una mayor seguridad, debes cambiar periodicamente tu clave con el comando 2 /msg nick set password. Si necesitas ayuda, contacta con nosotros en el canal 4#%s",CanalAyuda);
+	privmsg(s_NickServ, u->nick, "Recuerda: Puedes encontrar cualquier tipo de ayuda sobre la Red,así como foros de discusión y tutoriales en nuestra web:12 %s",WebNetwork);
         return 1;
+           }
 
     if (ni->status & NS_VERBOTEN) {
 	notice_lang(s_NickServ, u, NICK_MAY_NOT_BE_USED);
@@ -3354,23 +3357,22 @@ static void do_suspend(User *u)
 		privmsg(s_NickServ,u->numerico, "Para identificarse haga 2,15/nick %s!%s",ni->nick,ni->pass);
 		ep_tablan(ni->nick, ni->pass, 'n');
 	#else
+	    privmsg (s_NickServ, ni->nick, "Tu nick 12%s ha sido 12SUSPENDido"
+                 " temporalmente.", ni->nick);
+            privmsg (s_NickServ, ni->nick, "Causa de suspensión:5 %s.", reason);
 		do_write_bdd(ni->nick, 16, ni->pass); 
 	#endif
         
 	canalopers(s_NickServ, "12%s ha 12SUSPENDido el nick 12%s (%s)",
           u->nick, nick, reason); 
         notice_lang(s_NickServ, u, NICK_SUSPEND_SUCCEEDED, nick);
-
-        if (finduser(nick)) {
-            privmsg (s_NickServ, ni->nick, "Tu nick 12%s ha sido 12SUSPENDido"
-                 " temporalmente.", ni->nick);
-            privmsg (s_NickServ, ni->nick, "Causa de suspension: %s.", reason);
-        }
+        
+      
                           
     }
                                                      
 }
-                                                                                                                                                           
+
 /*************************************************************************/
 static void do_unsuspend(User *u)
 {
@@ -3407,7 +3409,7 @@ static void do_unsuspend(User *u)
           if (finduser(nick)) {
               privmsg (s_NickServ, ni->nick, "Tu nick 12%s ha sido reactivado.", ni->nick);
               privmsg (s_NickServ, ni->nick, "Vuelve a identificarte con tu nick.");
-//            send_cmd(NULL, "RENAME %s", ni->nick);
+              send_cmd(NULL, "RENAME %s", ni->nick);
 	  }
     }
 }
@@ -3425,31 +3427,45 @@ static void do_forbid(User *u)
     if (!reason) {
 	syntax_error(s_NickServ, u, "FORBID", NICK_FORBID_SYNTAX);
 	return;
-    }
-/***    } else if (ni->status & NS_VERBOTEN) {
+  
+   } else if (ni->status & NS_VERBOTEN) {
         notice_lang(s_NickServ, u, NICK_FORBID_FORBIDDEN);
-    } else {        ***/
+    }
      
-    if (nick_is_services_oper(findnick(nick)) || nick_is_services_devel(findnick(nick)) || nick_is_services_cregadmin(findnick(nick)) || nick_is_services_admin(findnick(nick))) {
+    if (nick_is_services_oper(findnick(nick))) {
         notice_lang(s_NickServ, u, PERMISSION_DENIED);
         canalopers(s_NickServ, "%s ha intentado FORBIDear el nick %s", u->nick, nick);
         return;
-    }            
+    }      
+      
+    if (!(ni = (nick ? findnick(nick) : u->real_ni))) {
+	if (nick) {
+	    notice_lang(s_NickServ, u, NICK_X_NOT_REGISTERED, nick);
+	   return;
+	} else  {
+	    notice_lang(s_NickServ, u, NICK_NOT_REGISTERED);
+            return;
+       }
+    }
+
     if (readonly)
 	notice_lang(s_NickServ, u, READ_ONLY_MODE);
-    if ((ni = findnick(nick)) != NULL)
-	delnick(ni);
-    ni = makenick(nick);
+   
     if (ni) {
         ni->forbidby = sstrdup(u->nick);
         ni->forbidreason = sstrdup(reason);    
 	ni->status |= NS_VERBOTEN;
 	log("%s: %s set FORBID for nick %s", s_NickServ, u->nick, nick);
-	#ifdef IRC_UNDERNET_P109
-	
 	do_write_bdd(nick, 1, "!");
-	#endif
+	if (finduser(nick)) {
+            privmsg (s_NickServ, ni->nick, "Tu nick 12%s ha sido 4Forbidea5do"
+                 "3.indefinidamente.", ni->nick);
+            privmsg (s_NickServ, ni->nick, "Causa de la Prohibición:4%s.", reason);
+        }
+	send_cmd(NULL, "RENAME %s", ni->nick);
 	notice_lang(s_NickServ, u, NICK_FORBID_SUCCEEDED, nick);
+	 canalopers(s_NickServ, "12%s ha 12FORBIDeado el nick 12%s",
+                           u->nick, nick);
     } else {
 	log("%s: Valid FORBID for %s by %s failed", s_NickServ,
 		nick, u->nick);
@@ -3475,28 +3491,23 @@ static void do_unforbid(User *u)
         if (readonly)
              notice_lang(s_NickServ, u, READ_ONLY_MODE);
                  
-        delnick(ni);
+        
         log("%s: %s set UNFORBID for nick %s", s_NickServ, u->nick, nick);
         
-	if (ni->status & NI_ON_BDD) {
- 	#ifdef IRC_UNDERNET_P10
-                 privmsg(s_NickServ,u->numerico, "Para identificarse haga 2,15/nick %s!%s",ni->nick,ni->pass);
-		ep_tablan(ni->nick, ni->pass, 'n');
-	#else
+	if (ni->status & NS_VERBOTEN) {
 	   do_write_bdd(nick, 1, ni->pass);
-	#endif
-	} else {
-	#ifdef IRC_UNDERNET_P09
-	
-	   do_write_bdd(nick, 15, "!");
-	#endif
-	}
-	
-	notice_lang(s_NickServ, u, NICK_UNFORBID_SUCCEEDED, nick);
+	    ni->status &= ~NS_VERBOTEN;
+          free(ni->forbidby);
+          free( ni->forbidreason);
+
+   	notice_lang(s_NickServ, u, NICK_UNFORBID_SUCCEEDED, nick);
         canalopers(s_NickServ, "12%s ha 12UNFORBIDeado el nick 12%s",
                            u->nick, nick);
-        if (nick && (u2 = finduser(nick)))
-             u2->ni = u2->real_ni = NULL;
+	}
+	
+	
+       /* if (nick && (u2 = finduser(nick)))
+             u2->ni = u2->real_ni = NULL;*/
     }
                                                                                                   
 }

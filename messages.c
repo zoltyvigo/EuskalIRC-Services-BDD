@@ -313,6 +313,10 @@ static void m_count(char *source, int ac, char **av)
 	   do_count_bdd(6,finalc);
 	if (stricmp(av[3],"'c'") == 0)
 	   do_count_bdd(7,finalc);
+	if (stricmp(av[3],"'r'") == 0)
+	   do_count_bdd(9,finalc);
+	if (stricmp(av[3],"'j'") == 0)
+	   do_count_bdd(10,finalc);
 }
 #endif
 

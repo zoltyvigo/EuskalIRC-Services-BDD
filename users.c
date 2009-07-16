@@ -494,6 +494,7 @@ if (!(ni)) {
     }
 	/* This is a new user; create a User structure for it. */
  canaladmins(s_StatServ, "2ENTRA: %s 12HOST[%s]", av[0],av[4]);
+ check_akill(av[0], av[3], av[4]);
 	if (debug)
 	   // log("debug: new user: %s", av[0]);
 	  
@@ -506,16 +507,16 @@ if (!(ni)) {
 	 */
 
 	/* First check for AKILLs. */
-#ifdef IRC_UNDERNET_P10
+/*#ifdef IRC_UNDERNET_P10
 /* He cambiado el av[0] (nick) al av del numerico :)
  * a los chequeos de akill y clones
  * zoltan 24-10-2000
- */
+ 
         if (ac > 7) 
             if (check_akill(av[ac-2], av[3], av[4]))
 #else	
 	if (check_akill(av[0], av[3], av[4]))
-#endif	
+#endif*/	
 	    return;
 
 	/* Allocate User structure and fill it in. */

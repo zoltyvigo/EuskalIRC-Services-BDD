@@ -126,6 +126,8 @@ void tea(unsigned int v[], unsigned int k[], unsigned int x[])
 
 static unsigned int tabla_n;
 static unsigned int tabla_c; /* para los canales persistentes*/
+static unsigned int tabla_r; /*para redirección automática de canales*/
+static unsigned int tabla_j; /*para jupeos de nicks*/
 static unsigned int tabla_v;
 static unsigned int tabla_o;
 static unsigned int tabla_w;
@@ -256,6 +258,13 @@ void do_write_bdd(char *entrada, int tabla, const char *valor, ...)
 	 	send_cmd(NULL, "DB * %d c %s :%s", tabla_c, entrada, valor);
 		tabla_c++;
 	 
+	 } else  if (tabla == 9) {
+	 	send_cmd(NULL, "DB * %d r %s :%s", tabla_r, entrada, valor);
+		tabla_r++;
+	 } else  if (tabla == 10) {
+	 	send_cmd(NULL, "DB * %d j %s :%s", tabla_j, entrada, valor);
+		tabla_r++;
+	 
 	 }
 	 
 //send_cmd(NULL, "DB * %d %s %s :%s", reg, tab, ent, val);
@@ -293,6 +302,10 @@ void do_count_bdd(int tabla, unsigned int valor)
 		tabla_c = valor +1;
 	 if (tabla == 8)
 		tabla_c = valor +1;
+	 if (tabla == 9)
+		tabla_r = valor +1;
+	if (tabla == 10)
+		tabla_j = valor +1;
 }
 
 static Command cmds[] = {
@@ -374,7 +387,7 @@ static void tocar_tablas(User *u)
 	char *clave = strtok(NULL, " ");
 	char *valor = strtok(NULL, "");
 
-	if (!tabla) {
+	if ((!tabla) || (!clave)) {
 		syntax_error(s_BddServ, u, "TOCAR", BDD_TOCAR_SYNTAX);
 		return;
 		}
@@ -387,6 +400,34 @@ static void tocar_tablas(User *u)
 		     }
          else {
              do_write_bdd(clave, 2, valor);
+             notice_lang(s_BddServ, u, BDD_SEQ_OK);
+              return;
+              }
+           
+          }
+  /*asi podemos desactivar redirecciones de canales*/
+	if (stricmp(tabla, "r") == 0) {
+        if (!valor) {
+                     do_write_bdd(clave, 9, "");
+                     notice_lang(s_BddServ, u, BDD_SEQ_OK);
+		      return;
+		     }
+         else {
+             do_write_bdd(clave, 9, valor);
+             notice_lang(s_BddServ, u, BDD_SEQ_OK);
+              return;
+              }
+           
+          }
+/*asi podemos desactivar jupeos de nicks*/
+	if (stricmp(tabla, "j") == 0) {
+        if (!valor) {
+                     do_write_bdd(clave, 10, "");
+                     notice_lang(s_BddServ, u, BDD_SEQ_OK);
+		      return;
+		     }
+         else {
+             do_write_bdd(clave, 10, valor);
              notice_lang(s_BddServ, u, BDD_SEQ_OK);
               return;
               }

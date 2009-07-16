@@ -288,7 +288,7 @@ if (!user || stricmp(user, s_CregServ) == 0 || stricmp(user, s_CregServP10) == 0
     }
      if (!user || stricmp(user, s_EuskalIRCServ) == 0) {
 	euskalirc(s_EuskalIRCServ, desc_EuskalIRCServ);
-        send_cmd(s_EuskalIRCServ, "MODE %s +Bbikr", s_EuskalIRCServ);
+        send_cmd(s_EuskalIRCServ, "MODE %s +Bobikr", s_EuskalIRCServ);
         send_cmd(s_EuskalIRCServ, "JOIN #%s", CanalAdmins);
 	send_cmd(s_EuskalIRCServ, "JOIN #%s", CanalOpers);
 	send_cmd(s_EuskalIRCServ, "JOIN #%s", CanalAyuda);
@@ -343,7 +343,7 @@ if (!user || stricmp(user, s_CregServ) == 0 || stricmp(user, s_CregServP10) == 0
     }
     if (!user || stricmp(user,  s_SpamServ) == 0) {
       SPAM(s_SpamServ, desc_SpamServ);
-        send_cmd( s_SpamServ, "MODE %s +ikrBd",  s_SpamServ);
+        send_cmd( s_SpamServ, "MODE %s +iokrBd",  s_SpamServ);
 	send_cmd( s_SpamServ, "JOIN #%s", CanalAdmins);
 	send_cmd(s_ChanServ, "MODE #%s +o %s", CanalAdmins, s_SpamServ);
     	
@@ -769,7 +769,7 @@ load_jok_dbase();
     introduce_user(NULL);
 
     send_cmd(ServerName, "SETTIME %lu", time(NULL));
-#if HAVE_ALLWILD_NOTICE
+/*#if HAVE_ALLWILD_NOTICE
     send_cmd(s_OperServ, "NOTICE $*.%s :Establecidos los servicios de la RED.", NETWORK_DOMAIN);
     
 #else
@@ -777,7 +777,7 @@ load_jok_dbase();
     send_cmd(s_OperServ, "NOTICE $*.%s :Establecidos los servicios de la RED.", NETWORK_DOMAIN);
 # else
     /*Go through all common top-level domains.  If you have others,
-     add them here.*/
+     add them here.
      
     send_cmd(s_OperServ, "NOTICE $*.es :Establecidos los servicios de la RED.");
     send_cmd(s_OperServ, "NOTICE $*.com :Establecidos los servicios de la RED.");
@@ -788,7 +788,7 @@ load_jok_dbase();
     send_cmd(s_OperServ, "NOTICE $*.eus :Establecidos los servicios de la RED.");
     send_cmd(s_OperServ, "NOTICE $*.tk :Establecidos los servicios de la RED.");
 # endif
-#endif
+#endif*/
         
     join_chanserv();
      join_jokuserv(); 

@@ -1586,10 +1586,7 @@ int check_should_op(User *user, const char *chan)
 {
     ChannelInfo *ci = cs_findchan(chan);
 
-    if (is_services_oper(user)) {
-        send_cmd(MODE_SENDER(s_ChanServ), "MODE %s +o %s", chan, user->nick);
-  //  	return 0;
-    }
+   
     
     if (!ci || (ci->flags & CI_VERBOTEN) 
            || (ci->flags & CI_SUSPEND) || *chan == '+')
@@ -1608,14 +1605,15 @@ int check_should_op(User *user, const char *chan)
 	return 1;
     }
    
-  if (is_services_oper(user)) {
+/*Deshabilito que un helper entre automaticamente con op(@) en cualquier canal donde no tenga acceso.*/
+ /* if (is_services_oper(user)) {
 #ifdef IRC_UNDERNET_P10
        send_cmd(MODE_SENDER(s_ChanServ), "M %s +o %s", chan, user->numerico);
 #else
        send_cmd(MODE_SENDER(s_ChanServ), "MODE %s +o %s", chan, user->nick);
 #endif   
        return 1;
-   }
+   }*/
     return 0;
 }
 
@@ -1702,11 +1700,12 @@ int check_kick(User *user, const char *chan)
         }
     }
 #endif
-    if ((ni = findnick(user->nick)) && (ni->status & NS_SUSPENDED)) {
+/*Se permite a los nicks suspendidos entrar a los canales.*/
+    /*if ((ni = findnick(user->nick)) && (ni->status & NS_SUSPENDED)) {
        mask = create_mask(user);
        reason = getstring(user->ni,CHAN_NOT_ALLOWED_TO_JOIN);
        goto kick;
-    }
+    }*/
 
     if (!ci)
 	return 0;

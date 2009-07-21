@@ -232,6 +232,7 @@ Channel *nextchan(void)
 void chan_adduser(User *user, const char *chan)
 {
     Channel *c = findchan(chan);
+       ChannelInfo *ki;
     Channel **list;
     int newchan = !c;
     struct c_userlist *u;
@@ -291,12 +292,15 @@ void chan_adduser(User *user, const char *chan)
     u->user = user;
     c->erab++;
     spam_ikusi(c);
+    canal_autolimit(c,ki,chan);
 }
 
 
 void chan_deluser(User *user, Channel *c)
 {
+     ChannelInfo *ki;
     struct c_userlist *u;
+    ChannelInfo *ci;
     int i;
 
     for (u = c->users; u && u->user != user; u = u->next)
@@ -364,10 +368,13 @@ void chan_deluser(User *user, Channel *c)
 	else
 	    chanlist[HASH(c->name)] = c->next;
 	    spam_ikusi(c);
-	free(c);
+	    
+	    free(c);
     } else {
 	c->erab--;
-	    spam_ikusi(c); }
+	    spam_ikusi(c); 
+	    
+	   }
 }
 
 /*************************************************************************/

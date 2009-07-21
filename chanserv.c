@@ -102,6 +102,7 @@ static void do_set_secure(User *u, ChannelInfo *ci, char *param);
 static void do_set_opnotice(User *u, ChannelInfo *ci, char *param);
 static void do_set_stay(User *u, ChannelInfo *ci, char *param);
 static void do_set_noexpire(User *u, ChannelInfo *ci, char *param);
+static void do_set_autolimit(User *u, ChannelInfo *ci, char *param);
 static void do_access(User *u);
 static void do_akick(User *u);
 static void do_info(User *u);
@@ -152,7 +153,8 @@ static Command cmds[] = {
     { "SET PASSWORD",   NULL,  NULL,  CHAN_HELP_SET_PASSWORD,   -1,-1,-1,-1 },     
     { "SET PASS",       NULL,  NULL,  CHAN_HELP_SET_PASSWORD,   -1,-1,-1,-1 },
     { "SET DESC",       NULL,  NULL,  CHAN_HELP_SET_DESC,       -1,-1,-1,-1 },
-    { "SET NAME",       NULL,  NULL,  CHAN_HELP_SET_NAME,       -1,-1,-1,-1 },
+     { "SET NAME",       NULL,  NULL,  CHAN_HELP_SET_NAME,       -1,-1,-1,-1 },
+      { "SET AUTOLIMIT",       NULL,  NULL,  CHAN_HELP_SET_AUTOLIMIT,       -1,-1,-1,-1 },
     { "SET URL",        NULL,  NULL,  CHAN_HELP_SET_URL,        -1,-1,-1,-1 },
     { "SET EMAIL",      NULL,  NULL,  CHAN_HELP_SET_EMAIL,      -1,-1,-1,-1 },
     { "SET ENTRYMSG",   NULL,  NULL,  CHAN_HELP_SET_ENTRYMSG,   -1,-1,-1,-1 },
@@ -317,6 +319,10 @@ void listchans(int count_only, const char *chan)
 		}
 		if (ci->flags & CI_NO_EXPIRE) {
 		    printf("%sNo Expira", need_comma ? commastr : "");
+		    need_comma = 1;
+		}
+		if (ci->flags & CI_AUTOLIMIT) {
+		    printf("%sAUTOLIMIT", need_comma ? commastr : "");
 		    need_comma = 1;
 		}
 		printf("\n");
@@ -1407,7 +1413,7 @@ void check_modes(const char *chan)
 #else
             destino = u->nick; 
 #endif        */
-            if (c->key || c->limit ||
+            if (c->key || /*c->limit ||*/
                   (c->mode & (CMODE_I | CMODE_M 
 #ifdef IRC_HISPANO
                     | CMODE_R | CMODE_m | CMODE_A | CMODE_S
@@ -1630,9 +1636,9 @@ int check_should_voice(User *user, const char *chan)
               || (ci->flags & CI_SUSPEND) || *chan == '+')
 	return 0;
 
-   /* if ((ci->flags & CI_SECURE) && !nick_identified(user))
+  if ((ci->flags & CI_SECURE) && !nick_identified(user))
 	return 0;
-*/
+
 
     if (check_access(user, ci, CA_AUTOVOICE)) {
 #ifdef IRC_UNDERNET_P10
@@ -2884,7 +2890,7 @@ static void do_set(User *u)
 
     if (cmd) {
 	if (stricmp(cmd, "DESC") == 0 || stricmp(cmd, "TOPIC") == 0
-	 || stricmp(cmd, "ENTRYMSG") == 0)
+	 || stricmp(cmd, "ENTRYMSG") == 0 )
 	    param = strtok(NULL, "");
 	else
 	    param = strtok(NULL, " ");
@@ -2964,7 +2970,9 @@ static void do_set(User *u)
     } else if (stricmp(cmd, "OPNOTICE") == 0) {
         do_set_opnotice(u, ci, param);
     } else if (stricmp(cmd, "STAY") == 0) {
-        do_set_stay(u, ci, param);                                      
+        do_set_stay(u, ci, param);   
+     } else if (stricmp(cmd, "AUTOLIMIT") == 0) {
+        do_set_autolimit(u, ci, param);                                       
     } else if (stricmp(cmd, "NOEXPIRE") == 0) {
 	do_set_noexpire(u, ci, param);
     } else {
@@ -3081,6 +3089,11 @@ static void do_set_name(User *u, ChannelInfo *ci, char *param)
         privmsg(s_ChanServ, u->nick, "El canal 12%s está vacio.", ci->name);
 	return;
         }
+if ((c = findchan(ci->name)) && (ci->flags & CI_AUTOLIMIT)) {
+   privmsg(s_ChanServ, u->nick, "Debes Desactivar el AutoLimit del Canal %s", ci->name);
+	return;
+        }
+
   if (stricmp(param, ci->name) != 0) {
         privmsg(s_ChanServ, u->nick, "Debe ser mismo nombre de canal: (%s) no se corresponde con (%s)", ci->name,param);
 	return;
@@ -3125,6 +3138,9 @@ static void do_set_name(User *u, ChannelInfo *ci, char *param)
    
 }
 }
+/*************************************************************************/
+
+
 /*************************************************************************/
 
 /*************************************************************************/
@@ -3642,15 +3658,29 @@ static void do_set_stay(User *u, ChannelInfo *ci, char *param)
         syntax_error(s_ChanServ, u, "SET STAY", CHAN_SET_STAY_SYNTAX);
     }
 }                                                    
-                                            
+  /*************************************************************************/
+
+static void do_set_autolimit(User *u, ChannelInfo *ci, char *param)
+{  
+   
+     if (stricmp(param, "ON") == 0) {
+	ci->flags |= CI_AUTOLIMIT;
+	notice_lang(s_ChanServ, u, CHAN_SET_AUTOLIMIT_ON, ci->name);
+    } else if (stricmp(param, "OFF") == 0) {
+	ci->flags &= ~CI_AUTOLIMIT;
+	notice_lang(s_ChanServ, u, CHAN_SET_AUTOLIMIT_OFF, ci->name);
+    } else {
+	syntax_error(s_ChanServ, u, "SET AUTOLIMIT", CHAN_SET_AUTOLIMIT_SYNTAX);
+    }
+  
+}
+
+/*************************************************************************/                                          
 /*************************************************************************/
 
 static void do_set_noexpire(User *u, ChannelInfo *ci, char *param)
 {
-    if (!is_services_admin(u)) {
-	notice_lang(s_ChanServ, u, PERMISSION_DENIED);
-	return;
-    }
+ 
     if (stricmp(param, "ON") == 0) {
 	ci->flags |= CI_NO_EXPIRE;
 	notice_lang(s_ChanServ, u, CHAN_SET_NOEXPIRE_ON, ci->name);
@@ -3662,7 +3692,7 @@ static void do_set_noexpire(User *u, ChannelInfo *ci, char *param)
     }
 }
 
-/*************************************************************************/
+
 
 /* `last' is set to the last index this routine was called with
  * `perm' is incremented whenever a permission-denied error occurs
@@ -4419,6 +4449,86 @@ static void do_levels(User *u)
     }
 }
 
+// autolimit de canales (2009) donostiarra
+
+/*la entrada de los usuarios a los canales con autolimit
+/*decido hacerlo por franjas al fijar el modo automático +l*/
+
+void canal_autolimit(Channel *ki,ChannelInfo *ci,const char *chan)
+{
+int numero;
+ci = cs_findchan(chan);
+if ((cs_findchan(chan)) && (ci->flags & CI_AUTOLIMIT)) {
+	
+ if (ki->erab > 0 && ki->erab < 20)  {
+	 	numero = ki->erab + 4;
+ #ifdef IRC_UNDERNET_P10
+ send_cmd(s_ChanServ, "M %s +l %i", ki->name,numero);
+ #else
+send_cmd(MODE_SENDER(s_ChanServ), "MODE %s +l %i", ki->name, numero);
+#endif
+} else if (ki->erab >=20 && ki->erab < 60)  {
+	 	numero = ki->erab + 5;
+ #ifdef IRC_UNDERNET_P10
+ send_cmd(s_ChanServ, "M %s +l %i", ki->name,numero);
+ #else
+send_cmd(MODE_SENDER(s_ChanServ), "MODE %s +l %i", ki->name, numero);
+#endif
+} else if (ki->erab >= 60)  {
+	 	numero = ki->erab + 10;
+ #ifdef IRC_UNDERNET_P10
+ send_cmd(s_ChanServ, "M %s +l %i", ki->name,numero);
+ #else
+send_cmd(MODE_SENDER(s_ChanServ), "MODE %s +l %i", ki->name, numero);
+#endif
+}
+}
+}
+
+
+/*tengo en cuenta las franjas anteriores para ir desactivando los límites de usuarios
+*permitidos en el canal,uso otro método porque me baso en el debug de salidas
+*no elegí hacerlo con las entradas*/
+
+void sale_autolimit(char *s) 
+{
+int numero,suma;
+suma=0;
+numero=0;
+ Channel *c = s ? findchan(s) : NULL;
+    struct c_userlist *u;
+ChannelInfo *ci;
+ci = cs_findchan(s);
+if ((cs_findchan(s)) && (ci->flags & CI_AUTOLIMIT)) {
+
+for (u = c->users; u; u = u->next)
+     numero=numero+1;
+
+if (numero < 20)  {
+	 	suma = numero + 4 -1;
+ #ifdef IRC_UNDERNET_P10
+ send_cmd(s_ChanServ, "M %s +l %i", ci->name,suma);
+ #else
+send_cmd(MODE_SENDER(s_ChanServ), "MODE %s +l %i", ci->name, suma);
+#endif
+} else if (numero < 60)  {
+	 	suma = numero + 5 -1;
+ #ifdef IRC_UNDERNET_P10
+ send_cmd(s_ChanServ, "M %s +l %i", ci->name,suma);
+ #else
+send_cmd(MODE_SENDER(s_ChanServ), "MODE %s +l %i", ci->name, suma);
+#endif
+} else if (numero >= 60)  {
+	 	suma = numero + 10 -1;
+ #ifdef IRC_UNDERNET_P10
+ send_cmd(s_ChanServ, "M %s +l %i", ci->name,suma);
+ #else
+send_cmd(MODE_SENDER(s_ChanServ), "MODE %s +l %i", ci->name, suma);
+#endif
+}
+}
+}
+
 /*************************************************************************/
 
 /* SADMINS and users, who have identified for a channel, can now cause it's
@@ -4549,6 +4659,7 @@ static void do_info(User *u)
 			getstring(u->ni, CHAN_INFO_OPT_PRIVATE));
 	    need_comma = 1;
 	}
+	
 	if (ci->flags & CI_KEEPTOPIC) {
 	    end += snprintf(end, sizeof(buf)-(end-buf), "%s%s",
 			need_comma ? commastr : "",
@@ -4589,6 +4700,12 @@ static void do_info(User *u)
 	    end += snprintf(end, sizeof(buf)-(end-buf), "%s%s",
 			need_comma ? commastr : "",
 			getstring(u->ni, CHAN_INFO_OPT_SECURE));
+	    need_comma = 1;
+	}
+	if (ci->flags & CI_AUTOLIMIT) {
+	    end += snprintf(end, sizeof(buf)-(end-buf), "%s%s",
+			need_comma ? commastr : "",
+			getstring(u->ni, CHAN_INFO_OPT_AUTOLIMIT));
 	    need_comma = 1;
 	}
 	notice_lang(s_ChanServ, u, CHAN_INFO_OPTIONS,

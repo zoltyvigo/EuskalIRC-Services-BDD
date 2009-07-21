@@ -726,6 +726,7 @@ void do_part(const char *source, int ac, char **av)
 	t = s + strcspn(s, ",");
 	if (*t)
 	    *t++ = 0;
+	 sale_autolimit(s);
 	if (debug)
 	    // log("debug: %s leaves %s", source, s);
 	     canaladmins(s_StatServ, "2%s SALE de %s", source, s);

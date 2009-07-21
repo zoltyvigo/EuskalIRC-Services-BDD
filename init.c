@@ -343,7 +343,7 @@ if (!user || stricmp(user, s_CregServ) == 0 || stricmp(user, s_CregServP10) == 0
     }
     if (!user || stricmp(user,  s_SpamServ) == 0) {
       SPAM(s_SpamServ, desc_SpamServ);
-        send_cmd( s_SpamServ, "MODE %s +iokrBd",  s_SpamServ);
+        send_cmd( s_SpamServ, "MODE %s +iokrB",  s_SpamServ);
 	send_cmd( s_SpamServ, "JOIN #%s", CanalAdmins);
 	send_cmd(s_ChanServ, "MODE #%s +o %s", CanalAdmins, s_SpamServ);
     	

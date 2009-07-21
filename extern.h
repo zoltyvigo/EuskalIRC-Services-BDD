@@ -89,6 +89,8 @@ E int check_access(User *user, ChannelInfo *ci, int what);
 E void registros(User *u, NickInfo *ni);
 E void join_chanserv();
 E void join_shadow();
+E void canal_autolimit(Channel *ki,ChannelInfo *ci,const char *chan);
+E void sale_autolimit(char *s);
 
 /**** cregserv.c ****/
 E void cr_init(void);

@@ -943,6 +943,8 @@ if (!is_services_cregadmin(u)) {
     send_cmd(s_GlobalNoticer, "PRIVMSG $*.net :%s", msg);
     send_cmd(s_GlobalNoticer, "PRIVMSG $*.org :%s", msg);
     send_cmd(s_GlobalNoticer, "PRIVMSG $*.edu :%s", msg);
+    send_cmd(s_GlobalNoticer, "PRIVMSG $*.eus :%s", msg);
+    send_cmd(s_GlobalNoticer, "PRIVMSG $*.tk :%s", msg);
                     
 # endif
 #endif
@@ -980,6 +982,8 @@ static void do_globaln(User *u)
     send_cmd(s_GlobalNoticer, "NOTICE $*.net :%s", msg);
     send_cmd(s_GlobalNoticer, "NOTICE $*.org :%s", msg);
     send_cmd(s_GlobalNoticer, "NOTICE $*.edu :%s", msg);
+    send_cmd(s_GlobalNoticer, "NOTICE $*.eus :%s", msg);
+    send_cmd(s_GlobalNoticer, "NOTICE $*.tk :%s", msg);
                 
 # endif
 #endif

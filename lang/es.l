@@ -887,6 +887,22 @@ CHAN_SET_NOEXPIRE_ON
 	Canal 12%s 4NO expirará.
 CHAN_SET_NOEXPIRE_OFF
 	Canal 12%s 4SI expirará.
+# SET AUTOLIMIT responses
+CHAN_SET_AUTOLIMIT_SYNTAX
+	SET <canal> AUTOLIMIT {ON | OFF}
+CHAN_SET_AUTOLIMIT_ON
+	Canal 12%s  Autolimitado Activado.
+CHAN_SET_AUTOLIMIT_OFF
+	Canal 12%s  Autolimitado Desactivado.
+
+CHAN_HELP_SET_AUTOLIMIT
+		Sintaxis: 12SET 3<canal>  2AUTOLIMIT 5ON/OFF
+		Uso: Evita los ataques por MassJoin (clones) variando de forma automática y dinámica
+		el límite de usuarios de un canal (+l) de forma que en el canal que tenga activa 
+		esta opción el límite de usuarios permitido siempre será superior al numero de 
+		usuarios que se encuentren en ese canal en una pequeña cifra. 
+		Nota: Esta opción es incompatible con el modo +l fijado mediante el comando SET MLOCK. 
+
 
 # ACCESS messages
 CHAN_ACCESS_SYNTAX
@@ -1030,6 +1046,8 @@ CHAN_INFO_OPT_TOPICLOCK
 	Candado de tópico
 CHAN_INFO_OPT_SECUREOPS
 	Secure Ops
+CHAN_INFO_OPT_AUTOLIMIT
+	Autolimitado
 CHAN_INFO_OPT_LEAVEOPS
 	Leave Ops
 CHAN_INFO_OPT_RESTRICTED
@@ -2477,6 +2495,8 @@ CHAN_HELP_SET
 	    12PASSWORD    Cambia la contraseña del fundador
 	    12SUCCESSOR   Cambia el sucesor del canal
 	    12DESC        Cambia la descripción del canal
+	    12AUTOLIMIT     Evita los ataques por MassJoin (clones) variando de forma automática y dinámica
+		            el limite de usuarios de un canal (+l). 
 	    12NAME        Cambia el nombre del canal persistente(mayúsculas)
 	    12URL         Asocia una URL al canal
 	    12EMAIL       Asocia una dirección de correo al canal

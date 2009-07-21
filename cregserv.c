@@ -898,7 +898,7 @@ static void do_reg(User *u)
  
                             
     if (!desc) {
-        privmsg(s_CregServ, u->nick, "Sintaxis: 12REGISTRA <Canal> <Clave> <Sección> <Descripción>");
+        privmsg(s_CregServ, u->nick, "Sintaxis: 12REG <Canal> <Clave> <Sección> <Descripción>");
 	  privmsg(s_CregServ, u->nick, "teclea \00312/msg CREG seccion\003 para ver las secciones disponibles"); 
        
     } else if ((*chan == '&') || (*chan == '+')) {

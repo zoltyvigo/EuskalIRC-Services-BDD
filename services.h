@@ -371,7 +371,7 @@ struct chaninfo_ {
     char *email;
    
      int erab;                   /*modo para el antispam de mamu*/
-
+    
 
     time_t time_registered;
     time_t last_used;
@@ -436,7 +436,8 @@ struct chaninfo_ {
 #define CI_STAY		0x00002000
 /* No registrados no pueden tener voz */
 #define CI_SECUREVOICES	0x00004000
- 
+ /* Canal en AUTOLIMIT */
+#define CI_AUTOLIMIT	0x00008000
 
 
 /* Indices for cmd_access[]: */

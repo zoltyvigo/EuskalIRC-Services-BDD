@@ -47,7 +47,7 @@ void do_euskal(User *u) /*la colocamos en extern.h y asi la llamamos desde oper*
 	    return;
 	} else if (ni && (ni->status & NS_IDENTIFIED)) {
          privmsg(s_EuskalIRCServ, nick, "El OPERador/a 5%s se pondrá en contacto contigo en breve.Por favor, abandone el canal una vez atendido. Gracias.",u->nick);
-	canaladmins( s_EuskalIRCServ,"12OPER 4%s 3ACEPTA DUDA de  2%s",u->nick,nick);
+	canalopers( s_EuskalIRCServ,"12OPER 4%s 3ACEPTA DUDA de  2%s",u->nick,nick);
 	ni->in_ayu   &= ~AYU_PROCESO;
 	ni->in_ayu |= AYU_ACEPTA ;
 	return;
@@ -64,7 +64,7 @@ void do_euskal(User *u) /*la colocamos en extern.h y asi la llamamos desde oper*
 	    return;
 	}  else if (ni && (ni->status & NS_IDENTIFIED)) {
           privmsg(s_EuskalIRCServ, nick , "El OPERador/a 5%s ha rechazado la solicitud de ayuda.",u->nick);
-          canaladmins( s_EuskalIRCServ,"12OPER 4%s 5RECHAZA DUDA de  2%s",u->nick,nick);
+          canalopers( s_EuskalIRCServ,"12OPER 4%s 5RECHAZA DUDA de  2%s",u->nick,nick);
 	ni->in_ayu   &= ~AYU_PROCESO;
 	ni->in_ayu |= AYU_RECHAZA ;
         return;

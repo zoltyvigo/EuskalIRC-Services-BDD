@@ -2633,6 +2633,7 @@ int dropado_con_creg(User *u, const char *chan)
 			u->nick, u->username, u->host);
 	do_write_bdd(ci->name, 7, "",chan);
 	delchan(ci);
+        part_shadow_chan(chan);
 
 	notice_lang(s_ChanServ, u, CHAN_DROPPED, chan);
         return 1;
@@ -2862,6 +2863,7 @@ static void do_drop(User *u)
 #endif
 	notice_lang(s_ChanServ, u, CHAN_DROPPED, chan);
 	do_write_bdd(ci->name, 7, "",ci->name);
+        part_shadow_chan(chan);
     }
 }
 
@@ -3264,6 +3266,10 @@ static void do_set_mlock(User *u, ChannelInfo *ci, char *param)
 	    if (add) {
 		if (!(s = strtok(NULL, " "))) {
 		    notice_lang(s_ChanServ, u, CHAN_SET_MLOCK_KEY_REQUIRED);
+		    return;
+		}
+		if ((strstr(s, "") == 0) ||  (stricmp(s, "") == 0)) {
+		    privmsg(s_ChanServ, u->nick, "¡Caracteres Inválidos!");
 		    return;
 		}
 		if (newlock_key)
@@ -4454,32 +4460,46 @@ static void do_levels(User *u)
 /*la entrada de los usuarios a los canales con autolimit
 /*decido hacerlo por franjas al fijar el modo automático +l*/
 
+/*incorporo soporte "timer" para entradas unicamente*/
+
+/* tramo1,tramo2,tramo3 son los límites de las 3 franjas*/
+/* incr1,incr2,incr3 son los incrementos de cada una de ellas*/
+
 void canal_autolimit(Channel *ki,ChannelInfo *ci,const char *chan)
 {
 int numero;
+ time_t expires;
 ci = cs_findchan(chan);
 if ((cs_findchan(chan)) && (ci->flags & CI_AUTOLIMIT)) {
-	
- if (ki->erab > 0 && ki->erab < 20)  {
-	 	numero = ki->erab + 4;
+	 expires = time(NULL);
+ if (ki->erab > 0 && ki->erab < tramo1)  {
+	 	numero = ki->erab + incr1;
  #ifdef IRC_UNDERNET_P10
- send_cmd(s_ChanServ, "M %s +l %i", ki->name,numero);
+del_alimit(ki->name);
+add_alimit( ki->name,numero,expires);
+ //send_cmd(s_ChanServ, "M %s +l %i", ki->name,numero);
  #else
-send_cmd(MODE_SENDER(s_ChanServ), "MODE %s +l %i", ki->name, numero);
+del_alimit(ki->name);
+add_alimit( ki->name,numero,expires);
+//send_cmd(MODE_SENDER(s_ChanServ), "MODE %s +l %i", ki->name, numero);
 #endif
-} else if (ki->erab >=20 && ki->erab < 60)  {
-	 	numero = ki->erab + 5;
+} else if (ki->erab >=tramo1 && ki->erab < tramo2)  {
+	 	numero = ki->erab + incr2;
  #ifdef IRC_UNDERNET_P10
  send_cmd(s_ChanServ, "M %s +l %i", ki->name,numero);
  #else
-send_cmd(MODE_SENDER(s_ChanServ), "MODE %s +l %i", ki->name, numero);
+del_alimit(ki->name);
+add_alimit( ki->name,numero,expires);
+//send_cmd(MODE_SENDER(s_ChanServ), "MODE %s +l %i", ki->name, numero);
 #endif
-} else if (ki->erab >= 60)  {
-	 	numero = ki->erab + 10;
+} else if (ki->erab >= tramo3)  {
+	 	numero = ki->erab + incr3;
  #ifdef IRC_UNDERNET_P10
  send_cmd(s_ChanServ, "M %s +l %i", ki->name,numero);
  #else
-send_cmd(MODE_SENDER(s_ChanServ), "MODE %s +l %i", ki->name, numero);
+del_alimit(ki->name);
+add_alimit( ki->name,numero,expires);
+//send_cmd(MODE_SENDER(s_ChanServ), "MODE %s +l %i", ki->name, numero);
 #endif
 }
 }
@@ -4504,25 +4524,28 @@ if ((cs_findchan(s)) && (ci->flags & CI_AUTOLIMIT)) {
 for (u = c->users; u; u = u->next)
      numero=numero+1;
 
-if (numero < 20)  {
-	 	suma = numero + 4 -1;
+if (numero < tramo1)  {
+	 	suma = numero + incr1 -1;
  #ifdef IRC_UNDERNET_P10
  send_cmd(s_ChanServ, "M %s +l %i", ci->name,suma);
  #else
+del_alimit(ci->name);
 send_cmd(MODE_SENDER(s_ChanServ), "MODE %s +l %i", ci->name, suma);
 #endif
-} else if (numero < 60)  {
-	 	suma = numero + 5 -1;
+} else if (numero < tramo3)  {
+	 	suma = numero + incr2 -1;
  #ifdef IRC_UNDERNET_P10
  send_cmd(s_ChanServ, "M %s +l %i", ci->name,suma);
  #else
+del_alimit(ci->name);
 send_cmd(MODE_SENDER(s_ChanServ), "MODE %s +l %i", ci->name, suma);
 #endif
-} else if (numero >= 60)  {
-	 	suma = numero + 10 -1;
+} else if (numero >= tramo3)  {
+	 	suma = numero + incr3 -1;
  #ifdef IRC_UNDERNET_P10
  send_cmd(s_ChanServ, "M %s +l %i", ci->name,suma);
  #else
+del_alimit(ci->name);
 send_cmd(MODE_SENDER(s_ChanServ), "MODE %s +l %i", ci->name, suma);
 #endif
 }

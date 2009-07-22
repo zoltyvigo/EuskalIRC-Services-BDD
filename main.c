@@ -205,11 +205,12 @@ int main(int ac, char **av, char **envp)
 	if (debug >= 2)
 	    log("debug: Top of main loop");
 	if (!readonly && (save_data || t-last_expire >= ExpireTimeout)) {
-	    waiting = -3;
+	 	       
 	    if (debug)
 		log("debug: Running expire routines");
 //            canalopers(ServerName, "Ejecutando rutinas de expiracion");
 	    if (!skeleton) {
+		
 		waiting = -21;
 		expire_nicks();
 		waiting = -22;
@@ -220,10 +221,14 @@ int main(int ac, char **av, char **envp)
 	    waiting = -25;
 	    expire_akills();
             expire_aregistras();
+	    expire_alimits();
+	    
+            
 	    last_expire = t;
 	}
 	if (!readonly && (save_data || t-last_update >= UpdateTimeout)) {
 	    waiting = -2;
+              
 	    if (debug)
 		log("debug: Saving databases");
 //	    canalopers(ServerName, "Grabando DB's");	
@@ -235,6 +240,7 @@ int main(int ac, char **av, char **envp)
 		waiting = -13;
                 save_cr_dbase();
 	    }
+	  
 	    waiting = -14;
 	    save_os_dbase();
 	    waiting = -15;
@@ -247,8 +253,11 @@ int main(int ac, char **av, char **envp)
 	    save_ipv();
 	    waiting = -19;
 	    save_jok_dbase();
-           waiting = -19;
+           waiting = -20;
 	    save_aregistra();
+	   waiting = -21;
+	  save_alimit();	
+             
 	    if (save_data < 0)
 		break;	/* out of main loop */
 

@@ -519,6 +519,7 @@ static void m_stats(char *source, int ac, char **av)
       }   
 
       case 'c':
+      case 'b':
       case 'h':
       case 'i':
       case 'k':

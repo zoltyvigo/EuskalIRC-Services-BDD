@@ -33,6 +33,8 @@ static char *temp_usereuskalirc;
 #ifdef IRC_UNDERNET_P10
 int  ServerNumerico;
 #endif
+int tramo1,tramo2,tramo3;
+int incr1,incr2,incr3;
 
 char *s_NickServ;
 char *s_ChanServ;
@@ -118,6 +120,7 @@ char *JokuDBName;
 char *StatDBName;
 char *AutokillDBName;
 char *AutoregistraDBName;
+char *AutolimitDBName;
 char *NewsDBName;
 
 int   SpamUsers;
@@ -242,6 +245,7 @@ typedef struct {
 Directive directives[] = {
     { "AutokillDB",       { { PARAM_STRING, 0, &AutokillDBName } } },
     { "AutoregistraDB",       { { PARAM_STRING, 0, &AutoregistraDBName } } },
+     { "AutolimitDB",       { { PARAM_STRING, 0, &AutolimitDBName } } },
     { "AutokillExpiry",   { { PARAM_TIME, 0, &AutokillExpiry } } },
      { "AutoregistraExpiry",   { { PARAM_TIME, 0, &AutoregistraExpiry } } },
     { "BadPassLimit",     { { PARAM_POSINT, 0, &BadPassLimit } } },
@@ -313,6 +317,12 @@ Directive directives[] = {
     { "ServerNumerico",   { { PARAM_INT, 0, &ServerNumerico } } },
    /* { "ServerHUB",       { { PARAM_STRING, 0, &ServerHUB } } },*/
 #endif        
+     { "tramo1",   { { PARAM_INT, 0, &tramo1 } } },
+      { "tramo2",   { { PARAM_INT, 0, &tramo2 } } },
+      { "tramo3",   { { PARAM_INT, 0, &tramo3 } } },
+     { "incr1",   { { PARAM_INT, 0, &incr1 } } },
+      { "incr2",   { { PARAM_INT, 0, &incr2 } } },
+      { "incr3",   { { PARAM_INT, 0, &incr3 } } },
 
     { "NoSplitRecovery",  { { PARAM_SET, 0, &NoSplitRecovery } } },
     { "NSAccessMax",      { { PARAM_POSINT, 0, &NSAccessMax } } },
@@ -638,6 +648,12 @@ int read_config()
     CHECK(ServerNumerico);
     
 #endif
+      CHECK(tramo1);
+      CHECK(tramo2);
+      CHECK(tramo3);
+      CHECK(incr1);
+      CHECK(incr2);
+      CHECK(incr3);
     CHECK(ServerDesc);
     CHECK(OperHost);
     CHECK(AdminHost);
@@ -676,6 +692,7 @@ int read_config()
     CHEK2(EuskalIRCDBName, EuskalIRCServDB);
     CHEK2(AutokillDBName, AutokillDB);
     CHEK2(AutoregistraDBName, AutoregistraDB);
+    CHEK2(AutolimitDBName, AutolimitDB);
     CHEK2(NewsDBName, NewsDB);
     CHECK(UpdateTimeout);
     CHECK(ExpireTimeout);

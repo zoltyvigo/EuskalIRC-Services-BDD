@@ -38,6 +38,14 @@ E void save_aregistra(void);
 E int expire_aregistras(void);
 E void add_aregistra(const char *elnick,const time_t expiry);
 E void del_aregistra(const char *elnick);
+/**** autolimit.c ****/
+E void get_alimit_stats(long *nrec, long *memuse);
+E int num_alimits(void);
+E void load_alimit(void);
+E void save_alimit(void);
+E int expire_alimits(void);
+E void add_alimit(const char *elcanal,int elnumero,const time_t expiry);
+E void del_alimit(const char *elcanal);
 /**** channels.c ****/
 
 
@@ -91,6 +99,7 @@ E void join_chanserv();
 E void join_shadow();
 E void canal_autolimit(Channel *ki,ChannelInfo *ci,const char *chan);
 E void sale_autolimit(char *s);
+E int  tramo1,tramo2,tramo3,incr1,incr2,incr3;
 
 /**** cregserv.c ****/
 E void cr_init(void);
@@ -145,6 +154,7 @@ E char *ServerName;
 #ifdef IRC_UNDERNET_P10
 E int   ServerNumerico;
 #endif 
+
 E char *ServerHUB;
 E char *ServerDesc;
 E char *ServiceUser;
@@ -228,6 +238,7 @@ E char *CregDBName;
 E char *JokuDBName;
 E char *AutokillDBName;
 E char *AutoregistraDBName;
+E char *AutolimitDBName;
 E char *NewsDBName;
 E char *StatDBName;
 

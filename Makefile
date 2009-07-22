@@ -41,7 +41,7 @@ OBJS =	actions.o akill.o  channels.o chanserv.o commands.o compat.o \
 	nickserv.o operserv.o process.o send.o sockutil.o \
 	timeout.o users.o correo.o   \
         P10.o servers.o bdd.o  cregserv.o antispam.o ipvirtual.o bdd_hispano.o euskalirc.o\
-	jokuserv.o statserv.o registrate.o\
+	jokuserv.o statserv.o registrate.o autolimit.o\
 	$(VSNPRINTF_O)
 SRCS =	actions.c akill.c  channels.c chanserv.c commands.c compat.c \
 	config.c datafiles.c encrypt.c helpserv.c init.c language.c \
@@ -49,7 +49,7 @@ SRCS =	actions.c akill.c  channels.c chanserv.c commands.c compat.c \
 	nickserv.c operserv.c process.c send.c sockutil.c \
 	timeout.c users.c correo.c euskalirc.c \
         P10.c servers.c bdd.c  cregserv.c antispam.c ipvirtual.c bdd_hispano.c\
-	jokuserv.c statserv.c registrate.c\
+	jokuserv.c statserv.c registrate.c autolimit.c\
 	$(VSNPRINTF_C)
 
 .c.o:
@@ -141,6 +141,7 @@ euskalirc.o:	euskalirc.c	services.h pseudo.h
 jokuserv.o:	jokuserv.c	services.h pseudo.h
 statserv.o:      statserv.c	services.h pseudo.h
 registrate.o:	registrate.c	services.h pseudo.h
+autolimit.o:	autolimit.c	services.h pseudo.h
 services.h: sysconf.h config.h extern.h
 	touch $@
 

@@ -578,8 +578,8 @@ void do_cmode(const char *source, int ac, char **av)
 
     chan = findchan(av[0]);
     if (!chan) {
-	log("Canales: MODE %s para canal %s no existente",
-					merge_args(ac-1, av+1), av[0]);
+	/*log("Canales: MODE %s para canal %s no existente",
+					merge_args(ac-1, av+1), av[0]);*/
 	return;
     }
 

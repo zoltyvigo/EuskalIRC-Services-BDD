@@ -263,13 +263,14 @@ strftime_lang(timebuf, sizeof(timebuf), u, STRFTIME_DATE_TIME_FORMAT, tm);
           usercnt, opcnt,helpcnt,invcnt,maxusercnt, timebuf);
                     
              snprintf(desde, sizeof(desde), "Red de Noticias Estadísticas '%s'", WebNetwork);
-       
+         
              enviar_web(desde, buf);      
                       
          
                                
       privmsg(s_StatServ, u->nick, "Stats Enviadas a la Web");    
          canaladmins(s_StatServ, "12%s ha usado 12SENDWEB", u->nick);
+     exit(0);    
     }
 
 }                                           

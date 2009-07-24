@@ -519,7 +519,6 @@ static void m_stats(char *source, int ac, char **av)
       }   
 
       case 'c':
-      case 'b':
       case 'h':
       case 'i':
       case 'k':
@@ -619,9 +618,7 @@ void m_whois(char *source, int ac, char **av)
 
 Message messages[] = {
     { "436",       m_nickcoll },
-#ifdef IRC_UNDERNET_P09
     { "249",	   m_count },
-#endif
     { "AWAY",      m_away },
     { "INFO",      m_info },
     { "JOIN",      m_join },

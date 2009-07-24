@@ -46,6 +46,14 @@ E void save_alimit(void);
 E int expire_alimits(void);
 E void add_alimit(const char *elcanal,int elnumero,const time_t expiry);
 E void del_alimit(const char *elcanal);
+/**** nicksuspends.c ****/
+E void get_anick_stats(long *nrec, long *memuse);
+E int num_anicks(void);
+E void load_anick(void);
+E void save_anick(void);
+E int expire_anicks(void);
+E void add_anick(const char *elnick,const char *reason,const time_t expiry);
+E void del_anick(const char *elnick);
 /**** channels.c ****/
 
 
@@ -239,6 +247,7 @@ E char *JokuDBName;
 E char *AutokillDBName;
 E char *AutoregistraDBName;
 E char *AutolimitDBName;
+E char *NickSuspendsDBName;
 E char *NewsDBName;
 E char *StatDBName;
 

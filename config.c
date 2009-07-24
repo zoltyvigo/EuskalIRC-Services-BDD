@@ -121,6 +121,7 @@ char *StatDBName;
 char *AutokillDBName;
 char *AutoregistraDBName;
 char *AutolimitDBName;
+char *NickSuspendsDBName;
 char *NewsDBName;
 
 int   SpamUsers;
@@ -246,6 +247,7 @@ Directive directives[] = {
     { "AutokillDB",       { { PARAM_STRING, 0, &AutokillDBName } } },
     { "AutoregistraDB",       { { PARAM_STRING, 0, &AutoregistraDBName } } },
      { "AutolimitDB",       { { PARAM_STRING, 0, &AutolimitDBName } } },
+      { "NickSuspendsDB",       { { PARAM_STRING, 0, &NickSuspendsDBName } } },
     { "AutokillExpiry",   { { PARAM_TIME, 0, &AutokillExpiry } } },
      { "AutoregistraExpiry",   { { PARAM_TIME, 0, &AutoregistraExpiry } } },
     { "BadPassLimit",     { { PARAM_POSINT, 0, &BadPassLimit } } },
@@ -693,6 +695,7 @@ int read_config()
     CHEK2(AutokillDBName, AutokillDB);
     CHEK2(AutoregistraDBName, AutoregistraDB);
     CHEK2(AutolimitDBName, AutolimitDB);
+    CHEK2(NickSuspendsDBName, NickSuspendsDB);
     CHEK2(NewsDBName, NewsDB);
     CHECK(UpdateTimeout);
     CHECK(ExpireTimeout);

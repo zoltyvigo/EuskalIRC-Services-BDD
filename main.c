@@ -222,6 +222,7 @@ int main(int ac, char **av, char **envp)
 	    expire_akills();
             expire_aregistras();
 	    expire_alimits();
+	    expire_anicks();
 	    
             
 	    last_expire = t;
@@ -256,7 +257,9 @@ int main(int ac, char **av, char **envp)
            waiting = -20;
 	    save_aregistra();
 	   waiting = -21;
-	  save_alimit();	
+	  save_alimit();
+           waiting = -22;
+	  save_anick();
              
 	    if (save_data < 0)
 		break;	/* out of main loop */

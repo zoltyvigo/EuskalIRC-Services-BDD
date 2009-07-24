@@ -966,8 +966,6 @@ void expire_nicks()
     NickInfo *ni, *next;
     int i;
     time_t now = time(NULL);
-    char *buf;
-    char subject[BUFSIZE];  
 
     /* Assumption: this routine takes less than NSExpire seconds to run.
      * If it doesn't, some users may end up with invalid user->ni pointers. */
@@ -976,7 +974,6 @@ void expire_nicks()
 	    if (debug >= 2)
 		log("debug: NickServ: updating last seen time for %s", u->nick);
 	    u->real_ni->last_seen = time(NULL);
-	     u->real_ni->expira_min = time(NULL)+NSExpire;
 	}
     }
     if (!NSExpire)
@@ -984,17 +981,14 @@ void expire_nicks()
     for (i = 0; i < 256; i++) {
 	for (ni = nicklists[i]; ni; ni = next) {
 	    next = ni->next;
-	    if (now - ni->last_seen >= NSExpire
-			&& !(ni->status & (NS_VERBOTEN | NS_NO_EXPIRE | NS_SUSPENDED))) {
-		log("Expirando Nick %s", ni->nick);
-		canalopers(s_NickServ, "El nick 12%s ha expirado", ni->nick);
-		delnick(ni);
-	    }
+	    
 	    if (now - ni->last_seen >=  (NSExpire - 7)
 			&& !(ni->status & (NS_VERBOTEN | NS_NO_EXPIRE | NS_SUSPENDED)) && !(ni->env_mail & ( MAIL_REC))) {
 		canalopers(s_NickServ, "Quedan 7 dias para expirar  12%s (Le Enviamos email %s)", ni->nick,ni->email);
-               ni->env_mail = MAIL_REC ;
-                if (fork()==0) {
+                char *buf;
+                 char subject[BUFSIZE];
+               ni->env_mail |= MAIL_REC ;
+              if (fork()==0) {
 				 buf = smalloc(sizeof(char *) * 1024);
                sprintf(buf,"\n   Hola  NiCK: %s\n"
 				"Quedan 7 dias para expirar tu nick.\n"
@@ -1009,17 +1003,23 @@ void expire_nicks()
                              "Para cambio de clave -> /msg %s SET PASSWORD nueva_password\n\n"
                              "Página de Información %s\n",
                        ni->nick, ni->pass, ni->nick, ni->pass, s_NickServ, WebNetwork);
+             
        
-               snprintf(subject, sizeof(subject), "Recordatorio del NiCK '%s'", ni->nick);
-		           }
-		 enviar_correo(ni->email, subject, buf);
-          	    }
-            else if (now - ni->last_seen < (NSExpire - 7)
-			&& !(ni->status & (NS_VERBOTEN | NS_NO_EXPIRE | NS_SUSPENDED)) && !(ni->env_mail & ( MAIL_REC)))
-		 ni->env_mail  = ~ MAIL_REC ;
+               snprintf(subject, sizeof(subject), "Recordatorio del NiCK '%s'", ni->nick);       
+              
+             exit(0);
+         }
+       }
+            else if (now - ni->last_seen >= NSExpire
+			&& !(ni->status & (NS_VERBOTEN | NS_NO_EXPIRE | NS_SUSPENDED))) {
+		log("Expirando Nick %s", ni->nick);
+		canalopers(s_NickServ, "El nick 12%s ha expirado", ni->nick);
+		delnick(ni);
+	    }
+		
 	    /* AQUI EXPIRACION NICKS SUSPENDIDOS */
 	}
-    }
+}
 }
 
 /*************************************************************************/

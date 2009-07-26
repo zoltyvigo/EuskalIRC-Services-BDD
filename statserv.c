@@ -29,10 +29,7 @@ static Command cmds[] = {
     { "HELP",       do_help,       NULL,  -1,                   -1,-1,-1,-1 },
     { "AYUDA",      do_help,       NULL,  -1,                   -1,-1,-1,-1 },
     { "SHOWCOMMANDS",    do_help,  NULL,  -1,                   -1,-1,-1,-1 },
-    { "SENDWEB",  do_sendweb,  is_services_cregadmin,  -1,
-                -1, NICK_SERVADMIN_HELP_SENDPASS,
-                NICK_SERVADMIN_HELP_SENDPASS, NICK_SERVADMIN_HELP_SENDPASS },
-
+    { "SENDWEB",    do_sendweb,    NULL,  STATS_HELP_SENDWEB,                   -1,-1,-1,-1 },
     { "STATS",      do_stats,      NULL,  OPER_HELP_STATS,      -1,-1,-1,-1 },
     { "UPTIME",     do_stats,      NULL,  OPER_HELP_STATS,      -1,-1,-1,-1 },
    /*del servers.c*/

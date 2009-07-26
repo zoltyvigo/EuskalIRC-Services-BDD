@@ -1364,6 +1364,10 @@ OPER_STATS_CURRENT_USERS
 	Usuarios actuales : 12 %d (4 %d ircops) (5 %d Reps) (5 %d Invs)
 OPER_STATS_MAX_USERS
 	Máximo de usuarios: 12%d (12%s)
+STATS_HELP_SENDWEB
+	Envia las estadísticas de la Red en formato html a la consola
+	(en desarrollo)
+
 # This is ugly, but at least it's language-portable...
 OPER_STATS_UPTIME_DHMS
 	Services activos 12%d días, 12%02d:%02d
@@ -3507,6 +3511,7 @@ STATS_ADMIN_HELP
 	    12CHANUSERS   Listado de Usuarios con sus Status 3de un 4canal3 determinado
 	    12USERLIST    Listado de Usuarios con información más detallada y sus canales
 	    12USERINFO    Listado con Información más detallada 3de un 4usuario3 y sus canales
+	    12SENDWEB     Envia las estadísticas de la Red en formato html a la consola(en desarrollo)
 	    12HELP        Muestra Ayuda Comandos del Bot	
 
 ###########################################################################

@@ -856,7 +856,7 @@ int validate_user(User *u)
     if (!(u->ni->flags & NI_SECURE) && on_access) {
 	ni->status |= NS_RECOGNIZED;
 	ni->last_seen = time(NULL);
-	ni->expira_min = time(NULL)+NSExpire;
+      	ni->expira_min = ni->last_seen + NSExpire;
 	if (ni->last_usermask)
 	    free(ni->last_usermask);
 	ni->last_usermask = smalloc(strlen(u->username)+strlen(u->host)+2);
@@ -960,12 +960,16 @@ int nick_suspendied(User *u)
  * nicks.
  */
 
+
 void expire_nicks()
 {
     User *u;
     NickInfo *ni, *next;
     int i;
     time_t now = time(NULL);
+   time_t aviso,margen;
+   aviso = dotime("7d"); /*cuanto debe faltar para mandarle un aviso*/
+   margen = dotime("20d"); /* debe ser menor que nsexpire y mayor que el aviso*/
 
     /* Assumption: this routine takes less than NSExpire seconds to run.
      * If it doesn't, some users may end up with invalid user->ni pointers. */
@@ -981,17 +985,26 @@ void expire_nicks()
     for (i = 0; i < 256; i++) {
 	for (ni = nicklists[i]; ni; ni = next) {
 	    next = ni->next;
-	    
-	    if (now - ni->last_seen >=  (NSExpire - 7)
+
+/*
+*tratamiento del envio de mails a los nicks que están a punto de expirar
+* (2009) donostiarra http://euskalirc.wordpress.com 
+*/
+		
+             if (now - ni->last_seen >  (NSExpire -margen) &&  now - ni->last_seen <  (NSExpire -aviso)
 			&& !(ni->status & (NS_VERBOTEN | NS_NO_EXPIRE | NS_SUSPENDED)) && !(ni->env_mail & ( MAIL_REC))) {
-		canalopers(s_NickServ, "Quedan 7 dias para expirar  12%s (Le Enviamos email %s)", ni->nick,ni->email);
+                      ni->env_mail |= MAIL_REC ;
+             } else if (now - ni->last_seen >=  (NSExpire -aviso)
+			&& !(ni->status & (NS_VERBOTEN | NS_NO_EXPIRE | NS_SUSPENDED)) && (ni->env_mail & ( MAIL_REC))) {
+		canalopers(s_NickServ, "Queda menos de 1 semana para expirar  12%s (Le Enviamos email %s)", ni->nick,ni->email);
                 char *buf;
                  char subject[BUFSIZE];
-               ni->env_mail |= MAIL_REC ;
+                  ni->env_mail &= ~MAIL_REC ;
+                  //ni->env_mail |= MAIL_REC ;
               if (fork()==0) {
 				 buf = smalloc(sizeof(char *) * 1024);
                sprintf(buf,"\n   Hola  NiCK: %s\n"
-				"Quedan 7 dias para expirar tu nick.\n"
+				"Queda  menos de 1 semana para expirar tu nick.\n"
 				"De no entrar con tu alias identificado, en uno de nuestros servidores de Chat\n"
 				"Nos Veremos Obligados a dar de baja tu registro ,con lo que perderías tu antiguedad,\n"
 				"Así como todos los recursos que venían aparejados a tu nick registrado.\n"
@@ -1006,19 +1019,18 @@ void expire_nicks()
              
        
                snprintf(subject, sizeof(subject), "Recordatorio del NiCK '%s'", ni->nick);       
-              
+              enviar_correo(ni->email, subject, buf);
              exit(0);
          }
        }
-            else if (now - ni->last_seen >= NSExpire
-			&& !(ni->status & (NS_VERBOTEN | NS_NO_EXPIRE | NS_SUSPENDED))) {
-		log("Expirando Nick %s", ni->nick);
+            else if (now - ni->last_seen >=  (NSExpire)
+			&& !(ni->status & (NS_VERBOTEN | NS_NO_EXPIRE | NS_SUSPENDED)) && !(ni->env_mail & ( MAIL_REC))) {
+      		log("Expirando Nick %s", ni->nick);
 		canalopers(s_NickServ, "El nick 12%s ha expirado", ni->nick);
 		delnick(ni);
 	    }
-		
 	    /* AQUI EXPIRACION NICKS SUSPENDIDOS */
-	}
+		}
 }
 }
 
@@ -1227,17 +1239,11 @@ static int delnick(NickInfo *ni)
 	free(ni->memos.memos);
     }
     if (ni->status & NI_ON_BDD) {
-          #ifdef IRC_UNDERNET_P09
+          
            do_write_bdd(ni->nick, 15, "");
 	do_write_bdd(ni->nick, 2, "");
 	do_write_bdd(ni->nick, 3, "");
 	do_write_bdd(ni->nick, 4, "");
-	#else
-// datu baseetatik ezabatu
-ed_tablan(ni->nick, 0, 'n');
-       #endif
-      
-   
     
     }
 
@@ -1688,8 +1694,9 @@ static void do_register(User *u)
        
                snprintf(subject, sizeof(subject), "Registro del NiCK '%s'", ni->nick);
 		notice_lang(s_NickServ, u, NICK_REGISTERED, u->nick, ni->email);
-		 #ifdef IRC_UNDERNET_P09
+	
             	notice_lang(s_NickServ, u, NICK_IN_MAIL);
+                    #ifdef IRC_UNDERNET_P09
 		 notice_lang(s_NickServ, u, NICK_BDD_NEW_REG,ni->pass, ni->nick, ni->pass);/*en colores*/
              /*  privmsg(s_NickServ, ni->nick, "Su clave es %s. Recuerdela por si no le llega notificacion al correo. Use /nick %s:%s para identificarse.",ni->pass, ni->nick, ni->pass);*/
 	       send_cmd(NULL, "RENAME %s", ni->nick);
@@ -1697,8 +1704,7 @@ static void do_register(User *u)
 		ni->status |= NI_ON_BDD;
 		do_write_bdd(ni->nick, 1, ni->pass);
 		canalopers( s_NickServ,"5Registrado:12%s2(%s)",ni->nick,ni->email);
-               #endif
-                 	  		       
+             	  	#endif	       
                  #ifdef IRC_UNDERNET_P10
 		/*notice_lang(s_NickServ, u, NICK_IN_MAIL);
 		 notice_lang(s_NickServ, u, NICK_BDD_NEW_REG,ni->pass, ni->nick, ni->pass);
@@ -1764,7 +1770,7 @@ static void do_register(User *u)
 	    sprintf(ni->last_usermask, "%s@%s", u->username, u->host);
 	    ni->last_realname = sstrdup(u->realname);
 	    ni->time_registered = ni->last_seen = time(NULL);
-	   ni->expira_min = time(NULL)+NSExpire;
+	   ni->expira_min = ni->last_seen+NSExpire;
 	    ni->accesscount = 1;
 	    ni->access = smalloc(sizeof(char *));
 	    ni->access[0] = create_mask(u);
@@ -1830,7 +1836,7 @@ static void do_identify(User *u)
 	ni->id_timestamp = u->signon;
 	if (!(ni->status & NS_RECOGNIZED)) {
 	    ni->last_seen = time(NULL);
-	   ni->expira_min = time(NULL)+NSExpire;
+	   ni->expira_min = ni->last_seen+NSExpire;
 	    if (ni->last_usermask)
 		free(ni->last_usermask);
 	    ni->last_usermask = smalloc(strlen(u->username)+strlen(u->host)+2);
@@ -2815,6 +2821,7 @@ static void do_info(User *u)
 		if (is_services_admin(u))
 			notice_lang(s_NickServ, u, NICK_INFO_ADDRESS, ni->last_usermask);
 	}
+         ni->expira_min =  ni->last_seen + NSExpire;
           if (!(ni->status & NS_NO_EXPIRE)  && (stricmp(ni->nick, u->nick) == 0)  && !(is_services_admin(u) &&  is_services_cregadmin(u) && is_services_devel(u) &&  is_services_oper(u))) {
 		     tm = localtime(&ni->expira_min);
             strftime_lang(buf, sizeof(buf), u, STRFTIME_DATE_TIME_FORMAT, tm);

@@ -19,6 +19,7 @@
 
 static CregInfo *creglists[256]; 
 
+static MemoInfo *getmemoinfo(const char *name, int *ischan);
 static void do_help(User *u);
 static void do_sec(User *u);
 static void do_registra(User *u);
@@ -1162,7 +1163,28 @@ static void do_info(User *u)
         privmsg(s_CregServ, u->nick, "Fin del INFO de CReG.");
     }
 }
-
+static MemoInfo *getmemoinfo(const char *name, int *ischan)
+{
+    if (*name == '#') {
+	ChannelInfo *ci;
+	if (ischan)
+	    *ischan = 1;
+	ci = cs_findchan(name);
+	if (ci)
+	    return &ci->memos;
+	else
+	    return NULL;
+    } else {
+	NickInfo *ni;
+	if (ischan)
+	    *ischan = 0;
+	ni = findnick(name);
+	if (ni)
+	    return &getlink(ni)->memos;
+	else
+	    return NULL;
+    }
+}
 /***********************DENEGACION DE UN CANAL*******************/
 
 static void do_deniega(User *u)
@@ -1170,6 +1192,7 @@ static void do_deniega(User *u)
     char *chan = strtok(NULL, " ");
     char *razon = strtok(NULL, "");
     CregInfo *cr;
+     NickInfo *ni;
 
     if (!razon) {
         privmsg(s_CregServ, u->nick, "Sintaxis: 12DENIEGA <canal> <razón>");
@@ -1186,6 +1209,50 @@ static void do_deniega(User *u)
         privmsg(s_CregServ, u->nick, "Al canal 12%s se le ha denegado el registro", chan);
         canalopers(s_CregServ, "12%s ha denegado el registro de 12%s", u->nick, chan);
 	send_cmd(s_CregServ,"TOPIC %s :Este canal ha sido 5RECHAZADO en su Registro(12%s)", chan,razon);
+
+	/*soporte envio de memos a los candidatos a founders de los canales solicitados que han sido denegados*/
+          
+       MemoInfo *mi;
+       Memo *m;
+	int ischan;
+        if (!(mi = getmemoinfo(cr->founder, &ischan))) 
+	notice_lang(s_MemoServ, u,
+		ischan ? CHAN_X_NOT_REGISTERED : NICK_X_NOT_REGISTERED, cr->founder);
+        time_t now = time(NULL);
+        u->lastmemosend = now;
+	char *source =  u->nick;
+        mi->memocount++;
+        mi->memos = srealloc(mi->memos, sizeof(Memo) * mi->memocount);
+	m = &mi->memos[mi->memocount-1];
+	strscpy(m->sender, source, NICKMAX);
+	if (mi->memocount > 1) {
+	    m->number = m[-1].number + 1;
+	    if (m->number < 1) {
+		int i;
+		for (i = 0; i < mi->memocount; i++)
+		    mi->memos[i].number = i+1;
+	    }
+	} else {
+	    m->number = 1;
+	}
+	m->time = time(NULL);
+	char text[BUFSIZE];
+    	snprintf(text, sizeof(text), "Lamentamos comunicarle,que la admnistración de canales de la red, despues de haber revisado su solicitud,ha resuelto darle por 4DENEGADO su petición de registro,del canal 2%#s.Motivo 5%s.Un Saludo", chan,razon);
+	m->text =sstrdup(text);
+	m->flags = MF_UNREAD;
+  
+
+	    if (ni->flags & NI_MEMO_RECEIVE) {
+		if (MSNotifyAll) {
+		    for (u = firstuser(); u; u = nextuser()) {
+			if (u->real_ni == ni) {
+			    notice_lang(s_MemoServ, u, MEMO_NEW_MEMO_ARRIVED,
+					source, s_MemoServ, m->number);
+			}
+		    }
+		
+		} /* if (MSNotifyAll) */
+	    } /* if (flags & MEMO_RECEIVE) */
     } 
 }                                                                        
 /******************MARCADO DE UN CANAL *********/
@@ -1256,6 +1323,8 @@ static void do_desmarcar(User *u)
         canaladmins(s_CregServ, "12%s ha DESMARCADO el Canal  12%s", u->nick, chan);; 
     }
 }
+
+
 /******************SUSPENSION DE UN CANAL *********/
 static void do_suspend(User *u)
 {
@@ -1315,6 +1384,8 @@ static void do_unsuspend(User *u)
     }
 }
 
+
+
 /******************ACEPTACION DE UN CANAL Y REG EN CHAN**********/
 static void do_acepta(User *u)
 {
@@ -1345,7 +1416,50 @@ static void do_acepta(User *u)
         canalopers(s_CregServ, "12%s ha aceptado el canal 12%s", u->nick, chan);
         privmsg(s_CregServ, u->nick, "12%s ha sido aceptado en %s", chan, s_ChanServ); 
 	send_cmd(s_CregServ,"TOPIC %s :Este canal ha sido 12ACEPTADO en su Registro", chan);
-	send_cmd(MODE_SENDER(s_CregServ), "PRIVMSG  REGISTRATE :MEMO  %s REGCANAL %s",cr->founder,chan);
+
+       	/*soporte envio de memos a los founders de los nuevos canales registrados que han sido aceptados*/
+          
+       MemoInfo *mi;
+       Memo *m;
+	int ischan;
+        if (!(mi = getmemoinfo(cr->founder, &ischan))) 
+	notice_lang(s_MemoServ, u,
+		ischan ? CHAN_X_NOT_REGISTERED : NICK_X_NOT_REGISTERED, cr->founder);
+        time_t now = time(NULL);
+        u->lastmemosend = now;
+	char *source =  u->nick;
+        mi->memocount++;
+        mi->memos = srealloc(mi->memos, sizeof(Memo) * mi->memocount);
+	m = &mi->memos[mi->memocount-1];
+	strscpy(m->sender, source, NICKMAX);
+	if (mi->memocount > 1) {
+	    m->number = m[-1].number + 1;
+	    if (m->number < 1) {
+		int i;
+		for (i = 0; i < mi->memocount; i++)
+		    mi->memos[i].number = i+1;
+	    }
+	} else {
+	    m->number = 1;
+	}
+	m->time = time(NULL);
+	char text[BUFSIZE];
+    	snprintf(text, sizeof(text), "Nos Complace comunicarle, que la admnistración de canales de la red, despues de haber revisado su solicitud,ha resuelto darle por 3ACEPTADO su petición de registro, de su nuevo canal 2%#s.No dude si lo considera necesario, solicitar soporte en el canal 4#%s.Un Saludo", chan,CanalAyuda);
+	m->text =sstrdup(text);
+	m->flags = MF_UNREAD;
+  
+
+	    if (ni->flags & NI_MEMO_RECEIVE) {
+		if (MSNotifyAll) {
+		    for (u = firstuser(); u; u = nextuser()) {
+			if (u->real_ni == ni) {
+			    notice_lang(s_MemoServ, u, MEMO_NEW_MEMO_ARRIVED,
+					source, s_MemoServ, m->number);
+			}
+		    }
+		
+		} /* if (MSNotifyAll) */
+	    } /* if (flags & MEMO_RECEIVE) */
     }
 }
 
@@ -1373,6 +1487,7 @@ static void do_drop(User *u)
     }
 }
 
+
 static void do_fuerza(User *u)
 {
     char *chan = strtok(NULL, " ");
@@ -1399,10 +1514,56 @@ static void do_fuerza(User *u)
         cr->estado = 0;
         cr->estado |= CR_REGISTRADO;
 	send_cmd(s_CregServ, "PRIVMSG  %s  :Felicidades Por el Registro De Su Nuevo Canal %s",cr->founder,chan);
-	send_cmd(s_CregServ,"TOPIC %s :Este canal ha sido ACEPTADO en su Registro", chan);
+        send_cmd(s_CregServ,"TOPIC %s :Este canal ha sido ACEPTADO en su Registro", chan);
       
 	canalopers(s_CregServ, "12%s ha forzado la aceptación del canal 12%s", u->nick, chan);
-        privmsg(s_CregServ, u->nick, "12%s ha sido registrado en %s", chan, s_ChanServ); 
+        privmsg(s_CregServ, u->nick, "12%s ha sido registrado en %s", chan, s_ChanServ);
+
+/*soporte envio de memos a los founders de los nuevos canales registrados que han sido forzados*/
+          
+       MemoInfo *mi;
+       Memo *m;
+	int ischan;
+        if (!(mi = getmemoinfo(cr->founder, &ischan))) 
+	notice_lang(s_MemoServ, u,
+		ischan ? CHAN_X_NOT_REGISTERED : NICK_X_NOT_REGISTERED, cr->founder);
+        time_t now = time(NULL);
+        u->lastmemosend = now;
+	char *source =  u->nick;
+        mi->memocount++;
+        mi->memos = srealloc(mi->memos, sizeof(Memo) * mi->memocount);
+	m = &mi->memos[mi->memocount-1];
+	strscpy(m->sender, source, NICKMAX);
+	if (mi->memocount > 1) {
+	    m->number = m[-1].number + 1;
+	    if (m->number < 1) {
+		int i;
+		for (i = 0; i < mi->memocount; i++)
+		    mi->memos[i].number = i+1;
+	    }
+	} else {
+	    m->number = 1;
+	}
+	m->time = time(NULL);
+	char text[BUFSIZE];
+    	snprintf(text, sizeof(text), "Nos Complace comunicarle, que la admnistración de canales de la red, despues de haber revisado su solicitud,ha resuelto darle por 5ACEPTADO su petición de registro, de su nuevo canal 2%#s.No dude si lo considera necesario, solicitar soporte en el canal 4#%s.Un Saludo", chan,CanalAyuda);
+	m->text =sstrdup(text);
+	m->flags = MF_UNREAD;
+  
+
+	    if (ni->flags & NI_MEMO_RECEIVE) {
+		if (MSNotifyAll) {
+		    for (u = firstuser(); u; u = nextuser()) {
+			if (u->real_ni == ni) {
+			    notice_lang(s_MemoServ, u, MEMO_NEW_MEMO_ARRIVED,
+					source, s_MemoServ, m->number);
+			}
+		    }
+		
+		} /* if (MSNotifyAll) */
+	    } /* if (flags & MEMO_RECEIVE) */
+	
+	 
     
 }
 }

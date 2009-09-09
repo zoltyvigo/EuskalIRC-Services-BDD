@@ -72,6 +72,7 @@ static ChannelInfo *makechan(const char *chan);
 static int delchan(ChannelInfo *ci);
 static void reset_levels(ChannelInfo *ci);
 static int is_founder(User *user, ChannelInfo *ci);
+static int is_successor(User *user, ChannelInfo *ci);
 static int is_identified(User *user, ChannelInfo *ci);
 static int get_access(User *user, ChannelInfo *ci);
 
@@ -128,6 +129,7 @@ static void do_unforbid(User *u);
 static void do_status(User *u);
 static void do_say(User *u);
 static void do_delaccess(User *u);
+static void do_delsuccessor(User *u);
 /*************************************************************************/
 
 static Command cmds[] = {
@@ -136,6 +138,7 @@ static Command cmds[] = {
     { "HELP",     do_help,     NULL,  -1,                       -1,-1,-1,-1 },
     { "AYUDA",    do_help,     NULL,  -1,                       -1,-1,-1,-1 },
     { "DELACCESS", do_delaccess, NULL, CHAN_HELP_DELACCESS,	-1,-1,-1,-1 },
+    { "DELSUCCESSOR", do_delsuccessor, NULL, CHAN_HELP_DELSUCCESSOR,	-1,-1,-1,-1 },
     { "SHOWCOMMANDS",    do_help,   NULL,  -1,                  -1,-1,-1,-1 },
     { ":?",       do_help,     NULL,  -1,                       -1,-1,-1,-1 },
     { "?",        do_help,     NULL,  -1,                       -1,-1,-1,-1 },                 
@@ -626,7 +629,7 @@ static void load_old_cs_dbase(dbFILE *f, int ver)
 		    log("debug: %s: password encriptada para %s on load",
 				s_ChanServ, ci->name);
 		if (encrypt_in_place(ci->founderpass, PASSMAX) < 0)
-		    fatal("%s: load database: No está encriptada la password de %s!",
+		    fatal("%s: load database: No estï¿½ encriptada la password de %s!",
 				s_ChanServ, ci->name);
 		ci->flags |= CI_ENCRYPTEDPW;
 	    }
@@ -635,7 +638,7 @@ static void load_old_cs_dbase(dbFILE *f, int ver)
 		/* Bail: it makes no sense to continue with encrypted
 		 * passwords, since we won't be able to verify them */
 		fatal("%s: load database: password para %s encriptada "
-		          "pero la encriptacion está desactivada, abortando",
+		          "pero la encriptacion estï¿½ desactivada, abortando",
 		          s_ChanServ, ci->name);
 	    }
 #endif
@@ -1399,7 +1402,7 @@ void check_modes(const char *chan)
     if (end[-1] == '-')
 	end--;
 
-/* Pongo soporte ShadowServ por si en la red hay un Guardián de modos :) 
+/* Pongo soporte ShadowServ por si en la red hay un Guardiï¿½n de modos :) 
  *
  * Zoltan - 12 Octubre 2000
  */
@@ -1519,7 +1522,7 @@ int check_valid_op(User *user, const char *chan, int serverop)
 }
 
 /*************************************************************************/
-/* La añado soporte para AUTODEVOICE y SECUREVOICES :)
+/* La aï¿½ado soporte para AUTODEVOICE y SECUREVOICES :)
  * Zoltan <zolty@ctv.es> 23/09/2000
  */
 
@@ -2050,6 +2053,7 @@ void registros(User *u, NickInfo *ni)
     ChannelInfo *ci;
     int i, y, z;
     int cfounder = 0;
+    int csucesor = 0;
     int cregistros = 0;
     int cakicks = 0;
                     
@@ -2064,6 +2068,11 @@ void registros(User *u, NickInfo *ni)
            if (ni == ci->founder) {
                privmsg(s_NickServ, u->nick, "   %-20s 12FOUNDER", ci->name);
                cfounder++;
+           }
+/* Buscar sucesores de canales */
+           if (ni == ci->successor) {
+               privmsg(s_NickServ, u->nick, "   %-20s 12SUCESOR", ci->name);
+               csucesor++;
            }
 
 /* Buscar registros en canales */
@@ -2087,6 +2096,8 @@ void registros(User *u, NickInfo *ni)
     }
     if (cfounder)
         privmsg(s_NickServ, u->nick, "   Total de FOUNDERS: 12%d", cfounder);
+     if (csucesor)
+        privmsg(s_NickServ, u->nick, "   Total de SUCESORES: 12%d", csucesor);
     if (cregistros)
         privmsg(s_NickServ, u->nick, "   Total de registros: 12%d", cregistros);
     if (cakicks)
@@ -2306,6 +2317,22 @@ static int is_founder(User *user, ChannelInfo *ci)
 }
 
 /*************************************************************************/
+/* El nick dado tiene acceso de sucesor en el canal? */
+
+static int is_successor(User *user, ChannelInfo *ci)
+{
+    if (user->ni && (user->ni == getlink(ci->successor))) {
+/*    if (user->ni == getlink(ci->founder)) { */
+	if ((nick_identified(user) ||
+		 (nick_recognized(user) && !(ci->flags & CI_SECURE))))
+	    return 1;
+    }
+    if (is_identified(user, ci))
+	return 1;
+    return 0;
+}
+
+/*************************************************************************/
 
 /* Has the given user password-identified as founder for the channel? */
 
@@ -2337,12 +2364,13 @@ static int get_access(User *user, ChannelInfo *ci)
 	
 /* No he puesto el estilo de iRC-Hispano
  * Admins con nivel 32000 y Opers con nivel 16000
- * porque recibiría avisos de memos en todos los canales 
+ * porque recibirï¿½a avisos de memos en todos los canales 
  * y no mola esto
  */
 	
     if (is_founder(user, ci))
 	return ACCESS_FOUNDER;
+    
 	
     if (nick_identified(user)
 	|| (nick_recognized(user) && !(ci->flags & CI_SECURE))
@@ -2425,7 +2453,7 @@ notice(s_ChanServ, u->nick, "Comando deshabilitado, use 2/msg 12%s ,para los
     }
    
 /*        privmsg(s_ChanServ, u->nick, "Para registrar un canal, hazte una paja "
-         "nah, era coña; tienes que pedir a un OPER/IRCOP para que registre el canal");
+         "nah, era coï¿½a; tienes que pedir a un OPER/IRCOP para que registre el canal");
 */      
 
     if (!desc) {
@@ -2447,7 +2475,7 @@ notice(s_ChanServ, u->nick, "Comando deshabilitado, use 2/msg 12%s ,para los
 	    notice_lang(s_ChanServ, u, CHAN_ALREADY_REGISTERED, chan);
 	}
     } else if ((cr = cr_findcreg(chan)) != NULL) {
-        privmsg(s_ChanServ, u->nick, "El canal está en proceso por %s.", s_CregServ);
+        privmsg(s_ChanServ, u->nick, "El canal estï¿½ en proceso por %s.", s_CregServ);
 
 
     } else if (!is_chanop(u->nick, chan) && !is_services_oper(u)) {
@@ -2690,7 +2718,7 @@ int suspende_con_creg(User *u, const char *chan, const char *desc)
 //            expires = time(NULL) + CSSuspendExpire;
             expires = 0; /* suspension indefinida */                  
         }    
-        log("%s: %s!%s@%s SUSPENDió el canal %s, Motivo: %s",
+        log("%s: %s!%s@%s SUSPENDiï¿½ el canal %s, Motivo: %s",
                  s_ChanServ, u->nick, u->username, u->host, chan, desc);                              
         ci->suspendby = sstrdup(u->nick);
         ci->suspendreason = sstrdup(desc);
@@ -2799,12 +2827,12 @@ static void do_identify(User *u)
 	    notice_lang(s_ChanServ, u, CHAN_IDENTIFY_SUCCEEDED, chan);
 	} else if (res < 0) {
 	    log("%s: check_password failed for %s", s_ChanServ, ci->name);
-            notice(s_ChanServ, chan, "4ATENCION!!! Autentificación ilegal de %s", u->nick);
+            notice(s_ChanServ, chan, "4ATENCION!!! Autentificaciï¿½n ilegal de %s", u->nick);
 	    notice_lang(s_ChanServ, u, CHAN_IDENTIFY_FAILED);
 	} else {
 	    log("%s: Failed IDENTIFY for %s by %s!%s@%s",
 			s_ChanServ, ci->name, u->nick, u->username, u->host);
-            notice(s_ChanServ, chan, "4ATENCION!!! Autentificación con clave "
+            notice(s_ChanServ, chan, "4ATENCION!!! Autentificaciï¿½n con clave "
                              "incorrecta de %s.", u->nick);                              
 	    notice_lang(s_ChanServ, u, PASSWORD_INCORRECT);
 	    bad_password(u);
@@ -3088,7 +3116,7 @@ static void do_set_name(User *u, ChannelInfo *ci, char *param)
 	Channel *c;
  
  if (!(c = findchan(ci->name))) {
-        privmsg(s_ChanServ, u->nick, "El canal 12%s está vacio.", ci->name);
+        privmsg(s_ChanServ, u->nick, "El canal 12%s estï¿½ vacio.", ci->name);
 	return;
         }
 if ((c = findchan(ci->name)) && (ci->flags & CI_AUTOLIMIT)) {
@@ -3269,7 +3297,7 @@ static void do_set_mlock(User *u, ChannelInfo *ci, char *param)
 		    return;
 		}
 		if ((strstr(s, "") == 0) ||  (stricmp(s, "") == 0)) {
-		    privmsg(s_ChanServ, u->nick, "¡Caracteres Inválidos!");
+		    privmsg(s_ChanServ, u->nick, "ï¿½Caracteres Invï¿½lidos!");
 		    return;
 		}
 		if (newlock_key)
@@ -3643,7 +3671,7 @@ static void do_set_opnotice(User *u, ChannelInfo *ci, char *param)
 
 static void do_set_stay(User *u, ChannelInfo *ci, char *param)
 {
-    /*privmsg(s_ChanServ, u->nick, "Opción STAY deshabilitada.");
+    /*privmsg(s_ChanServ, u->nick, "Opciï¿½n STAY deshabilitada.");
     return;*/
     
   if (stricmp(param, "ON") == 0) {
@@ -3808,6 +3836,54 @@ static void do_delaccess(User *u)
 		notice_lang(s_ChanServ, u, CHAN_MSG_DELACCESS_SUCCESS, chan);
 	}
 }
+static void do_delsuccessor(User *u)
+{
+	char *chan = strtok(NULL, " ");
+	ChannelInfo *ci;
+	NickInfo *ni;
+	int i;
+	ChanAccess *access;
+
+	
+	if (!chan) {
+		syntax_error(s_ChanServ, u, "DELSUCCESOR", CHAN_SYNTAX_DELSUCCESSOR);
+		return;
+        }
+          if ((ci = cs_findchan(chan)) && (!ci->successor)) {
+		privmsg(s_ChanServ, u->nick, "El Canal %s no tiene Sucesor",chan);
+                return;
+            }
+
+       if (!(ni = findnick(u->nick))) {
+		notice_lang(s_ChanServ, u, NICK_NOT_REGISTERED);
+	} else if (!(ci = cs_findchan(chan))) {
+		notice_lang(s_ChanServ, u, CHAN_X_NOT_REGISTERED, chan);
+	} else if (ci->flags & CI_VERBOTEN) {
+		notice_lang(s_ChanServ, u, CHAN_X_FORBIDDEN, chan);
+	} else if (ci->flags & CI_SUSPEND) {
+		notice_lang(s_ChanServ, u, CHAN_X_SUSPENDED, chan);
+	/*} else if ((get_access(u, ci) <= 0) || (check_access(u, ci, CA_NOJOIN))){
+		notice_lang(s_ChanServ, u, CHAN_MSG_DELACCESS_NEG, chan); */
+	} else if (ni->status & NS_SUSPENDED) {
+		notice_lang(s_ChanServ, u, NICK_X_SUSPENDED, u->nick);
+        } else if (!is_successor(u, ci)) {
+		privmsg(s_ChanServ, u->nick, "No Eres Sucesor Del Canal %s",chan);
+
+	} else if (is_successor(u, ci)) {
+	  privmsg(s_ChanServ, u->nick, "Se da de Baja de %s como Sucesor del Canal",chan);
+              
+		if (ci->flags & CI_OPNOTICE) {
+                notice(s_ChanServ, chan, "Baja de %s como SUCESOR del canal.",
+                    u->nick);
+                }
+               if (ci->successor)
+                     ci->successor = NULL;
+		//notice_lang(s_ChanServ, u, CHAN_MSG_DELACCESS_SUCCESS, chan);
+	}
+
+
+}
+
 /****************************************************************************************************/
 static void do_access(User *u)
 {
@@ -4014,7 +4090,7 @@ static void do_access(User *u)
 	    notice_lang(s_ChanServ, u, CHAN_ACCESS_NO_MATCH, chan);
 
     } else if (stricmp(cmd, "COUNT") ==0) {
-            privmsg(s_ChanServ, u->nick, "Número de registros del canal 12%s: 12%d",
+            privmsg(s_ChanServ, u->nick, "Nï¿½mero de registros del canal 12%s: 12%d",
                                 ci->name, ci->accesscount);
                                     
 
@@ -4458,11 +4534,11 @@ static void do_levels(User *u)
 // autolimit de canales (2009) donostiarra
 
 /*la entrada de los usuarios a los canales con autolimit
-/*decido hacerlo por franjas al fijar el modo automático +l*/
+/*decido hacerlo por franjas al fijar el modo automï¿½tico +l*/
 
 /*incorporo soporte "timer" para entradas unicamente*/
 
-/* tramo1,tramo2,tramo3 son los límites de las 3 franjas*/
+/* tramo1,tramo2,tramo3 son los lï¿½mites de las 3 franjas*/
 /* incr1,incr2,incr3 son los incrementos de cada una de ellas*/
 
 void canal_autolimit(Channel *ki,ChannelInfo *ci,const char *chan)
@@ -4506,9 +4582,9 @@ add_alimit( ki->name,numero,expires);
 }
 
 
-/*tengo en cuenta las franjas anteriores para ir desactivando los límites de usuarios
-*permitidos en el canal,uso otro método porque me baso en el debug de salidas
-*no elegí hacerlo con las entradas*/
+/*tengo en cuenta las franjas anteriores para ir desactivando los lï¿½mites de usuarios
+*permitidos en el canal,uso otro mï¿½todo porque me baso en el debug de salidas
+*no elegï¿½ hacerlo con las entradas*/
 
 void sale_autolimit(char *s) 
 {
@@ -4605,7 +4681,7 @@ static void do_info(User *u)
                 privmsg(s_ChanServ, u->nick, "Suspendido por: 12%s", ci->suspendby);
    tm = localtime(&ci->time_suspend);                        
    strftime_lang(timebuf, sizeof(timebuf), u, STRFTIME_DATE_TIME_FORMAT, tm);
-                privmsg(s_ChanServ, u->nick, "Fecha de la suspensión: 12%s", timebuf);                
+                privmsg(s_ChanServ, u->nick, "Fecha de la suspensiï¿½n: 12%s", timebuf);                
 /*    
                 if (ci->time_expiresuspend == 0) {
                     snprintf(expirebuf, sizeof(expirebuf),
@@ -4619,7 +4695,7 @@ static void do_info(User *u)
                                 ci->time_expiresuspend - now + 59);
                 }                 
                 */
-                privmsg(s_ChanServ, u->nick, "La suspensión expira en: 12%s", expirebuf);
+                privmsg(s_ChanServ, u->nick, "La suspensiï¿½n expira en: 12%s", expirebuf);
             }
             
         } else {
@@ -5670,7 +5746,7 @@ static void do_suspend(User *u)
 //            expires = time(NULL) + CSSuspendExpire;
             expires = 0; /* suspension indefinida */                  
         }    
-        log("%s: %s!%s@%s SUSPENDió el canal %s, Motivo: %s",
+        log("%s: %s!%s@%s SUSPENDiï¿½ el canal %s, Motivo: %s",
                  s_ChanServ, u->nick, u->username, u->host, chan, reason);                              
         ci->suspendby = sstrdup(u->nick);
         ci->suspendreason = sstrdup(reason);
@@ -5758,7 +5834,7 @@ static void do_forbid(User *u)
     } else if (!((*chan == '#') || (*chan == '+'))) {
         privmsg(s_ChanServ, u->nick, "Canal no valido para forbidear");
     } else if (strlen(chan) >= 64) {
-        privmsg(s_ChanServ, u->nick, "No puedes forbidear canales con más de 64 caracteres");
+        privmsg(s_ChanServ, u->nick, "No puedes forbidear canales con mï¿½s de 64 caracteres");
     } else {
                                         
     if (readonly)

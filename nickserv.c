@@ -207,10 +207,10 @@ void listnicks(int count_only, const char *nick)
 	int need_comma = 0;
 
 	if (!(ni = findnick(nick))) {
-	    printf("%s no está registrado.\n", nick);
+	    printf("%s no est? registrado.\n", nick);
 	    return;
 	} else if (ni->status & NS_VERBOTEN) {
-	    printf("%s está FORBIDeado.\n", nick);
+	    printf("%s est? FORBIDeado.\n", nick);
 	    return;
 	}
 	if (ni->status & NS_SUSPENDED)
@@ -225,7 +225,7 @@ void listnicks(int count_only, const char *nick)
 	printf("Ultima hora por la red: %s\n", buf);
 	tm = localtime(&ni->expira_min);
 	strftime(buf, sizeof(buf), getstring((NickInfo *)NULL,STRFTIME_DATE_TIME_FORMAT), tm);
-	printf("Tiempo Mínimo Expiración: %s\n", buf);
+	printf("Tiempo M?nimo Expiraci?n: %s\n", buf);
 	if (ni->url)
 	    printf("URL: %s\n", ni->url);
 	if (ni->email)
@@ -257,7 +257,7 @@ void listnicks(int count_only, const char *nick)
 	    need_comma = 1;
 	}
 	if (ni->env_mail & MAIL_REC) {
-	    end += snprintf(buf, sizeof(buf)-(end-buf), "%sRecibió mail recordatorio",
+	    end += snprintf(buf, sizeof(buf)-(end-buf), "%sRecibi? mail recordatorio",
 			need_comma ? commastr : "");
 	    need_comma = 1;
 	}
@@ -815,7 +815,7 @@ int validate_user(User *u)
     
    if (ni->status & NI_ON_BDD) {
       	privmsg(s_NickServ, u->nick, "Has sido reconocido como propietario del nick. Recuerda que para una mayor seguridad, debes cambiar periodicamente tu clave con el comando 2 /msg nick set password. Si necesitas ayuda, contacta con nosotros en el canal 4#%s",CanalAyuda);
-	privmsg(s_NickServ, u->nick, "Recuerda: Puedes encontrar cualquier tipo de ayuda sobre la Red,así como foros de discusión y tutoriales en nuestra web:12 %s",WebNetwork);
+	privmsg(s_NickServ, u->nick, "Recuerda: Puedes encontrar cualquier tipo de ayuda sobre la Red,as? como foros de discusi?n y tutoriales en nuestra web:12 %s",WebNetwork);
         return 1;
            }
 
@@ -987,7 +987,7 @@ void expire_nicks()
 	    next = ni->next;
 
 /*
-*tratamiento del envio de mails a los nicks que están a punto de expirar
+*tratamiento del envio de mails a los nicks que est?n a punto de expirar
 * (2009) donostiarra http://euskalirc.wordpress.com 
 */
 		
@@ -1006,15 +1006,15 @@ void expire_nicks()
                sprintf(buf,"\n   Hola  NiCK: %s\n"
 				"Queda  menos de 1 semana para expirar tu nick.\n"
 				"De no entrar con tu alias identificado, en uno de nuestros servidores de Chat\n"
-				"Nos Veremos Obligados a dar de baja tu registro ,con lo que perderías tu antiguedad,\n"
-				"Así como todos los recursos que venían aparejados a tu nick registrado.\n"
+				"Nos Veremos Obligados a dar de baja tu registro ,con lo que perder?as tu antiguedad,\n"
+				"As? como todos los recursos que ven?an aparejados a tu nick registrado.\n"
 				"No nos olvides y sigue entrando en nuestra red de chat,te esperamos\n"
 				"Disponemos de servicios exclusivos y un selecto grupo de canales.\n"
 				"Te recordamos los datos que disponemos de tu registro:\n\n" 
                              "Password: %s\n\n"
                              "Para identificarte   -> /nick %s:%s\n"
                              "Para cambio de clave -> /msg %s SET PASSWORD nueva_password\n\n"
-                             "Página de Información %s\n",
+                             "P?gina de Informaci?n %s\n",
                        ni->nick, ni->pass, ni->nick, ni->pass, s_NickServ, WebNetwork);
              
        
@@ -1045,14 +1045,14 @@ NickInfo *findnick(const char *nick)
     NickInfo *ni;
 
 #ifdef IRC_UNDERNET
-/* Añadido soporte toLower, toUpper y strCasecmp para evitar conflictos
+/* A?adido soporte toLower, toUpper y strCasecmp para evitar conflictos
  * con nicks, debido a la arquitectura de undernet, que considera
  * como equivalentes los nicks [zoltan] y {zoltan} entre otros signos
- * Así los Services, lo considerará como el mismo nick, impidiendo que
+ * As? los Services, lo considerar? como el mismo nick, impidiendo que
  * se pueda registrar {zoltan} existiendo [zoltan]
  *
  * Signos equivalentes
- * Minúsculas == Mayúsculas (esto ya estaba antes con tolower)
+ * Min?sculas == May?sculas (esto ya estaba antes con tolower)
  * [ == {
  * ] == }
  * ^ == ~
@@ -1366,13 +1366,13 @@ static void collide(NickInfo *ni, int from_timeout)
 	notice_lang(s_NickServ, u, DISCONNECT_NOW);
 #ifdef IRC_UNDERNET_P10
         
-        kill_user(s_NickServ, u->numerico, "Protección de Nick Registrado");
+        kill_user(s_NickServ, u->numerico, "Protecci?n de Nick Registrado");
     	send_cmd(NULL, "%c NICK %s 1 %lu  %s %s AAAAAA %c%c%c :%s protegiendo a %s",
            convert2y[ServerNumerico], ni->nick, time(NULL), NSEnforcerUser,
            ServiceHost, convert2y[ServerNumerico], convert2y[numeroa],
            convert2y[numerob], s_NickServ, ni->nick); 
 #else
-        kill_user(s_NickServ, ni->nick, "Protección de Nick Registrado");
+        kill_user(s_NickServ, ni->nick, "Protecci?n de Nick Registrado");
         send_cmd(NULL, "NICK %s %ld 1 %s %s %s :%s protegiendo a %s",
                 ni->nick, time(NULL), NSEnforcerUser, NSEnforcerHost,
                 ServerName, s_NickServ, ni->nick);
@@ -1689,7 +1689,7 @@ static void do_register(User *u)
                              "Password: %s\n\n"
                              "Para identificarte   -> /nick %s:%s\n"
                              "Para cambio de clave -> /msg %s SET PASSWORD nueva_password\n\n"
-                             "Página de Información %s\n",
+                             "P?gina de Informaci?n %s\n",
                        ni->nick, ni->pass, ni->nick, ni->pass, s_NickServ, WebNetwork);
        
                snprintf(subject, sizeof(subject), "Registro del NiCK '%s'", ni->nick);
@@ -1904,7 +1904,7 @@ static void do_drop(User *u)
 	send_cmd(ServerName, "SVSMODE %s -r", ni->nick);
 #endif
 	delnick(ni);
-	canalopers(s_NickServ, "12%s eliminó el nick 12%s", u->nick, nick);
+	canalopers(s_NickServ, "12%s elimin? el nick 12%s", u->nick, nick);
 	log("%s: %s!%s@%s dropped nickname %s", s_NickServ,
 		u->nick, u->username, u->host, nick ? nick : u->nick);
 	if (nick)
@@ -1959,11 +1959,11 @@ static void do_desmarcar(User *u)
       }
     
     if (!(ni = findnick(nick))) {
-        privmsg(s_NickServ, u->nick, "El Nick 12%s no está registrado", nick);
+        privmsg(s_NickServ, u->nick, "El Nick 12%s no est? registrado", nick);
          return;
         
     } else if (!(ni->estado & NS_MARCADO))  {
-        privmsg(s_NickServ, u->nick, "El nickl 12%s no está MARCADO", nick);
+        privmsg(s_NickServ, u->nick, "El nickl 12%s no est? MARCADO", nick);
      
      } else {
         if (ni->motivo)
@@ -2180,16 +2180,16 @@ static void do_set_vhost(User *u, NickInfo *ni, char *param)
 	 return;
     }
      if (!param) {
-		    privmsg(s_NickServ, u->nick, "V-Host sin Rellenar  Minimo 3 carácteres");
+		    privmsg(s_NickServ, u->nick, "V-Host sin Rellenar  Minimo 3 car?cteres");
 		    return;
 	}
     
     if (strlen(param) > 56) {
-		    privmsg(s_NickServ, u->nick, "V-Host demasiado larga. Máximo 56 carácteres");
+		    privmsg(s_NickServ, u->nick, "V-Host demasiado larga. M?ximo 56 car?cteres");
 		    return;
 	}
     if (strlen(param) <= 2) {
-		    privmsg(s_IpVirtual, u->nick, "V-Host demasiado corta. Minimo 3 carácteres");
+		    privmsg(s_IpVirtual, u->nick, "V-Host demasiado corta. Minimo 3 car?cteres");
 		    return;
 	}
 		    
@@ -2402,7 +2402,7 @@ static void do_userip(User *u)
 	  return;
 	  }
 	  notice_lang(s_NickServ, u, NICK_USERIP_CHECK_OK, nick, u2->host, inet_ntoa(*((struct in_addr *)hp->h_addr)));
-	  canalopers(s_NickServ, "12%s usó USERIP sobre 12%s.",u->nick, nick);
+	  canalopers(s_NickServ, "12%s us? USERIP sobre 12%s.",u->nick, nick);
      }
 }
 
@@ -2791,7 +2791,7 @@ static void do_info(User *u)
                 privmsg(s_NickServ, u->nick, "Suspendido por: 12%s", ni->suspendby);
                 tm = localtime(&ni->time_suspend);
                 strftime_lang(timebuf, sizeof(timebuf), u, STRFTIME_DATE_TIME_FORMAT, tm);
-                privmsg(s_NickServ, u->nick, "Fecha de la suspensión: 12%s", timebuf);
+                privmsg(s_NickServ, u->nick, "Fecha de la suspensi?n: 12%s", timebuf);
                 if (ni->time_expiresuspend == 0) {
                     snprintf(expirebuf, sizeof(expirebuf),
                            getstring(u->ni, OPER_AKILL_NO_EXPIRE));
@@ -2803,7 +2803,7 @@ static void do_info(User *u)
                     expires_in_lang(expirebuf, sizeof(expirebuf), u,
                               ni->time_expiresuspend - now + 59);
   */            }                           
-                privmsg(s_NickServ, u->nick, "La suspensión expira en: 12%s", expirebuf);
+                privmsg(s_NickServ, u->nick, "La suspensi?n expira en: 12%s", expirebuf);
             }  
                                                             
         }    
@@ -2825,12 +2825,12 @@ static void do_info(User *u)
           if (!(ni->status & NS_NO_EXPIRE)  && (stricmp(ni->nick, u->nick) == 0)  && !(is_services_admin(u) &&  is_services_cregadmin(u) && is_services_devel(u) &&  is_services_oper(u))) {
 		     tm = localtime(&ni->expira_min);
             strftime_lang(buf, sizeof(buf), u, STRFTIME_DATE_TIME_FORMAT, tm);
-            privmsg(s_NickServ,u->nick, "Tiempo Mínimo Expiración:4,15%s", buf);
+            privmsg(s_NickServ,u->nick, "Tiempo M?nimo Expiraci?n:4,15%s", buf);
 	   }	
              else if (!(ni->status & NS_NO_EXPIRE)    && (is_services_admin(u) ||  is_services_cregadmin(u) || is_services_devel(u) ||  is_services_oper(u))) {
 		     tm = localtime(&ni->expira_min);
             strftime_lang(buf, sizeof(buf), u, STRFTIME_DATE_TIME_FORMAT, tm);
-            privmsg(s_NickServ,u->nick, "Tiempo Mínimo Expiración:4,15%s", buf);
+            privmsg(s_NickServ,u->nick, "Tiempo M?nimo Expiraci?n:4,15%s", buf);
 	   }	
 	  /*			
 #ifdef DB_NETWORKS
@@ -3223,11 +3223,11 @@ static void do_sendpass(User *u)
              sprintf(buf,"\n    NiCK: %s\n"
                            "Password: %s\n\n"
                            "Para identificarte   -> /nick %s:%s\n"
-                           "Para cambio de clave -> /msg %s SET PASSWORD nueva_contraseña\n\n"
-                           "Página de Información %s\n",                           
+                           "Para cambio de clave -> /msg %s SET PASSWORD nueva_contrase?a\n\n"
+                           "P?gina de Informaci?n %s\n",                           
                   ni->nick, ni->pass, ni->nick, ni->pass, s_NickServ, WebNetwork);
                     
-             snprintf(subject, sizeof(subject), "Contraseña del NiCK '%s'", ni->nick);
+             snprintf(subject, sizeof(subject), "Contrase?a del NiCK '%s'", ni->nick);
        
              enviar_correo(ni->email, subject, buf);             
              exit(0);
@@ -3366,7 +3366,7 @@ static void do_suspend(User *u)
 	#else
 	    privmsg (s_NickServ, ni->nick, "Tu nick 12%s ha sido 12SUSPENDido"
                  " temporalmente.", ni->nick);
-            privmsg (s_NickServ, ni->nick, "Causa de suspensión:5 %s.", reason);
+            privmsg (s_NickServ, ni->nick, "Causa de suspensi?n:5 %s.", reason);
 		do_write_bdd(ni->nick, 16, ni->pass); 
 	#endif
         
@@ -3379,7 +3379,96 @@ static void do_suspend(User *u)
     }
                                                      
 }
+/*************************************************************************/
+static void do_forbid(User *u)
+{
 
+    NickInfo *ni;
+    char *nick, *expiry, *reason;                        
+    time_t expires;
+
+    nick = strtok(NULL, " ");
+    /* Por el momento, nada de expiraciones
+    if (nick && *nick == '+') {
+        expiry = nick;
+        nick = strtok(NULL, " ");
+    } else { */
+        expiry = NULL;
+/*    }
+ */
+    reason = strtok(NULL, "");    
+        ni = findnick(nick);    
+    if (!reason) {
+        syntax_error(s_NickServ, u, "FORBID", NICK_FORBID_SYNTAX);
+    } else if (!(ni = findnick(nick))) {
+        notice_lang(s_NickServ, u, NICK_X_NOT_REGISTERED, nick);
+    } else if (ni->status & NS_VERBOTEN) {
+         privmsg (s_NickServ,u->nick, "El nick 12%s ya estaba 12Forbideado"
+                 " indefinidamente.", ni->nick);
+       //notice_lang(s_NickServ, u, NICK_FORBID_FORBIDDEN);
+     } else if (ni->status & NS_SUSPENDED) {
+         privmsg (s_NickServ,u->nick, "El nick 12%s ya estaba 12Suspendido"
+                 " temporalmente.", ni->nick);
+       
+   
+    } else if (nick_is_services_admin(ni)) {
+         notice_lang(s_NickServ, u, NICK_SUSPEND_OPER);
+        canalopers(s_NickServ, "12%s ha intentado 12Forbidear al admin 12%s (%s)",
+                                        u->nick, ni->nick, reason);
+    } else if (nick_is_services_cregadmin(ni)) {
+         notice_lang(s_NickServ, u, NICK_SUSPEND_OPER);
+        canalopers(s_NickServ, "12%s ha intentado 12Forbidear al co-admin 12%s (%s)",
+                                        u->nick, ni->nick, reason);
+    } else if (nick_is_services_devel(ni)) {
+         notice_lang(s_NickServ, u, NICK_SUSPEND_OPER);
+        canalopers(s_NickServ, "12%s ha intentado 12Forbidear al devel 12%s (%s)",
+                                        u->nick, ni->nick, reason);
+    } else if (nick_is_services_oper(ni)) {
+        notice_lang(s_NickServ, u, NICK_SUSPEND_OPER);
+        canalopers(s_NickServ, "12%s ha intentado 12Forbidear al oper 12%s (%s)",
+              u->nick, ni->nick, reason);
+    } else {
+        if (expiry) {
+            expires = dotime(expiry);
+            if (expires < 0) {
+                notice_lang(s_ChanServ, u, BAD_EXPIRY_TIME);
+                return;
+            } else if (expires > 0) {
+                expires += time(NULL);
+            }
+        } else {
+//            expires = time(NULL) + CSSuspendExpire;
+            expires = 0; /* suspension indefinida */
+        }                                    
+        log("%s: %s ha usado FORBID para nick %s", s_NickServ, u->nick, nick);
+       ni->forbidby = sstrdup(u->nick);
+        ni->forbidreason = sstrdup(reason);
+         ni->status |= NS_VERBOTEN;
+        ni->status &= ~NS_IDENTIFIED;
+	
+	if (ni->status & NI_ON_BDD)
+	#ifdef IRC_UNDERNET_P10
+		
+		//ep_tablan(ni->nick, ni->pass, 'n');
+	#else
+	    privmsg (s_NickServ, ni->nick, "Tu nick 12%s ha sido 12Forbideado"
+                 " indefinidamente.", ni->nick);
+            privmsg (s_NickServ, ni->nick, "Causa de prohibición:5 %s.", reason);
+             send_cmd(NULL, "RENAME %s", ni->nick);
+		do_write_bdd(nick, 1, "!");
+	#endif
+        
+	canalopers(s_NickServ, "12%s ha 12Forbideado el nick 12%s (%s)",
+          u->nick, nick, reason); 
+        notice_lang(s_NickServ, u, NICK_FORBID_SUCCEEDED, nick);
+        
+      
+                          
+    }
+                                                     
+}
+
+/*************************************************************************/
 /*************************************************************************/
 static void do_unsuspend(User *u)
 {
@@ -3422,66 +3511,7 @@ static void do_unsuspend(User *u)
 }
 
 
-/*************************************************************************/
 
-static void do_forbid(User *u)
-{
-    NickInfo *ni;
-    char *nick = strtok(NULL, " ");
-    char *reason = strtok(NULL, "");    
-
-    /* Assumes that permission checking has already been done. */
-    if (!reason) {
-	syntax_error(s_NickServ, u, "FORBID", NICK_FORBID_SYNTAX);
-	return;
-  
-   } else if (ni->status & NS_VERBOTEN) {
-        notice_lang(s_NickServ, u, NICK_FORBID_FORBIDDEN);
-    }
-     
-    if (nick_is_services_oper(findnick(nick))) {
-        notice_lang(s_NickServ, u, PERMISSION_DENIED);
-        canalopers(s_NickServ, "%s ha intentado FORBIDear el nick %s", u->nick, nick);
-        return;
-    }      
-      
-    if (!(ni = (nick ? findnick(nick) : u->real_ni))) {
-	if (nick) {
-	    notice_lang(s_NickServ, u, NICK_X_NOT_REGISTERED, nick);
-	   return;
-	} else  {
-	    notice_lang(s_NickServ, u, NICK_NOT_REGISTERED);
-            return;
-       }
-    }
-
-    if (readonly)
-	notice_lang(s_NickServ, u, READ_ONLY_MODE);
-   
-    if (ni) {
-        ni->forbidby = sstrdup(u->nick);
-        ni->forbidreason = sstrdup(reason);    
-	ni->status |= NS_VERBOTEN;
-	log("%s: %s set FORBID for nick %s", s_NickServ, u->nick, nick);
-	do_write_bdd(nick, 1, "!");
-	if (finduser(nick)) {
-            privmsg (s_NickServ, ni->nick, "Tu nick 12%s ha sido 4Forbidea5do"
-                 "3.indefinidamente.", ni->nick);
-            privmsg (s_NickServ, ni->nick, "Causa de la Prohibición:4%s.", reason);
-        }
-	send_cmd(NULL, "RENAME %s", ni->nick);
-	notice_lang(s_NickServ, u, NICK_FORBID_SUCCEEDED, nick);
-	 canalopers(s_NickServ, "12%s ha 12FORBIDeado el nick 12%s",
-                           u->nick, nick);
-    } else {
-	log("%s: Valid FORBID for %s by %s failed", s_NickServ,
-		nick, u->nick);
-	notice_lang(s_NickServ, u, NICK_FORBID_FAILED, nick);
-    }
-}
-
-
-/*************************************************************************/
 
 static void do_unforbid(User *u)
 {

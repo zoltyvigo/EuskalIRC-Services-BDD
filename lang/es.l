@@ -2424,6 +2424,7 @@ CHAN_HELP
 	    12IDENTIFY   Para identificarse como fundador del canal
 	    12SET        Fija opciones e información del canal
 	    12ACCESS     Modifica la lista de usuarios privilegiados
+	    12DELSUCCESSOR Permite eliminarnos como Sucesores del Canal
 	    12LEVELS     Redefine los niveles de accesos
 	    12AKICK      Mantiene la lista de Auto-Kick
 	    12DROP       Cancela la registración de un canal
@@ -2956,9 +2957,16 @@ CHAN_HELP_DELACCESS
 
 	Nos elimina el registro que tengamos en el canal deseado, sin necesidad
 	de tener que ser borrados por un operador del canal ó el fundador
+CHAN_HELP_DELSUCCESSOR
+	Sintaxis: 12DELSUCCESSOR <#canal>
+
+	Nos elimina como SUCESOR en el canal deseado, sin necesidad
+	de tener que ser borrados por quien tenga acceso al SET de cambio de SUCESOR
 
 CHAN_SYNTAX_DELACCESS
 	DELACCESS <#canal>
+CHAN_SYNTAX_DELSUCCESSOR
+	DELSUCCESSOR <#canal>
 
 CHAN_MSG_DELACCESS_SUCCESS
 	Tu registro en 12%s ha sido eliminado

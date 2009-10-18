@@ -3397,7 +3397,7 @@ static void do_forbid(User *u)
 /*    }
  */
     reason = strtok(NULL, "");    
-        ni = findnick(nick);    
+      //  ni = findnick(nick);    
     if (!reason) {
         syntax_error(s_NickServ, u, "FORBID", NICK_FORBID_SYNTAX);
     } else if (!(ni = findnick(nick))) {
@@ -3453,7 +3453,7 @@ static void do_forbid(User *u)
 	#else
 	    privmsg (s_NickServ, ni->nick, "Tu nick 12%s ha sido 12Forbideado"
                  " indefinidamente.", ni->nick);
-            privmsg (s_NickServ, ni->nick, "Causa de prohibición:5 %s.", reason);
+            privmsg (s_NickServ, ni->nick, "Causa de prohibiciï¿½n:5 %s.", reason);
              send_cmd(NULL, "RENAME %s", ni->nick);
 		do_write_bdd(nick, 1, "!");
 	#endif

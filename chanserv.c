@@ -328,6 +328,10 @@ void listchans(int count_only, const char *chan)
 		    printf("%sAUTOLIMIT", need_comma ? commastr : "");
 		    need_comma = 1;
 		}
+		if (ci->flags & CI_MAIL_REC) {
+		    printf("%sMAILREC", need_comma ? commastr : "");
+		    need_comma = 1;
+		}
 		printf("\n");
 	    }
 	    printf("Candado de modos: ");
@@ -845,6 +849,7 @@ void load_cs_dbase(void)
 		SAFE(read_int32(&tmp32, f));
 		ci->last_topic_time = tmp32;
 		SAFE(read_int32(&ci->flags, f));
+		
 #ifdef USE_ENCRYPTION
 		if (!(ci->flags & (CI_ENCRYPTEDPW | CI_VERBOTEN))) {
 		    if (debug)
@@ -1892,34 +1897,63 @@ int check_topiclock(const char *chan)
 void expire_chans()
 {
     ChannelInfo *ci, *next;
-#ifdef IRC_TERRA
-    Channel *c;
-#endif    
+     Channel *c;
+   
     CregInfo *cr; 
     int i;
     time_t now = time(NULL);
-
+    time_t aviso,margen;
+   aviso = dotime("3d"); /*cuanto debe faltar para mandarle un aviso*/
+   margen = dotime("7d"); /* debe ser menor que csexpire y mayor que el aviso*/
     if (!CSExpire)
 	return;
 
     for (i = 0; i < 256; i++) {
 	for (ci = chanlists[i]; ci; ci = next) {
 	    next = ci->next;
-	    if (now - ci->last_used >= CSExpire
-			&& !(ci->flags & (CI_VERBOTEN | CI_NO_EXPIRE | CI_SUSPEND))) {
+          if (now - ci->last_used >  (CSExpire -margen) &&  now - ci->last_used <  (CSExpire -aviso)
+			&& !(ci->flags & (CI_VERBOTEN | CI_NO_EXPIRE | CI_SUSPEND)) && !(ci->flags & ( CI_MAIL_REC))) {
+                     ci->flags |= CI_MAIL_REC;
+          } else if (now - ci->last_used >=  (CSExpire -aviso)
+			&& !(ci->flags & (CI_VERBOTEN | CI_NO_EXPIRE | CI_SUSPEND)) && (ci->flags & ( CI_MAIL_REC))) {
+
+                 NickInfo *ni = ci->founder;
+      		canalopers(s_ChanServ, "Quedan menos de 3 dias para expirar  4%s .Le Enviamos email a 2%s (12%s)", ci->name,ni->nick,ni->email);
+              char *buf;
+                 char subject[BUFSIZE];
+                 ci->flags  &= ~CI_MAIL_REC;
+                  //ni->env_mail |= MAIL_REC ;
+              if (fork()==0) {
+				 buf = smalloc(sizeof(char *) * 1024);
+               sprintf(buf,"\n   Hola  NiCK: %s\n"
+				"Le recordamos que a su canal %s le queda  menos de 3 dias para expirar.\n"
+				"Esto es debido a que ningún usuario en la lista de acceso del canal ha entrado en él\n"
+				"Esta expiración se prolongaría cuando un usuario que tuviera acceso o Ud mismo hubiera entrado.\n"
+				"Le invitamos a que así lo haga, lo más pronto posible, o en su lugar confie en más personas dándoles acceso para que lo visitaran en su lugar.\n\n"
+				"le recordamos los datos que disponemos de su registro:\n"
+				"Canal :%s\n"
+				"Descripción:%s\n\n"
+				"Último topic:%s\n\n"
+				"Página de Información %s\n",
+                      ni->nick, ci->name,ci->name,ci->last_topic,ci->desc,WebNetwork);
+             
+       
+               snprintf(subject, sizeof(subject), "Recordatorio del Canal '%s'", ci->name);   
+                      enviar_correo(ni->email, subject, buf);
+             exit(0);
+         }
+}
+      else if (now - ci->last_used >=  (CSExpire)
+			&& !(ci->flags & (CI_VERBOTEN | CI_NO_EXPIRE | CI_SUSPEND)) && !(ci->flags & ( CI_MAIL_REC))) {
 		log("Expirando canal %s", ci->name);
-		if ((cr = cr_findcreg(ci->name))) {
+                if ((cr = cr_findcreg(ci->name))) {
                     cr->estado = 0;
                     cr->estado |= CR_EXPIRADO;
                     cr->time_motivo = time(NULL);
                 }
-#ifdef IRC_TERRA
-		if ((c = findchan(ci->name))) {
-		    c->mode &= ~CMODE_r;
-		    send_cmd(s_ChanServ, "MODE %s -r", ci->name);
-		}
-#endif
+
                 canalopers(s_ChanServ, "Expirando el canal 12%s", ci->name);
+		do_write_bdd(ci->name, 7, "", ci->name);
 		delchan(ci);
 	    }
 	    /* AQUI LOS EXPIRES DE SUSPENDS */

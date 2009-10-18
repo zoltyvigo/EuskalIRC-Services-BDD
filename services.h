@@ -388,7 +388,11 @@ struct chaninfo_ {
     char *forbidreason;                 /* Motivo del forbid */                        
 
     int16 *levels;			/* Access levels for commands */
-
+   /*---------------------donostiarra 2009---------------------------------------------------------------*/
+    int16 env_mail;			/*envio de mails si un canal no es utilizado en csexpire (es decir
+ 					  qué ningún usuario en la lista de acceso del canal entra en
+  					 ese periodo de tiempo)*/
+ /*----------------------------------------------------------------------------------------------------*/ 
     int16 accesscount;
     ChanAccess *access;			/* List of authorized users */
     int16 akickcount;
@@ -438,6 +442,9 @@ struct chaninfo_ {
 #define CI_SECUREVOICES	0x00004000
  /* Canal en AUTOLIMIT */
 #define CI_AUTOLIMIT	0x00008000
+ /* Canal en expiracion que se envia mail recordatorio */
+#define CI_MAIL_REC	0x00010000
+
 
 
 /* Indices for cmd_access[]: */

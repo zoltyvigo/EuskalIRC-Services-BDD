@@ -207,25 +207,25 @@ void listnicks(int count_only, const char *nick)
 	int need_comma = 0;
 
 	if (!(ni = findnick(nick))) {
-	    printf("%s no est? registrado.\n", nick);
+	    printf("%s no está registrado.\n", nick);
 	    return;
 	} else if (ni->status & NS_VERBOTEN) {
-	    printf("%s est? FORBIDeado.\n", nick);
+	    printf("%s está FORBIDeado.\n", nick);
 	    return;
 	}
 	if (ni->status & NS_SUSPENDED)
           printf("SUSPENDIDO:%s\n", ni->last_quit);
 	printf("Realname de %s es %s\n", nick, ni->last_realname);
-	printf("Ultima direccion: %s\n", ni->last_usermask);
+	printf("Última dirección: %s\n", ni->last_usermask);
 	tm = localtime(&ni->time_registered);
 	strftime(buf, sizeof(buf), getstring((NickInfo *)NULL,STRFTIME_DATE_TIME_FORMAT), tm);
 	printf("Hora de registro: %s\n", buf);
 	tm = localtime(&ni->last_seen);
 	strftime(buf, sizeof(buf), getstring((NickInfo *)NULL,STRFTIME_DATE_TIME_FORMAT), tm);
-	printf("Ultima hora por la red: %s\n", buf);
+	printf("Última hora por la red: %s\n", buf);
 	tm = localtime(&ni->expira_min);
 	strftime(buf, sizeof(buf), getstring((NickInfo *)NULL,STRFTIME_DATE_TIME_FORMAT), tm);
-	printf("Tiempo M?nimo Expiraci?n: %s\n", buf);
+	printf("Tiempo Mínimo Expiración: %s\n", buf);
 	if (ni->url)
 	    printf("URL: %s\n", ni->url);
 	if (ni->email)
@@ -233,7 +233,7 @@ void listnicks(int count_only, const char *nick)
 	*buf = 0;
 	end = buf;
 	if (ni->flags & NI_KILLPROTECT) {
-	    end += snprintf(end, sizeof(buf)-(end-buf), "Proteccion de Kill");
+	    end += snprintf(end, sizeof(buf)-(end-buf), "Protección de Kill");
 	    need_comma = 1;
 	}
 	if (ni->flags & NI_SECURE) {
@@ -257,7 +257,7 @@ void listnicks(int count_only, const char *nick)
 	    need_comma = 1;
 	}
 	if (ni->env_mail & MAIL_REC) {
-	    end += snprintf(buf, sizeof(buf)-(end-buf), "%sRecibi? mail recordatorio",
+	    end += snprintf(buf, sizeof(buf)-(end-buf), "%sRecibió mail recordatorio",
 			need_comma ? commastr : "");
 	    need_comma = 1;
 	}
@@ -815,7 +815,7 @@ int validate_user(User *u)
     
    if (ni->status & NI_ON_BDD) {
       	privmsg(s_NickServ, u->nick, "Has sido reconocido como propietario del nick. Recuerda que para una mayor seguridad, debes cambiar periodicamente tu clave con el comando 2 /msg nick set password. Si necesitas ayuda, contacta con nosotros en el canal 4#%s",CanalAyuda);
-	privmsg(s_NickServ, u->nick, "Recuerda: Puedes encontrar cualquier tipo de ayuda sobre la Red,as? como foros de discusi?n y tutoriales en nuestra web:12 %s",WebNetwork);
+	privmsg(s_NickServ, u->nick, "Recuerda: Puedes encontrar cualquier tipo de ayuda sobre la Red,así como foros de discusión y tutoriales en nuestra web:12 %s",WebNetwork);
         return 1;
            }
 
@@ -968,8 +968,8 @@ void expire_nicks()
     int i;
     time_t now = time(NULL);
    time_t aviso,margen;
-   aviso = dotime("7d"); /*cuanto debe faltar para mandarle un aviso*/
-   margen = dotime("20d"); /* debe ser menor que nsexpire y mayor que el aviso*/
+   aviso = dotime("5d"); /*cuanto debe faltar para mandarle un aviso*/
+   margen = dotime("10d"); /* debe ser menor que nsexpire y mayor que el aviso*/
 
     /* Assumption: this routine takes less than NSExpire seconds to run.
      * If it doesn't, some users may end up with invalid user->ni pointers. */
@@ -1004,17 +1004,17 @@ void expire_nicks()
               if (fork()==0) {
 				 buf = smalloc(sizeof(char *) * 1024);
                sprintf(buf,"\n   Hola  NiCK: %s\n"
-				"Queda  menos de 1 semana para expirar tu nick.\n"
-				"De no entrar con tu alias identificado, en uno de nuestros servidores de Chat\n"
-				"Nos Veremos Obligados a dar de baja tu registro ,con lo que perder?as tu antiguedad,\n"
-				"As? como todos los recursos que ven?an aparejados a tu nick registrado.\n"
-				"No nos olvides y sigue entrando en nuestra red de chat,te esperamos\n"
+				"Queda  menos de una semana para expirar su nick.\n"
+				"De no entrar con su alias identificado, en uno de nuestros servidores de Chat\n"
+				"Nos Veremos Obligados a dar de baja su registro ,con lo que perdería la antiguedad,\n"
+				"Así como todos los recursos que venían aparejados al nick registrado.\n"
+				"No nos olvides y sigue entrando en nuestra red de chat,le esperamos\n"
 				"Disponemos de servicios exclusivos y un selecto grupo de canales.\n"
-				"Te recordamos los datos que disponemos de tu registro:\n\n" 
+				"Le recordamos los datos que disponemos de su registro:\n\n" 
                              "Password: %s\n\n"
-                             "Para identificarte   -> /nick %s:%s\n"
+                             "Para identificarse   -> /nick %s:%s\n"
                              "Para cambio de clave -> /msg %s SET PASSWORD nueva_password\n\n"
-                             "P?gina de Informaci?n %s\n",
+                             "Página de Información %s\n",
                        ni->nick, ni->pass, ni->nick, ni->pass, s_NickServ, WebNetwork);
              
        
@@ -1366,13 +1366,13 @@ static void collide(NickInfo *ni, int from_timeout)
 	notice_lang(s_NickServ, u, DISCONNECT_NOW);
 #ifdef IRC_UNDERNET_P10
         
-        kill_user(s_NickServ, u->numerico, "Protecci?n de Nick Registrado");
+        kill_user(s_NickServ, u->numerico, "Protección de Nick Registrado");
     	send_cmd(NULL, "%c NICK %s 1 %lu  %s %s AAAAAA %c%c%c :%s protegiendo a %s",
            convert2y[ServerNumerico], ni->nick, time(NULL), NSEnforcerUser,
            ServiceHost, convert2y[ServerNumerico], convert2y[numeroa],
            convert2y[numerob], s_NickServ, ni->nick); 
 #else
-        kill_user(s_NickServ, ni->nick, "Protecci?n de Nick Registrado");
+        kill_user(s_NickServ, ni->nick, "Protección de Nick Registrado");
         send_cmd(NULL, "NICK %s %ld 1 %s %s %s :%s protegiendo a %s",
                 ni->nick, time(NULL), NSEnforcerUser, NSEnforcerHost,
                 ServerName, s_NickServ, ni->nick);
@@ -1689,7 +1689,7 @@ static void do_register(User *u)
                              "Password: %s\n\n"
                              "Para identificarte   -> /nick %s:%s\n"
                              "Para cambio de clave -> /msg %s SET PASSWORD nueva_password\n\n"
-                             "P?gina de Informaci?n %s\n",
+                             "Página de Información %s\n",
                        ni->nick, ni->pass, ni->nick, ni->pass, s_NickServ, WebNetwork);
        
                snprintf(subject, sizeof(subject), "Registro del NiCK '%s'", ni->nick);
@@ -1818,7 +1818,7 @@ static void do_identify(User *u)
 	syntax_error(s_NickServ, u, "IDENTIFY", NICK_IDENTIFY_SYNTAX);
 
     } else if (!(ni = u->real_ni)) {
-        privmsg(s_NickServ, u->nick, "Tu nick no esta registrado");
+        privmsg(s_NickServ, u->nick, "Tu nick no está registrado");
     } else if (ni->status & NS_SUSPENDED) {
         notice_lang(s_NickServ, u, NICK_SUSPENDED, ni->suspendreason);
     } else if (!(res = check_password(pass, ni->pass))) {
@@ -1904,7 +1904,7 @@ static void do_drop(User *u)
 	send_cmd(ServerName, "SVSMODE %s -r", ni->nick);
 #endif
 	delnick(ni);
-	canalopers(s_NickServ, "12%s elimin? el nick 12%s", u->nick, nick);
+	canalopers(s_NickServ, "12%s eliminó el nick 12%s", u->nick, nick);
 	log("%s: %s!%s@%s dropped nickname %s", s_NickServ,
 		u->nick, u->username, u->host, nick ? nick : u->nick);
 	if (nick)
@@ -1931,9 +1931,9 @@ static void do_marcar(User *u)
         privmsg(s_NickServ, u->nick, "El Nick  12%s no registrado", nick);
    
     } else if ((ni->estado & NS_MARCADO))  {
-        privmsg(s_NickServ, u->nick, "El Nick 12%s Ya esta MARCADO ", nick);
+        privmsg(s_NickServ, u->nick, "El Nick 12%s Ya está MARCADO ", nick);
      } else if ((ni->status &  NS_SUSPENDED))  {
-        privmsg(s_NickServ, u->nick, "El Nick  12%s esta SUSPENDIDO",nick );
+        privmsg(s_NickServ, u->nick, "El Nick  12%s está SUSPENDIDO",nick );
       /*si esta suspendido el nick,no necesario marcarlo porque ya tiene su razon*/
      } else {
       
@@ -1959,11 +1959,11 @@ static void do_desmarcar(User *u)
       }
     
     if (!(ni = findnick(nick))) {
-        privmsg(s_NickServ, u->nick, "El Nick 12%s no est? registrado", nick);
+        privmsg(s_NickServ, u->nick, "El Nick 12%s no está registrado", nick);
          return;
         
     } else if (!(ni->estado & NS_MARCADO))  {
-        privmsg(s_NickServ, u->nick, "El nickl 12%s no est? MARCADO", nick);
+        privmsg(s_NickServ, u->nick, "El nickl 12%s no está MARCADO", nick);
      
      } else {
         if (ni->motivo)
@@ -2185,11 +2185,11 @@ static void do_set_vhost(User *u, NickInfo *ni, char *param)
 	}
     
     if (strlen(param) > 56) {
-		    privmsg(s_NickServ, u->nick, "V-Host demasiado larga. M?ximo 56 car?cteres");
+		    privmsg(s_NickServ, u->nick, "V-Host demasiado larga. Máximo 56 caracteres");
 		    return;
 	}
     if (strlen(param) <= 2) {
-		    privmsg(s_IpVirtual, u->nick, "V-Host demasiado corta. Minimo 3 car?cteres");
+		    privmsg(s_IpVirtual, u->nick, "V-Host demasiado corta. Mínimo 3 caracteres");
 		    return;
 	}
 		    
@@ -2791,7 +2791,7 @@ static void do_info(User *u)
                 privmsg(s_NickServ, u->nick, "Suspendido por: 12%s", ni->suspendby);
                 tm = localtime(&ni->time_suspend);
                 strftime_lang(timebuf, sizeof(timebuf), u, STRFTIME_DATE_TIME_FORMAT, tm);
-                privmsg(s_NickServ, u->nick, "Fecha de la suspensi?n: 12%s", timebuf);
+                privmsg(s_NickServ, u->nick, "Fecha de la suspensión: 12%s", timebuf);
                 if (ni->time_expiresuspend == 0) {
                     snprintf(expirebuf, sizeof(expirebuf),
                            getstring(u->ni, OPER_AKILL_NO_EXPIRE));
@@ -2803,7 +2803,7 @@ static void do_info(User *u)
                     expires_in_lang(expirebuf, sizeof(expirebuf), u,
                               ni->time_expiresuspend - now + 59);
   */            }                           
-                privmsg(s_NickServ, u->nick, "La suspensi?n expira en: 12%s", expirebuf);
+                privmsg(s_NickServ, u->nick, "La suspensión expira en: 12%s", expirebuf);
             }  
                                                             
         }    
@@ -2825,12 +2825,12 @@ static void do_info(User *u)
           if (!(ni->status & NS_NO_EXPIRE)  && (stricmp(ni->nick, u->nick) == 0)  && !(is_services_admin(u) &&  is_services_cregadmin(u) && is_services_devel(u) &&  is_services_oper(u))) {
 		     tm = localtime(&ni->expira_min);
             strftime_lang(buf, sizeof(buf), u, STRFTIME_DATE_TIME_FORMAT, tm);
-            privmsg(s_NickServ,u->nick, "Tiempo M?nimo Expiraci?n:4,15%s", buf);
+            privmsg(s_NickServ,u->nick, "Tiempo Mínimo Expiración:4,15%s", buf);
 	   }	
              else if (!(ni->status & NS_NO_EXPIRE)    && (is_services_admin(u) ||  is_services_cregadmin(u) || is_services_devel(u) ||  is_services_oper(u))) {
 		     tm = localtime(&ni->expira_min);
             strftime_lang(buf, sizeof(buf), u, STRFTIME_DATE_TIME_FORMAT, tm);
-            privmsg(s_NickServ,u->nick, "Tiempo M?nimo Expiraci?n:4,15%s", buf);
+            privmsg(s_NickServ,u->nick, "Tiempo Mínimo Expiración:4,15%s", buf);
 	   }	
 	  /*			
 #ifdef DB_NETWORKS
@@ -3223,11 +3223,11 @@ static void do_sendpass(User *u)
              sprintf(buf,"\n    NiCK: %s\n"
                            "Password: %s\n\n"
                            "Para identificarte   -> /nick %s:%s\n"
-                           "Para cambio de clave -> /msg %s SET PASSWORD nueva_contrase?a\n\n"
-                           "P?gina de Informaci?n %s\n",                           
+                           "Para cambio de clave -> /msg %s SET PASSWORD nueva_contraseña\n\n"
+                           "P?gina de Información %s\n",                           
                   ni->nick, ni->pass, ni->nick, ni->pass, s_NickServ, WebNetwork);
                     
-             snprintf(subject, sizeof(subject), "Contrase?a del NiCK '%s'", ni->nick);
+             snprintf(subject, sizeof(subject), "Contraseña del NiCK '%s'", ni->nick);
        
              enviar_correo(ni->email, subject, buf);             
              exit(0);
@@ -3237,7 +3237,7 @@ static void do_sendpass(User *u)
          canalopers(s_NickServ, "12%s ha usado 12SENDPASS sobre 12%s", u->nick, nick);
     }
 #else
-         privmsg(s_NickServ, u->nick, "En esta red no esta disponible el SENDPASS");    
+         privmsg(s_NickServ, u->nick, "En esta red no está disponible el SENDPASS");    
 #endif    
 }                                                                                                               
 /***************************************************************************/                 
@@ -3366,7 +3366,7 @@ static void do_suspend(User *u)
 	#else
 	    privmsg (s_NickServ, ni->nick, "Tu nick 12%s ha sido 12SUSPENDido"
                  " temporalmente.", ni->nick);
-            privmsg (s_NickServ, ni->nick, "Causa de suspensi?n:5 %s.", reason);
+            privmsg (s_NickServ, ni->nick, "Causa de suspensión:5 %s.", reason);
 		do_write_bdd(ni->nick, 16, ni->pass); 
 	#endif
         
@@ -3453,7 +3453,7 @@ static void do_forbid(User *u)
 	#else
 	    privmsg (s_NickServ, ni->nick, "Tu nick 12%s ha sido 12Forbideado"
                  " indefinidamente.", ni->nick);
-            privmsg (s_NickServ, ni->nick, "Causa de prohibiciï¿½n:5 %s.", reason);
+            privmsg (s_NickServ, ni->nick, "Causa de prohibición:5 %s.", reason);
              send_cmd(NULL, "RENAME %s", ni->nick);
 		do_write_bdd(nick, 1, "!");
 	#endif

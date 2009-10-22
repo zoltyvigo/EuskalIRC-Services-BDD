@@ -5643,7 +5643,7 @@ static void do_verify(User *u)
     NickInfo *ni;
        
     if (!nick) {
-        syntax_error(s_ChanServ, u, "VERIFY", CHAN_INFO_SYNTAX);
+        syntax_error(s_ChanServ, u, "VERIFY", CHAN_VERIFY_SYNTAX);
         return;
     }
     ni = findnick(nick);
@@ -5660,6 +5660,8 @@ static void do_verify(User *u)
         privmsg(s_ChanServ, u->nick, "12%s es un BOT autorizado de la RED", s_HelpServ);
     else if (stricmp(nick, s_GlobalNoticer) == 0)
         privmsg(s_ChanServ, u->nick, "12%s es un BOT autorizado de la RED", s_GlobalNoticer);
+     else if (stricmp(nick, s_GeoIP) == 0)
+        privmsg(s_ChanServ, u->nick, "12%s es un BOT autorizado de la RED", s_GeoIP);
             
 /****  Bots de upworld *****/
     else if (stricmp(nick, "SHaDoW") == 0)

@@ -50,6 +50,7 @@ char *s_mIRCHelp;
 char *s_JokuServ;
 char *s_DevNull;
 char *s_BddServ;
+char *s_GeoIP;
 char *DEntryMsg;
 char *s_CregServ;
 char *s_IpVirtual;
@@ -84,7 +85,7 @@ char  s_JokuServP10[4];
 char  s_StatServP10[4];
 char s_DevNullP10[4];
 char s_ShadowServP10[4];
-
+char s_GeoIPServP10[4];
 #endif
 char *desc_NickServ;
 char *desc_ChanServ;
@@ -105,6 +106,7 @@ char *desc_DevNull;
 char *desc_ShadowServ;
 char *desc_IpVirtual;
 char *desc_BddServ;
+char *desc_GeoIP;
 
 char *PIDFilename;
 char *MOTDFilename;
@@ -123,6 +125,7 @@ char *AutoregistraDBName;
 char *AutolimitDBName;
 char *NickSuspendsDBName;
 char *NewsDBName;
+char *GeoIPDBName;
 
 int   SpamUsers;
 int   NoBackupOkay;
@@ -313,8 +316,6 @@ Directive directives[] = {
     			    { PARAM_STRING, 0, &desc_BddServ } } },
     { "IPVirtualName",	  { { PARAM_STRING, 0, &s_IpVirtual },
     			    { PARAM_STRING, 0, &desc_IpVirtual } } },
-
-        
 #ifdef IRC_UNDERNET_P10
     { "ServerNumerico",   { { PARAM_INT, 0, &ServerNumerico } } },
    /* { "ServerHUB",       { { PARAM_STRING, 0, &ServerHUB } } },*/
@@ -369,6 +370,9 @@ Directive directives[] = {
     { "StatServDB",       { { PARAM_STRING, 0, &StatDBName } } },
     { "StatServName",     { { PARAM_STRING, 0, &s_StatServ },
                             { PARAM_STRING, 0, &desc_StatServ } } },
+    { "GeoIPDB",       { { PARAM_STRING, 0, &GeoIPDBName } } },
+    { "GeoIPName",     { { PARAM_STRING, 0, &s_GeoIP},
+                            { PARAM_STRING, 0, &desc_GeoIP } } },
     { "PIDFile",          { { PARAM_STRING, 0, &PIDFilename } } },
     { "ReadTimeout",      { { PARAM_TIME, 0, &ReadTimeout } } },
     { "RemoteServer",     { { PARAM_STRING, 0, &RemoteServer },
@@ -674,6 +678,7 @@ int read_config()
     CHEK2(s_OperServ, OperServName);
     CHEK2(s_CregServ, CregServName);
     CHEK2(s_IpVirtual, IPVirtualName);
+    CHEK2(s_GeoIP, GeoIPName);
     CHEK2(s_EuskalIRCServ, EuskalIRCServName);
     CHEK2(s_JokuServ, JokuServName);
     CHEK2(s_StatServ, StatServName);
@@ -691,6 +696,7 @@ int read_config()
     CHEK2(JokuDBName, JokuServDB);
     CHEK2(StatDBName, StatServDB);	
     CHEK2(IpVirtualDBName, IpVirtualDB);
+    CHEK2(GeoIPDBName, GeoIPDB);
     CHEK2(EuskalIRCDBName, EuskalIRCServDB);
     CHEK2(AutokillDBName, AutokillDB);
     CHEK2(AutoregistraDBName, AutoregistraDB);

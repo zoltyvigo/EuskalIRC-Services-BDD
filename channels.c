@@ -924,8 +924,8 @@ void do_topic(const char *source, int ac, char **av)
     Channel *c = findchan(av[0]);
 
     if (!c) {
-	log("Canales: TOPIC %s para canal %s inexistente",
-						merge_args(ac-1, av+1), av[0]);
+	/*log("Canales: TOPIC %s para canal %s inexistente",
+						merge_args(ac-1, av+1), av[0]);*/
 	return;
     }
     if (check_topiclock(av[0]))

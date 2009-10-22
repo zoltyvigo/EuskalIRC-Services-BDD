@@ -335,7 +335,7 @@ static void do_ipv_add(User *u)
 static void do_ipv_list(User *u)
 {
     int i = 0;
-    int cont;
+    int cont,pos;
      int is_servadmin = is_services_admin(u);
     char timebuf[64];
     char *cmd = strtok(NULL, " ");
@@ -352,11 +352,13 @@ static void do_ipv_list(User *u)
         cont++;
        #ifdef IRC_UNDERNET_P10
 	   if (stricmp(cmd, ipvirtual[i].titular) == 0) { 
- privmsg(s_IpVirtual, u->numerico, "%d [ %d ] - '%s' - '%s'", cont, ipvirtual[i].numero,ipvirtual[i].cadena, *ipvirtual[i].titular ? ipvirtual[i].titular : "<unknown>");
+pos++;
+ privmsg(s_IpVirtual, u->numerico, "%d [ %d ] - '%s' - '%s'", pos, ipvirtual[i].numero,ipvirtual[i].cadena, *ipvirtual[i].titular ? ipvirtual[i].titular : "<unknown>");
  }
         #else
 	 if (stricmp(cmd, ipvirtual[i].titular) == 0) {
- privmsg(s_IpVirtual, u->nick,"%d [ %d ] - '%s' - '%s'", cont,  ipvirtual[i].numero,ipvirtual[i].cadena, *ipvirtual[i].titular ? ipvirtual[i].titular : "<unknown>");
+ pos++;
+ privmsg(s_IpVirtual, u->nick,"%d [ %d ] - '%s' - '%s'", pos,  ipvirtual[i].numero,ipvirtual[i].cadena, *ipvirtual[i].titular ? ipvirtual[i].titular : "<unknown>");
 	  }
 	 #endif
        }

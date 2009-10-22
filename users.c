@@ -18,6 +18,8 @@ int  servercnt = 0, usercnt = 0, opcnt = 0, maxusercnt = 0;
 /* hacemos estadísticas de helpers=representantes de red*/
 int helpcnt =0, invcnt = 0;
 
+int autogeoip =0;
+
 /*************************************************************************/
 /*************************************************************************/
 
@@ -474,6 +476,8 @@ void do_nick(const char *source, int ac, char **av)
     struct tm *tm;
    time_t expires;
     
+  
+
 #ifdef IRC_UNDERNET_P10
     char **av_umode;
 #endif    
@@ -492,8 +496,15 @@ if (!(ni)) {
         expires = time(NULL)+dotime("2m");
     add_aregistra(av[0],expires);
     }
+
+/* booleano-interruptor autogeoip para permitir redirecciones en geoip.c*/ 
+
+if (autogeoip) {
+redirec(av);
+} else {
 	/* This is a new user; create a User structure for it. */
  canaladmins(s_StatServ, "2ENTRA: %s 12HOST[%s]", av[0],av[4]);
+ }
  check_akill(av[0], av[3], av[4]);
 	if (debug)
 	   // log("debug: new user: %s", av[0]);

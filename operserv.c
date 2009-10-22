@@ -82,6 +82,7 @@ static Command cmds[] = {
     { "SPAM",       do_spam,       NULL,  OPER_HELP_SPAM,      -1,-1,-1,-1 },
     { "DUDA",	    do_euskal,	   is_services_oper,   OPER_HELP_DUDA,   -1,-1,-1,-1 },
 	/*Para el Bot EuskalIRC*/
+    { "GEOIP",	    do_geoip,	   is_services_oper,   GEOIP_HELP_DUDA,   -1,-1,-1,-1 },
     { "FORZAR",	    do_svsjoinparts,	   is_services_oper,   OPER_HELP_FORZAR,   -1,-1,-1,-1 },
     { "MODOS",	    do_svsmodes,	   is_services_admin,   OPER_HELP_MODOS,   -1,-1,-1,-1 }, /*is_services_admin*/
 	/* --donostiarra(2009)--
@@ -514,7 +515,7 @@ int is_services_oper(User *u)
 
 int is_a_service(char *nick)
 {
-   if ((stricmp(nick, s_NickServ) == 0) || (stricmp(nick, s_ChanServ) == 0) || (stricmp(nick, s_CregServ) == 0) || (stricmp(nick, s_MemoServ) == 0) || (stricmp(nick, s_OperServ) == 0) || (stricmp(nick, s_ShadowServ) == 0) || (stricmp(nick, s_BddServ) == 0) || (stricmp(nick, s_HelpServ) == 0) || (stricmp(nick, s_GlobalNoticer) == 0) || (stricmp(nick, s_NewsServ) == 0) || (stricmp(nick, s_EuskalIRCServ) == 0) || (stricmp(nick, s_SpamServ) == 0)|| (stricmp(nick, s_IpVirtual) == 0))
+   if ((stricmp(nick, s_NickServ) == 0) || (stricmp(nick, s_ChanServ) == 0) || (stricmp(nick, s_CregServ) == 0) || (stricmp(nick, s_MemoServ) == 0) || (stricmp(nick, s_OperServ) == 0) || (stricmp(nick, s_ShadowServ) == 0) || (stricmp(nick, s_BddServ) == 0) || (stricmp(nick, s_HelpServ) == 0) || (stricmp(nick, s_GlobalNoticer) == 0) || (stricmp(nick, s_NewsServ) == 0) || (stricmp(nick, s_EuskalIRCServ) == 0) || (stricmp(nick, s_SpamServ) == 0)|| (stricmp(nick, s_IpVirtual) == 0) || (stricmp(nick, s_GeoIP) == 0))
 	return 1;
   else
   	return 0;

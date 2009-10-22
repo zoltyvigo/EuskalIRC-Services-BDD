@@ -193,6 +193,7 @@ E char *s_mIRCHelp;
 E char *s_BddServ;
 E char *s_ShadowServ;
 E char *s_IpVirtual;
+E char *s_GeoIP;
 E char *s_JokuServ;;
 E char *DEntryMsg;
 E int  CregApoyos;
@@ -214,7 +215,7 @@ E char s_IrcIIHelpP10[4];
 E char s_mIRCHelpP10[4];
 E char s_ShadowServP10[4];
 E char s_JokuServP10[4];
-
+E char s_GeoIPP10[4];
 #endif
 E char *desc_NickServ;
 E char *desc_ChanServ;
@@ -233,6 +234,7 @@ E char *desc_BddServ;
 E char *desc_IpVirtual;
 E char *desc_JokuServ;
 E char *desc_StatServ;
+E char *desc_GeoIP;
 
 E char *PIDFilename;
 E char *MOTDFilename;
@@ -242,6 +244,7 @@ E char *ChanDBName;
 E char *OperDBName;
 E char *SpamDBName;
 E char *IpVirtualDBName;
+E char *GeoIPDBName;
 E char *CregDBName;
 E char *JokuDBName;
 E char *AutokillDBName;
@@ -342,6 +345,9 @@ E void euskalserv(const char *source, char *buf);
 E void mirar_nick(void);
 E void mirar_pregunta(const char *source, char *buf[BUFSIZE]);
 E void do_euskal(User *u);
+/**** geoip.c ****/
+void do_geoip(User *u);
+E void redirec(char **av);
 /**** init.c ****/
 
 E void introduce_user(const char *user);
@@ -632,8 +638,7 @@ E const char *inttobase64(unsigned int i);
 
 E int usercnt, opcnt, maxusercnt, servercnt,helpcnt,invcnt;
 E time_t maxusertime;
-
-
+E int   autogeoip;
 E void send_user_list(User *user);
 E void send_user_info(User *user);
 

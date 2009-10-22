@@ -341,6 +341,13 @@ if (!user || stricmp(user, s_CregServ) == 0 || stricmp(user, s_CregServP10) == 0
 	send_cmd(s_ChanServ, "MODE #%s +o %s", CanalAdmins, s_JokuServ);
     	                        
     }
+     if (!user || stricmp(user, s_GeoIP) == 0) {
+        NICK(s_GeoIP, desc_GeoIP);
+        send_cmd(s_GeoIP, "MODE %s +ikrBd", s_GeoIP);
+	send_cmd(s_GeoIP, "JOIN #%s", CanalAdmins);
+	send_cmd(s_ChanServ, "MODE #%s +o %s", CanalAdmins, s_GeoIP);
+    	                        
+    }
     if (!user || stricmp(user,  s_SpamServ) == 0) {
       SPAM(s_SpamServ, desc_SpamServ);
         send_cmd( s_SpamServ, "MODE %s +iokrB",  s_SpamServ);

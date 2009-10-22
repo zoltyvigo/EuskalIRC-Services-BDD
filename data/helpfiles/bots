@@ -11,12 +11,11 @@ En esta red tiene en servicio varios bots cuya finalidad es la siguiente:
     4EuskalIRC   Servicio de Ayuda al Usuario e Informativo de Red.
     4IPVIRTUAL   Servicio de ips Virtuales.
     4SHaDoW      Servicio de guardían de modos.
-   
- 
 
 Bots de acceso restringido:
 
-     4BDD	    Servicio Control de la Base de Datos Distribuida
+     GeoIP	    Servicio Redirección a canales por el dominio del host
+     4BDD         Servicio Control de la Base de Datos Distribuida
      4OPeR        Servicio sólo para OPERS/IRCOPS.
 
 

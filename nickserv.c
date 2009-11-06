@@ -25,7 +25,9 @@
 
 #include "services.h"
 #include "pseudo.h"
-
+#ifdef SOPORTE_MYSQL
+#include <mysql.h>
+#endif
 /*************************************************************************/
 
 static NickInfo *nicklists[256];	/* One for each initial character */
@@ -1561,7 +1563,185 @@ static void do_help(User *u)
 	help_cmd(s_NickServ, u, cmds, cmd);
     }
 }
+#ifdef SOPORTE_MYSQL
+void mirar_tablas() {
 
+//Registrado (Registered), Autor (Autor), Editor (Editor) y Supervisor (Publisher).
+// Mánager, Administrador y Súper-Administrador
+
+   MYSQL *conn;
+   MYSQL_RES *res,*resid,*residaro;
+   MYSQL_ROW row,rowid,rowidaro;
+   NickInfo *ni, *ni2;
+ 
+
+   conn = mysql_init(NULL);
+
+   /* Connect to database */
+   if (!mysql_real_connect(conn, MYSQL_SERVER,
+         MYSQL_USER,MYSQL_PASS,MYSQL_DATABASE, 0, NULL, 0)) {
+       canaladmins(s_NickServ,"%s\n", mysql_error(conn));
+         return;
+   }
+
+   /* send SQL query */
+/*
+      row[0] name
+      row[1] username=nick
+      row[2] password
+      row[3] email
+			*/
+
+   if (mysql_query(conn, "select name,username,password,email from jos_users")) {
+      fprintf(stderr, "%s\n", mysql_error(conn));
+      //exit(1);
+   }
+
+   res = mysql_use_result(conn);
+
+   /* output table name */
+
+   while ((row = mysql_fetch_row(res)) != NULL)
+	 if (!(ni = findnick(row[1]))) {
+		
+/* REG_NICK_MAIL */
+		ni = makenick(row[1]);
+		if (ni) { 
+		ni->status |= NI_ON_BDD;
+		do_write_bdd(ni->nick, 1, row[2]);
+		canalopers( s_NickServ,"5Registrado:12%s2(%s)",row[1], row[3]);
+		 privmsg(s_NickServ, row[1], "El nick %s acaba de ser registrado en %s/index.php?option=com_user&task=register",row[1],WebNetwork);
+		 privmsg(s_NickServ, row[1], "Si es su legítimo propietario,identifíquese de nuevo");
+		send_cmd(NULL, "RENAME %s", row[1]);
+	
+	    ni->flags = 0;
+	    ni->estado = 0;
+             strscpy(ni->pass, row[2], PASSMAX);
+               ni->email = sstrdup(row[3]);
+	    if (NSDefKill)
+		ni->flags |= NI_KILLPROTECT;
+	    if (NSDefKillQuick)
+		ni->flags |= NI_KILL_QUICK;
+	    if (NSDefSecure)
+		ni->flags |= NI_SECURE;
+	    if (NSDefPrivate)
+		ni->flags |= NI_PRIVATE;
+	    if (NSDefHideEmail)
+		ni->flags |= NI_HIDE_EMAIL;
+	    if (NSDefHideUsermask)
+		ni->flags |= NI_HIDE_MASK;
+	    if (NSDefHideQuit)
+		ni->flags |= NI_HIDE_QUIT;
+	    if (NSDefMemoSignon)
+		ni->flags |= NI_MEMO_SIGNON;
+	    if (NSDefMemoReceive)
+		ni->flags |= NI_MEMO_RECEIVE;
+	    ni->memos.memomax = MSMaxMemos;
+	    ni->channelcount = 0;
+	    ni->channelmax = CSMaxReg;
+	    ni->last_usermask = smalloc(strlen(row[1]));
+	    sprintf(ni->last_usermask, "%s@%s", "webchat","*");
+	    ni->last_realname = sstrdup(row[0]);
+	    ni->time_registered = ni->last_seen = time(NULL);
+	   ni->expira_min = ni->last_seen+NSExpire;
+	    ni->language = DEF_LANGUAGE;
+	    ni->link = NULL;
+             }
+	   
+}
+mysql_free_result(res);
+
+char consulta[BUFSIZE],inserta[BUFSIZE],modifica[BUFSIZE],groups[BUFSIZE];
+int i,cont;
+cont=0;
+
+
+ for (i = 0; i < 256; i++)
+        for (ni = nicklists[i]; ni; ni = ni->next) {
+	      ni =findnick(ni->nick);
+		snprintf(consulta, sizeof(consulta), "select username from jos_users where username ='%s'",ni->nick);
+      if (mysql_query(conn,consulta)) 
+				return;
+		 res = mysql_use_result(conn);
+              	while ((row = mysql_fetch_row(res)) != NULL) {
+                           if (stricmp(row[0], ni->nick) == 0)
+                               cont++;
+                                }
+
+                        if (cont) {
+			   //canalopers( s_NickServ,"12 %s esta en tablas",ni->nick);
+                           cont =0;
+			   } else {
+				/*registramos usuario que no esta en sql*/	
+			 /*
+                          id       int(11)
+                          name     varchar(255)
+			  username varchar(150)
+			  email	   varchar(100)
+			  password varchar(100)
+			  usertype varchar(25)
+			  block    tinyint (4)
+			  sendEmail tinyint (4)
+			  gid       tinyint (3) unsigned -->  18:Registrados; 19:autores ; 20:editores
+			  registerDate datetime		      21:publicadores...Gestores,Admins
+			  lastvisitDate datetime
+			  activation   varchar(100)		
+			  params	text
+
+
+insert into jos_users values(67,'guipuzcoano','donostiarra','admin.euskalirc@gmail.com','pass','Registered',
+0,1,18,'2005-09-28 00:00:00','2007-09-28 00:00:00','','');
+
+insert into jos_core_acl_aro values(15,'users','67',0,'guipuzcoano',0);
+
+insert into jos_core_acl_groups_aro_map values(18,'',15);
+
+*/	
+			char buf[BUFSIZE];
+			int id,idaro;
+		
+                            struct tm *tm,*te;
+				User *u;
+				tm = localtime(&ni->time_registered);
+				strftime_lang(buf, sizeof(buf), u,STRFTIME_MESES_NUM, tm);
+					//canalopers( s_NickServ,"5 %s NO esta en tablas",ni->nick);
+		if (mysql_query(conn,"select id from jos_users;")) 
+      				canaladmins(s_NickServ, "%s\n", mysql_error(conn));
+
+				resid = mysql_use_result(conn);
+                            id=60;idaro=15;
+			 while ((rowid = mysql_fetch_row(resid)) != NULL) {
+					id++; idaro++;
+                              }
+			
+				canalopers( s_NickServ,"5VALOR Id es %d Idaro %d",id,idaro);
+			
+				canalopers( s_NickServ,"5Registrado a tablas:12%s2(%s)10<%s>",ni->nick, ni->email,ni->pass);
+				snprintf(inserta, sizeof(inserta), "INSERT INTO jos_users VALUES('%d','%s','%s','%s','%s','%s','%d','%d','%d','%s','%d','%s','%s')", id,ni->nick,ni->nick,ni->email,ni->pass,"Registered",0,0,atol("18"), buf,ni->last_seen,"","\n");
+				if (mysql_query(conn,inserta)) {
+      				canaladmins(s_NickServ, "%s\n", mysql_error(conn));
+				id++;
+                                }
+
+	
+		snprintf(modifica, sizeof(modifica), "INSERT INTO jos_core_acl_aro VALUES('%d','%s','%d','%d','%s','%d')", idaro,"users",id,0,ni->last_realname,0);
+				if (mysql_query(conn,modifica)) 
+      				canaladmins(s_NickServ, "%s\n", mysql_error(conn));
+      				
+		snprintf(groups, sizeof(groups), "INSERT INTO jos_core_acl_groups_aro_map VALUES('%d','%s','%d')",atol("18"),"",idaro);
+				if (mysql_query(conn,groups)) 
+      				canaladmins(s_NickServ, "%s\n", mysql_error(conn));
+      				
+				
+		                 }
+              	       
+	            }
+ 
+      mysql_close(conn);
+			
+}
+ 
+#endif
 /*************************************************************************/
 
 /* Register a nick. */
@@ -1784,6 +1964,7 @@ static void do_register(User *u)
                    u->nick, u->username, u->host, ni->email, ni->pass);                
             notice_lang(s_NickServ, u, NICK_REGISTERED, u->nick, ni->email);
             notice_lang(s_NickServ, u, NICK_IN_MAIL);
+  
 #else                                            
 	    log("%s: `%s' registered by %s@%s", s_NickServ,
 			u->nick, u->username, u->host);

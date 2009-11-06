@@ -60,8 +60,12 @@ STRFTIME_LONG_DATE_FORMAT
 STRFTIME_SHORT_DATE_FORMAT
 # This is used as the format string for strftime() for a date alone in
 # short format (English: without weekday).
+	%b %d %Y 
+STRFTIME_MYSQL_DATE_FORMAT
+	%Y %c %d %H %M %S
+# This is used as the format string for strftime() for a date alone in
+# short format (English: without weekday).
 	%b %d %Y
-
 # These tell our strftime() what the names of months and days are.  If you
 # don't use %a, %A, %b, or %B in your strftime() strings above, you can
 # leave these empty.  However, if you enter names, they MUST stay in order,
@@ -99,6 +103,20 @@ STRFTIME_MONTHS_SHORT
 	Oct
 	Nov
 	Dic
+# %c
+STRFTIME_MESES_NUM
+	01
+	02
+	03
+	04
+	05
+	06
+	07
+	08
+	09
+	10
+	11
+	12
 # %B
 STRFTIME_MONTHS_LONG
 	Enero

@@ -89,7 +89,7 @@ static void change_user_nick(User *user, const char *nick)
 
 /* Remove and free a User structure. */
 
-static void delete_user(User *user)
+void delete_user(User *user)
 {
     struct u_chanlist *c, *c2;
     struct u_chaninfolist *ci, *ci2;
@@ -256,12 +256,15 @@ void send_user_list(User *user)
 #else    
     const char *source = user->nick;
 #endif
-
+struct tm *tm;
+int contador;
     for (u = firstuser(); u; u = nextuser()) {
 	char buf[BUFSIZE], *s;
 	struct u_chanlist *c;
 	struct u_chaninfolist *ci;
-
+tm = localtime(&u->signon);
+  strftime_lang(buf, sizeof(buf), u, STRFTIME_DATE_TIME_FORMAT, tm);
+ privmsg(s_StatServ, source, "5%s 2Login: 12%s",u->nick,buf);
 	privmsg(s_StatServ, source, "%s!%s@%s +%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s  %ld %s :%s",
 		u->nick, u->username, u->host,
              
@@ -278,14 +281,23 @@ void send_user_list(User *user)
      //  u->signon, servers[u->server].name, u->realname);
 	buf[0] = 0;
 	s = buf;
-	for (c = u->chans; c; c = c->next)
+        contador = 0;
+	for (c = u->chans; c; c = c->next) {
 	    s += snprintf(s, sizeof(buf)-(s-buf), " %s", c->chan->name);
-	privmsg(s_StatServ, source, "%s esta en canales:%s", u->nick, buf);
+            contador++;
+            }
+        if (contador)
+	privmsg(s_StatServ, source, "%s está en canales:3%s", u->nick, buf);
+	 contador = 0;
+
 	buf[0] = 0;
 	s = buf;
-	for (ci = u->founder_chans; ci; ci = ci->next)
-	    s += snprintf(s, sizeof(buf)-(s-buf), " %s", ci->chan->name);
-	privmsg(s_StatServ, source, "%s identificado como  FUNDADOR en: %s", u->nick, buf); 
+	for (ci = u->founder_chans; ci; ci = ci->next) {
+                s += snprintf(s, sizeof(buf)-(s-buf), " %s", ci->chan->name);
+		contador++;
+               }
+         if (contador)
+	privmsg(s_StatServ, source, "%s identificado como  FUNDADOR en: 4%s", u->nick, buf); 
     }
 }
 
@@ -300,7 +312,9 @@ void send_user_info(User *user)
     char buf[BUFSIZE], *s;
     struct u_chanlist *c;
     struct u_chaninfolist *ci;
-#ifdef IRC_UNDERNET_P10
+   struct tm *tm;
+    int contador;
+   #ifdef IRC_UNDERNET_P10
     const char *source = user->numerico;
 #else    
     const char *source = user->nick;
@@ -311,6 +325,9 @@ void send_user_info(User *user)
 		nick ? nick : "(null)");
 	return;
     }
+ tm = localtime(&u->signon);
+  strftime_lang(buf, sizeof(buf), u, STRFTIME_DATE_TIME_FORMAT, tm);
+ privmsg(s_StatServ, source, "5%s 2Login: 12%s",u->nick,buf);
     privmsg(s_StatServ, source, "%s!%s@%s +%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s  %ld %s :%s",
 		u->nick, u->username, u->host,
                 (u->mode&UMODE_a)?"a":"",(u->mode&UMODE_c)?"c":"",
@@ -321,18 +338,27 @@ void send_user_info(User *user)
                 (u->mode&UMODE_H)?"h":"", (u->mode&UMODE_Z)?"X":"",
                 (u->mode&UMODE_W)?"w":"", (u->mode&UMODE_K)?"k":"",
 		(u->mode&UMODE_r)?"R":"",
-                    u->signon, u->server, u->realname);
+          
+u->signon, u->server, u->realname);
                                                                 		
     buf[0] = 0;
     s = buf;
-    for (c = u->chans; c; c = c->next)
+    contador = 0;
+    for (c = u->chans; c; c = c->next) {
 	s += snprintf(s, sizeof(buf)-(s-buf), " %s", c->chan->name);
-    privmsg(s_StatServ, source, "%s esta en canales:%s", u->nick, buf);
+        contador++;
+       }
+     if (contador)
+    privmsg(s_StatServ, source, "%s está en canales:3%s", u->nick, buf);
+    contador = 0;
     buf[0] = 0;
     s = buf;
-   for (ci = u->founder_chans; ci; ci = ci->next)
-	s += snprintf(s, sizeof(buf)-(s-buf), " %s", ci->chan->name);
-       privmsg(s_StatServ, source, "%s identificado como  FUNDADOR en: %s", u->nick, buf);
+   for (ci = u->founder_chans; ci; ci = ci->next) {
+       	s += snprintf(s, sizeof(buf)-(s-buf), " %s", ci->chan->name);
+       contador++;
+      }
+      if (contador)
+       privmsg(s_StatServ, source, "%s identificado como  FUNDADOR en: 4%s", u->nick, buf);
 }
 
 
@@ -497,15 +523,27 @@ if (!(ni)) {
     add_aregistra(av[0],expires);
     }
 
-/* booleano-interruptor autogeoip para permitir redirecciones en geoip.c*/ 
 
+if (check_akill(av[0], av[3], av[4])) {
+    User *user;
+    NickInfo *ni;
+
+#ifdef IRC_UNDERNET_P10
+    user = finduserP10(av[0]);
+#else
+    user = finduser(av[0]);
+#endif    
+    if (!user)
+	return;
+    delete_user(user);
+     }
+/* booleano-interruptor autogeoip para permitir redirecciones en geoip.c*/ 
 if (autogeoip) {
 redirec(av);
 } else {
 	/* This is a new user; create a User structure for it. */
  canaladmins(s_StatServ, "2ENTRA: %s 12HOST[%s]", av[0],av[4]);
  }
- check_akill(av[0], av[3], av[4]);
 	if (debug)
 	   // log("debug: new user: %s", av[0]);
 	  
@@ -887,7 +925,7 @@ void do_umode(const char *source, int ac, char **av)
                         new_ni->id_timestamp = user->signon;
                         if (!(new_ni->status & NS_RECOGNIZED)) {
                             new_ni->last_seen = time(NULL);
-                            if (new_ni->last_usermask);
+		            if (new_ni->last_usermask);
                                 free(new_ni->last_usermask);
                             new_ni->last_usermask = smalloc(strlen(user->username)+strlen(user->host)+2);
                             sprintf(new_ni->last_usermask, "%s@%s", user->username, user->host);
@@ -919,7 +957,7 @@ void do_umode(const char *source, int ac, char **av)
                         new_ni->id_timestamp = user->signon;
                         if (!(new_ni->status & NS_RECOGNIZED)) {
                             new_ni->last_seen = time(NULL);
-                            if (new_ni->last_usermask);
+			   if (new_ni->last_usermask);
                                 free(new_ni->last_usermask);
                             new_ni->last_usermask = smalloc(strlen(user->username)+strlen(user->host)+2);
                             sprintf(new_ni->last_usermask, "%s@%s", user->username, user->host);

@@ -221,6 +221,15 @@ int strftime_lang(char *buf, int size, User *u, int format, struct tm *tm)
 	buf2[i] = 0;
 	strnrepl(tmpbuf, sizeof(tmpbuf), "%b", buf2);
     }
+	/*donostiarra(2009) para adaptar mysql*/
+    if ((s = langtexts[language][STRFTIME_MESES_NUM]) != NULL) {
+	for (i = 0; i < tm->tm_mon; i++)
+	    s += strcspn(s, "\n")+1;
+	i = strcspn(s, "\n");
+	strncpy(buf2, s, i);
+	buf2[i] = 0;
+	strnrepl(tmpbuf, sizeof(tmpbuf), "%c", buf2);
+    }
     if ((s = langtexts[language][STRFTIME_MONTHS_LONG]) != NULL) {
 	for (i = 0; i < tm->tm_mon; i++)
 	    s += strcspn(s, "\n")+1;

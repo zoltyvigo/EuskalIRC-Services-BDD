@@ -161,6 +161,10 @@ NETWORK=
 ENCRYPTION=
 REG_NICK_MAIL="REG_NICK_MAIL"
 SENDMAIL="SENDMAIL"
+MYSQL="MYSQL"
+
+MYSQLLIBS=""
+MYSQLCFLAGS=""
 
 INSTALL=
 CP_ALL=
@@ -618,6 +622,43 @@ if [ "$REG_NICK_MAIL" = "REG_NICK_MAIL" ] ; then
 done
 echo ""
 fi
+ ok=0
+     echo "Quieres usar el Soporte MYSQL?"
+     echo "Debian Linux to get mysql_config and libraries for C code to compile"
+     echo "(apt-get install libmysqlclient15-dev)"
+     echo "The C API code is distributed with MySQL."
+     echo "It is included in the mysqlclient library and allows C programs to access a database."
+     echo "(Seleccionando "\"yes\"", usarás el soporte MYSQL(no olvide connectar el  MySQL database server)"
+     echo "en caso contrario, "\"no"\", No lo usarás."
+     echo "(Nota:una vez activado,si desea desactivarlo,use ./configure -ignore-cache y responda "\"no"\")"
+     echo ""
+     while [ $ok -eq 0 ] ; do
+        echo2 "[$DEF] "
+        if read INPUT ; then : ; else echo "" ; exit 1 ; fi
+        if [ ! "$INPUT" ] ; then
+                INPUT=$DEF
+        fi
+        case $INPUT in
+                n*|N*)
+                        MYSQL=
+			MYSQLCFLAGS=``
+			MYSQLLIBS=``
+                        ok=1
+                        ;;
+                y*|Y*)
+                        MYSQL=SOPORTE_MYSQL
+			MYSQLCFLAGS=`mysql_config --cflags`
+			MYSQLLIBS=`mysql_config --libs`
+                        ok=1
+                        ;;
+                *)
+                        echo "Por favor, presione 'y' o 'n'."
+                        ;;
+        esac
+
+done
+echo ""
+
 ######
 
 
@@ -651,7 +692,7 @@ elif [ "$CC" ] ; then
 elif run gcc --version ; then
 	echo "great, encontrado gcc!"
 	CC=gcc
-	DEF_CC_FLAGS=-O9 -fomit-frame-pointer -ffast-math -fexpensive-optimizations
+	DEF_CC_FLAGS=-O9 -fomit-frame-pointer -ffast-math -fexpensive-optimizations 
 	log using \`gcc\'
 else
 	echo "gcc no encontrado."
@@ -683,7 +724,7 @@ EOT
 		log \`"$CC' not ANSI-compliant"
 		exit 2
 	fi
-	DEF_CC_FLAGS=-O9 -fomit-frame-pointer -ffast-math -fexpensive-optimizations
+	DEF_CC_FLAGS=-O9 -fomit-frame-pointer -ffast-math -fexpensive-optimizations 
 fi
 
 
@@ -1292,6 +1333,9 @@ if [ "$ENCRYPTION" ] ; then cat >>sysconf.h <<EOT ; fi
 #define USE_ENCRYPTION
 #define $ENCRYPTION
 EOT
+if [ "$MYSQL" ] ; then cat >>sysconf.h <<EOT ; fi
+#define $MYSQL
+EOT
 cat >>sysconf.h <<EOT
 
 typedef   signed $TYPE_INT16  int16;
@@ -1326,9 +1370,9 @@ cat >Makefile.inc <<EOT
 # to it will be erased next time "configure" is run.
 
 CC=$CC
-BASE_CFLAGS=$CC_FLAGS
-LFLAGS=$CC_LFLAGS
-LIBS=$CC_LIBS
+BASE_CFLAGS=$CC_FLAGS $MYSQLCFLAGS
+LFLAGS=$CC_LFLAGS $MYSQLLIBS
+LIBS=$CC_LIBS 
 EOT
 if [ $HAVE_SNPRINTF = 0 -a $BAD_SNPRINTF = 0 ];then cat >>Makefile.inc <<EOT;fi
 
@@ -1371,10 +1415,11 @@ IRCTYPE_DEF3="$IRCTYPE_DEF3"
 ENCRYPTION="$ENCRYPTION"
 REG_NICK_MAIL="$REG_NICK_MAIL"
 SENDMAIL="$SENDMAIL"
+MYSQL="$MYSQL"
 
 CC="$CC"
-CC_FLAGS="$CC_FLAGS"
-CC_LFLAGS="$CC_LFLAGS"
+CC_FLAGS="$CC_FLAGS $MYSQLCFLAGS"
+CC_LFLAGS="$CC_LFLAGS $MYSQLLIBS"
 CC_LIBS="$CC_LIBS"
 
 TYPE_INT16=$TYPE_INT16

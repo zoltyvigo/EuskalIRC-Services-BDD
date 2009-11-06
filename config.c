@@ -19,6 +19,12 @@ char *LocalHost;
 int   LocalPort;
 
 char *ServerName;
+
+char *MYSQL_SERVER;
+char *MYSQL_USER;
+char *MYSQL_PASS;
+char *MYSQL_DATABASE;
+
 char *ServerDesc;
 char *ServerHUB;
 char *ServiceUser;
@@ -380,6 +386,10 @@ Directive directives[] = {
                             { PARAM_STRING, 0, &RemotePassword } } },
     { "ServerDesc",       { { PARAM_STRING, 0, &ServerDesc } } },
     { "ServerName",       { { PARAM_STRING, 0, &ServerName } } },
+    { "MYSQL_SERVER",       { { PARAM_STRING, 0, &MYSQL_SERVER } } },
+    { "MYSQL_USER",       { { PARAM_STRING, 0, &MYSQL_USER } } },
+    { "MYSQL_PASS",       { { PARAM_STRING, 0, &MYSQL_PASS } } },
+    { "MYSQL_DATABASE",       { { PARAM_STRING, 0, &MYSQL_DATABASE } } },
      { "SpamUsers",        { { PARAM_INT, 0, &SpamUsers } } },
     { "ServicesRoot",     { { PARAM_STRING, 0, &ServicesRoot } } },
     { "ServiceUser",      { { PARAM_STRING, 0, &temp_userhost } } },
@@ -650,9 +660,13 @@ int read_config()
 
     CHECK(RemoteServer);
     CHECK(ServerName);
+    CHECK(MYSQL_SERVER);
+    CHECK(MYSQL_USER);
+    CHECK(MYSQL_PASS);
+    CHECK(MYSQL_DATABASE);
+
 #ifdef IRC_UNDERNET_P10
     CHECK(ServerNumerico);
-    
 #endif
       CHECK(tramo1);
       CHECK(tramo2);

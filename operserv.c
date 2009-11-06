@@ -83,8 +83,13 @@ static Command cmds[] = {
     { "DUDA",	    do_euskal,	   is_services_oper,   OPER_HELP_DUDA,   -1,-1,-1,-1 },
 	/*Para el Bot EuskalIRC*/
     { "GEOIP",	    do_geoip,	   is_services_oper,   GEOIP_HELP_DUDA,   -1,-1,-1,-1 },
+	/*#ifdef SOPORTE_MYSQL
+     { "MYSQL",	   geoip_mysql,	   is_services_oper,   -1,   -1,-1,-1,-1 },
+	#endif*/
     { "FORZAR",	    do_svsjoinparts,	   is_services_oper,   OPER_HELP_FORZAR,   -1,-1,-1,-1 },
     { "MODOS",	    do_svsmodes,	   is_services_admin,   OPER_HELP_MODOS,   -1,-1,-1,-1 }, /*is_services_admin*/
+
+
 	/* --donostiarra(2009)--
         con este ejemplo,ahorramos codigo en "MODOS" no asi en "FORZAR",
 	Que queriendo restringir mas aun el acceso,

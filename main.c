@@ -210,7 +210,10 @@ int main(int ac, char **av, char **envp)
 		log("debug: Running expire routines");
 //            canalopers(ServerName, "Ejecutando rutinas de expiracion");
 	    if (!skeleton) {
-		
+		#ifdef SOPORTE_MYSQL
+		waiting = -20;
+	    mirar_tablas();
+	    #endif
 		waiting = -21;
 		expire_nicks();
 		waiting = -22;
@@ -223,6 +226,7 @@ int main(int ac, char **av, char **envp)
             expire_aregistras();
 	    expire_alimits();
 	    expire_anicks();
+	
 	    
             
 	    last_expire = t;

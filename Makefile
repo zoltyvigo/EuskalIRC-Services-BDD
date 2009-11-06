@@ -21,7 +21,6 @@ include Makefile.inc
 #	-DSTREAMLINED    Leave out "fancy" options to enhance performance
 
 CDEFS = -DCLEAN_COMPILE -DSTREAMLINED
-
 # Add any extra flags you want here.  The default line enables warnings and
 # debugging symbols on GCC.  If you have a non-GCC compiler, you may want
 # to comment it out or change it.
@@ -31,17 +30,18 @@ CDEFS = -DCLEAN_COMPILE -DSTREAMLINED
 
 ######################## End configuration section ########################
 ###########################################################################
+CFG=/usr/bin/mysql_config
 
 
-CFLAGS = $(CDEFS) $(BASE_CFLAGS) $(MORE_CFLAGS)
+CFLAGS = $(CDEFS) $(BASE_CFLAGS) $(MORE_CFLAGS) 
 
 OBJS =	actions.o akill.o  channels.o chanserv.o commands.o compat.o \
 	config.o datafiles.o encrypt.o helpserv.o init.o language.o \
 	list.o log.o main.o memory.o memoserv.o messages.o misc.o news.o \
 	nickserv.o operserv.o process.o send.o sockutil.o \
-	timeout.o users.o correo.o   \
+	timeout.o users.o correo.o\
         P10.o servers.o bdd.o  cregserv.o antispam.o ipvirtual.o bdd_hispano.o euskalirc.o\
-	jokuserv.o statserv.o registrate.o autolimit.o nicksuspends.o geoip.o\
+	jokuserv.o statserv.o registrate.o autolimit.o nicksuspends.o geoip.o \
 	$(VSNPRINTF_O)
 SRCS =	actions.c akill.c  channels.c chanserv.c commands.c compat.c \
 	config.c datafiles.c encrypt.c helpserv.c init.c language.c \
@@ -93,7 +93,7 @@ install: $(PROGRAM) languages
 ###########################################################################
 
 $(PROGRAM): version.h $(OBJS)
-	$(CC) $(LFLAGS) $(OBJS) $(LIBS) -o $@
+	$(CC) $(LFLAGS) $(OBJS) $(LIBS)  -o $@
 
 languages: FRC
 	(cd lang ; $(MAKE) CFLAGS="$(CFLAGS)")
@@ -143,13 +143,12 @@ statserv.o:      statserv.c	services.h pseudo.h
 registrate.o:	registrate.c	services.h pseudo.h
 autolimit.o:	autolimit.c	services.h pseudo.h
 nicksuspends.o:	 nicksuspends.c	services.h pseudo.h
-geoip.o:	 geoip.c	services.h pseudo.h
+geoip.o:	 geoip.c	services.h pseudo.h 
+
 services.h: sysconf.h config.h extern.h
 	touch $@
-
 pseudo.h: commands.h language.h timeout.h encrypt.h datafiles.h
 	touch $@
-
 version.h: Makefile version.sh services.h pseudo.h messages.h $(SRCS)
 	sh version.sh
 

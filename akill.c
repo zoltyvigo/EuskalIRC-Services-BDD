@@ -222,6 +222,7 @@ int check_akill(const char *nick, const char *username, const char *host)
     int i;
     char *host2, *username2;
 
+
     strscpy(buf, username, sizeof(buf)-2);
     i = strlen(buf);
     buf[i++] = '@';
@@ -240,11 +241,14 @@ int check_akill(const char *nick, const char *username, const char *host)
             send_cmd(s_OperServ,
                         "D %s :%s (Estas Baneado de esta RED)",
                         nick, s_OperServ);
-                                                                   
+	     
+                                               
 #else
-	    send_cmd(s_OperServ,
+        send_cmd(s_OperServ,
 			"KILL %s :%s (Estas Baneado de esta RED)",
 			nick, s_OperServ);
+         canaladmins(s_OperServ, "12%s 3Autokilleado por 5Gline en Akill", nick);
+      
 #endif
 	    username2 = sstrdup(akills[i].mask);
 	    host2 = strchr(username2, '@');

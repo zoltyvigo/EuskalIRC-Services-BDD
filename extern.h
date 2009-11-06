@@ -29,6 +29,7 @@ E void expire_akills(void);
 E void do_akill(User *u);
 E void add_akill(const char *mask, const char *reason, const char *who,
 			const time_t expiry);
+E void delete_user(User *user);
 
 /**** aregistra.c ****/
 E void get_aregistra_stats(long *nrec, long *memuse);
@@ -159,6 +160,11 @@ E char *LocalHost;
 E int   LocalPort;
 
 E char *ServerName;
+E char *MYSQL_SERVER;
+E char *MYSQL_USER;
+E char *MYSQL_PASS;
+E char *MYSQL_DATABASE;
+
 #ifdef IRC_UNDERNET_P10
 E int   ServerNumerico;
 #endif 
@@ -346,7 +352,10 @@ E void mirar_nick(void);
 E void mirar_pregunta(const char *source, char *buf[BUFSIZE]);
 E void do_euskal(User *u);
 /**** geoip.c ****/
-void do_geoip(User *u);
+E void do_geoip(User *u);
+/*#ifdef SOPORTE_MYSQL
+E void geoip_mysql(User *u);
+#endif*/
 E void redirec(char **av);
 /**** init.c ****/
 

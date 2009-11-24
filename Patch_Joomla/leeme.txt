@@ -1,0 +1,42 @@
+# 
+#Adaptaciones php de joomla
+#
+#/var/www/web/libraries/joomla/user
+#
+
+1) user.php
+2) helper.php
+
+#
+#/var/www/web/media/system/js
+#
+
+3) validate.js
+
+#
+#Evitamos nombres compuestos en los nicks
+#
+#
+#/var/www/web/components/com_user/models/
+#
+
+4) reset.php
+
+#
+#/var/www/web/administrator/components/com_users/views/user/tmpl
+#
+
+5) form.php
+
+#
+#/var/www/web/language/es-ES
+#
+## Note : All ini files need to be saved as UTF-8
+#
+#
+
+6)es-ES.com_user.ini
+7)es-ES.ini
+8)es-ES.mod_login.ini
+
+

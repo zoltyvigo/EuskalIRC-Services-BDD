@@ -32,7 +32,7 @@ var JFormValidator = new Class({
 			function (value) {
 				/*regex = new RegExp("[\<|\>|\"|\'|\%|\;|\(|\)|\&]", "i");
 				return !regex.test(value);*/
-				regex=/^\S[\S]{2,16}\S$/;
+				regex=/^[^$ñ.*:"?¿¡!@#%&/()=ºª0-9\s]{1,1}[^$ñ.*:"?¿¡!@#%&/()=ºª\s]{1,14}$/;
 				return regex.test(value);
 		
 			}
@@ -41,7 +41,7 @@ var JFormValidator = new Class({
 		this.setHandler('password',
 			function (value) {
 				/*regex=/^\S[\S ]{2,98}\S$/;*/
-				regex=/^\S[\S]{2,16}\S$/;
+				regex=/^[^$ñ.*:"?¿¡!@#%&/()=ºª0-9\s]{1,1}[^$ñ.*:"?¿¡!@#%&/()=ºª\s]{1,14}$/;
 				return regex.test(value);
 			}
 		);

@@ -15,7 +15,9 @@
 
 #include "services.h"
 #include "pseudo.h"
-
+#ifdef SOPORTE_MYSQL
+#include <mysql.h>
+#endif
 
 static CregInfo *creglists[256]; 
 
@@ -412,7 +414,7 @@ static int delcreg(CregInfo *cr)
     cr = NULL; 
  
     free(cr);
-    
+
     return 1;
     
 }            
@@ -1483,6 +1485,23 @@ static void do_drop(User *u)
         delcreg(cr);    
         privmsg(s_CregServ, u->nick, "El canal 12%s ha sido dropado de CReG", chan); 
         canalopers(s_CregServ, "12%s ha dropado el canal 12%s", u->nick, chan);
+	#ifdef SOPORTE_MYSQL
+MYSQL *conn;
+char modifica[BUFSIZE];
+ conn = mysql_init(NULL);
+
+   /* Connect to database */
+   if (!mysql_real_connect(conn, MYSQL_SERVER,
+         MYSQL_USER,MYSQL_PASS,MYSQL_DATABASE, 0, NULL, 0)) {
+       canaladmins(s_CregServ,"%s\n", mysql_error(conn));
+         return;
+   }
+snprintf(modifica, sizeof(modifica), "delete from jos_chans where canal ='%s';",chan);
+if (mysql_query(conn,modifica)) 
+canaladmins(s_CregServ, "%s\n", mysql_error(conn));
+ mysql_close(conn);
+
+#endif
       
     }
 }
@@ -1518,6 +1537,33 @@ static void do_fuerza(User *u)
       
 	canalopers(s_CregServ, "12%s ha forzado la aceptación del canal 12%s", u->nick, chan);
         privmsg(s_CregServ, u->nick, "12%s ha sido registrado en %s", chan, s_ChanServ);
+
+#ifdef SOPORTE_MYSQL
+ /*id           | int(11)      | NO   | PRI | NULL       | auto_increment |
+| seccion      | int(11)      | NO   |     | 0          |                |
+| canal        | varchar(150) | NO   | MUL |            |                |
+| username     | varchar(150) | NO   | MUL |            |                |
+| registerDate | varchar(100) | NO   |     |            |                |
+| status       | varchar(100) |
+			*/
+			  
+ MYSQL *conn;
+char inserta[BUFSIZE];
+ conn = mysql_init(NULL);
+
+   /* Connect to database */
+   if (!mysql_real_connect(conn, MYSQL_SERVER,
+         MYSQL_USER,MYSQL_PASS,MYSQL_DATABASE, 0, NULL, 0)) {
+       canaladmins(s_CregServ,"%s\n", mysql_error(conn));
+         return;
+   }
+snprintf(inserta, sizeof(inserta), "INSERT INTO jos_chans VALUES('','','%s','%s','','Registrado')", chan,cr->founder);
+
+if (mysql_query(conn,inserta)) 
+canaladmins(s_CregServ, "%s\n", mysql_error(conn));
+ mysql_close(conn);
+
+#endif
 
 /*soporte envio de memos a los founders de los nuevos canales registrados que han sido forzados*/
           

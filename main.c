@@ -236,7 +236,7 @@ int main(int ac, char **av, char **envp)
               
 	    if (debug)
 		log("debug: Saving databases");
-//	    canalopers(ServerName, "Grabando DB's");	
+	   // canalopers(ServerName, "Grabando DB's");	
 	    if (!skeleton) {
 		waiting = -11;
 		save_ns_dbase();

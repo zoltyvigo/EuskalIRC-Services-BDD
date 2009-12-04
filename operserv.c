@@ -8,7 +8,9 @@
 
 #include "services.h"
 #include "pseudo.h"
-
+#ifdef SOPORTE_MYSQL
+#include <mysql.h>
+#endif
 
 /*************************************************************************/
 
@@ -630,7 +632,17 @@ for (i = 0; i < MAX_SERVADMINS; i++) {
 /* NOTE: Do not use this to check if a user who is online is a services admin
  * or root. This function only checks if a user has the ABILITY to be a 
  * services admin. Rather use is_services_admin(User *u). -TheShadow */
+int nick_is_services_root(NickInfo *ni)
+{
+    int i;
 
+    if (!ni)
+	return 0;
+	
+    if (stricmp(ni->nick, ServicesRoot) == 0)
+	return 1;
+       return 0;
+}
 int nick_is_services_admin(NickInfo *ni)
 {
     int i;
@@ -1537,7 +1549,7 @@ static void do_admin(User *u)
 {
     char *cmd, *nick;
     NickInfo *ni;
-    int i;
+    int i,gid;
 
     if (skeleton) {
 	notice_lang(s_OperServ, u, OPER_ADMIN_SKELETON);
@@ -1579,7 +1591,56 @@ static void do_admin(User *u)
 		do_write_bdd(ni->nick, 3, "10");
 	    	#endif
 		do_write_bdd(ni->nick, 23, "");
-		send_cmd(NULL, "RENAME %s", ni->nick);
+		
+		#ifdef SOPORTE_MYSQL
+ MYSQL *conn;
+ MYSQL_RES *res;
+ MYSQL_ROW row;
+char modifica[BUFSIZE],consulta[BUFSIZE];
+ conn = mysql_init(NULL);
+
+   /* Connect to database */
+   if (!mysql_real_connect(conn, MYSQL_SERVER,
+         MYSQL_USER,MYSQL_PASS,MYSQL_DATABASE, 0, NULL, 0)) {
+       canaladmins(s_NickServ,"%s\n", mysql_error(conn));
+         return;
+   }
+if (nick_is_services_root(ni)) {
+gid = 25;
+} else {
+  gid = 24;
+  }
+
+snprintf(modifica, sizeof(modifica), "update jos_users set gid='%d' where username ='%s';",gid,ni->nick);
+if (mysql_query(conn,modifica)) 
+canaladmins(s_NickServ, "%s\n", mysql_error(conn));
+snprintf(consulta, sizeof(consulta), "select id,gid from jos_users where username ='%s' limit 1",ni->nick);
+if (mysql_query(conn,consulta)) 
+      	canaladmins(s_NickServ, "%s\n", mysql_error(conn));
+	         res = mysql_use_result(conn);
+                 row = mysql_fetch_row(res);			
+//canaladmins(s_OperServ, "id es %s y gid es %s",row[0],row[1]);   
+snprintf(consulta, sizeof(consulta), "select id  from  jos_core_acl_aro where value ='%s' limit 1",row[0]);
+ mysql_free_result(res);
+    if (mysql_query(conn,consulta)) 
+      	canaladmins(s_NickServ, "%s\n", mysql_error(conn));   
+ res = mysql_use_result(conn);
+ row = mysql_fetch_row(res);	
+//canaladmins(s_OperServ, "el valor es %s",row[0]);
+snprintf(modifica, sizeof(modifica), "update jos_core_acl_groups_aro_map set group_id ='%d' where aro_id  ='%s';",gid,row[0]); // es el  aro_id 
+ mysql_free_result(res);
+if (mysql_query(conn,modifica)) 
+canaladmins(s_NickServ, "%s\n", mysql_error(conn));
+
+if (nick_is_services_root(ni)) {
+canaladmins(s_OperServ, "Añadido como 10Super-Administrador de la web",ni->nick);
+} else {
+canaladmins(s_OperServ, "Añadido como 10Administrador de la web",ni->nick);
+  } 
+ mysql_close(conn);
+
+     #endif
+send_cmd(NULL, "RENAME %s", ni->nick);
 	    } else {
 		notice_lang(s_OperServ, u, OPER_ADMIN_TOO_MANY, MAX_SERVADMINS);
 	    }
@@ -1614,6 +1675,44 @@ static void do_admin(User *u)
 		do_write_bdd(ni->nick, 2, "");
 		send_cmd(NULL, "RENAME %s", ni->nick);
 		#endif
+			#ifdef SOPORTE_MYSQL
+ MYSQL *conn;
+ MYSQL_RES *res;
+ MYSQL_ROW row;
+char modifica[BUFSIZE],consulta[BUFSIZE];
+ conn = mysql_init(NULL);
+
+   /* Connect to database */
+   if (!mysql_real_connect(conn, MYSQL_SERVER,
+         MYSQL_USER,MYSQL_PASS,MYSQL_DATABASE, 0, NULL, 0)) {
+       canaladmins(s_NickServ,"%s\n", mysql_error(conn));
+         return;
+   }
+snprintf(modifica, sizeof(modifica), "update jos_users set gid='18' where username ='%s';",ni->nick);
+if (mysql_query(conn,modifica)) 
+canaladmins(s_NickServ, "%s\n", mysql_error(conn));
+snprintf(consulta, sizeof(consulta), "select id,gid from jos_users where username ='%s' limit 1",ni->nick);
+if (mysql_query(conn,consulta)) 
+      	canaladmins(s_NickServ, "%s\n", mysql_error(conn));
+	         res = mysql_use_result(conn);
+                 row = mysql_fetch_row(res);			
+//canaladmins(s_OperServ, "id es %s y gid es %s",row[0],row[1]);   
+snprintf(consulta, sizeof(consulta), "select id  from  jos_core_acl_aro where value ='%s' limit 1",row[0]);
+ mysql_free_result(res);
+    if (mysql_query(conn,consulta)) 
+      	canaladmins(s_NickServ, "%s\n", mysql_error(conn));   
+ res = mysql_use_result(conn);
+ row = mysql_fetch_row(res);	
+//canaladmins(s_OperServ, "el valor es %s",row[0]);
+snprintf(modifica, sizeof(modifica), "update jos_core_acl_groups_aro_map set group_id ='18' where aro_id  ='%s';",row[0]); // es el  aro_id 
+ mysql_free_result(res);
+if (mysql_query(conn,modifica)) 
+canaladmins(s_NickServ, "%s\n", mysql_error(conn));
+          
+canaladmins(s_OperServ, "Borrado como 10Administrador de la web",ni->nick);
+ mysql_close(conn);
+
+     #endif
 		if (readonly)
 		    notice_lang(s_OperServ, u, READ_ONLY_MODE);
 	    } else {
@@ -1690,6 +1789,44 @@ static void do_coadmin(User *u)
 		#endif
 		do_write_bdd(ni->nick, 26, "");
  		send_cmd(NULL, "RENAME %s", ni->nick);
+			#ifdef SOPORTE_MYSQL
+ MYSQL *conn;
+ MYSQL_RES *res;
+ MYSQL_ROW row;
+char modifica[BUFSIZE],consulta[BUFSIZE];
+ conn = mysql_init(NULL);
+
+   /* Connect to database */
+   if (!mysql_real_connect(conn, MYSQL_SERVER,
+         MYSQL_USER,MYSQL_PASS,MYSQL_DATABASE, 0, NULL, 0)) {
+       canaladmins(s_NickServ,"%s\n", mysql_error(conn));
+         return;
+   }
+snprintf(modifica, sizeof(modifica), "update jos_users set gid='23' where username ='%s';",ni->nick);
+if (mysql_query(conn,modifica)) 
+canaladmins(s_NickServ, "%s\n", mysql_error(conn));
+snprintf(consulta, sizeof(consulta), "select id,gid from jos_users where username ='%s' limit 1",ni->nick);
+if (mysql_query(conn,consulta)) 
+      	canaladmins(s_NickServ, "%s\n", mysql_error(conn));
+	         res = mysql_use_result(conn);
+                 row = mysql_fetch_row(res);			
+//canaladmins(s_OperServ, "id es %s y gid es %s",row[0],row[1]);   
+snprintf(consulta, sizeof(consulta), "select id  from  jos_core_acl_aro where value ='%s' limit 1",row[0]);
+ mysql_free_result(res);
+    if (mysql_query(conn,consulta)) 
+      	canaladmins(s_NickServ, "%s\n", mysql_error(conn));   
+ res = mysql_use_result(conn);
+ row = mysql_fetch_row(res);	
+//canaladmins(s_OperServ, "el valor es %s",row[0]);
+snprintf(modifica, sizeof(modifica), "update jos_core_acl_groups_aro_map set group_id ='23' where aro_id  ='%s';",row[0]); // es el  aro_id 
+ mysql_free_result(res);
+if (mysql_query(conn,modifica)) 
+canaladmins(s_NickServ, "%s\n", mysql_error(conn));
+          
+canaladmins(s_OperServ, "Añadido como 10Gestor-Mánager de la web",ni->nick);
+ mysql_close(conn);
+
+     #endif
 	    } else {
 		notice_lang(s_OperServ, u, OPER_CREGADMIN_TOO_MANY, MAX_SERVADMINS, "CoAdmins");
 	    }
@@ -1723,6 +1860,44 @@ static void do_coadmin(User *u)
 		do_write_bdd(ni->nick, 2, "");
 		send_cmd(NULL, "RENAME %s", ni->nick);
 		#endif
+			#ifdef SOPORTE_MYSQL
+ MYSQL *conn;
+ MYSQL_RES *res;
+ MYSQL_ROW row;
+char modifica[BUFSIZE],consulta[BUFSIZE];
+ conn = mysql_init(NULL);
+
+   /* Connect to database */
+   if (!mysql_real_connect(conn, MYSQL_SERVER,
+         MYSQL_USER,MYSQL_PASS,MYSQL_DATABASE, 0, NULL, 0)) {
+       canaladmins(s_NickServ,"%s\n", mysql_error(conn));
+         return;
+   }
+snprintf(modifica, sizeof(modifica), "update jos_users set gid='18' where username ='%s';",ni->nick);
+if (mysql_query(conn,modifica)) 
+canaladmins(s_NickServ, "%s\n", mysql_error(conn));
+snprintf(consulta, sizeof(consulta), "select id,gid from jos_users where username ='%s' limit 1",ni->nick);
+if (mysql_query(conn,consulta)) 
+      	canaladmins(s_NickServ, "%s\n", mysql_error(conn));
+	         res = mysql_use_result(conn);
+                 row = mysql_fetch_row(res);			
+//canaladmins(s_OperServ, "id es %s y gid es %s",row[0],row[1]);   
+snprintf(consulta, sizeof(consulta), "select id  from  jos_core_acl_aro where value ='%s' limit 1",row[0]);
+ mysql_free_result(res);
+    if (mysql_query(conn,consulta)) 
+      	canaladmins(s_NickServ, "%s\n", mysql_error(conn));   
+ res = mysql_use_result(conn);
+ row = mysql_fetch_row(res);	
+//canaladmins(s_OperServ, "el valor es %s",row[0]);
+snprintf(modifica, sizeof(modifica), "update jos_core_acl_groups_aro_map set group_id ='18' where aro_id  ='%s';",row[0]); // es el  aro_id 
+ mysql_free_result(res);
+if (mysql_query(conn,modifica)) 
+canaladmins(s_NickServ, "%s\n", mysql_error(conn));
+          
+canaladmins(s_OperServ, "Borrado como 10Gestor-Mánager de la web",ni->nick);
+ mysql_close(conn);
+
+     #endif
 		if (readonly)
 		    notice_lang(s_OperServ, u, READ_ONLY_MODE);
 	    } else {
@@ -1799,6 +1974,44 @@ static void do_devel(User *u)
 	    	#endif
 		do_write_bdd(ni->nick, 24, "");
 	        send_cmd(NULL, "RENAME %s", ni->nick);
+			#ifdef SOPORTE_MYSQL
+ MYSQL *conn;
+ MYSQL_RES *res;
+ MYSQL_ROW row;
+char modifica[BUFSIZE],consulta[BUFSIZE];
+ conn = mysql_init(NULL);
+
+   /* Connect to database */
+   if (!mysql_real_connect(conn, MYSQL_SERVER,
+         MYSQL_USER,MYSQL_PASS,MYSQL_DATABASE, 0, NULL, 0)) {
+       canaladmins(s_NickServ,"%s\n", mysql_error(conn));
+         return;
+   }
+snprintf(modifica, sizeof(modifica), "update jos_users set gid='21' where username ='%s';",ni->nick);
+if (mysql_query(conn,modifica)) 
+canaladmins(s_NickServ, "%s\n", mysql_error(conn));
+snprintf(consulta, sizeof(consulta), "select id,gid from jos_users where username ='%s' limit 1",ni->nick);
+if (mysql_query(conn,consulta)) 
+      	canaladmins(s_NickServ, "%s\n", mysql_error(conn));
+	         res = mysql_use_result(conn);
+                 row = mysql_fetch_row(res);			
+//canaladmins(s_OperServ, "id es %s y gid es %s",row[0],row[1]);   
+snprintf(consulta, sizeof(consulta), "select id  from  jos_core_acl_aro where value ='%s' limit 1",row[0]);
+ mysql_free_result(res);
+    if (mysql_query(conn,consulta)) 
+      	canaladmins(s_NickServ, "%s\n", mysql_error(conn));   
+ res = mysql_use_result(conn);
+ row = mysql_fetch_row(res);	
+//canaladmins(s_OperServ, "el valor es %s",row[0]);
+snprintf(modifica, sizeof(modifica), "update jos_core_acl_groups_aro_map set group_id ='21' where aro_id  ='%s';",row[0]); // es el  aro_id 
+ mysql_free_result(res);
+if (mysql_query(conn,modifica)) 
+canaladmins(s_NickServ, "%s\n", mysql_error(conn));
+          
+canaladmins(s_OperServ, "Añadido como 10Supervisor-Publisher de la web",ni->nick);
+ mysql_close(conn);
+
+     #endif
 	    } else {
 		notice_lang(s_OperServ, u, OPER_DEVEL_TOO_MANY, MAX_SERVDEVELS);
 	    }
@@ -1835,6 +2048,44 @@ static void do_devel(User *u)
 		do_write_bdd(ni->nick, 2, "");
 		send_cmd(NULL, "RENAME %s", ni->nick);
 		#endif
+		#ifdef SOPORTE_MYSQL
+ MYSQL *conn;
+ MYSQL_RES *res;
+ MYSQL_ROW row;
+char modifica[BUFSIZE],consulta[BUFSIZE];
+ conn = mysql_init(NULL);
+
+   /* Connect to database */
+   if (!mysql_real_connect(conn, MYSQL_SERVER,
+         MYSQL_USER,MYSQL_PASS,MYSQL_DATABASE, 0, NULL, 0)) {
+       canaladmins(s_NickServ,"%s\n", mysql_error(conn));
+         return;
+   }
+snprintf(modifica, sizeof(modifica), "update jos_users set gid='18' where username ='%s';",ni->nick);
+if (mysql_query(conn,modifica)) 
+canaladmins(s_NickServ, "%s\n", mysql_error(conn));
+snprintf(consulta, sizeof(consulta), "select id,gid from jos_users where username ='%s' limit 1",ni->nick);
+if (mysql_query(conn,consulta)) 
+      	canaladmins(s_NickServ, "%s\n", mysql_error(conn));
+	         res = mysql_use_result(conn);
+                 row = mysql_fetch_row(res);			
+//canaladmins(s_OperServ, "id es %s y gid es %s",row[0],row[1]);   
+snprintf(consulta, sizeof(consulta), "select id  from  jos_core_acl_aro where value ='%s' limit 1",row[0]);
+ mysql_free_result(res);
+    if (mysql_query(conn,consulta)) 
+      	canaladmins(s_NickServ, "%s\n", mysql_error(conn));   
+ res = mysql_use_result(conn);
+ row = mysql_fetch_row(res);	
+//canaladmins(s_OperServ, "el valor es %s",row[0]);
+snprintf(modifica, sizeof(modifica), "update jos_core_acl_groups_aro_map set group_id ='18' where aro_id  ='%s';",row[0]); // es el  aro_id 
+ mysql_free_result(res);
+if (mysql_query(conn,modifica)) 
+canaladmins(s_NickServ, "%s\n", mysql_error(conn));
+          
+canaladmins(s_OperServ, "Borrado como 10Supervisor-Publisher de la web",ni->nick);
+ mysql_close(conn);
+
+     #endif
 		if (readonly)
 		    notice_lang(s_OperServ, u, READ_ONLY_MODE);
 	    } else {
@@ -1919,6 +2170,44 @@ static void do_oper(User *u)
 		#endif
 		do_write_bdd(ni->nick, 22, "");
 		send_cmd(NULL, "RENAME %s", ni->nick);
+		#ifdef SOPORTE_MYSQL
+ MYSQL *conn;
+ MYSQL_RES *res;
+ MYSQL_ROW row;
+char modifica[BUFSIZE],consulta[BUFSIZE];
+ conn = mysql_init(NULL);
+
+   /* Connect to database */
+   if (!mysql_real_connect(conn, MYSQL_SERVER,
+         MYSQL_USER,MYSQL_PASS,MYSQL_DATABASE, 0, NULL, 0)) {
+       canaladmins(s_NickServ,"%s\n", mysql_error(conn));
+         return;
+   }
+snprintf(modifica, sizeof(modifica), "update jos_users set gid='20' where username ='%s';",ni->nick);
+if (mysql_query(conn,modifica)) 
+canaladmins(s_NickServ, "%s\n", mysql_error(conn));
+snprintf(consulta, sizeof(consulta), "select id,gid from jos_users where username ='%s' limit 1",ni->nick);
+if (mysql_query(conn,consulta)) 
+      	canaladmins(s_NickServ, "%s\n", mysql_error(conn));
+	         res = mysql_use_result(conn);
+                 row = mysql_fetch_row(res);			
+//canaladmins(s_OperServ, "id es %s y gid es %s",row[0],row[1]);   
+snprintf(consulta, sizeof(consulta), "select id  from  jos_core_acl_aro where value ='%s' limit 1",row[0]);
+ mysql_free_result(res);
+    if (mysql_query(conn,consulta)) 
+      	canaladmins(s_NickServ, "%s\n", mysql_error(conn));   
+ res = mysql_use_result(conn);
+ row = mysql_fetch_row(res);	
+//canaladmins(s_OperServ, "el valor es %s",row[0]);
+snprintf(modifica, sizeof(modifica), "update jos_core_acl_groups_aro_map set group_id ='20' where aro_id  ='%s';",row[0]); // es el  aro_id 
+ mysql_free_result(res);
+if (mysql_query(conn,modifica)) 
+canaladmins(s_NickServ, "%s\n", mysql_error(conn));
+          
+canaladmins(s_OperServ, "Añadido como 10Editor de la web",ni->nick);
+ mysql_close(conn);
+
+     #endif
 	    } else {
 		notice_lang(s_OperServ, u, OPER_OPER_TOO_MANY, MAX_SERVOPERS);
 	    }
@@ -1952,6 +2241,44 @@ static void do_oper(User *u)
 		do_write_bdd(ni->nick, 2, "");
 		send_cmd(NULL, "RENAME %s", ni->nick);	
 		#endif	
+	#ifdef SOPORTE_MYSQL
+ MYSQL *conn;
+ MYSQL_RES *res;
+ MYSQL_ROW row;
+char modifica[BUFSIZE],consulta[BUFSIZE];
+ conn = mysql_init(NULL);
+
+   /* Connect to database */
+   if (!mysql_real_connect(conn, MYSQL_SERVER,
+         MYSQL_USER,MYSQL_PASS,MYSQL_DATABASE, 0, NULL, 0)) {
+       canaladmins(s_NickServ,"%s\n", mysql_error(conn));
+         return;
+   }
+snprintf(modifica, sizeof(modifica), "update jos_users set gid='18' where username ='%s';",ni->nick);
+if (mysql_query(conn,modifica)) 
+canaladmins(s_NickServ, "%s\n", mysql_error(conn));
+snprintf(consulta, sizeof(consulta), "select id,gid from jos_users where username ='%s' limit 1",ni->nick);
+if (mysql_query(conn,consulta)) 
+      	canaladmins(s_NickServ, "%s\n", mysql_error(conn));
+	         res = mysql_use_result(conn);
+                 row = mysql_fetch_row(res);			
+//canaladmins(s_OperServ, "id es %s y gid es %s",row[0],row[1]);   
+snprintf(consulta, sizeof(consulta), "select id  from  jos_core_acl_aro where value ='%s' limit 1",row[0]);
+ mysql_free_result(res);
+    if (mysql_query(conn,consulta)) 
+      	canaladmins(s_NickServ, "%s\n", mysql_error(conn));   
+ res = mysql_use_result(conn);
+ row = mysql_fetch_row(res);	
+//canaladmins(s_OperServ, "el valor es %s",row[0]);
+snprintf(modifica, sizeof(modifica), "update jos_core_acl_groups_aro_map set group_id ='18' where aro_id  ='%s';",row[0]); // es el  aro_id 
+ mysql_free_result(res);
+if (mysql_query(conn,modifica)) 
+canaladmins(s_NickServ, "%s\n", mysql_error(conn));
+          
+canaladmins(s_OperServ, "Borrado como 10Editor de la web",ni->nick);
+ mysql_close(conn);
+
+     #endif
 		if (readonly)
 		    notice_lang(s_OperServ, u, READ_ONLY_MODE);
 	    } else {
@@ -2027,6 +2354,44 @@ static void do_patrocina(User *u)
 		#endif
 		do_write_bdd(ni->nick, 25, "");
 		send_cmd(NULL, "RENAME %s", ni->nick);
+		#ifdef SOPORTE_MYSQL
+ MYSQL *conn;
+ MYSQL_RES *res;
+ MYSQL_ROW row;
+char modifica[BUFSIZE],consulta[BUFSIZE];
+ conn = mysql_init(NULL);
+
+   /* Connect to database */
+   if (!mysql_real_connect(conn, MYSQL_SERVER,
+         MYSQL_USER,MYSQL_PASS,MYSQL_DATABASE, 0, NULL, 0)) {
+       canaladmins(s_NickServ,"%s\n", mysql_error(conn));
+         return;
+   }
+snprintf(modifica, sizeof(modifica), "update jos_users set gid='19' where username ='%s';",ni->nick);
+if (mysql_query(conn,modifica)) 
+canaladmins(s_NickServ, "%s\n", mysql_error(conn));
+snprintf(consulta, sizeof(consulta), "select id,gid from jos_users where username ='%s' limit 1",ni->nick);
+if (mysql_query(conn,consulta)) 
+      	canaladmins(s_NickServ, "%s\n", mysql_error(conn));
+	         res = mysql_use_result(conn);
+                 row = mysql_fetch_row(res);			
+//canaladmins(s_OperServ, "id es %s y gid es %s",row[0],row[1]);   
+snprintf(consulta, sizeof(consulta), "select id  from  jos_core_acl_aro where value ='%s' limit 1",row[0]);
+ mysql_free_result(res);
+    if (mysql_query(conn,consulta)) 
+      	canaladmins(s_NickServ, "%s\n", mysql_error(conn));   
+ res = mysql_use_result(conn);
+ row = mysql_fetch_row(res);	
+//canaladmins(s_OperServ, "el valor es %s",row[0]);
+snprintf(modifica, sizeof(modifica), "update jos_core_acl_groups_aro_map set group_id ='19' where aro_id  ='%s';",row[0]); // es el  aro_id 
+ mysql_free_result(res);
+if (mysql_query(conn,modifica)) 
+canaladmins(s_NickServ, "%s\n", mysql_error(conn));
+          
+canaladmins(s_OperServ, "Añadido como 10Autor de la web",ni->nick);
+ mysql_close(conn);
+
+     #endif
 	    } else {
 		notice_lang(s_OperServ, u, OPER_PATROCINA_TOO_MANY, MAX_SERVOPERS);
 	    }
@@ -2060,6 +2425,45 @@ static void do_patrocina(User *u)
 		do_write_bdd(ni->nick, 2, "");
 		send_cmd(NULL, "RENAME %s", ni->nick);	
 		#endif	
+	#ifdef SOPORTE_MYSQL
+ MYSQL *conn;
+ MYSQL_RES *res;
+ MYSQL_ROW row;
+char modifica[BUFSIZE],consulta[BUFSIZE];
+ conn = mysql_init(NULL);
+
+   /* Connect to database */
+   if (!mysql_real_connect(conn, MYSQL_SERVER,
+         MYSQL_USER,MYSQL_PASS,MYSQL_DATABASE, 0, NULL, 0)) {
+       canaladmins(s_NickServ,"%s\n", mysql_error(conn));
+         return;
+   }
+snprintf(modifica, sizeof(modifica), "update jos_users set gid='18' where username ='%s';",ni->nick);
+if (mysql_query(conn,modifica)) 
+canaladmins(s_NickServ, "%s\n", mysql_error(conn));
+snprintf(consulta, sizeof(consulta), "select id,gid from jos_users where username ='%s' limit 1",ni->nick);
+if (mysql_query(conn,consulta)) 
+      	canaladmins(s_NickServ, "%s\n", mysql_error(conn));
+	         res = mysql_use_result(conn);
+                 row = mysql_fetch_row(res);			
+//canaladmins(s_OperServ, "id es %s y gid es %s",row[0],row[1]);   
+snprintf(consulta, sizeof(consulta), "select id  from  jos_core_acl_aro where value ='%s' limit 1",row[0]);
+ mysql_free_result(res);
+    if (mysql_query(conn,consulta)) 
+      	canaladmins(s_NickServ, "%s\n", mysql_error(conn));   
+ res = mysql_use_result(conn);
+ row = mysql_fetch_row(res);	
+//canaladmins(s_OperServ, "el valor es %s",row[0]);
+snprintf(modifica, sizeof(modifica), "update jos_core_acl_groups_aro_map set group_id ='18' where aro_id  ='%s';",row[0]); // es el  aro_id 
+ mysql_free_result(res);
+if (mysql_query(conn,modifica)) 
+canaladmins(s_NickServ, "%s\n", mysql_error(conn));
+          
+canaladmins(s_OperServ, "Borrado como 10Autor de la web",ni->nick);
+ mysql_close(conn);
+
+     #endif
+	
 		if (readonly)
 		    notice_lang(s_OperServ, u, READ_ONLY_MODE);
 	    } else {
@@ -2257,9 +2661,9 @@ static void do_shutdown(User *u)
     quitmsg = malloc(54 + strlen(u->nick));
     if (!quitmsg)
     
-	quitmsg = "Aieee! SHUTDOWNing Services...!";
+	quitmsg = "Reiniciando Services...!";
     else
-	sprintf(quitmsg, "Aieee! Services ha recibido una orden de SHUTDOWN de %s", u->nick);
+	sprintf(quitmsg, "Services ha recibido una orden de SHUTDOWN de %s", u->nick);
 //    canaladmins(s_OperServ, "%s", quitmsg);
     save_data = 1;
     delayed_quit = 1;
@@ -2271,12 +2675,16 @@ static void do_restart(User *u)
 {
 #ifdef SERVICES_BIN
     quitmsg = malloc(53 + strlen(u->nick));
-    if (!quitmsg)
-	quitmsg = "Aieee! RESTARTing Services...!";
-    else
-	sprintf(quitmsg, "Aieee! Services ha recibido una orden de RESTART de %s", u->nick);
+    if (!quitmsg) {
+	quitmsg = "Reiniciando Services...!";
+   } else {
+   sprintf(quitmsg, "Services ha recibido una orden de RESTART de %s", u->nick);
+   }
   canaladmins(s_OperServ, "%s", quitmsg);
-   raise(SIGHUP);
+    save_data = 1;
+    canaladmins(s_OperServ, "Actualizando bases de datos..");
+  save_data = -2;
+   //raise(SIGHUP);
  #else
     notice_lang(s_OperServ, u, OPER_CANNOT_RESTART);
 #endif

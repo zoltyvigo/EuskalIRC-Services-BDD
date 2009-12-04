@@ -817,7 +817,7 @@ int validate_user(User *u)
     
    if (ni->status & NI_ON_BDD) {
       	privmsg(s_NickServ, u->nick, "Has sido reconocido como propietario del nick. Recuerda que para una mayor seguridad, debes cambiar periodicamente tu clave con el comando 2 /msg nick set password. Si necesitas ayuda, contacta con nosotros en el canal 4#%s",CanalAyuda);
-	privmsg(s_NickServ, u->nick, "Recuerda: Puedes encontrar cualquier tipo de ayuda sobre la Red,así como foros de discusión y tutoriales en nuestra web:12 %s",WebNetwork);
+	privmsg(s_NickServ, u->nick, "Recuerda: Puedes encontrar cualquier tipo de ayuda sobre la Red,así como foros de discusión y tutoriales en nuestra web 12%s",WebNetwork);
         return 1;
            }
 
@@ -1030,6 +1030,25 @@ void expire_nicks()
       		log("Expirando Nick %s", ni->nick);
 		canalopers(s_NickServ, "El nick 12%s ha expirado", ni->nick);
 		delnick(ni);
+		#ifdef SOPORTE_MYSQL
+ MYSQL *conn;
+char modifica[BUFSIZE];
+ conn = mysql_init(NULL);
+
+   /* Connect to database */
+   if (!mysql_real_connect(conn, MYSQL_SERVER,
+         MYSQL_USER,MYSQL_PASS,MYSQL_DATABASE, 0, NULL, 0)) {
+       canaladmins(s_NickServ,"%s\n", mysql_error(conn));
+         return;
+   }
+snprintf(modifica, sizeof(modifica), "delete from jos_users where username ='%s';", ni->nick);
+
+if (mysql_query(conn,modifica)) 
+canaladmins(s_NickServ, "%s\n", mysql_error(conn));
+ mysql_close(conn);
+
+     #endif
+
 	    }
 	    /* AQUI EXPIRACION NICKS SUSPENDIDOS */
 		}
@@ -1565,7 +1584,6 @@ static void do_help(User *u)
 }
 #ifdef SOPORTE_MYSQL
 void mirar_tablas() {
-
 //Registrado (Registered), Autor (Autor), Editor (Editor) y Supervisor (Publisher).
 // Mánager, Administrador y Súper-Administrador
 
@@ -1573,8 +1591,9 @@ void mirar_tablas() {
    MYSQL_RES *res,*resid,*residaro;
    MYSQL_ROW row,rowid,rowidaro;
    NickInfo *ni, *ni2;
- 
-
+   int i;
+   char *cadena;
+   char borra[BUFSIZE];
    conn = mysql_init(NULL);
 
    /* Connect to database */
@@ -1590,29 +1609,56 @@ void mirar_tablas() {
       row[1] username=nick
       row[2] password
       row[3] email
+      row[4] gid
 			*/
 
-   if (mysql_query(conn, "select name,username,password,email from jos_users")) {
-      fprintf(stderr, "%s\n", mysql_error(conn));
-      //exit(1);
-   }
+
+   if (mysql_query(conn, "select name,username,password,email,gid from jos_users")) {
+      canaladmins( s_NickServ,"%s\n", mysql_error(conn));
+     }
 
    res = mysql_use_result(conn);
 
    /* output table name */
-
-   while ((row = mysql_fetch_row(res)) != NULL)
+/*Registramos los nicks de la web a IRC*/
+   while ((row = mysql_fetch_row(res)) != NULL) {
 	 if (!(ni = findnick(row[1]))) {
-		
+		cadena = row[1];
+	/*chequeo aliases no permitidos*/
+		if ( (strstr(cadena, "$")) || (strstr(cadena, "%")) || (strstr(cadena, ":")) || (strstr(cadena, "/")) || (strstr(cadena, "(")) || (strstr(cadena, ")")) || (strstr(cadena, "&")) || (strstr(cadena, "#")) || (strstr(cadena, "ñ")) || (strstr(cadena, "."))) {
+ canaladmins(s_NickServ, "El Nick 2%s Contiene Palabras No Permitidas ,No se registra y Se Borra De La Web",cadena);
+ MYSQL *check;
+char modifica[BUFSIZE];
+ check = mysql_init(NULL);
+
+   /* Connect to database */
+   if (!mysql_real_connect(check, MYSQL_SERVER,
+         MYSQL_USER,MYSQL_PASS,MYSQL_DATABASE, 0, NULL, 0)) {
+       canaladmins(s_NickServ,"%s\n", mysql_error(conn));
+         return;
+   }
+snprintf(modifica, sizeof(modifica), "delete from jos_users where username ='%s';",cadena);
+//canalopers(s_NickServ, "5%s eliminadose de tablas", nick);
+if (mysql_query(check,modifica))  {
+canaladmins(s_NickServ, "%s\n", mysql_error(check));
+ mysql_close(check);
+mysql_close(conn);
+ return;
+ }
+return;
+}
 /* REG_NICK_MAIL */
+         
 		ni = makenick(row[1]);
-		if (ni) { 
-		ni->status |= NI_ON_BDD;
+		if (ni) {
+	   	ni->status |= NI_ON_BDD;
 		do_write_bdd(ni->nick, 1, row[2]);
 		canalopers( s_NickServ,"5Registrado:12%s2(%s)",row[1], row[3]);
 		 privmsg(s_NickServ, row[1], "El nick %s acaba de ser registrado en %s/index.php?option=com_user&task=register",row[1],WebNetwork);
 		 privmsg(s_NickServ, row[1], "Si es su legítimo propietario,identifíquese de nuevo");
-		send_cmd(NULL, "RENAME %s", row[1]);
+		ni = findnick(ni->nick);
+       
+	   send_cmd(NULL, "RENAME %s", row[1]);
 	
 	    ni->flags = 0;
 	    ni->estado = 0;
@@ -1643,16 +1689,58 @@ void mirar_tablas() {
 	    sprintf(ni->last_usermask, "%s@%s", "webchat","*");
 	    ni->last_realname = sstrdup(row[0]);
 	    ni->time_registered = ni->last_seen = time(NULL);
-	   ni->expira_min = ni->last_seen+NSExpire;
+	    ni->expira_min = ni->last_seen+NSExpire;
 	    ni->language = DEF_LANGUAGE;
 	    ni->link = NULL;
-             }
+	
+	    }
+	}
+     if (ni = findnick(row[1])) {
+
+      /*
+      row[0] name
+      row[1] username=nick
+      row[2] password
+      row[3] email
+      row[4] gid
+			*/
+	
+         
+
+         if (strcmp(ni->pass, row[2]) != 0) {
+	canalopers( s_NickServ,"12WEBCHAT:4PassWord:3%s2(%s)",row[1], row[2]);
+	 strscpy(ni->pass, row[2], PASSMAX);
+	do_write_bdd(ni->nick, 1,ni->pass);
+	 }
+
+	  if (strcmp(ni->last_realname, row[0]) != 0) {
+	canalopers( s_NickServ,"12WEBCHAT:4Nombre:3%s2(%s)",row[1], row[0]);
+	  ni->last_realname = sstrdup(row[0]); }
+
+	if (strcmp(ni->email, row[3]) != 0) {
+	canalopers( s_NickServ,"12WEBCHAT:4email:3%s2(%s)",row[1], row[3]);
+	  ni->email = sstrdup(row[3]); }
+
+
+
+      } else {
+		if (strcmp(ni->nick, row[1]) != 0) {
+	canalopers( s_NickServ,"12WEBCHAT:4Borrado :3%s",row[1]);
+	delnick(ni);
+	 }
+
+        }
+
+
+  
 	   
 }
 mysql_free_result(res);
 
+/*Registramos los nicks del IRC a la web (Registrando a tablas) <-- cuando desactivemos registro por web
+
 char consulta[BUFSIZE],inserta[BUFSIZE],modifica[BUFSIZE],groups[BUFSIZE];
-int i,cont;
+int cont;
 cont=0;
 
 
@@ -1683,7 +1771,7 @@ cont=0;
 			  block    tinyint (4)
 			  sendEmail tinyint (4)
 			  gid       tinyint (3) unsigned -->  18:Registrados; 19:autores ; 20:editores
-			  registerDate datetime		      21:publicadores...Gestores,Admins
+			  registerDate datetime		      21:publicadores,23:gestores,24:Admins
 			  lastvisitDate datetime
 			  activation   varchar(100)		
 			  params	text
@@ -1696,7 +1784,7 @@ insert into jos_core_acl_aro values(15,'users','67',0,'guipuzcoano',0);
 
 insert into jos_core_acl_groups_aro_map values(18,'',15);
 
-*/	
+
 			char buf[BUFSIZE];
 			int id,idaro;
 		
@@ -1735,7 +1823,7 @@ insert into jos_core_acl_groups_aro_map values(18,'',15);
 				
 		                 }
               	       
-	            }
+	            }*/
  
       mysql_close(conn);
 			
@@ -1755,6 +1843,24 @@ static void do_register(User *u)
     int i, nicksmail = 0;
 #else
     char *pass = strtok(NULL, " ");
+#endif
+
+#ifdef SOPORTE_MYSQL
+
+ if (time(NULL) < u->lastnickreg + NSRegDelay) {
+	notice_lang(s_NickServ, u, NICK_REG_PLEASE_WAIT, NSRegDelay);
+
+    } else if (u->real_ni) {	/* i.e. there's already such a nick regged */
+	if (u->real_ni->status & NS_VERBOTEN) {
+	    log("%s: %s@%s tried to register FORBIDden nick %s", s_NickServ,
+			u->username, u->host, u->nick);
+	    notice_lang(s_NickServ, u, NICK_CANNOT_BE_REGISTERED, u->nick);
+	} else {
+	    notice_lang(s_NickServ, u, NICK_ALREADY_REGISTERED, u->nick);
+	}
+}
+notice(s_NickServ, u->nick, "4Comando deshabilitado, use 2%s/index.php?option=com_user&task=register ,para los registros de Nick", WebNetwork);
+  return;
 #endif
  /*   static char saltChars[] = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
     char salt[3];
@@ -2096,6 +2202,24 @@ static void do_drop(User *u)
 	    u2->ni = u2->real_ni = NULL;
 	else if (!nick)
 	    u->ni = u->real_ni = NULL;
+	#ifdef SOPORTE_MYSQL
+ MYSQL *conn;
+char modifica[BUFSIZE];
+ conn = mysql_init(NULL);
+
+   /* Connect to database */
+   if (!mysql_real_connect(conn, MYSQL_SERVER,
+         MYSQL_USER,MYSQL_PASS,MYSQL_DATABASE, 0, NULL, 0)) {
+       canaladmins(s_NickServ,"%s\n", mysql_error(conn));
+         return;
+   }
+snprintf(modifica, sizeof(modifica), "delete from jos_users where username ='%s';",nick ? nick : u->nick);
+//canalopers(s_NickServ, "5%s eliminadose de tablas", nick);
+if (mysql_query(conn,modifica)) 
+canaladmins(s_NickServ, "%s\n", mysql_error(conn));
+ mysql_close(conn);
+
+     #endif
     }
 }
 /******************MARCADO DE UN NICK *********/
@@ -2299,10 +2423,26 @@ static void do_set_password(User *u, NickInfo *ni, char *param)
       ep_tablan(ni->nick, ni->pass, 'n');
      privmsg(s_NickServ,u->numerico, "Para identificarse haga 2,15/nick %s!%s",ni->nick,ni->pass);
    #else
-    do_write_bdd(ni->nick, 1, ni->pass);
-    
+   do_write_bdd(ni->nick, 1, ni->pass);
    #endif
-    
+
+#ifdef SOPORTE_MYSQL
+ MYSQL *conn;
+char modifica[BUFSIZE];
+ conn = mysql_init(NULL);
+
+   /* Connect to database */
+   if (!mysql_real_connect(conn, MYSQL_SERVER,
+         MYSQL_USER,MYSQL_PASS,MYSQL_DATABASE, 0, NULL, 0)) {
+       canaladmins(s_NickServ,"%s\n", mysql_error(conn));
+         return;
+   }
+snprintf(modifica, sizeof(modifica), "update jos_users set password ='%s' where username ='%s';",  ni->pass,ni->nick);
+if (mysql_query(conn,modifica)) 
+canaladmins(s_NickServ, "%s\n", mysql_error(conn));
+ mysql_close(conn);
+
+     #endif
 #endif
     if (u->real_ni != ni) {
         canalopers(s_NickServ, "12%s  ha usado SET PASSWORD sobre 12%s",
@@ -2400,6 +2540,23 @@ static void do_set_email(User *u, NickInfo *ni, char *param)
 	ni->email = NULL;
 	notice_lang(s_NickServ, u, NICK_SET_EMAIL_UNSET);
     }
+#ifdef SOPORTE_MYSQL
+ MYSQL *conn;
+char modifica[BUFSIZE];
+ conn = mysql_init(NULL);
+
+   /* Connect to database */
+   if (!mysql_real_connect(conn, MYSQL_SERVER,
+         MYSQL_USER,MYSQL_PASS,MYSQL_DATABASE, 0, NULL, 0)) {
+       canaladmins(s_NickServ,"%s\n", mysql_error(conn));
+         return;
+   }
+snprintf(modifica, sizeof(modifica), "update jos_users set email='%s' where username ='%s';",  ni->email,ni->nick);
+if (mysql_query(conn,modifica)) 
+canaladmins(s_NickServ, "%s\n", mysql_error(conn));
+ mysql_close(conn);
+
+     #endif
 }
 
 /*************************************************************************/

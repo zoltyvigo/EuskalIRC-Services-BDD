@@ -442,8 +442,10 @@ struct chaninfo_ {
 #define CI_SECUREVOICES	0x00004000
  /* Canal en AUTOLIMIT */
 #define CI_AUTOLIMIT	0x00008000
+/* Canal en MEMOALERT */
+#define CI_MEMOALERT	0x00010000
  /* Canal en expiracion que se envia mail recordatorio */
-#define CI_MAIL_REC	0x00010000
+#define CI_MAIL_REC	0x00020000
 
 
 

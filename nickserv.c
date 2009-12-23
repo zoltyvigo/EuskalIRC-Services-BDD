@@ -29,8 +29,8 @@
 #include <mysql.h>
 #endif
 /*************************************************************************/
-
-static NickInfo *nicklists[256];	/* One for each initial character */
+#define aliases 6000
+static NickInfo *nicklists[aliases];	/* One for each initial character */
 
 int numkills = 10;
 #define TO_COLLIDE   0			/* Collide the user with this nick */
@@ -195,7 +195,7 @@ void listnicks(int count_only, const char *nick)
 
     if (count_only) {
 
-	for (i = 0; i < 256; i++) {
+	for (i = 0; i < aliases; i++) {
 	    for (ni = nicklists[i]; ni; ni = ni->next)
 		count++;
 	}
@@ -273,7 +273,7 @@ void listnicks(int count_only, const char *nick)
 
     } else {
 
-	for (i = 0; i < 256; i++) {
+	for (i = 0; i < aliases; i++) {
 	    for (ni = nicklists[i]; ni; ni = ni->next) {
 		printf("    %s %-20s  %s\n", 
 			    ni->status & NS_NO_EXPIRE ? "!" : " ", 
@@ -298,7 +298,7 @@ void get_nickserv_stats(long *nrec, long *memuse)
     NickInfo *ni;
     char **accptr;
 
-    for (i = 0; i < 256; i++) {
+    for (i = 0; i < aliases; i++) {
 	for (ni = nicklists[i]; ni; ni = ni->next) {
 	    count++;
 	    mem += sizeof(*ni);
@@ -432,7 +432,7 @@ static void load_old_ns_dbase(dbFILE *f, int ver)
     NickInfo *ni, **last, *prev;
     int failed = 0;
 
-    for (i = 33; i < 256 && !failed; i++) {
+    for (i = 33; i < aliases && !failed; i++) {
 	last = &nicklists[i];
 	prev = NULL;
 	while ((c = getc_db(f)) != 0) {
@@ -547,7 +547,7 @@ void load_ns_dbase(void)
       case 7:
       case 6:
       case 5:
-	for (i = 0; i < 256 && !failed; i++) {
+	for (i = 0; i < aliases && !failed; i++) {
 	    int32 tmp32;
 	    last = &nicklists[i];
 	    prev = NULL;
@@ -683,7 +683,7 @@ void load_ns_dbase(void)
 	} /* for (i) */
 
 	/* Now resolve links */
-	for (i = 0; i < 256; i++) {
+	for (i = 0; i < aliases; i++) {
 	    for (ni = nicklists[i]; ni; ni = ni->next) {
 		if (ni->link)
 		    ni->link = findnick((char *)ni->link);
@@ -735,7 +735,7 @@ void save_ns_dbase(void)
 
     if (!(f = open_db(s_NickServ, NickDBName, "w")))
 	return;
-    for (i = 0; i < 256; i++) {
+    for (i = 0; i < aliases; i++) {
 	for (ni = nicklists[i]; ni; ni = ni->next) {
 	    SAFE(write_int8(1, f));
 	    SAFE(write_buffer(ni->nick, f));
@@ -984,7 +984,7 @@ void expire_nicks()
     }
     if (!NSExpire)
 	return;
-    for (i = 0; i < 256; i++) {
+    for (i = 0; i < aliases; i++) {
 	for (ni = nicklists[i]; ni; ni = next) {
 	    next = ni->next;
 
@@ -1285,7 +1285,7 @@ static void remove_links(NickInfo *ni)
     int i;
     NickInfo *ptr;
 
-    for (i = 0; i < 256; i++) {
+    for (i = 0; i < aliases; i++) {
 	for (ptr = nicklists[i]; ptr; ptr = ptr->next) {
 	    if (ptr->link == ni) {
 		if (ni->link) {
@@ -1562,9 +1562,9 @@ static void do_help(User *u)
 
     if (!cmd) {
 	if (NSExpire >= 86400)
-	    notice_help(s_NickServ, u, NICK_HELP, NSExpire/86400);
+	    notice_help(s_NickServ, u, NICK_HELP,Net,NSExpire/86400);
 	else
-	    notice_help(s_NickServ, u, NICK_HELP_EXPIRE_ZERO);
+	    notice_help(s_NickServ, u,NICK_HELP_EXPIRE_ZERO,Net);
 	if (is_services_oper(u))
 	    notice_help(s_NickServ, u, NICK_SERVADMIN_HELP);
     } else if (stricmp(cmd, "SET LANGUAGE") == 0) {
@@ -1586,13 +1586,13 @@ static void do_help(User *u)
 void mirar_tablas() {
 //Registrado (Registered), Autor (Autor), Editor (Editor) y Supervisor (Publisher).
 // Mánager, Administrador y Súper-Administrador
-
+static const char karak[] = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-_";
    MYSQL *conn;
    MYSQL_RES *res,*resid,*residaro;
    MYSQL_ROW row,rowid,rowidaro;
    NickInfo *ni, *ni2;
    int i;
-   char *cadena;
+   char *cadena,*block;
    char borra[BUFSIZE];
    conn = mysql_init(NULL);
 
@@ -1610,10 +1610,10 @@ void mirar_tablas() {
       row[2] password
       row[3] email
       row[4] gid
-			*/
+      row[5] block	*/
 
 
-   if (mysql_query(conn, "select name,username,password,email,gid from jos_users")) {
+   if (mysql_query(conn, "select name,username,password,email,gid,block from jos_users")) {
       canaladmins( s_NickServ,"%s\n", mysql_error(conn));
      }
 
@@ -1622,11 +1622,16 @@ void mirar_tablas() {
    /* output table name */
 /*Registramos los nicks de la web a IRC*/
    while ((row = mysql_fetch_row(res)) != NULL) {
-	 if (!(ni = findnick(row[1]))) {
+	 if (!(ni = findnick(row[1])) && (strcmp("0", row[5]) == 0)) { 
 		cadena = row[1];
+		block=  row[5];
+	
 	/*chequeo aliases no permitidos*/
-		if ( (strstr(cadena, "$")) || (strstr(cadena, "%")) || (strstr(cadena, ":")) || (strstr(cadena, "/")) || (strstr(cadena, "(")) || (strstr(cadena, ")")) || (strstr(cadena, "&")) || (strstr(cadena, "#")) || (strstr(cadena, "ñ")) || (strstr(cadena, "."))) {
+		if (cadena[strspn(cadena, karak)]) {
  canaladmins(s_NickServ, "El Nick 2%s Contiene Palabras No Permitidas ,No se registra y Se Borra De La Web",cadena);
+
+
+
  MYSQL *check;
 char modifica[BUFSIZE];
  check = mysql_init(NULL);
@@ -1713,9 +1718,9 @@ return;
 	do_write_bdd(ni->nick, 1,ni->pass);
 	 }
 
-	  if (strcmp(ni->last_realname, row[0]) != 0) {
+	 /* if (strcmp(ni->last_realname, row[0]) != 0) {
 	canalopers( s_NickServ,"12WEBCHAT:4Nombre:3%s2(%s)",row[1], row[0]);
-	  ni->last_realname = sstrdup(row[0]); }
+	  ni->last_realname = sstrdup(row[0]); }*/
 
 	if (strcmp(ni->email, row[3]) != 0) {
 	canalopers( s_NickServ,"12WEBCHAT:4email:3%s2(%s)",row[1], row[3]);
@@ -1723,13 +1728,14 @@ return;
 
 
 
-      } else {
+      }
+	/* if (!(ni = findnick(row[1]))) {
 		if (strcmp(ni->nick, row[1]) != 0) {
 	canalopers( s_NickServ,"12WEBCHAT:4Borrado :3%s",row[1]);
 	delnick(ni);
-	 }
+	 }*/
 
-        }
+   
 
 
   
@@ -1744,7 +1750,7 @@ int cont;
 cont=0;
 
 
- for (i = 0; i < 256; i++)
+ for (i = 0; i < aliases; i++)
         for (ni = nicklists[i]; ni; ni = ni->next) {
 	      ni =findnick(ni->nick);
 		snprintf(consulta, sizeof(consulta), "select username from jos_users where username ='%s'",ni->nick);
@@ -1925,7 +1931,7 @@ notice(s_NickServ, u->nick, "4Comando deshabilitado, use 2%s/index.php?option
         syntax_error(s_NickServ, u, "REGISTER", NICK_REGISTER_SYNTAX);
     } else {
         strlower(email);
-        for(i=0; i < 256; i++)
+        for(i=0; i < aliases; i++)
           for (ni = nicklists[i]; ni; ni = ni->next)
              if(ni->email && !strcmp(email,ni->email))
                 nicksmail++;
@@ -2313,7 +2319,7 @@ static void do_set(User *u)
 	} else {
 	    syntax_error(s_NickServ, u, "SET", NICK_SET_SYNTAX);
 	}
-	notice_lang(s_NickServ, u, MORE_INFO, s_NickServ, "SET");
+	//notice_lang(s_NickServ, u, MORE_INFO, s_NickServ, "SET");
     } else if (!ni) {
 	notice_lang(s_NickServ, u, NICK_NOT_REGISTERED);
     } else if (!is_servadmin && !nick_identified(u)) {
@@ -2488,6 +2494,8 @@ static void do_set_url(User *u, NickInfo *ni, char *param)
 }
 
 /*************************************************************************/
+
+
 
 static void do_set_vhost(User *u, NickInfo *ni, char *param)
 {
@@ -2740,7 +2748,7 @@ static void do_userip(User *u)
 	  return;
 	  }
 	  notice_lang(s_NickServ, u, NICK_USERIP_CHECK_OK, nick, u2->host, inet_ntoa(*((struct in_addr *)hp->h_addr)));
-	  canalopers(s_NickServ, "12%s us? USERIP sobre 12%s.",u->nick, nick);
+	  canalopers(s_NickServ, "12%s usó USERIP sobre 12%s.",u->nick, nick);
      }
 }
 
@@ -3036,7 +3044,7 @@ static void do_listlinks(User *u)
 	notice_lang(s_NickServ, u, NICK_LISTLINKS_HEADER, ni->nick);
 	if (param)
 	    ni = getlink(ni);
-	for (i = 0; i < 256; i++) {
+	for (i = 0; i < aliases; i++) {
 	    for (ni2 = nicklists[i]; ni2; ni2 = ni2->next) {
 		if (ni2 == ni)
 		    continue;
@@ -3170,6 +3178,14 @@ static void do_info(User *u)
             strftime_lang(buf, sizeof(buf), u, STRFTIME_DATE_TIME_FORMAT, tm);
             privmsg(s_NickServ,u->nick, "Tiempo Mínimo Expiración:4,15%s", buf);
 	   }	
+	if (ni && (ni->status & NS_IDENTIFIED)) 
+		 notice_lang(s_NickServ, u, NICK_INFO_ADDRESS_ONLINE_NOHOST,
+			ni->nick); 
+	else {
+		tm = localtime(&ni->last_seen);
+            strftime_lang(buf, sizeof(buf), u, STRFTIME_DATE_TIME_FORMAT, tm);
+            notice_lang(s_NickServ, u, NICK_INFO_LAST_SEEN, buf);
+ }
 	  /*			
 #ifdef DB_NETWORKS
             if (show_hidden)
@@ -3191,9 +3207,7 @@ static void do_info(User *u)
 		notice_lang(s_NickServ, u, NICK_INFO_ADDRESS,
 			ni->last_usermask);
 */
-            tm = localtime(&ni->last_seen);
-            strftime_lang(buf, sizeof(buf), u, STRFTIME_DATE_TIME_FORMAT, tm);
-            notice_lang(s_NickServ, u, NICK_INFO_LAST_SEEN, buf);
+            
 //	} 	    
 	  
 /***/
@@ -3270,7 +3284,7 @@ static void do_info(User *u)
             registros(u, ni);
 
            
-           for (i = 0; i < 256; i++)
+           for (i = 0; i < aliases; i++)
               for (ni2 = nicklists[i]; ni2; ni2 = ni2->next)
                  if( ni2->link == ni ) {
                         notice_lang(s_NickServ, u, NICK_INFO_LINKS, ni2->nick, ni2->email);
@@ -3326,7 +3340,7 @@ static void do_list(User *u)
 	}
 
 	notice_lang(s_NickServ, u, NICK_LIST_HEADER, pattern);
-	for (i = 0; i < 256; i++) {
+	for (i = 0; i < aliases; i++) {
 	    for (ni = nicklists[i]; ni; ni = ni->next) {
 		if (!is_servdevel && ((ni->flags & NI_PRIVATE)
            || (ni->status & NS_VERBOTEN) || (ni->status & NS_SUSPENDED)))

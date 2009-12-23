@@ -10,10 +10,12 @@
 
 #include "services.h"
 #include "pseudo.h"
-
+#ifdef SOPORTE_MYSQL
+#include <mysql.h>
+#endif
 /*************************************************************************/
-
-static ChannelInfo *chanlists[256];
+#define canales 6000
+static ChannelInfo *chanlists[canales];
 
 static int def_levels[][2] = {
     { CA_AUTOOP,            300 },
@@ -52,7 +54,7 @@ static LevelInfo levelinfo[] = {
     { CA_OPDEOP,        "OPDEOP",     CHAN_LEVEL_OPDEOP },
     { CA_VOICEDEVOICE,  "VOICEDEVOICE", CHAN_LEVEL_VOICEDEVOICE },        
     { CA_KICK,          "KICK",       CHAN_LEVEL_KICK },
-/*    { CA_BAN,           "BAN",        CHAN_LEVEL_BAN }  */
+    { CA_BAN,           "BAN",        CHAN_LEVEL_BAN },  
     { CA_UNBAN,         "UNBAN",      CHAN_LEVEL_UNBAN },            
     { CA_AKICK,         "AKICK",      CHAN_LEVEL_AKICK },
     { CA_SET,           "SET",        CHAN_LEVEL_SET },
@@ -104,6 +106,7 @@ static void do_set_opnotice(User *u, ChannelInfo *ci, char *param);
 static void do_set_stay(User *u, ChannelInfo *ci, char *param);
 static void do_set_noexpire(User *u, ChannelInfo *ci, char *param);
 static void do_set_autolimit(User *u, ChannelInfo *ci, char *param);
+static void do_set_memoalert(User *u, ChannelInfo *ci, char *param);
 static void do_access(User *u);
 static void do_akick(User *u);
 static void do_info(User *u);
@@ -115,7 +118,7 @@ static void do_deop(User *u);
 static void do_voice(User *u);
 static void do_devoice(User *u);
 static void do_ckick(User *u);
-// static void do_ban(User *u);
+static void do_ban(User *u);
 static void do_unban(User *u);
 static void do_clear(User *u);
 static void do_reset(User *u);
@@ -156,8 +159,9 @@ static Command cmds[] = {
     { "SET PASSWORD",   NULL,  NULL,  CHAN_HELP_SET_PASSWORD,   -1,-1,-1,-1 },     
     { "SET PASS",       NULL,  NULL,  CHAN_HELP_SET_PASSWORD,   -1,-1,-1,-1 },
     { "SET DESC",       NULL,  NULL,  CHAN_HELP_SET_DESC,       -1,-1,-1,-1 },
-     { "SET NAME",       NULL,  NULL,  CHAN_HELP_SET_NAME,       -1,-1,-1,-1 },
-      { "SET AUTOLIMIT",       NULL,  NULL,  CHAN_HELP_SET_AUTOLIMIT,       -1,-1,-1,-1 },
+    { "SET NAME",       NULL,  NULL,  CHAN_HELP_SET_NAME,       -1,-1,-1,-1 },
+    { "SET AUTOLIMIT",       NULL,  NULL,  CHAN_HELP_SET_AUTOLIMIT,       -1,-1,-1,-1 },
+    { "SET MEMOALERT",       NULL,  NULL,  CHAN_HELP_SET_MEMOALERT,       -1,-1,-1,-1 },
     { "SET URL",        NULL,  NULL,  CHAN_HELP_SET_URL,        -1,-1,-1,-1 },
     { "SET EMAIL",      NULL,  NULL,  CHAN_HELP_SET_EMAIL,      -1,-1,-1,-1 },
     { "SET ENTRYMSG",   NULL,  NULL,  CHAN_HELP_SET_ENTRYMSG,   -1,-1,-1,-1 },
@@ -194,7 +198,7 @@ static Command cmds[] = {
     { "DEOP",     do_deop,     NULL,  CHAN_HELP_DEOP,           -1,-1,-1,-1 },
     { "INVITE",   do_invite,   NULL,  CHAN_HELP_INVITE,         -1,-1,-1,-1 },
     { "KICK",     do_ckick,    NULL,  CHAN_HELP_KICK,           -1,-1,-1,-1 },
-//    { "BAN",      do_ban,      NULL,  CHAN_HELP_BAN,            -1,-1,-1,-1 },        
+    { "BAN",      do_ban,      NULL,  CHAN_HELP_BAN,            -1,-1,-1,-1 },        
     { "UNBAN",    do_unban,    NULL,  CHAN_HELP_UNBAN,          -1,-1,-1,-1 },
     { "CLEAR",    do_clear,    NULL,  CHAN_HELP_CLEAR,          -1,-1,-1,-1 },
     { "RESET",    do_reset,    NULL,  CHAN_HELP_RESET,          -1,-1,-1,-1 },
@@ -240,7 +244,7 @@ void listchans(int count_only, const char *chan)
 
     if (count_only) {
 
-	for (i = 0; i < 256; i++) {
+	for (i = 0; i < canales; i++) {
 	    for (ci = chanlists[i]; ci; ci = ci->next)
 		count++;
 	}
@@ -328,6 +332,10 @@ void listchans(int count_only, const char *chan)
 		    printf("%sAUTOLIMIT", need_comma ? commastr : "");
 		    need_comma = 1;
 		}
+		if (ci->flags & CI_MEMOALERT) {
+		    printf("%sMEMOALERT", need_comma ? commastr : "");
+		    need_comma = 1;
+		}
 		if (ci->flags & CI_MAIL_REC) {
 		    printf("%sMAILREC", need_comma ? commastr : "");
 		    need_comma = 1;
@@ -402,7 +410,7 @@ void listchans(int count_only, const char *chan)
 
     } else {
 
-	for (i = 0; i < 256; i++) {
+	for (i = 0; i < canales; i++) {
 	    for (ci = chanlists[i]; ci; ci = ci->next) {
 		printf("  %s %-20s  %s\n", ci->flags & CI_NO_EXPIRE ? "!" : " ",
 			    ci->name,
@@ -426,7 +434,7 @@ void get_chanserv_stats(long *nrec, long *memuse)
     int i, j;
     ChannelInfo *ci;
 
-    for (i = 0; i < 256; i++) {
+    for (i = 0; i < canales; i++) {
 	for (ci = chanlists[i]; ci; ci = ci->next) {
 	    count++;
 	    mem += sizeof(*ci);
@@ -601,7 +609,7 @@ static void load_old_cs_dbase(dbFILE *f, int ver)
     } old_channelinfo;
 
 
-    for (i = 33; i < 256 && !failed; i++) {
+    for (i = 33; i < canales && !failed; i++) {
 
 	last = &chanlists[i];
 	prev = NULL;
@@ -799,7 +807,7 @@ void load_cs_dbase(void)
       case 6:
       case 5:
 
-	for (i = 0; i < 256 && !failed; i++) {
+	for (i = 0; i < canales && !failed; i++) {
 	    int16 tmp16;
 	    int32 tmp32;
 	    int n_levels;
@@ -996,7 +1004,7 @@ void load_cs_dbase(void)
     close_db(f);
 
     /* Check for non-forbidden channels with no founder */
-    for (i = 0; i < 256; i++) {
+    for (i = 0; i < canales; i++) {
 	ChannelInfo *next;
 	for (ci = chanlists[i]; ci; ci = next) {
 	    next = ci->next;
@@ -1039,7 +1047,7 @@ void save_cs_dbase(void)
     if (!(f = open_db(s_ChanServ, ChanDBName, "w")))
 	return;
 
-    for (i = 0; i < 256; i++) {
+    for (i = 0; i < canales; i++) {
 	int16 tmp16;
 
 	for (ci = chanlists[i]; ci; ci = ci->next) {
@@ -1421,7 +1429,9 @@ void check_modes(const char *chan)
 #else
             destino = u->nick; 
 #endif        */
-            if (c->key || /*c->limit ||*/
+ ci = cs_findchan(chan);
+
+            if (c->key || c->limit ||
                   (c->mode & (CMODE_I | CMODE_M 
 #ifdef IRC_HISPANO
                     | CMODE_R | CMODE_m | CMODE_A | CMODE_S
@@ -1430,9 +1440,11 @@ void check_modes(const char *chan)
 #endif
                     ))) {
               //  send_cmd(s_ShadowServ, "JOIN %s GOD", chan);
+	    if (ci)
 		join_shadow_chan(chan);
 	    } else {
               //  send_cmd(s_ShadowServ, "PART %s", chan);
+		if (ci)
 	        part_shadow_chan(chan);
             }
         /* } si no esta shadow, se ignora */
@@ -1475,7 +1487,7 @@ int check_valid_op(User *user, const char *chan, int serverop)
     ChannelInfo *ci = cs_findchan(chan);
 
     if (!ci || ((ci->flags & CI_LEAVEOPS) && !is_founder(user, ci)))
-	return 1;
+	return 0;
 
     if (is_oper(user->nick) || is_services_oper(user)) 
 	return 1;
@@ -1908,7 +1920,7 @@ void expire_chans()
     if (!CSExpire)
 	return;
 
-    for (i = 0; i < 256; i++) {
+    for (i = 0; i < canales; i++) {
 	for (ci = chanlists[i]; ci; ci = next) {
 	    next = ci->next;
           if (now - ci->last_used >  (CSExpire -margen) &&  now - ci->last_used <  (CSExpire -aviso)
@@ -1953,6 +1965,22 @@ void expire_chans()
                 }
 
                 canalopers(s_ChanServ, "Expirando el canal 12%s", ci->name);
+#ifdef SOPORTE_MYSQL
+MYSQL *conn;
+char modifica[BUFSIZE];
+ conn = mysql_init(NULL);
+
+   /* Connect to database */
+   if (!mysql_real_connect(conn, MYSQL_SERVER,
+         MYSQL_USER,MYSQL_PASS,MYSQL_DATABASE, 0, NULL, 0)) {
+       canaladmins(s_CregServ,"%s\n", mysql_error(conn));
+         return;
+   }
+snprintf(modifica, sizeof(modifica), "delete from jos_chans where canal ='%s';",ci->name);
+if (mysql_query(conn,modifica)) 
+canaladmins(s_CregServ, "%s\n", mysql_error(conn));
+ mysql_close(conn);
+#endif
 		do_write_bdd(ci->name, 7, "", ci->name);
 		delchan(ci);
 	    }
@@ -1969,7 +1997,7 @@ void cs_remove_nick(const NickInfo *ni)
     AutoKick *akick;
     CregInfo *cr;
 
-    for (i = 0; i < 256; i++) {
+    for (i = 0; i < canales; i++) {
 	for (ci = chanlists[i]; ci; ci = next) {
 	    next = ci->next;
 	    if (ci->founder == ni) {
@@ -1986,6 +2014,22 @@ void cs_remove_nick(const NickInfo *ni)
                             cr->estado |= CR_EXPIRADO;
                             cr->time_motivo = time(NULL);
                         }
+	#ifdef SOPORTE_MYSQL
+MYSQL *conn;
+char modifica[BUFSIZE];
+ conn = mysql_init(NULL);
+
+   /* Connect to database */
+   if (!mysql_real_connect(conn, MYSQL_SERVER,
+         MYSQL_USER,MYSQL_PASS,MYSQL_DATABASE, 0, NULL, 0)) {
+       canaladmins(s_CregServ,"%s\n", mysql_error(conn));
+         return;
+   }
+snprintf(modifica, sizeof(modifica), "delete from jos_chans where canal ='%s';",ci->name);
+if (mysql_query(conn,modifica)) 
+canaladmins(s_CregServ, "%s\n", mysql_error(conn));
+ mysql_close(conn);
+#endif
 			delchan(ci);
 		    } else {
 		        canalopers(s_ChanServ, "Transferiendo el founder de 12%s,"
@@ -2008,6 +2052,22 @@ void cs_remove_nick(const NickInfo *ni)
                             cr->estado |= CR_EXPIRADO;
                             cr->time_motivo = time(NULL);
                         }
+		#ifdef SOPORTE_MYSQL
+MYSQL *conn;
+char modifica[BUFSIZE];
+ conn = mysql_init(NULL);
+
+   /* Connect to database */
+   if (!mysql_real_connect(conn, MYSQL_SERVER,
+         MYSQL_USER,MYSQL_PASS,MYSQL_DATABASE, 0, NULL, 0)) {
+       canaladmins(s_CregServ,"%s\n", mysql_error(conn));
+         return;
+   }
+snprintf(modifica, sizeof(modifica), "delete from jos_chans where canal ='%s';",ci->name);
+if (mysql_query(conn,modifica)) 
+canaladmins(s_CregServ, "%s\n", mysql_error(conn));
+ mysql_close(conn);
+#endif
 		    delchan(ci);
 		}
 		continue;
@@ -2095,7 +2155,7 @@ void registros(User *u, NickInfo *ni)
     AutoKick *akick;
         
         
-    for (i = 0; i < 256; i++) {
+    for (i = 0; i < canales; i++) {
         for (ci = chanlists[i]; ci; ci = ci->next) {
                   
 /* Buscar Founders de canales */
@@ -2151,7 +2211,7 @@ void join_chanserv(void)
     ChannelInfo *ci;
     int i;
             
-    for (i = 0; i < 256; i++) { 
+    for (i = 0; i < canales; i++) { 
        for (ci = chanlists[i]; ci; ci = ci->next) {    
          if (ci->flags & CI_STAY) { 
 #ifdef IRC_UNDERNET_P10
@@ -2193,7 +2253,7 @@ void join_shadow(void)
     destino = u->nick;
 #endif
 
-    for (i = 0; i < 256; i++) {
+    for (i = 0; i < canales; i++) {
         for (ci = chanlists[i]; ci; ci = ci->next) {
              c = findchan(ci->name);
              if (c) {
@@ -2433,7 +2493,7 @@ static void do_help(User *u)
     char *cmd = strtok(NULL, "");
 
     if (!cmd) {
-	notice_help(s_ChanServ, u, CHAN_HELP);
+	notice_help(s_ChanServ, u, CHAN_HELP,Net);
 	if (CSExpire >= 86400)
 	    notice_help(s_ChanServ, u, CHAN_HELP_EXPIRES, CSExpire/86400);
 	if (is_services_oper(u))
@@ -3036,8 +3096,10 @@ static void do_set(User *u)
     } else if (stricmp(cmd, "STAY") == 0) {
         do_set_stay(u, ci, param);   
      } else if (stricmp(cmd, "AUTOLIMIT") == 0) {
-        do_set_autolimit(u, ci, param);                                       
-    } else if (stricmp(cmd, "NOEXPIRE") == 0) {
+        do_set_autolimit(u, ci, param);
+  } else if (stricmp(cmd, "MEMOALERT") == 0) {
+        do_set_memoalert(u, ci, param);
+  } else if (stricmp(cmd, "NOEXPIRE") == 0) {
 	do_set_noexpire(u, ci, param);
     } else {
 	notice_lang(s_ChanServ, u, CHAN_SET_UNKNOWN_OPTION, strupper(cmd));
@@ -3302,6 +3364,7 @@ static void do_set_mlock(User *u, ChannelInfo *ci, char *param)
     int add = -1;	/* 1 if adding, 0 if deleting, -1 if neither */
     int newlock_on = 0, newlock_off = 0, newlock_limit = 0;
     char *newlock_key = NULL;
+	static const char karak[] = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-_";
 
     while (*param) {
 	if (*param != '+' && *param != '-' && add < 0) {
@@ -3330,8 +3393,8 @@ static void do_set_mlock(User *u, ChannelInfo *ci, char *param)
 		    notice_lang(s_ChanServ, u, CHAN_SET_MLOCK_KEY_REQUIRED);
 		    return;
 		}
-		if ((strstr(s, "") == 0) ||  (stricmp(s, "") == 0)) {
-		    privmsg(s_ChanServ, u->nick, "ï¿½Caracteres Invï¿½lidos!");
+		if (s[strspn(s, karak)]) {
+ 		    privmsg(s_ChanServ, u->nick, "¡Caracteres Inválidos!");
 		    return;
 		}
 		if (newlock_key)
@@ -3742,7 +3805,22 @@ static void do_set_autolimit(User *u, ChannelInfo *ci, char *param)
     }
   
 }
+/*************************************************************************/
 
+static void do_set_memoalert(User *u, ChannelInfo *ci, char *param)
+{  
+   
+     if (stricmp(param, "ON") == 0) {
+	ci->flags |= CI_MEMOALERT;
+	notice_lang(s_ChanServ, u, CHAN_SET_MEMOALERT_ON, ci->name);
+    } else if (stricmp(param, "OFF") == 0) {
+	ci->flags &= ~CI_MEMOALERT;
+	notice_lang(s_ChanServ, u, CHAN_SET_MEMOALERT_OFF, ci->name);
+    } else {
+	syntax_error(s_ChanServ, u, "SET MEMOALERT", CHAN_SET_MEMOALERT_SYNTAX);
+    }
+  
+}
 /*************************************************************************/                                          
 /*************************************************************************/
 
@@ -4841,6 +4919,12 @@ static void do_info(User *u)
 			getstring(u->ni, CHAN_INFO_OPT_AUTOLIMIT));
 	    need_comma = 1;
 	}
+	if (ci->flags & CI_MEMOALERT) {
+	    end += snprintf(end, sizeof(buf)-(end-buf), "%s%s",
+			need_comma ? commastr : "",
+			getstring(u->ni, CHAN_INFO_OPT_MEMOALERT));
+	    need_comma = 1;
+	}
 	notice_lang(s_ChanServ, u, CHAN_INFO_OPTIONS,
 		*buf ? buf : getstring(u->ni, CHAN_INFO_OPT_NONE));
 	end = buf;
@@ -4942,7 +5026,7 @@ static void do_list(User *u)
 	        matchflags |= CI_NO_EXPIRE;
 	}                
 	notice_lang(s_ChanServ, u, CHAN_LIST_HEADER, pattern);
-	for (i = 0; i < 256; i++) {
+	for (i = 0; i < canales; i++) {
 	    for (ci = chanlists[i]; ci; ci = ci->next) {
 		if (!is_servoper & ((ci->flags & CI_PRIVATE)
 		                              || (ci->flags & CI_VERBOTEN)))
@@ -5294,7 +5378,7 @@ static void do_ckick(User *u)
 }
 
 /*************************************************************************/
-#ifdef DESACTIVADO
+
 static void do_ban(User *u)
 {
 
@@ -5325,17 +5409,18 @@ static void do_ban(User *u)
         av[1] = sstrdup("+b");
         av[2] = mask;
         do_cmode(s_ChanServ, 3, av);
-        free(av[0]);                                                        
+        /*free(av[0]);                                                        
         free(av[1]);
-        free(av[2]);                    
+        free(av[2]);*/                    
         if (ci->flags & CI_OPNOTICE)
             notice(s_ChanServ, chan, "%s ha BANeado en el canal", u->nick);
         }
 }
-#endif                                               
+                                         
                                                            
 /*************************************************************************/
-
+#ifdef DESACTIVADO
+#endif
 static void do_unban(User *u)
 {
     char *chan = strtok(NULL, " ");

@@ -11,8 +11,9 @@
 typedef struct ipv_ IpvInfo;
 struct ipv_ {
     int32 numero;
-    char *cadena;
     char titular[NICKMAX];
+    char *cadena;
+   
     
 };
 static int32 ipvirt = 0;
@@ -132,8 +133,9 @@ void load_ipv()
 	}
 	for (i = 0; i < ipvirt; i++) {
 	    SAFE(read_int32(&ipvirtual[i].numero, f));  //posiciones totales
-	    SAFE(read_string(&ipvirtual[i].cadena, f));
 	    SAFE(read_buffer(ipvirtual[i].titular, f));
+	    SAFE(read_string(&ipvirtual[i].cadena, f));
+	  
 	   
 	}
 	break;
@@ -173,9 +175,8 @@ void save_ipv()
     SAFE(write_int16(ipvirt, f));
     for (i = 0; i < ipvirt; i++) {
 	SAFE(write_int32(ipvirtual[i].numero, f));
-	SAFE(write_string(ipvirtual[i].cadena, f));
 	SAFE(write_buffer(ipvirtual[i].titular, f));
-
+	SAFE(write_string(ipvirtual[i].cadena, f));
     }
     close_db(f);
 }
@@ -199,6 +200,7 @@ if (!cmd) {
 	privmsg(s_IpVirtual, u->nick,"Sintaxis: PONER ADD/DEL/LIST [param]");
 	#endif
     	cmd = "";
+	return;
        }
  if (stricmp(cmd, "HELP") == 0) {
 	char buf[32];
@@ -208,6 +210,7 @@ if (!cmd) {
 	privmsg(s_IpVirtual, u->nick,"Sintaxis: PONER ADD/DEL/LIST [param]");
 	#endif
     	cmd = "";
+	return;
        }	
 
     if (stricmp(cmd, "LIST") == 0) {
@@ -255,6 +258,7 @@ static int del_ipv(int num)
 {
     int i;
     int count = 0;
+
 
     for (i = 0; i < ipvirt; i++) {
 	if (num == 0 || ipvirtual[i].numero == num) {
@@ -313,6 +317,7 @@ static void do_ipv_add(User *u)
 	privmsg(s_IpVirtual, u->nick,"Sintaxis: PONER ADD/DEL/LIST [param]");
 	#endif
     } else {
+	//si da negativo,es que no se ha podido almacenar
 	int n = add_ipv(u, text);
 	if (n < 0)
 	    #ifdef IRC_UNDERNET_P10
@@ -353,12 +358,12 @@ static void do_ipv_list(User *u)
        #ifdef IRC_UNDERNET_P10
 	   if (stricmp(cmd, ipvirtual[i].titular) == 0) { 
 pos++;
- privmsg(s_IpVirtual, u->numerico, "%d [ %d ] - '%s' - '%s'", pos, ipvirtual[i].numero,ipvirtual[i].cadena, *ipvirtual[i].titular ? ipvirtual[i].titular : "<unknown>");
+ privmsg(s_IpVirtual, u->numerico, "%d [ %d ] - '%s' - '%s'", pos, ipvirtual[i].numero,ipvirtual[i].cadena, ipvirtual[i].titular ? ipvirtual[i].titular : "<unknown>");
  }
         #else
 	 if (stricmp(cmd, ipvirtual[i].titular) == 0) {
  pos++;
- privmsg(s_IpVirtual, u->nick,"%d [ %d ] - '%s' - '%s'", pos,  ipvirtual[i].numero,ipvirtual[i].cadena, *ipvirtual[i].titular ? ipvirtual[i].titular : "<unknown>");
+ privmsg(s_IpVirtual, u->nick,"%d [ %d ] - '%s' - '%s'", pos,  ipvirtual[i].numero,ipvirtual[i].cadena, ipvirtual[i].titular ? ipvirtual[i].titular : "<unknown>");
 	  }
 	 #endif
        }
@@ -436,7 +441,7 @@ privmsg(s_IpVirtual, u->nick, "El vhost solamente admite caracteres entre a-z, y
 #endif
 
 } else {
-kadukatu = dotime("3600m");
+kadukatu = dotime("360m");
 kadukatu += time(NULL);
 ni->time_vhost = kadukatu;
 tm = localtime(&kadukatu);
@@ -469,50 +474,60 @@ privmsg(s_IpVirtual, u->nick, "Hora exacta: %s", timebuf);
 }
 static void do_ipv_del(User *u)
 {
-    char *text = strtok(NULL, " ");
+ char *text = strtok(NULL, " ");
+ char *cmd;
+ char *cadena;
+ int vhost=0;
 
+       cmd = u->nick;
+       vhost=atoi(text)-1;
+	
     if (!text) {
 	char buf[32];
 	#ifdef IRC_UNDERNET_P10
 	privmsg(s_IpVirtual, u->numerico, "Sintaxis: PONER ADD/DEL/LIST [param]");
 	#else
 	privmsg(s_IpVirtual, u->nick,"Sintaxis: PONER ADD/DEL/LIST [param]");
+	return;
 	#endif
-    
-    } else {
-    
-	if (stricmp(text, "ALL") != 0) {
-	    int num = atoi(text);
-	    if (num > 0 && del_ipv(num))
+    }
+	if ((stricmp(cmd, ipvirtual[vhost].titular) == 0) && (vhost = ipvirtual[vhost].numero)) 
+
+   	  if ((vhost > 0 && del_ipv(vhost)))  {
 	      #ifdef IRC_UNDERNET_P10
 		privmsg(s_IpVirtual, u->numerico, "Entrada eliminada.");
+		return;
 		#else
 		privmsg(s_IpVirtual, u->nick,"Entrada eliminada.");
+		return;
 		#endif
-	    else
-	        #ifdef IRC_UNDERNET_P10
-		privmsg(s_IpVirtual, u->numerico, "Numero incorrecto.");
-		#else
-		privmsg(s_IpVirtual, u->nick,"Numero incorrecto.");
-		#endif
-	} else {
-	    if (del_ipv(0))
+	
+	} else if  ((stricmp(cmd, ipvirtual[vhost].titular) != 0)) {
 	         #ifdef IRC_UNDERNET_P10
-		privmsg(s_IpVirtual, u->numerico, "Se han eliminado todas las entradas");
+		privmsg(s_IpVirtual, u->numerico, "Fuera de Item");
+		return;
 		#else
-		privmsg(s_IpVirtual, u->nick, "Se han eliminado todas las entradas");
+		privmsg(s_IpVirtual, u->nick, "Fuera de Item");
+		return;
 		#endif
-	    else
-	         #ifdef IRC_UNDERNET_P10	        
-		privmsg(s_IpVirtual, u->numerico, "No se ha eliminado nada");
+	  	}
+      
+
+if (vhost != ipvirtual[vhost].numero)  {
+
+	         #ifdef IRC_UNDERNET_P10
+		privmsg(s_IpVirtual, u->numerico, "Fuera de Rango");
+		return;
 		#else
-		privmsg(s_IpVirtual, u->nick,"No se ha eliminado nada");
+		privmsg(s_IpVirtual, u->nick, "Fuera de Rango");
+		return;
 		#endif
-	}
+	  	}
+
 	if (readonly)
 	    notice_lang(s_OperServ, u, READ_ONLY_MODE);
     }
-}
+
 static void do_cambia_vhost(User *u)
 {
     char *vhost = strtok(NULL, " ");
@@ -553,7 +568,6 @@ if (!stricmp(vhost, "OFF")) {
 do_write_bdd(u->nick, 4, "");
 #endif
 notice_lang(s_IpVirtual, u, IPV_ACTIVAR_UNSET, u->nick);;
-//vhost_aldaketa(u->nick, 0, 0);
 canaladmins(s_IpVirtual, "2 %s 5 Desactiva Su VHOST ", u->nick);
 #ifdef IRC_UNDERNET_P10
 privmsg(s_IpVirtual, u->numerico, "Vhost eliminada.");
@@ -574,7 +588,6 @@ return;
  privmsg(s_IpVirtual, u->nick, "contiene palabras no permitidas");
  return;
  }
-// egiaztatu karaktereak
 if (vhost[strspn(vhost, karak)]) {
 #ifdef IRC_UNDERNET_P10
 privmsg(s_IpVirtual, u->numerico, "El vhost solamente admite caracteres entre a-z, y 0-9 incluidas el guion y el punto.");
@@ -583,7 +596,7 @@ privmsg(s_IpVirtual, u->nick, "El vhost solamente admite caracteres entre a-z, y
 #endif
 
 } else {
-kadukatu = dotime("3600m");
+kadukatu = dotime("360m");
 kadukatu += time(NULL);
 ni->time_vhost = kadukatu;
 tm = localtime(&kadukatu);

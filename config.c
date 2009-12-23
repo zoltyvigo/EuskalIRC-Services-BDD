@@ -19,6 +19,8 @@ char *LocalHost;
 int   LocalPort;
 
 char *ServerName;
+char *Net;
+
 
 char *MYSQL_SERVER;
 char *MYSQL_USER;
@@ -386,6 +388,7 @@ Directive directives[] = {
                             { PARAM_STRING, 0, &RemotePassword } } },
     { "ServerDesc",       { { PARAM_STRING, 0, &ServerDesc } } },
     { "ServerName",       { { PARAM_STRING, 0, &ServerName } } },
+     { "Net",       { { PARAM_STRING, 0, &Net } } },
     { "MYSQL_SERVER",       { { PARAM_STRING, 0, &MYSQL_SERVER } } },
     { "MYSQL_USER",       { { PARAM_STRING, 0, &MYSQL_USER } } },
     { "MYSQL_PASS",       { { PARAM_STRING, 0, &MYSQL_PASS } } },
@@ -660,6 +663,7 @@ int read_config()
 
     CHECK(RemoteServer);
     CHECK(ServerName);
+    CHECK(Net);
     CHECK(MYSQL_SERVER);
     CHECK(MYSQL_USER);
     CHECK(MYSQL_PASS);

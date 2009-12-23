@@ -788,15 +788,15 @@ static void do_help(User *u)
 	
     if (!cmd) {
 	if (is_services_root(u))
-	notice_help(s_OperServ, u, OPER_ROOT_HELP,SpamUsers);
+	notice_help(s_OperServ, u, OPER_ROOT_HELP,Net,SpamUsers);
     	else if  (is_services_admin(u))
-	notice_help(s_OperServ, u, OPER_ADMIN_HELP,SpamUsers);
+	notice_help(s_OperServ, u, OPER_ADMIN_HELP,Net,SpamUsers);
 	else if  (is_services_cregadmin(u))
-	notice_help(s_OperServ, u, OPER_COADMIN_HELP,SpamUsers);
+	notice_help(s_OperServ, u, OPER_COADMIN_HELP,Net,SpamUsers);
 	else if  (is_services_devel(u))
-	notice_help(s_OperServ, u, OPER_DEVEL_HELP,SpamUsers);
+	notice_help(s_OperServ, u, OPER_DEVEL_HELP,Net,SpamUsers);
 	else if  (is_services_oper(u))
-	notice_help(s_OperServ, u, OPER_HELP,SpamUsers);
+	notice_help(s_OperServ, u, OPER_HELP,Net,SpamUsers);
 	} else {
 	help_cmd(s_OperServ, u, cmds, cmd);
     }

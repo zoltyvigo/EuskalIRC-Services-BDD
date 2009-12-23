@@ -8,6 +8,10 @@
  * DarkuBots es una adaptación de Javier Fernández Viña, ZipBreake.
  * E-Mail: javier@jfv.es || Web: http://jfv.es/
  *
+ * Modificaciones -donostiarra- admin.euskalirc@gmail.com   http://euskalirc.wordpress.com
+ *					
+ *						
+ *
  */
           
 typedef struct {
@@ -25,7 +29,8 @@ struct creginfo_ {
     char *founder;               /* Nick del founder */
             
     char founderpass[PASSMAX];   /* Password de founder */
-    int32 seccion;            /* Seccion del canal */ /*SOCiedad  INFormatica CIencia AYUda ADULtos*/ 
+    int32 seccion;            /* Seccion del canal Principales*/ 
+    int32 geo;            /* Secciones geográficas*/ 
     char *desc;                  /* Descripcion del canal */
     
     int32 tipo;                     /*COMercial  OFIcial REPresentantes */
@@ -57,27 +62,42 @@ struct creginfo_ {
 
 /* estan en int32 seccion;*/
 
-
-
-
-
 #define CR_PRO   0x00000002	/*De Proyectos,Investigaciones*/
 #define CR_AYU   0x00000004	/*De Ayuda*/
-#define CR_JUE   0x00000010      /*Juegos y Clanes*/
+#define CR_JUE   0x00000010     /*Juegos y Clanes*/
 #define	CR_CUH   0x00000020     /*Cultura y Humanidades*/
 #define CR_SOC   0x00000040	/*Sociedad*/
 #define CR_CIE   0x00000080	/*Ciencias*/
-#define CR_DEP   0x00000200        /*Deportes*/
-#define CR_INF   0x00000800	   /*Informatica*/
-#define	CR_LCT   0x00002000        /*Literatura, Cine y TV*/
-#define	CR_MUS   0x00004000        /*Musica*/
-#define	CR_OCI   0x00008000        /*Ocio*/
-#define	CR_PAI   0x00020000        /*Paises y continentes*/
-#define	CR_PRF   0x00040000        /*Profesiones-Oficios*/
-#define CR_ADU   0x00080000       /*Contenido para Adultos*/
-#define CR_AMO   0x00100000      /*Amor y amistad*/
+#define CR_DEP   0x00000200     /*Deportes*/
+#define CR_INF   0x00000800	/*Informatica*/
+#define	CR_LCT   0x00002000     /*Literatura, Cine y TV*/
+#define	CR_MUS   0x00004000     /*Musica*/
+#define	CR_OCI   0x00008000     /*Ocio*/
+#define	CR_PAI   0x00020000     /*Paises y continentes*/
+#define	CR_PRF   0x00040000     /*Profesiones-Oficios*/
+#define CR_ADU   0x00080000     /*Contenido para Adultos*/
+#define CR_AMO   0x00100000     /*Amor y amistad*/
 #define CR_SEX   0x00200000     /*Sexo*/
+#define CR_RAD   0x00800000     /*Radio*/
 
+/* estan en int32 geo;*/
+#define CR_AND   0x00000002	/*Andalucía*/
+#define CR_ARA   0x00000004	/*Aragón*/
+#define CR_AST   0x00000010     /*Principado de Asturias*/
+#define	CR_BAL   0x00000020     /*Islas Baleares*/
+#define CR_ICA   0x00000040	/*Islas Canarias*/
+#define CR_CAN   0x00000080	/*Cantabria*/
+#define CR_CAT   0x00000200     /*Catalunya*/
+#define CR_CAM   0x00000800	/*Castilla-La Mancha*/
+#define	CR_CAL   0x00002000     /*Castilla-León*/
+#define	CR_CEM   0x00004000     /*Ceuta-Melilla*/
+#define	CR_EUS   0x00008000     /*Euskadi-País Vasco*/
+#define	CR_EXT   0x00020000     /*Extremadura*/
+#define	CR_GAE   0x00040000     /*Galicia*/
+#define CR_LRI   0x00080000     /*La Rioja*/
+#define CR_MAD   0x00100000     /*Madrid*/
+#define CR_MUR   0x00200000     /*Murcia*/
+#define CR_NAV   0x00800000     /*Navarra*/
 
 
 /* estan en int32 tipo;*/

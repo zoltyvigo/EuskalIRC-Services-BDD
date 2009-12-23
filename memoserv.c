@@ -244,7 +244,7 @@ void check_memos(User *u)
 void check_cs_memos(User *u, ChannelInfo *ci)
 {
     if (!u || !ci) return;
-        if (check_access(u, ci, CA_MEMO) && (ci->memos.memocount>0)) {
+        if (check_access(u, ci, CA_MEMO) && (ci->memos.memocount>0) && (ci->flags & CI_MEMOALERT)) {
             privmsg(s_MemoServ, u->nick, "3Eo! Tienes mensaje(s) del canal 12%s", ci->name);
         }
 }        

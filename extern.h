@@ -160,6 +160,7 @@ E char *LocalHost;
 E int   LocalPort;
 
 E char *ServerName;
+E char *Net;
 E char *MYSQL_SERVER;
 E char *MYSQL_USER;
 E char *MYSQL_PASS;
@@ -200,7 +201,7 @@ E char *s_BddServ;
 E char *s_ShadowServ;
 E char *s_IpVirtual;
 E char *s_GeoIP;
-E char *s_JokuServ;;
+E char *s_JokuServ;
 E char *DEntryMsg;
 E int  CregApoyos;
 

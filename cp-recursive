@@ -1,21 +1,30 @@
 #!/bin/sh
 
+set -e
 if [ $1 = "-t" ] ; then
-	shift
+    shift
 fi
 if [ ! "$2" ] ; then
-	echo >&2 Usage: $0 '<sourcedir> <targetdir>'
-	exit 1
+    echo >&2 "Usage: $0 <sourcedir> <targetdir>"
+    exit 1
 fi
 if [ -d "$1" ] ; then
-	dir="$1"
+    dir="$1"
 else
-	dir="`echo $1 | sed 's#\(.*\)/.*#\1#'`"
+    dir=`dirname "$1"`
 fi
 while [ "$2" ] ; do
-	shift
+    shift
 done
-if [ ! -d $1 ] ; then
-	mkdir -p $1 || exit 1
+dest=`echo "$1" | sed s,/*$,,`
+if [ -d "$dest" ] ; then
+    dest="$dest/`basename $dir`"
 fi
-/bin/tar -Ccf $dir - . | /bin/tar -Cxf $1 -
+mkdir -p "$dest"
+tar Ccf $dir - . | tar Cxf $dest -
+
+# Local variables:
+#   indent-tabs-mode: nil
+# End:
+#
+# vim: expandtab shiftwidth=4:

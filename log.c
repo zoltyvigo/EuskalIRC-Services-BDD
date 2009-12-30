@@ -1,237 +1,336 @@
 /* Logging routines.
  *
- * Services is copyright (c) 1996-1999 Andy Church.
- *     E-mail: <achurch@dragonfire.net>
- * This program is free but copyrighted software; see the file COPYING for
+ * IRC Services is copyright (c) 1996-2009 Andrew Church.
+ *     E-mail: <achurch@achurch.org>
+ * Parts written by Andrew Kempe and others.
+ * This program is free but copyrighted software; see the file GPL.txt for
  * details.
  */
 
 #include "services.h"
-#include "pseudo.h"
+#include <netdb.h>  /* for hstrerror() */
 
+/* Pattern for generating logfile names */
+static char logfile_pattern[PATH_MAX+1];
+
+/* Currently open log file */
 static FILE *logfile;
+static char current_filename[PATH_MAX+1];
+
+/* Memory log buffer (see open_memory_log()) */
+static char logmem[LOGMEMSIZE];
+static char *logmemptr = NULL;
+
+/* Are we in fatal() or fatal_perror()?  (This is used to avoid infinite
+ * recursion if wallops() does a fatal().) */
+static int in_fatal = 0;
+
+/*************************************************************************/
+/*************************************************************************/
+
+/* Local routine to generate a filename from a filename pattern (possibly
+ * containing %y/%m/%d for year/month/day).  Result is returned in a static
+ * buffer, and will not be longer than PATH_MAX characters.
+ */
+
+static char *gen_log_filename(void)
+{
+    static char result[PATH_MAX+1];
+    const char *s, *from;
+    char *to;
+
+    time_t now = time(NULL);
+    struct tm *tm = localtime(&now);
+    tm->tm_year += 1900;
+    tm->tm_mon++;
+
+    from = LogFilename;
+    if (!*from) {
+        *result = 0;
+        return result;
+    }
+    to = result;
+
+    while ((s = strchr(from, '%')) != NULL) {
+        to += snprintf(to, sizeof(result)-(to-result), "%.*s", s-from, from);
+        s++;
+        switch (*s) {
+          case 'y':
+            to += snprintf(to, sizeof(result)-(to-result), "%d", tm->tm_year);
+            break;
+          case 'm':
+            to += snprintf(to, sizeof(result)-(to-result), "%02d", tm->tm_mon);
+            break;
+          case 'd':
+            to += snprintf(to, sizeof(result)-(to-result), "%02d",tm->tm_mday);
+            break;
+          default:
+            if (to-result < sizeof(result)-1)
+                *to++ = *s;
+            break;
+        }
+        from = s+1;
+    }
+    to += snprintf(to, sizeof(result)-(to-result), "%s", from);
+
+    *to = 0;
+    return result;
+}
 
 /*************************************************************************/
 
-/* Open the log file.  Return -1 if the log file could not be opened, else
- * return 0. */
+/* Local routine to check whether the log file needs to be rotated, and
+ * rotate it if so.  Assumes the log file is already open.
+ */
+
+static void check_log_rotate(void)
+{
+    char *newname = gen_log_filename();
+    if (strlen(newname) > sizeof(current_filename)-1)
+        newname[sizeof(current_filename)-1] = 0;
+    if (strcmp(current_filename, gen_log_filename()) != 0) {
+        if (!reopen_log())
+            log("Warning: Unable to rotate log file: %s", strerror(errno));
+    }
+}
+
+/*************************************************************************/
+/*************************************************************************/
+
+/* Local routines to write text to the log file and/or stderr as needed. */
+
+static void vlogprintf(const char *fmt, va_list args)
+{
+    if (nofork) {
+        va_list args_copy;
+        va_copy(args_copy, args);
+        vfprintf(stderr, fmt, args_copy);
+        va_end(args_copy);
+    }
+    if (logfile) {
+        vfprintf(logfile, fmt, args);
+    } else if (logmemptr) {
+        char tmpbuf[BUFSIZE];
+        int len = vsnprintf(tmpbuf, sizeof(tmpbuf), fmt, args);
+        if (len > LOGMEMSIZE - (logmemptr-logmem)) {
+            int oldlen = len;
+            len = LOGMEMSIZE - (logmemptr-logmem);
+            if (len > 0) {
+                if (tmpbuf[oldlen-1] == '\n') {
+                    tmpbuf[len-1] = '\n';  /* always end with a newline */
+                } else {
+                    len--;
+                }
+            }
+        }
+        if (len > 0) {
+            memcpy(logmemptr, tmpbuf, len);
+            logmemptr += len;
+        }
+    }
+}
+
+static void logprintf(const char *fmt, ...) FORMAT(printf,1,2);
+static void logprintf(const char *fmt, ...)
+{
+    va_list args;
+    va_start(args, fmt);
+    vlogprintf(fmt, args);
+    va_end(args);
+}
+
+static void logputs(const char *str)
+{
+    logprintf("%s", str);
+}
+
+/*************************************************************************/
+
+/* Local routine to write the time of day to the log. */
+
+static void write_time(void)
+{
+    time_t t;
+    struct tm tm;
+    char buf[256];
+
+    time(&t);
+    tm = *localtime(&t);
+#if HAVE_GETTIMEOFDAY
+    if (debug) {
+        char *s;
+        struct timeval tv;
+        gettimeofday(&tv, NULL);
+        strftime(buf, sizeof(buf)-1, "[%b %d %H:%M:%S", &tm);
+        s = buf + strlen(buf);
+        s += snprintf(s, sizeof(buf)-(s-buf), ".%06d", (int)tv.tv_usec);
+        strftime(s, sizeof(buf)-(s-buf)-1, " %Y] ", &tm);
+    } else {
+#endif
+        strftime(buf, sizeof(buf)-1, "[%b %d %H:%M:%S %Y] ", &tm);
+#if HAVE_GETTIMEOFDAY
+    }
+#endif
+    logputs(buf);
+}
+
+/*************************************************************************/
+/*************************************************************************/
+
+/* Set the filename pattern to use for generating the log filename. */
+
+void set_logfile(const char *pattern)
+{
+    if (pattern) {  /* Just to be safe */
+        strscpy(logfile_pattern, pattern, sizeof(logfile_pattern));
+    }
+}
+
+/*************************************************************************/
+
+/* Open the log file.  Return zero if the log file could not be opened,
+ * else return nonzero (success).
+ */
 
 int open_log(void)
 {
     if (logfile)
-	return 0;
-    logfile = fopen(log_filename, "a");
-    if (logfile)
-	setbuf(logfile, NULL);
-    return logfile!=NULL ? 0 : -1;
+        return 1;
+    strbcpy(current_filename, gen_log_filename());
+    logfile = fopen(current_filename, "a");
+    if (logfile) {
+        setbuf(logfile, NULL);
+        if (logmemptr) {
+            int res, errno_save;
+            if (logmemptr > logmem) {
+                res = fwrite(logmem, logmemptr-logmem, 1, logfile);
+                errno_save = errno;
+            } else {
+                res = 1;  /* i.e. no error */
+#if CLEAN_COMPILE
+                errno_save = 0;  /* warning killer for dumb compilers */
+#endif
+            }
+            logmemptr = NULL;
+            if (res != 1) {
+                /* make sure this is AFTER the memory log has been closed! */
+                errno = errno_save;
+                log_perror("open_log(): error writing memory log");
+            }
+        }
+    }
+    return logfile!=NULL ? 1 : 0;
 }
+
+/*************************************************************************/
+
+/* Open a virtual log file in memory.  The contents of the memory log file
+ * will be written to a physical log file when open_log() is called and
+ * executes successfully.  If a physical log file is already open, does
+ * nothing.  Always succeeds (and returns nonzero).
+ */
+
+int open_memory_log(void)
+{
+    if (logfile || logmemptr)
+        return 1;
+    logmemptr = logmem;
+    return 1;
+}
+
+/*************************************************************************/
 
 /* Close the log file. */
 
 void close_log(void)
 {
-    if (!logfile)
-	return;
-    fclose(logfile);
-    logfile = NULL;
+    if (logmemptr) {
+        logmemptr = NULL;
+    }
+    if (logfile) {
+        fclose(logfile);
+        logfile = NULL;
+    }
 }
 
 /*************************************************************************/
 
-/* Rename the log file. Errors are wallop'ed if *u is NULL. Returns 1 if the
- * log file is successfully renamed otherwise 0 is returned. newname should 
- * not be user-supplied - rather use the date or something. Pass NULL for *u 
- * if called automatically. 
- * There is lots of room for improvement in the use of this function!
+/* Reopen the log file with the current value of LogFilename (for use when
+ * rehashing configuration files or rotating the log file).  Return value
+ * is like open_log().
+ */
+
+int reopen_log(void)
+{
+    char *newname;
+    FILE *f;
+
+    newname = gen_log_filename();
+    /* Make sure it will fit in current_filename later */
+    if (strlen(newname) > sizeof(current_filename)-1)
+        newname[sizeof(current_filename)-1] = 0;
+    f = fopen(newname, "a");
+    if (!f)
+        return 0;
+    setbuf(f, NULL);
+    if (logfile)
+        fclose(logfile);
+    logfile = f;
+    strcpy(current_filename, newname);  /* safe b/c of length check above */
+    return 1;
+}
+
+/*************************************************************************/
+
+/* Return nonzero if the log file is currently open, zero if closed. */
+
+int log_is_open(void)
+{
+    return logfile != NULL;
+}
+
+/*************************************************************************/
+/*************************************************************************/
+
+/* Log stuff to the log file with a datestamp when debug >= debuglevel.
+ * errno is preserved.  If debuglevel is greater than zero, "debug: " is
+ * prefixed to the message.  If do_perror is nonzero, the message is
+ * followed by a ": " and system error message, a la perror() (if errno<0,
+ * it is treated as an herror value from hostname resolution).  If
+ * modulename is not NULL, it is used as a prefix to the error message.
  *
- * -TheShadow (15 May 1999)
+ * [module_]log[_perror][_debug]() are implemented as macros which call
+ * this function.
  */
 
-int rename_log(User *u, const char *newname)
+void do_log(int debuglevel, int do_perror, const char *modulename,
+            const char *fmt, ...)
 {
-    FILE *temp_fp;
-    int success = 1;
+    if (debug >= debuglevel) {
+        va_list args;
+        int errno_save = errno;
 
-    if ((temp_fp = fopen(newname, "r"))) {
- 	fclose(temp_fp);
-	if (u) {
-	    notice_lang(s_OperServ, u, OPER_ROTATELOG_FILE_EXISTS, newname);
-	} else {
-            wallops(NULL, "WARNING: Could not rename logfile, a file with "
-			"the name \2%s\2 already exists!", newname);
-	}
-	log("ERROR: Could not rename logfile, a file with the name \2%s\2 "
-			"already exists!", newname);
-	return 0;
+        va_start(args, fmt);
+        if (logfile)
+            check_log_rotate();
+        write_time();
+        if (debuglevel > 0)
+            logputs("debug: ");
+        if (modulename)
+            logprintf("(%s) ", modulename);
+        vlogprintf(fmt, args);
+        if (do_perror) {
+            logprintf(": %s",
+                      (errno_save<0) ? hstrerror(-errno_save)
+                                     : strerror(errno_save));
+        }
+        logputs("\n");
+        va_end(args);
+        errno = errno_save;
     }
-
-    if (debug)
-	log("Renaming logfile from %s to %s ...", log_filename, newname);
-
-    close_log();
-
-    /* Note: If something goes wrong here, there is no way for us to log it. 
-     * We have to rely on the notice or an oper seeing the wallop. -TheShadow 
-     */
-    if (rename(log_filename, newname) == 0) {
-	if (u) {
-	    notice_lang(s_OperServ, u, OPER_ROTATELOG_RENAME_DONE, newname);
-	}
-
-    } else {
-	if (u) {
-	    notice_lang(s_OperServ, u, OPER_ROTATELOG_RENAME_FAIL, 
-			strerror(errno));
-	} else {
-	    wallops(NULL, "WARNING: Logfile could not be renamed: %s", 
-			strerror(errno));
-	}
-	success = 0;
-    }
-
-    if (open_log() == -1) {
-        if (u) {
-            notice_lang(s_OperServ, u, OPER_ROTATELOG_OPEN_LOG_FAIL,
-			strerror(errno));
-        } else {
-	    /* If we ever get here, then we're pretty stuffed. Services is
-	     * probably going to have to be restarted. All we can do is yell
-	     * for help and tell who ever is listening to find the services
-	     * administrator (root) and notify them. -TheShadow */
-
-            wallops(NULL, "WARNING: Logging could not be restarted: \2%s\2",
-			strerror(errno));
-	    wallops(NULL, "Please notify your services administrator, \2%s\2, "
-			"and include the above error message.", ServicesRoot);
-	    success = 0;
-	}
-    }
-
-    if (debug && !success)
-	log("Logfile could not be renamed: %s", strerror(errno));
-
-    if (success) {
-	log("Fresh logfile started. Previous logfile has been renamed to: %s",
-			 newname);
-    } else if (debug) {
-	/* pointless if open_log() fails */
-	log("ERROR: Logfile could not be renamed: %s", strerror(errno));
-    }
-
-    return success;
-}
-
-/* This is the function that should be called by a user, and currently is :) 
- * Basically we make a nice new log filename and then call the rename_log
- * function. Due to the nature of life, we have to pass the User structure 
- * through to the rename code. This is the only sain way of being able to
- * notify users of problems while renaming the log file - we might not be able
- * to log the problem.
- * -TheShadow (15 May 1999) 
- */
-
-void rotate_log(User *u)
-{
-    time_t t;
-    struct tm tm;
-    char newname[23];
-
-    time(&t);
-    tm = *localtime(&t);
-    strftime(newname, sizeof(newname)-1, "services-%Y%m%d.log", &tm);
-
-    rename_log(u, newname);
 }
 
 /*************************************************************************/
-
-/* Log stuff to the log file with a datestamp.  Note that errno is
- * preserved by this routine and log_perror().
- */
-
-void log(const char *fmt, ...)
-{
-    va_list args;
-    time_t t;
-    struct tm tm;
-    char buf[256];
-    int errno_save = errno;
-
-    va_start(args, fmt);
-    time(&t);
-    tm = *localtime(&t);
-#if HAVE_GETTIMEOFDAY
-    if (debug) {
-	char *s;
-	struct timeval tv;
-	gettimeofday(&tv, NULL);
-	strftime(buf, sizeof(buf)-1, "[%b %d %H:%M:%S", &tm);
-	s = buf + strlen(buf);
-	s += snprintf(s, sizeof(buf)-(s-buf), ".%06d", tv.tv_usec);
-	strftime(s, sizeof(buf)-(s-buf)-1, " %Y] ", &tm);
-    } else {
-#endif
-	strftime(buf, sizeof(buf)-1, "[%b %d %H:%M:%S %Y] ", &tm);
-#if HAVE_GETTIMEOFDAY
-    }
-#endif
-    if (logfile) {
-	fputs(buf, logfile);
-	vfprintf(logfile, fmt, args);
-	fputc('\n', logfile);
-    }
-    if (nofork) {
-	fputs(buf, stderr);
-	vfprintf(stderr, fmt, args);
-	fputc('\n', stderr);
-    }
-    errno = errno_save;
-}
-
-
-/* Like log(), but tack a ": " and a system error message (as returned by
- * strerror()) onto the end.
- */
-
-void log_perror(const char *fmt, ...)
-{
-    va_list args;
-    time_t t;
-    struct tm tm;
-    char buf[256];
-    int errno_save = errno;
-
-    va_start(args, fmt);
-    time(&t);
-    tm = *localtime(&t);
-#if HAVE_GETTIMEOFDAY
-    if (debug) {
-	char *s;
-	struct timeval tv;
-	gettimeofday(&tv, NULL);
-	strftime(buf, sizeof(buf)-1, "[%b %d %H:%M:%S", &tm);
-	s = buf + strlen(buf);
-	s += snprintf(s, sizeof(buf)-(s-buf), ".%06d", tv.tv_usec);
-	strftime(s, sizeof(buf)-(s-buf)-1, " %Y] ", &tm);
-    } else {
-#endif
-	strftime(buf, sizeof(buf)-1, "[%b %d %H:%M:%S %Y] ", &tm);
-#if HAVE_GETTIMEOFDAY
-    }
-#endif
-    if (logfile) {
-	fputs(buf, logfile);
-	vfprintf(logfile, fmt, args);
-	fprintf(logfile, ": %s\n", strerror(errno_save));
-    }
-    if (nofork) {
-	fputs(buf, stderr);
-	vfprintf(stderr, fmt, args);
-	fprintf(stderr, ": %s\n", strerror(errno_save));
-    }
-    errno = errno_save;
-}
-
 /*************************************************************************/
 
 /* We've hit something we can't recover from.  Let people know what
@@ -241,75 +340,57 @@ void log_perror(const char *fmt, ...)
 void fatal(const char *fmt, ...)
 {
     va_list args;
-    time_t t;
-    struct tm tm;
-    char buf[256], buf2[4096];
+    char buf[4096];
 
+    if (in_fatal)
+        exit(2);
+    in_fatal++;
     va_start(args, fmt);
-    time(&t);
-    tm = *localtime(&t);
-#if HAVE_GETTIMEOFDAY
-    if (debug) {
-	char *s;
-	struct timeval tv;
-	gettimeofday(&tv, NULL);
-	strftime(buf, sizeof(buf)-1, "[%b %d %H:%M:%S", &tm);
-	s = buf + strlen(buf);
-	s += snprintf(s, sizeof(buf)-(s-buf), ".%06d", tv.tv_usec);
-	strftime(s, sizeof(buf)-(s-buf)-1, " %Y] ", &tm);
-    } else {
-#endif
-	strftime(buf, sizeof(buf)-1, "[%b %d %H:%M:%S %Y] ", &tm);
-#if HAVE_GETTIMEOFDAY
-    }
-#endif
-    vsnprintf(buf2, sizeof(buf2), fmt, args);
+    vsnprintf(buf, sizeof(buf), fmt, args);
+    va_end(args);
     if (logfile)
-	fprintf(logfile, "%sFATAL: %s\n", buf, buf2);
-    if (nofork)
-	fprintf(stderr, "%sFATAL: %s\n", buf, buf2);
-    if (servsock >= 0)
-	wallops(NULL, "FATAL ERROR!  %s", buf2);
+        check_log_rotate();
+    write_time();
+    logprintf("FATAL: %s\n", buf);
+    if (servsock && sock_isconn(servsock))
+        wallops(NULL, "FATAL ERROR!  %s", buf);
     exit(1);
 }
 
+/*************************************************************************/
 
 /* Same thing, but do it like perror(). */
 
 void fatal_perror(const char *fmt, ...)
 {
     va_list args;
-    time_t t;
-    struct tm tm;
-    char buf[256], buf2[4096];
-    int errno_save = errno;
+    char buf[4096];
+    const char *errstr;
 
+    if (in_fatal)
+        exit(2);
+    in_fatal++;
+    errstr = (errno<0) ? hstrerror(-errno) : strerror(errno);
     va_start(args, fmt);
-    time(&t);
-    tm = *localtime(&t);
-#if HAVE_GETTIMEOFDAY
-    if (debug) {
-	char *s;
-	struct timeval tv;
-	gettimeofday(&tv, NULL);
-	strftime(buf, sizeof(buf)-1, "[%b %d %H:%M:%S", &tm);
-	s = buf + strlen(buf);
-	s += snprintf(s, sizeof(buf)-(s-buf), ".%06d", tv.tv_usec);
-	strftime(s, sizeof(buf)-(s-buf)-1, " %Y] ", &tm);
-    } else {
-#endif
-	strftime(buf, sizeof(buf)-1, "[%b %d %H:%M:%S %Y] ", &tm);
-#if HAVE_GETTIMEOFDAY
-    }
-#endif
-    vsnprintf(buf2, sizeof(buf2), fmt, args);
+    vsnprintf(buf, sizeof(buf), fmt, args);
+    va_end(args);
     if (logfile)
-	fprintf(logfile, "%sFATAL: %s: %s\n", buf, buf2, strerror(errno_save));
-    if (stderr)
-	fprintf(stderr, "%sFATAL: %s: %s\n", buf, buf2, strerror(errno_save));
-    if (servsock >= 0)
-	wallops(NULL, "FATAL ERROR!  %s: %s", buf2, strerror(errno_save));
+        check_log_rotate();
+    write_time();
+    logprintf("FATAL: %s: %s\n", buf, errstr);
+    if (servsock && sock_isconn(servsock))
+        wallops(NULL, "FATAL ERROR!  %s: %s", buf, errstr);
     exit(1);
 }
 
 /*************************************************************************/
+
+/*
+ * Local variables:
+ *   c-file-style: "stroustrup"
+ *   c-file-offsets: ((case-label . *) (statement-case-intro . *))
+ *   indent-tabs-mode: nil
+ * End:
+ *
+ * vim: expandtab shiftwidth=4:
+ */

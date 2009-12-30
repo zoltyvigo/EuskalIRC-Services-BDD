@@ -4,6 +4,7 @@ undef $/;
 $text = <STDIN>;
 if ($ARGV[0] eq "-jis") {
 	$text =~ s/EUC/JIS/g;
+	$text =~ s/euc-jp/iso-2022-jp/g;
 	$text =~ s#([\241-\376])([\241-\376])#
 	           "\033\$B".pack("cc",ord($1)&127,ord($2)&127)."\033(B"#eg;
 	# The language name (the only thing before the STRFTIME_* strings)
@@ -19,9 +20,12 @@ if ($ARGV[0] eq "-jis") {
 	$text =~ s#\033\(B\033\$B##g;
 } elsif ($ARGV[0] eq "-sjis") {
 	$text =~ s/EUC/SJIS/g;
+	$text =~ s/euc-jp/shift_jis/g;
 	$text =~ s#([\241-\376])([\241-\376])#
-	           $x = 64+(ord($2)-0241)+((ord($1)-0241)%2)*0136;
-	           $x++ if $x >= 0200;
-	           pack("cc",129+(ord($1)-0241)/2,$x)#eg;
+		   $x = 0201+(ord($1)-0241)/2;
+	           $y = 0100+(ord($2)-0241)+((ord($1)-0241)%2)*94;
+		   $x += 0100 if $x >= 0240;
+	           $y++ if $y >= 0177;
+	           pack("cc",$x,$y)#eg;
 }
 print $text;

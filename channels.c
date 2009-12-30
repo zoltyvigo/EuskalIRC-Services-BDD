@@ -1,15 +1,74 @@
 /* Channel-handling routines.
  *
- * Services is copyright (c) 1996-1999 Andy Church.
- *     E-mail: <achurch@dragonfire.net>
- * This program is free but copyrighted software; see the file COPYING for
+ * IRC Services is copyright (c) 1996-2009 Andrew Church.
+ *     E-mail: <achurch@achurch.org>
+ * Parts written by Andrew Kempe and others.
+ * This program is free but copyrighted software; see the file GPL.txt for
  * details.
  */
 
 #include "services.h"
+#include "modules.h"
 
-#define HASH(chan)	((chan)[1] ? ((chan)[1]&31)<<5 | ((chan)[2]&31) : 0)
-static Channel *chanlist[1024];
+/*************************************************************************/
+
+#define HASHFUNC(key) DEFAULT_HASHFUNC(key+1)
+#define add_channel  static add_channel
+#define del_channel  static del_channel
+#include "hash.h"
+DEFINE_HASH(channel, Channel, name)
+#undef add_channel
+#undef del_channel
+
+static int cb_create       = -1;
+static int cb_delete       = -1;
+static int cb_join         = -1;
+static int cb_join_check   = -1;
+static int cb_mode         = -1;
+static int cb_mode_change  = -1;
+static int cb_umode_change = -1;
+static int cb_topic        = -1;
+
+/*************************************************************************/
+/*************************************************************************/
+
+int channel_init(int ac, char **av)
+{
+    cb_create       = register_callback("channel create");
+    cb_delete       = register_callback("channel delete");
+    cb_join         = register_callback("channel JOIN");
+    cb_join_check   = register_callback("channel JOIN check");
+    cb_mode         = register_callback("channel MODE");
+    cb_mode_change  = register_callback("channel mode change");
+    cb_umode_change = register_callback("channel umode change");
+    cb_topic        = register_callback("channel TOPIC");
+    if (cb_create < 0 || cb_delete < 0 || cb_join < 0 || cb_join_check < 0
+     || cb_mode < 0 || cb_mode_change < 0 || cb_umode_change < 0
+     || cb_topic < 0
+    ) {
+        log("channel_init: register_callback() failed\n");
+        return 0;
+    }
+    return 1;
+}
+
+/*************************************************************************/
+
+void channel_cleanup(void)
+{
+    Channel *c;
+
+    for (c = first_channel(); c; c = next_channel())
+        del_channel(c);
+    unregister_callback(cb_topic);
+    unregister_callback(cb_umode_change);
+    unregister_callback(cb_mode_change);
+    unregister_callback(cb_mode);
+    unregister_callback(cb_join_check);
+    unregister_callback(cb_join);
+    unregister_callback(cb_delete);
+    unregister_callback(cb_create);
+}
 
 /*************************************************************************/
 
@@ -20,175 +79,30 @@ void get_channel_stats(long *nrec, long *memuse)
     long count = 0, mem = 0;
     Channel *chan;
     struct c_userlist *cu;
-    int i, j;
+    int i;
 
-    for (i = 0; i < 1024; i++) {
-	for (chan = chanlist[i]; chan; chan = chan->next) {
-	    count++;
-	    mem += sizeof(*chan);
-	    if (chan->topic)
-		mem += strlen(chan->topic)+1;
-	    if (chan->key)
-		mem += strlen(chan->key)+1;
-	    mem += sizeof(char *) * chan->bansize;
-	    for (j = 0; j < chan->bancount; j++) {
-		if (chan->bans[j])
-		    mem += strlen(chan->bans[j])+1;
-	    }
-	    for (cu = chan->users; cu; cu = cu->next)
-		mem += sizeof(*cu);
-	    for (cu = chan->chanops; cu; cu = cu->next)
-		mem += sizeof(*cu);
-	    for (cu = chan->voices; cu; cu = cu->next)
-		mem += sizeof(*cu);
-	}
+    for (chan = first_channel(); chan; chan = next_channel()) {
+        count++;
+        mem += sizeof(*chan);
+        if (chan->topic)
+            mem += strlen(chan->topic)+1;
+        if (chan->key)
+            mem += strlen(chan->key)+1;
+        ARRAY_FOREACH (i, chan->bans) {
+            mem += sizeof(char *);
+            if (chan->bans[i])
+                mem += strlen(chan->bans[i])+1;
+        }
+        ARRAY_FOREACH (i, chan->excepts) {
+            mem += sizeof(char *);
+            if (chan->excepts[i])
+                mem += strlen(chan->excepts[i])+1;
+        }
+        LIST_FOREACH (cu, chan->users)
+            mem += sizeof(*cu);
     }
     *nrec = count;
     *memuse = mem;
-}
-
-/*************************************************************************/
-
-#ifdef DEBUG_COMMANDS
-
-/* Send the current list of channels to the named user. */
-
-void send_channel_list(User *user)
-{
-    Channel *c;
-    char s[16], buf[512], *end;
-    struct c_userlist *u, *u2;
-    int isop, isvoice;
-    const char *source = user->nick;
-
-    for (c = firstchan(); c; c = nextchan()) {
-	snprintf(s, sizeof(s), " %d", c->limit);
-	notice(s_OperServ, source, "%s %lu +%s%s%s%s%s%s%s%s%s%s%s%s %s",
-				c->name, c->creation_time,
-				(c->mode&CMODE_I) ? "i" : "",
-				(c->mode&CMODE_M) ? "m" : "",
-				(c->mode&CMODE_N) ? "n" : "",
-				(c->mode&CMODE_P) ? "p" : "",
-				(c->mode&CMODE_S) ? "s" : "",
-				(c->mode&CMODE_T) ? "t" : "",
-#ifdef IRC_DAL4_4_15
-				(c->mode&CMODE_R) ? "R" : "",
-#else
-				"",
-#endif
-				(c->limit)        ? "l" : "",
-				(c->key)          ? "k" : "",
-				(c->limit)        ?  s  : "",
-				(c->key)          ? " " : "",
-				(c->key)          ? c->key : "",
-				c->topic ? c->topic : "");
-	end = buf;
-	end += snprintf(end, sizeof(buf)-(end-buf), "%s", c->name);
-	for (u = c->users; u; u = u->next) {
-	    isop = isvoice = 0;
-	    for (u2 = c->chanops; u2; u2 = u2->next) {
-		if (u2->user == u->user) {
-		    isop = 1;
-		    break;
-		}
-	    }
-	    for (u2 = c->voices; u2; u2 = u2->next) {
-		if (u2->user == u->user) {
-		    isvoice = 1;
-		    break;
-		}
-	    }
-	    end += snprintf(end, sizeof(buf)-(end-buf),
-					" %s%s%s", isvoice ? "+" : "",
-					isop ? "@" : "", u->user->nick);
-	}
-	notice(s_OperServ, source, buf);
-    }
-}
-
-
-/* Send list of users on a single channel, taken from strtok(). */
-
-void send_channel_users(User *user)
-{
-    char *chan = strtok(NULL, " ");
-    Channel *c = chan ? findchan(chan) : NULL;
-    struct c_userlist *u;
-    const char *source = user->nick;
-
-    if (!c) {
-	notice(s_OperServ, source, "Channel %s not found!",
-		chan ? chan : "(null)");
-	return;
-    }
-    notice(s_OperServ, source, "Channel %s users:", chan);
-    for (u = c->users; u; u = u->next)
-	notice(s_OperServ, source, "%s", u->user->nick);
-    notice(s_OperServ, source, "Channel %s chanops:", chan);
-    for (u = c->chanops; u; u = u->next)
-	notice(s_OperServ, source, "%s", u->user->nick);
-    notice(s_OperServ, source, "Channel %s voices:", chan);
-    for (u = c->voices; u; u = u->next)
-	notice(s_OperServ, source, "%s", u->user->nick);
-}
-
-#endif	/* DEBUG_COMMANDS */
-
-/*************************************************************************/
-
-/* Return the Channel structure corresponding to the named channel, or NULL
- * if the channel was not found.  chan is assumed to be non-NULL and valid
- * (i.e. pointing to a channel name of 2 or more characters). */
-
-Channel *findchan(const char *chan)
-{
-    Channel *c;
-
-    if (debug >= 3)
-	log("debug: findchan(%p)", chan);
-    c = chanlist[HASH(chan)];
-    while (c) {
-	if (stricmp(c->name, chan) == 0)
-	    return c;
-	c = c->next;
-    }
-    if (debug >= 3)
-	log("debug: findchan(%s) -> %p", chan, c);
-    return NULL;
-}
-
-/*************************************************************************/
-
-/* Iterate over all channels in the channel list.  Return NULL at end of
- * list.
- */
-
-static Channel *current;
-static int next_index;
-
-Channel *firstchan(void)
-{
-    next_index = 0;
-    while (next_index < 1024 && current == NULL)
-	current = chanlist[next_index++];
-    if (debug >= 3)
-	log("debug: firstchan() returning %s",
-			current ? current->name : "NULL (end of list)");
-    return current;
-}
-
-Channel *nextchan(void)
-{
-    if (current)
-	current = current->next;
-    if (!current && next_index < 1024) {
-	while (next_index < 1024 && current == NULL)
-	    current = chanlist[next_index++];
-    }
-    if (debug >= 3)
-	log("debug: nextchan() returning %s",
-			current ? current->name : "NULL (end of list)");
-    return current;
 }
 
 /*************************************************************************/
@@ -196,65 +110,36 @@ Channel *nextchan(void)
 
 /* Add/remove a user to/from a channel, creating or deleting the channel as
  * necessary.  If creating the channel, restore mode lock and topic as
- * necessary.  Also check for auto-opping and auto-voicing. */
+ * necessary.  Also check for auto-opping and auto-voicing.  If a mode is
+ * given, it is assumed to have been set by the remote server.
+ * Returns the Channel structure for the given channel, or NULL if the user
+ * was refused access to the channel (by the join check callback).
+ */
 
-void chan_adduser(User *user, const char *chan)
+Channel *chan_adduser(User *user, const char *chan, int32 modes)
 {
-    Channel *c = findchan(chan);
-    Channel **list;
+    Channel *c = get_channel(chan);
     int newchan = !c;
     struct c_userlist *u;
 
+    if (call_callback_2(cb_join_check, chan, user) > 0)
+        return NULL;
     if (newchan) {
-	if (debug)
-	    log("debug: Creating channel %s", chan);
-	/* Allocate pre-cleared memory */
-	c = scalloc(sizeof(Channel), 1);
-	strscpy(c->name, chan, sizeof(c->name));
-	list = &chanlist[HASH(c->name)];
-	c->next = *list;
-	if (*list)
-	    (*list)->prev = c;
-	*list = c;
-	c->creation_time = time(NULL);
-	/* Store ChannelInfo pointer in channel record */
-	c->ci = cs_findchan(chan);
-	if (c->ci) {
-	    /* This is a registered channel, ensure it's mode locked +r */
-	    c->ci->mlock_on |= CMODE_r;
-	    c->ci->mlock_off &= ~CMODE_r;	/* just to be safe */
-
-	    /* Store return pointer in ChannelInfo record */
-	    c->ci->c = c;
-	}
-	/* Restore locked modes and saved topic */
-	check_modes(chan);
-	restore_topic(chan);
-    }
-    if (check_should_op(user, chan)) {
-	u = smalloc(sizeof(struct c_userlist));
-	u->next = c->chanops;
-	u->prev = NULL;
-	if (c->chanops)
-	    c->chanops->prev = u;
-	c->chanops = u;
-	u->user = user;
-    } else if (check_should_voice(user, chan)) {
-	u = smalloc(sizeof(struct c_userlist));
-	u->next = c->voices;
-	u->prev = NULL;
-	if (c->voices)
-	    c->voices->prev = u;
-	c->voices = u;
-	u->user = user;
+        log_debug(1, "Creating channel %s", chan);
+        /* Allocate pre-cleared memory */
+        c = scalloc(sizeof(Channel), 1);
+        strbcpy(c->name, chan);
+        c->creation_time = time(NULL);
+        add_channel(c);
+        call_callback_3(cb_create, c, user, modes);
     }
     u = smalloc(sizeof(struct c_userlist));
-    u->next = c->users;
-    u->prev = NULL;
-    if (c->users)
-	c->users->prev = u;
-    c->users = u;
+    LIST_INSERT(u, c->users);
     u->user = user;
+    u->mode = modes;
+    u->flags = 0;
+    call_callback_2(cb_join, c, u);
+    return c;
 }
 
 
@@ -263,326 +148,310 @@ void chan_deluser(User *user, Channel *c)
     struct c_userlist *u;
     int i;
 
-    for (u = c->users; u && u->user != user; u = u->next)
-	;
-    if (!u)
-	return;
-    if (u->next)
-	u->next->prev = u->prev;
-    if (u->prev)
-	u->prev->next = u->next;
-    else
-	c->users = u->next;
+    LIST_SEARCH_SCALAR(c->users, user, user, u);
+    if (!u) {
+        log("channel: BUG: chan_deluser() called for %s in %s but they "
+            "were not found on the channel's userlist.",
+            user->nick, c->name);
+        return;
+    }
+    LIST_REMOVE(u, c->users);
     free(u);
-    for (u = c->chanops; u && u->user != user; u = u->next)
-	;
-    if (u) {
-	if (u->next)
-	    u->next->prev = u->prev;
-	if (u->prev)
-	    u->prev->next = u->next;
-	else
-	    c->chanops = u->next;
-	free(u);
-    }
-    for (u = c->voices; u && u->user != user; u = u->next)
-	;
-    if (u) {
-	if (u->next)
-	    u->next->prev = u->prev;
-	if (u->prev)
-	    u->prev->next = u->next;
-	else
-	    c->voices = u->next;
-	free(u);
-    }
+
     if (!c->users) {
-	if (debug)
-	    log("debug: Deleting channel %s", c->name);
-	if (c->ci)
-	    c->ci->c = NULL;
-	if (c->topic)
-	    free(c->topic);
-	if (c->key)
-	    free(c->key);
-	for (i = 0; i < c->bancount; ++i) {
-	    if (c->bans[i])
-		free(c->bans[i]);
-	    else
-		log("channel: BUG freeing %s: bans[%d] is NULL!", c->name, i);
-	}
-	if (c->bansize)
-	    free(c->bans);
-	if (c->chanops || c->voices)
-	    log("channel: Memory leak freeing %s: %s%s%s %s non-NULL!",
-			c->name,
-			c->chanops ? "c->chanops" : "",
-			c->chanops && c->voices ? " and " : "",
-			c->voices ? "c->voices" : "",
-			c->chanops && c->voices ? "are" : "is");
-	if (c->next)
-	    c->next->prev = c->prev;
-	if (c->prev)
-	    c->prev->next = c->next;
-	else
-	    chanlist[HASH(c->name)] = c->next;
-	free(c);
+        log_debug(1, "Deleting channel %s", c->name);
+        call_callback_1(cb_delete, c);
+        set_cmode(NULL, c);  /* make sure nothing's left buffered */
+        free(c->topic);
+        free(c->key);
+        free(c->link);
+        free(c->flood);
+        for (i = 0; i < c->bans_count; i++)
+            free(c->bans[i]);
+        free(c->bans);
+        for (i = 0; i < c->excepts_count; i++)
+            free(c->excepts[i]);
+        free(c->excepts);
+        del_channel(c);
+        free(c);
     }
 }
 
 /*************************************************************************/
 
-/* Handle a channel MODE command. */
+/* Search for the given ban on the given channel, and return the index into
+ * chan->bans[] if found, -1 otherwise.  Nicknames are compared using
+ * irc_stricmp(), usernames and hostnames using stricmp().
+ */
+static int find_ban(const Channel *chan, const char *ban)
+{
+    char *s, *t;
+    int i;
+
+    t = strchr(ban, '!');
+    i = 0;
+    ARRAY_FOREACH (i, chan->bans) {
+        s = strchr(chan->bans[i], '!');
+        if (s && t) {
+            if (s-(chan->bans[i]) == t-ban
+             && irc_strnicmp(chan->bans[i], ban, s-(chan->bans[i])) == 0
+             && stricmp(s+1, t+1) == 0
+            ) {
+                return i;
+            }
+        } else if (!s && !t) {
+            /* Bans without '!' should be impossible; just
+             * do a case-insensitive compare */
+            if (stricmp(chan->bans[i], ban) == 0)
+                return i;
+        }
+    }
+    return -1;
+}
+
+/*************************************************************************/
+
+/* Search for the given ban (case-insensitive) on the channel; return 1 if
+ * it exists, 0 if not.
+ */
+
+int chan_has_ban(const char *chan, const char *ban)
+{
+    Channel *c = get_channel(chan);
+    if (!c)
+        return 0;
+    return find_ban(c, ban) >= 0;
+}
+
+/*************************************************************************/
+
+/* Handle a channel MODE command.
+ * When called internally to modify channel modes, callers may assume that
+ * the contents of the argument strings will not be modified.
+ */
+
+/* Hack to allow -o+v to work without having to search the whole channel
+ * user list for changed modes. */
+#define MAX_CUMODES     16
+static struct {
+    struct c_userlist *user;
+    int32 add, remove;
+} cumode_changes[MAX_CUMODES];
+static int cumode_count = 0;
+
+static void do_cumode(const char *source, Channel *chan, int32 flag, int add,
+                      const char *nick);
+static void finish_cumode(const char *source, Channel *chan);
 
 void do_cmode(const char *source, int ac, char **av)
 {
     Channel *chan;
-    struct c_userlist *u;
-    User *user;
-    char *s, *nick;
-    int add = 1;		/* 1 if adding modes, 0 if deleting */
-    char *modestr = av[1];
+    char *s;
+    int add = 1;                /* 1 if adding modes, 0 if deleting */
+    char *modestr;
 
-    chan = findchan(av[0]);
+    chan = get_channel(av[0]);
     if (!chan) {
-	log("channel: MODE %s for nonexistent channel %s",
-					merge_args(ac-1, av+1), av[0]);
-	return;
+        log_debug(1, "channel: MODE %s for nonexistent channel %s",
+                  merge_args(ac-1, av+1), av[0]);
+        return;
     }
+    if ((protocol_features & PF_MODETS_FIRST) && isdigit(av[1][0])) {
+        ac--;
+        av++;
+    }
+    modestr = av[1];
 
-    /* This shouldn't trigger on +o, etc. */
-    if (strchr(source, '.') && !modestr[strcspn(modestr, "bov")]) {
-	if (time(NULL) != chan->server_modetime) {
-	    chan->server_modecount = 0;
-	    chan->server_modetime = time(NULL);
-	}
-	chan->server_modecount++;
+    if (!NoBouncyModes) {
+        /* Count identical server mode changes per second (mode bounce check)*/
+        /* Doesn't trigger on +/-[bov] or other multiply-settable modes */
+        static char multimodes[BUFSIZE];
+        if (!*multimodes) {
+            int i = 0;
+            i = snprintf(multimodes, sizeof(multimodes), "%s",
+                         chanmode_multiple);
+            snprintf(multimodes+i, sizeof(multimodes)-i, "%s",
+                     mode_flags_to_string(MODE_ALL,MODE_CHANUSER));
+        }
+        if (strchr(source, '.') && strcmp(source, ServerName) != 0
+         && !modestr[strcspn(modestr, multimodes)]
+        ) {
+            static char lastmodes[BUFSIZE];
+            if (time(NULL) != chan->server_modetime
+             || strcmp(modestr, lastmodes) != 0
+            ) {
+                chan->server_modecount = 0;
+                chan->server_modetime = time(NULL);
+                strbcpy(lastmodes, modestr);
+            }
+            chan->server_modecount++;
+        }
     }
 
     s = modestr;
     ac -= 2;
     av += 2;
+    cumode_count = 0;
 
     while (*s) {
+        char modechar = *s++;
+        int32 flag;
+        int params;
 
-	switch (*s++) {
+        if (modechar == '+') {
+            add = 1;
+            continue;
+        } else if (modechar == '-') {
+            add = 0;
+            continue;
+        } else if (add < 0) {
+            continue;
+        }
 
-	case '+':
-	    add = 1; break;
+        /* Check for it as a channel user mode */
 
-	case '-':
-	    add = 0; break;
+        flag = mode_char_to_flag(modechar, MODE_CHANUSER);
+        if (flag) {
+            if (--ac < 0) {
+                log("channel: MODE %s %s: missing parameter for %c%c",
+                    chan->name, modestr, add ? '+' : '-', modechar);
+                break;
+            }
+            do_cumode(source, chan, flag, add, *av++);
+            continue;
+        }
 
-	case 'i':
-	    if (add)
-		chan->mode |= CMODE_I;
-	    else
-		chan->mode &= ~CMODE_I;
-	    break;
+        /* Nope, must be a regular channel mode */
 
-	case 'm':
-	    if (add)
-		chan->mode |= CMODE_M;
-	    else
-		chan->mode &= ~CMODE_M;
-	    break;
+        flag = mode_char_to_flag(modechar, MODE_CHANNEL);
+        if (!flag)
+            continue;
+        if (flag == MODE_INVALID)
+            flag = 0;
+        params = mode_char_to_params(modechar, MODE_CHANNEL);
+        params = (params >> (add*8)) & 0xFF;
+        if (ac < params) {
+            log("channel: MODE %s %s: missing parameter(s) for %c%c",
+                chan->name, modestr, add ? '+' : '-', modechar);
+            break;
+        }
 
-	case 'n':
-	    if (add)
-		chan->mode |= CMODE_N;
-	    else
-		chan->mode &= ~CMODE_N;
-	    break;
+        if (call_callback_5(cb_mode, source, chan, modechar, add, av) <= 0) {
 
-	case 'p':
-	    if (add)
-		chan->mode |= CMODE_P;
-	    else
-		chan->mode &= ~CMODE_P;
-	    break;
+            if (add)
+                chan->mode |= flag;
+            else
+                chan->mode &= ~flag;
 
-	case 's':
-	    if (add)
-		chan->mode |= CMODE_S;
-	    else
-		chan->mode &= ~CMODE_S;
-	    break;
+            switch (modechar) {
+              case 'k':
+                free(chan->key);
+                if (add)
+                    chan->key = sstrdup(av[0]);
+                else
+                    chan->key = NULL;
+                break;
 
-	case 't':
-	    if (add)
-		chan->mode |= CMODE_T;
-	    else
-		chan->mode &= ~CMODE_T;
-	    break;
+              case 'l':
+                if (add)
+                    chan->limit = atoi(av[0]);
+                else
+                    chan->limit = 0;
+                break;
 
-#ifdef IRC_DAL4_4_15
-	case 'R':
-	    if (add)
-		chan->mode |= CMODE_R;
-	    else
-		chan->mode &= ~CMODE_R;
-	    break;
+              case 'b': {
+                int i = find_ban(chan, av[0]);
+                if (add) {
+                    if (i < 0) {  /* Don't add if it already exists */
+                        ARRAY_EXTEND(chan->bans);
+                        chan->bans[chan->bans_count-1] = sstrdup(av[0]);
+                    }
+                } else {
+                    if (i >= 0) {
+                        free(chan->bans[i]);
+                        ARRAY_REMOVE(chan->bans, i);
+                    } else {
+                        log("channel: MODE %s -b %s: ban not found",
+                            chan->name, *av);
+                    }
+                }
+                break;
+              }  /* case 'b' */
 
-	case 'r':
-	    if (add)
-		chan->mode |= CMODE_r;
-	    else
-		chan->mode &= ~CMODE_r;
-	    break;
-#endif
+            } /* switch (modechar) */
 
-	case 'k':
-	    if (--ac < 0) {
-		log("channel: MODE %s %s: missing parameter for %ck",
-					chan->name, modestr, add ? '+' : '-');
-		break;
-	    }
-	    if (chan->key) {
-		free(chan->key);
-		chan->key = NULL;
-	    }
-	    if (add)
-		chan->key = sstrdup(*av++);
-	    break;
+        } /* if (callback() <= 0) */
 
-	case 'l':
-	    if (add) {
-		if (--ac < 0) {
-		    log("channel: MODE %s %s: missing parameter for +l",
-							chan->name, modestr);
-		    break;
-		}
-		chan->limit = atoi(*av++);
-	    } else {
-		chan->limit = 0;
-	    }
-	    break;
-
-	case 'b':
-	    if (--ac < 0) {
-		log("channel: MODE %s %s: missing parameter for %cb",
-					chan->name, modestr, add ? '+' : '-');
-		break;
-	    }
-	    if (add) {
-		if (chan->bancount >= chan->bansize) {
-		    chan->bansize += 8;
-		    chan->bans = srealloc(chan->bans,
-					sizeof(char *) * chan->bansize);
-		}
-		chan->bans[chan->bancount++] = sstrdup(*av++);
-	    } else {
-		char **s = chan->bans;
-		int i = 0;
-		while (i < chan->bancount && strcmp(*s, *av) != 0) {
-		    i++;
-		    s++;
-		}
-		if (i < chan->bancount) {
-		    chan->bancount--;
-		    if (i < chan->bancount)
-			memmove(s, s+1, sizeof(char *) * (chan->bancount-i));
-		}
-		av++;
-	    }
-	    break;
-
-	case 'o':
-	    if (--ac < 0) {
-		log("channel: MODE %s %s: missing parameter for %co",
-					chan->name, modestr, add ? '+' : '-');
-		break;
-	    }
-	    nick = *av++;
-	    if (add) {
-		for (u = chan->chanops; u && stricmp(u->user->nick, nick) != 0;
-								u = u->next)
-		    ;
-		if (u)
-		    break;
-		user = finduser(nick);
-		if (!user) {
-		    log("channel: MODE %s +o for nonexistent user %s",
-							chan->name, nick);
-		    break;
-		}
-		if (debug)
-		    log("debug: Setting +o on %s for %s", chan->name, nick);
-		if (!check_valid_op(user, chan->name, !!strchr(source, '.')))
-		    break;
-		u = smalloc(sizeof(*u));
-		u->next = chan->chanops;
-		u->prev = NULL;
-		if (chan->chanops)
-		    chan->chanops->prev = u;
-		chan->chanops = u;
-		u->user = user;
-	    } else {
-		for (u = chan->chanops; u && stricmp(u->user->nick, nick);
-								u = u->next)
-		    ;
-		if (!u)
-		    break;
-		if (u->next)
-		    u->next->prev = u->prev;
-		if (u->prev)
-		    u->prev->next = u->next;
-		else
-		    chan->chanops = u->next;
-		free(u);
-	    }
-	    break;
-
-	case 'v':
-	    if (--ac < 0) {
-		log("channel: MODE %s %s: missing parameter for %cv",
-					chan->name, modestr, add ? '+' : '-');
-		break;
-	    }
-	    nick = *av++;
-	    if (add) {
-		for (u = chan->voices; u && stricmp(u->user->nick, nick);
-								u = u->next)
-		    ;
-		if (u)
-		    break;
-		user = finduser(nick);
-		if (!user) {
-		    log("channe: MODE %s +v for nonexistent user %s",
-							chan->name, nick);
-		    break;
-		}
-		if (debug)
-		    log("debug: Setting +v on %s for %s", chan->name, nick);
-		u = smalloc(sizeof(*u));
-		u->next = chan->voices;
-		u->prev = NULL;
-		if (chan->voices)
-		    chan->voices->prev = u;
-		chan->voices = u;
-		u->user = user;
-	    } else {
-		for (u = chan->voices; u && stricmp(u->user->nick, nick);
-								u = u->next)
-		    ;
-		if (!u)
-		    break;
-		if (u->next)
-		    u->next->prev = u->prev;
-		if (u->prev)
-		    u->prev->next = u->next;
-		else
-		    chan->voices = u->next;
-		free(u);
-	    }
-	    break;
-
-	} /* switch */
+        ac -= params;
+        av += params;
 
     } /* while (*s) */
 
-    /* Check modes against ChanServ mode lock */
-    check_modes(chan->name);
+    call_callback_2(cb_mode_change, source, chan);
+    finish_cumode(source, chan);
+}
+
+/* Modify a user's CUMODE. */
+static void do_cumode(const char *source, Channel *chan, int32 flag, int add,
+                      const char *nick)
+{
+    struct c_userlist *u;
+    User *user;
+    int i;
+
+    user = get_user(nick);
+    if (!user) {
+        log_debug(1, "channel: MODE %s %c%c for nonexistent user %s",
+                  chan->name, add ? '+' : '-',
+                  mode_flag_to_char(flag, MODE_CHANUSER), nick);
+        return;
+    }
+    LIST_SEARCH_SCALAR(chan->users, user, user, u);
+    if (!u) {
+        log("channel: MODE %s %c%c for user %s not on channel",
+            chan->name, add ? '+' : '-',
+            mode_flag_to_char(flag, MODE_CHANUSER), nick);
+        return;
+    }
+
+    if (flag == MODE_INVALID)
+        return;
+    for (i = 0; i < cumode_count; i++) {
+        if (cumode_changes[i].user == u)
+            break;
+    }
+    if (i >= MAX_CUMODES) {
+        finish_cumode(source, chan);
+        i = cumode_count = 0;
+    }
+    cumode_changes[i].user = u;
+    if (i >= cumode_count) {
+        cumode_changes[i].add = cumode_changes[i].remove = 0;
+    }
+    if (add) {
+        cumode_changes[i].add |= flag;
+        cumode_changes[i].remove &= ~flag;
+    } else {
+        cumode_changes[i].remove |= flag;
+        cumode_changes[i].add &= ~flag;
+    }
+    if (i >= cumode_count)
+        cumode_count = i+1;
+}
+
+static void finish_cumode(const char *source, Channel *chan)
+{
+    int i;
+
+    for (i = 0; i < cumode_count; i++) {
+        struct c_userlist *u = cumode_changes[i].user;
+        int32 oldmode = u->mode;
+        u->mode |= cumode_changes[i].add;
+        u->mode &= ~cumode_changes[i].remove;
+        if (u->mode != oldmode)
+            call_callback_4(cb_umode_change, source, chan, u, oldmode);
+    }
+    cumode_count = 0;
 }
 
 /*************************************************************************/
@@ -591,39 +460,41 @@ void do_cmode(const char *source, int ac, char **av)
 
 void do_topic(const char *source, int ac, char **av)
 {
-    Channel *c = findchan(av[0]);
+    Channel *c = get_channel(av[0]);
+    const char *topic;
+    char *s;
 
     if (!c) {
-	log("channel: TOPIC %s for nonexistent channel %s",
-						merge_args(ac-1, av+1), av[0]);
-	return;
+        log_debug(1, "channel: TOPIC %s for nonexistent channel %s",
+                  merge_args(ac-1, av+1), av[0]);
+        return;
     }
-    if (check_topiclock(av[0]))
-	return;
-    strscpy(c->topic_setter, av[1], sizeof(c->topic_setter));
-    c->topic_time = atol(av[2]);
+    s = strchr(av[1], '!');
+    if (s)
+        *s = 0;
+    if (ac > 3)
+        topic = av[3];
+    else
+        topic = "";
+    if (call_callback_4(cb_topic, c, topic, av[1], strtotime(av[2],NULL)) > 0)
+        return;
+    strbcpy(c->topic_setter, av[1]);
     if (c->topic) {
-	free(c->topic);
-	c->topic = NULL;
+        free(c->topic);
+        c->topic = NULL;
     }
     if (ac > 3 && *av[3])
-	c->topic = sstrdup(av[3]);
-    record_topic(av[0]);
+        c->topic = sstrdup(av[3]);
 }
 
 /*************************************************************************/
 
-/* Does the given channel have only one user? */
-
-/* Note:  This routine is not currently used, but is kept around in case it
- * might be handy someday. */
-
-#if 0
-int only_one_user(const char *chan)
-{
-    Channel *c = findchan(chan);
-    return (c && c->users && !c->users->next) ? 1 : 0;
-}
-#endif
-
-/*************************************************************************/
+/*
+ * Local variables:
+ *   c-file-style: "stroustrup"
+ *   c-file-offsets: ((case-label . *) (statement-case-intro . *))
+ *   indent-tabs-mode: nil
+ * End:
+ *
+ * vim: expandtab shiftwidth=4:
+ */

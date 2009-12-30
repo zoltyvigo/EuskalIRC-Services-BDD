@@ -1,36 +1,41 @@
-# Japanese language file (SJIS encoding) / “ú–{Œê‚ÌƒƒbƒZ[ƒWƒtƒ@ƒCƒ‹
+# Emacs: -*- mode: fundamental; coding: shift_jis; -*-
+
+# Japanese language file (SJIS encoding) / “ú–{ŒêƒƒbƒZ[ƒWƒtƒ@ƒCƒ‹
 #
-# Services is copyright (c) 1996-1999 Andy Church.
-#     E-mail: <achurch@dragonfire.net>
-# This program is free but copyrighted software; see the file COPYING for
+# IRC Services is copyright (c) 1996-2009 Andrew Church.
+#     E-mail: <achurch@achurch.org>
+# Parts written by Andrew Kempe and others.
+# This program is free but copyrighted software; see the file GPL.txt for
 # details.
 
 ###########################################################################
 #
-# Œ¾Œê‚Ì–¼‘O
+# Œ¾Œê‚Ì–¼‘O‚Æ•¶ŽšƒR[ƒh
 #
 ###########################################################################
 
 LANG_NAME
 	“ú–{ŒêiSJISƒR[ƒhj (Japanese / SJIS encoding)
+LANG_CHARSET
+	shift_jis
 
 ###########################################################################
 #
-# ‘½—p‚ÌƒƒbƒZ[ƒW
+# ‘½—pƒƒbƒZ[ƒW
 #
 ###########################################################################
 
-# strftime()‚Ì“úŽžƒtƒH[ƒ}ƒbƒg
+# strftime()“úŽžƒtƒH[ƒ}ƒbƒg
 STRFTIME_DATE_TIME_FORMAT
 	%Y.%m.%d %H:%M:%S %Z
-# strftime()‚Ì”NŒŽ“úƒtƒH[ƒ}ƒbƒgi1j
+# strftime()”NŒŽ“úƒtƒH[ƒ}ƒbƒgi‚Pj
 STRFTIME_LONG_DATE_FORMAT
 	%Y”N%mŒŽ%d“úi%aj
-# strftime()‚Ì”NŒŽ“úƒtƒH[ƒ}ƒbƒgi2j
+# strftime()”NŒŽ“úƒtƒH[ƒ}ƒbƒgi‚Qj
 STRFTIME_SHORT_DATE_FORMAT
 	%Y.%m.%d
 
-# strftime()‚ÌƒtƒH[ƒ}ƒbƒg‚ÅŽg—p‚³‚ê‚éƒeƒLƒXƒg
+# strftime()ƒtƒH[ƒ}ƒbƒg‚ÅŽg—p‚³‚ê‚é•¶Žš—ñ
 STRFTIME_DAYS_SHORT
 	“ú
 	ŒŽ
@@ -40,366 +45,799 @@ STRFTIME_DAYS_SHORT
 	‹à
 	“y
 STRFTIME_DAYS_LONG
+	“ú—j“ú
+	ŒŽ—j“ú
+	‰Î—j“ú
+	…—j“ú
+	–Ø—j“ú
+	‹à—j“ú
+	“y—j“ú
 STRFTIME_MONTHS_SHORT
+	1ŒŽ
+	2ŒŽ
+	3ŒŽ
+	4ŒŽ
+	5ŒŽ
+	6ŒŽ
+	7ŒŽ
+	8ŒŽ
+	9ŒŽ
+	10ŒŽ
+	11ŒŽ
+	12ŒŽ
 STRFTIME_MONTHS_LONG
+	1ŒŽ
+	2ŒŽ
+	3ŒŽ
+	4ŒŽ
+	5ŒŽ
+	6ŒŽ
+	7ŒŽ
+	8ŒŽ
+	9ŒŽ
+	10ŒŽ
+	11ŒŽ
+	12ŒŽ
 
 
-# ChanServENickServ‚Ìî•ñ•\‚ÅŽg‚í‚ê‚éƒeƒLƒXƒg
+# "day", "hour", "minute", and "second" in singular and plural.
+STR_DAY
+	“ú
+STR_DAYS
+	“ú
+STR_HOUR
+	ŽžŠÔ
+STR_HOURS
+	ŽžŠÔ
+STR_MINUTE
+	•ª
+STR_MINUTES
+	•ª
+STR_SECOND
+	•b
+STR_SECONDS
+	•b
+# Separator used between units of time; in English, a comma followed by a
+# space (the ", " in "3 hours, 10 minutes").
+# “ú–{Œê‚Å‚Í‹ó•¶Žš—ñ
+STR_TIMESEP
+	
+
+
+# ChanServANickServ INFO‚ÅŽg‚í‚ê‚éƒŠƒXƒg‹æØ‚è•¶Žš
 COMMA_SPACE
 	A
 
 
-# ƒGƒ‰[‚ÌƒƒbƒZ[ƒW
-USER_RECORD_NOT_FOUND
-	ƒGƒ‰[‚ª”­¶‚µis‚Å‚«‚Ü‚¹‚ñB
+# ƒGƒ‰[ƒƒbƒZ[ƒW
+INTERNAL_ERROR
+	ƒGƒ‰[‚ª”­¶‚µ‚Ü‚µ‚½B
+SERVICES_IS_BUSY
+	’ÊM‚ª¬ŽG‚µ‚Ä‚¨‚è‚Ü‚·B‚µ‚Î‚ç‚­‚¨‘Ò‚¿‚­‚¾‚³‚¢B
+
 UNKNOWN_COMMAND
-	%s ‚Æ‚¢‚¤ƒRƒ}ƒ“ƒh‚Í•ª‚©‚è‚Ü‚¹‚ñB
+	u%sv‚Æ‚¢‚¤ƒRƒ}ƒ“ƒh‚Í•ª‚©‚è‚Ü‚¹‚ñB
 UNKNOWN_COMMAND_HELP
-	%s ‚Æ‚¢‚¤ƒRƒ}ƒ“ƒh‚Í•ª‚©‚è‚Ü‚¹‚ñBu/msg %s HELPv‚ð“ü—Í‚µ‚Ä‰º‚³‚¢B
+	u%sv‚Æ‚¢‚¤ƒRƒ}ƒ“ƒh‚Í•ª‚©‚è‚Ü‚¹‚ñBƒwƒ‹ƒv‚ðŒ©‚éê‡‚Íu/msg %s HELPv‚ð“ü—Í‚µ‚Ä‰º‚³‚¢B
 SYNTAX_ERROR
-	ƒVƒ“ƒ^ƒNƒXF%s
+	—p–@F%s
 MORE_INFO
-	u/msg %s HELP %sv‚ð“ü—Í‚µ‚Ä‰º‚³‚¢B
+	ƒwƒ‹ƒvî•ñ‚ðŒ©‚éê‡‚Íu/msg %s HELP %sv‚ð“ü—Í‚µ‚Ä‰º‚³‚¢B
 NO_HELP_AVAILABLE
-	u%sv‚Ìƒwƒ‹ƒv‚ª‚ ‚è‚Ü‚¹‚ñB
+	u%sv‚É‘Î‚·‚éƒwƒ‹ƒvî•ñ‚Í‚ ‚è‚Ü‚¹‚ñB
+MISSING_QUOTE
+	ƒJƒbƒR " (ƒ_ƒuƒ‹ƒNƒH[ƒg) ‚ª”²‚¯‚Ä‚¢‚Ü‚·B
 
+BAD_EMAIL
+	ƒ[ƒ‹ƒAƒhƒŒƒX‚ÍAuƒ†[ƒU–¼@ƒzƒXƒg–¼vŒ`Ž®‚Å“ü—Í‚µ‚Ä‰º‚³‚¢BF•t‚«•¶Žš‚â‘¾ŽšAŽÎŽšA”½“]•¶ŽšA‹y‚Ñ , : ; | \ " ( ) < > [ ] ‚ÌŠe•¶Žš‚ÍŽg—p‚Å‚«‚Ü‚¹‚ñB
+REJECTED_EMAIL
+	Žw’è‚³‚ê‚½ƒ[ƒ‹ƒAƒhƒŒƒX‚ÍŽg—p‚Å‚«‚Ü‚¹‚ñB
+BAD_URL
+	URL‚Íuhttp://ƒzƒXƒg–¼[:ƒ|[ƒg”Ô†]/...vŒ`Ž®‚Å“ü—Í‚µ‚Ä‰º‚³‚¢B(ftp://“™‚à‰Â”\)
 BAD_USERHOST_MASK
-	ƒ}ƒXƒN‚ð user@host ‚Æ‚¢‚¤Œ`‚Å“ü—Í‚µ‚Ä‰º‚³‚¢B
+	ƒ}ƒXƒN‚ðuƒ†[ƒU–¼@ƒzƒXƒg–¼vŒ`Ž®‚Å“ü—Í‚µ‚Ä‰º‚³‚¢B
+BAD_NICKUSERHOST_MASK
+	ƒ}ƒXƒN‚ðuƒjƒbƒN!ƒ†[ƒU–¼@ƒzƒXƒg–¼vŒ`Ž®‚Å“ü—Í‚µ‚Ä‰º‚³‚¢B
+BAD_EXPIRY_TIME
+	—LŒøŠúŒÀÝ’è‚ª–³Œø‚Å‚·B
 
-SERVICE_OFFLINE
-	%s‚Í‚½‚¾¡Žg—p•s‰Â”\‚Å‚·B
+SENDMAIL_NO_RESOURCES
+	Œ»Ýƒ[ƒ‹‚ð‘—M‚·‚é‚±‚Æ‚ª‚Å‚«‚Ü‚¹‚ñBŽžŠÔ‚ð’u‚¢‚ÄÄ“x‚¨ŽŽ‚µ‰º‚³‚¢B
 READ_ONLY_MODE
-	’ˆÓFServices ‚ÍƒŠ[ƒhƒIƒ“ƒŠ[ƒ‚[ƒh‚Å“®‚¢‚Ä‚¢‚Ü‚·‚Ì‚ÅA•ÏX‚Í•Û‘¶‚³‚ê‚Ü‚¹‚ñB
+	’ˆÓFServices‚Í“Ç‚ÝŽæ‚èê—pƒ‚[ƒh‚Å“®ì‚µ‚Ä‚¢‚Ü‚·B•ÏX‚Í•Û‘¶‚³‚ê‚Ü‚¹‚ñB
+PASSWORD_INCORRECT
+	ƒpƒXƒ[ƒh‚ªŠÔˆá‚Á‚Ä‚¢‚Ü‚·B
+PASSWORD_WARNING
+	ŒxFŠÔˆá‚Á‚½ƒpƒXƒ[ƒh‚ð‚ ‚Æ‚P‰ñ“ü—Í‚·‚é‚ÆØ’f‚³‚ê‚Ü‚·B
 ACCESS_DENIED
 	ƒAƒNƒZƒX•s”\B
 PERMISSION_DENIED
 	ƒAƒNƒZƒX•s”\B
-PASSWORD_INCORRECT
-	ƒpƒXƒ[ƒh‚Íˆá‚¢‚Ü‚·B
 
 MORE_OBSCURE_PASSWORD
-	‚à‚Á‚Æ•s–¾‚ÈƒpƒXƒ[ƒh‚É‚µ‚Ä‰º‚³‚¢BƒpƒXƒ[ƒh‚ÍA‚¨–¼‘OEƒjƒbƒN“™‚Ì‚æ‚¤‚È•ª‚©‚è‚â‚·‚¢‚±‚Æ‚Å‚È‚­A‚T•¶ŽšˆÈã‚ÌƒpƒXƒ[ƒh‚É‚µ‚Ä‰º‚³‚¢B‚Ü‚½AƒXƒy[ƒXi‹ó”’j‚ÍƒpƒXƒ[ƒh‚ÅŽg‚¦‚Ü‚¹‚ñB
-PASSWORD_TRUNCATED
-	’ˆÓF“ü—Í‚µ‚½ƒpƒXƒ[ƒh‚ª %d •¶Žš‚ÅØ‚ç‚ê‚Ü‚µ‚½B
+	‚à‚Á‚Æ•¡ŽG‚ÈƒpƒXƒ[ƒh‚É‚µ‚Ä‰º‚³‚¢BƒpƒXƒ[ƒh‚ÍA‚¨–¼‘OEƒjƒbƒN“™‚Ì‚æ‚¤‚È•ª‚©‚è‚â‚·‚¢‚à‚Ì‚Å‚È‚­A‚T•¶ŽšˆÈã‚Ì‚à‚Ì‚É‚µ‚Ä‰º‚³‚¢B
 
 NICK_NOT_REGISTERED
 	ƒjƒbƒN‚Í“o˜^‚³‚ê‚Ä‚¢‚Ü‚¹‚ñB
 NICK_NOT_REGISTERED_HELP
-	ƒjƒbƒN‚Í“o˜^‚³‚ê‚Ä‚¢‚Ü‚¹‚ñB“o˜^‚µ‚½‚¢ê‡‚Íu/msg %s HELPv‚ð“ü—Í‚µ‚Ä‰º‚³‚¢B
+	ƒjƒbƒN‚Í“o˜^‚³‚ê‚Ä‚¢‚Ü‚¹‚ñB“o˜^•û–@‚É‚Â‚¢‚Ä‚Íu/msg %s HELPv‚ð“ü—Í‚µ‚Ä‰º‚³‚¢B
+NICK_TOO_LONG
+	ƒjƒbƒN‚Í%d•¶ŽšˆÈ‰º‚Å‚È‚¯‚ê‚Î‚È‚è‚Ü‚¹‚ñB
+NICK_INVALID
+	u%sv‚ÍƒjƒbƒN‚Æ‚µ‚Ä–³Œø‚Å‚·B
 NICK_X_NOT_REGISTERED
-	%s ‚Æ‚¢‚¤ƒjƒbƒN‚Í“o˜^‚³‚ê‚Ä‚¢‚Ü‚¹‚ñB
+	ƒjƒbƒNu%sv‚Í“o˜^‚³‚ê‚Ä‚¢‚Ü‚¹‚ñB
+NICK_X_ALREADY_REGISTERED
+	ƒjƒbƒNu%sv‚Í‚·‚Å‚É“o˜^‚³‚ê‚Ä‚¢‚Ü‚·B
 NICK_X_NOT_IN_USE
-	%s ‚Æ‚¢‚¤ƒjƒbƒN‚ÍŒ»ÝŽg—p‚³‚ê‚Ä‚¢‚Ü‚¹‚ñB
+	ƒjƒbƒNu%sv‚ÍŒ»ÝŽg—p‚³‚ê‚Ä‚¢‚Ü‚¹‚ñB
 NICK_X_FORBIDDEN
-	%s ‚Æ‚¢‚¤ƒjƒbƒN‚ðŽg—p‹ÖŽ~‚Å‚·B
-CHAN_X_NOT_REGISTERED
-	%s ‚Æ‚¢‚¤ƒ`ƒƒƒ“ƒlƒ‹‚Í“o˜^‚³‚ê‚Ä‚¢‚Ü‚¹‚ñB
-CHAN_X_NOT_IN_USE
-	%s ‚Æ‚¢‚¤ƒ`ƒƒƒ“ƒlƒ‹‚ÍŒ»Ý‘¶Ý‚µ‚Ü‚¹‚ñB
-CHAN_X_FORBIDDEN
-	%s ‚Æ‚¢‚¤ƒ`ƒƒƒ“ƒlƒ‹‚ÍŽg—p‹ÖŽ~‚Å‚·B
+	ƒjƒbƒNu%sv‚ÍŽg—p‹ÖŽ~‚Å‚·B
+NICK_X_SUSPENDED
+	ƒjƒbƒNu%sv‚ÍŽg—p’âŽ~‚Ì‚½‚ßAŽg—p‚Å‚«‚Ü‚¹‚ñB
+NICK_X_SUSPENDED_MEMOS
+	ƒjƒbƒNu%sv‚ÍŽg—p’âŽ~‚Ì‚½‚ßAƒƒ‚‚ðŽóM‚Å‚«‚Ü‚¹‚ñB
 NICK_IDENTIFY_REQUIRED
-	‚»‚ÌƒRƒ}ƒ“ƒh‚ðŽg‚¤‚É‚ÍƒpƒXƒ[ƒh‚ð“ü—Í‚·‚é•K—v‚ª‚ ‚è‚Ü‚·B
-	u/msg %s IDENTIFY passwordv‚ð“ü—Í‚µ‚Ä‰º‚³‚¢B
+	‚»‚ÌƒRƒ}ƒ“ƒh‚ðŽg‚¤‚É‚ÍƒpƒXƒ[ƒh”FØ‚ðs‚¤•K—v‚ª‚ ‚è‚Ü‚·B
+	u/msg %s IDENTIFY ƒpƒXƒ[ƒhv‚ð“ü—Í‚µ‚Ä‰º‚³‚¢B
+NICK_PLEASE_AUTH
+	‚ ‚È‚½‚ÌƒjƒbƒN‚ÍAƒ[ƒ‹ƒAƒhƒŒƒXŠm”F‚ªÏ‚ñ‚Å‚¢‚Ü‚¹‚ñBu%sv‚Ö‘—M‚³‚ê‚½Šm”F—pƒR[ƒh‚ÅƒAƒhƒŒƒXŠm”F‚ðs‚Á‚Ä‚­‚¾‚³‚¢B
+NICK_X_NOT_ON_CHAN_X
+	ƒjƒbƒNu%sv‚Íƒ`ƒƒƒ“ƒlƒ‹u%sv‚É“ü‚Á‚Ä‚¢‚Ü‚¹‚ñB
+
+CHAN_INVALID
+	u%sv‚Íƒ`ƒƒƒ“ƒlƒ‹–¼‚Æ‚µ‚Ä–³Œø‚Å‚·B
+CHAN_X_NOT_REGISTERED
+	ƒ`ƒƒƒ“ƒlƒ‹u%sv‚Í“o˜^‚³‚ê‚Ä‚¢‚Ü‚¹‚ñB
+CHAN_X_NOT_IN_USE
+	ƒ`ƒƒƒ“ƒlƒ‹u%sv‚ÍŒ»ÝŽg—p‚³‚ê‚Ä‚¢‚Ü‚¹‚ñB
+CHAN_X_FORBIDDEN
+	ƒ`ƒƒƒ“ƒlƒ‹u%sv‚ÍŽg—p‹ÖŽ~‚Å‚·B
+CHAN_X_SUSPENDED
+	ƒ`ƒƒƒ“ƒlƒ‹u%sv‚ÍŽg—p’âŽ~‚Ì‚½‚ßAŽg—p‚Å‚«‚Ü‚¹‚ñB
+CHAN_X_SUSPENDED_MEMOS
+	ƒ`ƒƒƒ“ƒlƒ‹u%sv‚ÍŽg—p’âŽ~‚Ì‚½‚ßAƒƒ‚‚ðŽóM‚Å‚«‚Ü‚¹‚ñB
 CHAN_IDENTIFY_REQUIRED
-	‚»‚ÌƒRƒ}ƒ“ƒh‚ðŽg‚¤‚É‚ÍƒpƒXƒ[ƒh‚ð“ü—Í‚·‚é•K—v‚ª‚ ‚è‚Ü‚·B
-	u/msg %s IDENTIFY %s passwordv‚ð“ü—Í‚µ‚Ä‰º‚³‚¢B
+	‚»‚ÌƒRƒ}ƒ“ƒh‚ðŽg‚¤‚É‚ÍƒpƒXƒ[ƒh”FØ‚ðs‚¤•K—v‚ª‚ ‚è‚Ü‚·B
+	u/msg %s IDENTIFY %s ƒpƒXƒ[ƒhv‚ð“ü—Í‚µ‚Ä‰º‚³‚¢B
+
+SERV_X_NOT_FOUND
+	ƒT[ƒou%sv‚ÍŒ©‚Â‚©‚è‚Ü‚¹‚ñB
+
+EXPIRES_NONE
+	—LŒøŠúŒÀ–³‚µ
+EXPIRES_NOW
+	—LŒøŠúŒÀØ‚ê
+EXPIRES_IN
+	%sŒã–³Œø‰»
+
+LIST_RESULTS
+	ŒŸõI—¹ (%d/%d€–Ú‚ð•\Ž¦)B
 
 ###########################################################################
 #
-# NickServ‚ÌƒƒbƒZ[ƒW
+# NickServ—pƒƒbƒZ[ƒW
 #
 ###########################################################################
 
-# Ž©“®“I‚ÈƒƒbƒZ[ƒW
+# Ž©“®ƒƒbƒZ[ƒW
 NICK_IS_REGISTERED
-	‚±‚ÌƒjƒbƒN‚Í“o˜^‚³‚ê‚Ä‚¢‚Ü‚·B‘¼‚ÌƒjƒbƒN‚É•Ï‚¦‚Ä‰º‚³‚¢B
-	i•Û—LŽÒ‚È‚çAu/msg %s IDENTIFY passwordv‚ð“ü—Í‚µ‚Ä‰º‚³‚¢Bj
+	‚±‚ÌƒjƒbƒN‚Í“o˜^‚³‚ê‚Ä‚¢‚Ü‚·B‘¼‚ÌƒjƒbƒN‚É•Ï‚¦‚Ä‰º‚³‚¢BiŠ—LŽÒ‚È‚çAu/msg %s IDENTIFY ƒpƒXƒ[ƒhv‚ð“ü—Í‚µ‚Ä‰º‚³‚¢Bj
 NICK_IS_SECURE
-	‚±‚ÌƒjƒbƒN‚Í“o˜^‚³‚ê”Ý‚ç‚ê‚Ä‚¢‚Ü‚·B•Û—LŽÒ‚È‚çA
-	u/msg %s IDENTIFY passwordv‚ð“ü—Í‚µ‚Ä‰º‚³‚¢B
-	•Û—LŽÒ‚Å‚È‚¯‚ê‚ÎA‘¼‚ÌƒjƒbƒN‚É•Ï‚¦‚Ä‰º‚³‚¢B
+	‚±‚ÌƒjƒbƒN‚Í“o˜^Ï‚Å•ÛŒì‚³‚ê‚Ä‚¢‚Ü‚·BŠ—LŽÒ‚È‚çAu/msg %s IDENTIFY ƒpƒXƒ[ƒhv‚ð“ü—Í‚µ‚Ä‰º‚³‚¢BŠ—LŽÒ‚Å‚È‚¯‚ê‚ÎA‘¼‚ÌƒjƒbƒN‚É•Ï‚¦‚Ä‰º‚³‚¢B
 NICK_MAY_NOT_BE_USED
 	‚±‚ÌƒjƒbƒN‚Í‚¨Žg‚¢‚É‚È‚ê‚Ü‚¹‚ñB
 DISCONNECT_IN_1_MINUTE
-	ˆê•ªˆÈ“à‚ÅƒjƒbƒN‚ð•Ï‚¦‚È‚¢‚ÆAØ’f‚³‚ê‚Ä‚µ‚Ü‚¢‚Ü‚·B
+	1•ªˆÈ“à‚ÉƒjƒbƒN‚ð•Ï‚¦‚È‚¯‚ê‚ÎAØ’f‚³‚ê‚Ü‚·B
 DISCONNECT_IN_20_SECONDS
-	20•bˆÈ“à‚ÅƒjƒbƒN‚ð•Ï‚¦‚È‚¢‚ÆAØ’f‚³‚ê‚Ä‚µ‚Ü‚¢‚Ü‚·B
+	20•bˆÈ“à‚ÉƒjƒbƒN‚ð•Ï‚¦‚È‚¯‚ê‚ÎAØ’f‚³‚ê‚Ü‚·B
 DISCONNECT_NOW
-	‚±‚ÌƒjƒbƒN‚Í“o˜^‚³‚ê‚Ä‚¢‚Ü‚·‚Ì‚ÅA‚¨Žg‚¢‚É‚È‚ê‚Ü‚¹‚ñBÄÚ
-	‘±‚È‚³‚é‘O‚É‘¼‚ÌƒjƒbƒN‚É‚¨•Ï‚¦‰º‚³‚¢B
+	‚±‚ÌƒjƒbƒN‚Í“o˜^‚³‚ê‚Ä‚¢‚Ü‚·‚Ì‚ÅA‚¨Žg‚¢‚É‚È‚ê‚Ü‚¹‚ñBÄÚ‘±‚·‚é‘O‚É‘¼‚ÌƒjƒbƒN‚É•ÏX‚µ‚Ä‰º‚³‚¢B
+FORCENICKCHANGE_IN_1_MINUTE
+	1•ªˆÈ“à‚ÉƒjƒbƒN‚ð•Ï‚¦‚È‚¯‚ê‚ÎAƒjƒbƒN‚ªŽ©“®“I‚É•ÏX‚³‚ê‚Ü‚·B
+FORCENICKCHANGE_IN_20_SECONDS
+	20•bˆÈ“à‚ÉƒjƒbƒN‚ð•Ï‚¦‚È‚¯‚ê‚ÎAƒjƒbƒN‚ªŽ©“®“I‚É•ÏX‚³‚ê‚Ü‚·B
+FORCENICKCHANGE_NOW
+	‚±‚ÌƒjƒbƒN‚Í“o˜^‚³‚ê‚Ä‚¢‚Ü‚·‚Ì‚ÅA‚¨Žg‚¢‚É‚È‚ê‚Ü‚¹‚ñB‚ ‚È‚½‚ÌƒjƒbƒN‚Íu%sv‚É•ÏX‚³‚ê‚Ü‚µ‚½B
+NICK_EXPIRES_SOON
+	’ˆÓF‚±‚ÌƒjƒbƒN‚Í%sŒãA“o˜^‚ª‰ðœ‚³‚ê‚Ü‚·Bˆø‚«‘±‚«—˜—p‚·‚éê‡‚ÍAu/msg %s IDENTIFY ƒpƒXƒ[ƒhv‚ÅƒpƒXƒ[ƒh”FØ‚ðs‚Á‚Ä‰º‚³‚¢B
+NICK_EXPIRED
+	’ˆÓF‚±‚ÌƒjƒbƒN‚Ì“o˜^‚Í‰ðœ‚³‚ê‚Ü‚µ‚½Bˆø‚«‘±‚«—˜—p‚·‚éê‡‚ÍAÄ“x“o˜^‚µ‚Ä‰º‚³‚¢B
 
-# REGISTER‚Ì”½‰ž
+# REGISTER‰ž“š
 NICK_REGISTER_SYNTAX
-	REGISTER password
+	REGISTER ƒpƒXƒ[ƒh [ƒ[ƒ‹ƒAƒhƒŒƒX]
+NICK_REGISTER_REQ_EMAIL_SYNTAX
+	REGISTER ƒpƒXƒ[ƒh ƒ[ƒ‹ƒAƒhƒŒƒX
 NICK_REGISTRATION_DISABLED
-	ƒjƒbƒN‚Ì“o˜^‚Í‚½‚¾¡•s‰Â”\‚Å‚·B
+	ƒjƒbƒN‚Ì“o˜^‚ÍŒ»Ýo—ˆ‚Ü‚¹‚ñB
 NICK_REGISTRATION_FAILED
-	“o˜^‚ÍŽ¸”s‚µ‚Ü‚µ‚½B
+	“o˜^‚Å‚«‚Ü‚¹‚ñ‚Å‚µ‚½B
 NICK_REG_PLEASE_WAIT
-	REGISTER‚ÌƒRƒ}ƒ“ƒh‚ðÄ“ü—Í‚·‚é‘O‚ÉA%d •b‚¨‘Ò‚¿‰º‚³‚¢B
+	REGISTERƒRƒ}ƒ“ƒh‚ðÄ“xŽÀs‚·‚é‘O‚ÉA%s‚¨‘Ò‚¿‰º‚³‚¢B
+NICK_REG_PLEASE_WAIT_FIRST
+	REGISTERƒRƒ}ƒ“ƒh‚ðŽg—p‚·‚é‘O‚ÉA%s‚¨‘Ò‚¿‰º‚³‚¢B
 NICK_CANNOT_BE_REGISTERED
-	%s ‚Æ‚¢‚¤ƒjƒbƒN‚ÍŽg—p‹ÖŽ~‚Å‚·‚Ì‚ÅA“o˜^o—ˆ‚Ü‚¹‚ñB
-NICK_ALREADY_REGISTERED
-	%s ‚Æ‚¢‚¤ƒjƒbƒN‚ÍŠù‚É“o˜^‚³‚ê‚Ä‚¢‚Ü‚·B
+	ƒjƒbƒNu%sv‚ÍŽg—p‹ÖŽ~‚Ì‚½‚ßA“o˜^‚Å‚«‚Ü‚¹‚ñB
+NICK_REGISTER_EMAIL_UNAUTHED
+	Žw’è‚³‚ê‚½ƒ[ƒ‹ƒAƒhƒŒƒX‚ÍA‚Ü‚¾ƒAƒhƒŒƒXŠm”F‚ªs‚í‚ê‚Ä‚¢‚Ü‚¹‚ñBV‚µ‚¢ƒjƒbƒN‚ð“o˜^‚·‚é‘O‚ÉƒAƒhƒŒƒXŠm”F‚ðs‚Á‚Ä‚­‚¾‚³‚¢B
+NICK_REGISTER_TOO_MANY_NICKS
+	‚·‚Å‚É%dŒÂ‚ÌƒjƒbƒN‚ð“o˜^‚µ‚Ä‚¢‚Ü‚· (ãŒÀ%d)BŒ»Ý“o˜^‚µ‚Ä‚¢‚éƒjƒbƒN‚Ì‚¢‚­‚Â‚©‚ð‰ðœ‚µ‚È‚¢ŒÀ‚èAV‚½‚ÉƒjƒbƒN‚ð“o˜^‚·‚é‚±‚Æ‚Ío—ˆ‚Ü‚¹‚ñB
 NICK_REGISTERED
-	%s ‚Æ‚¢‚¤ƒjƒbƒN‚Í“o˜^‚³‚ê‚Ü‚µ‚½B
+	ƒjƒbƒNu%sv‚ð“o˜^‚µ‚Ü‚µ‚½B
 NICK_PASSWORD_IS
-	ƒjƒbƒN‚ÌƒpƒXƒ[ƒh‚Í %s ‚Å‚·BŠo‚¦‚Ä‚¨‚¢‚Ä‰º‚³‚¢B
+	ƒjƒbƒN‚ÌƒpƒXƒ[ƒh‚Í %s ‚Å‚·B–Y‚ê‚È‚¢‚æ‚¤‚É‚µ‚Ä‰º‚³‚¢B
 
-# IDENTIFY‚Ì”½‰ž
+# IDENTIFY‰ž“š
 NICK_IDENTIFY_SYNTAX
-	IDENTIFY password
+	IDENTIFY ƒpƒXƒ[ƒh
 NICK_IDENTIFY_FAILED
 	IDENTIFY‚ÍŽ¸”s‚µ‚Ü‚µ‚½B
+NICK_IDENTIFY_EMAIL_MISSING
+	ƒjƒbƒN‚ð—˜—p‚·‚é‘O‚ÉAƒ[ƒ‹ƒAƒhƒŒƒX‚ðÝ’è‚·‚é•K—v‚ª‚ ‚è‚Ü‚·Bu/msg %s SET EMAIL ƒAƒhƒŒƒXv‚ÅÝ’è‚µ‚Ä‰º‚³‚¢B
 NICK_IDENTIFY_SUCCEEDED
-	³‚µ‚¢ƒpƒXƒ[ƒh‚Å‚·B
+	”FØ‚ª¬Œ÷‚µ‚Ü‚µ‚½B
 
-# DROP‚Ì”½‰ž
+# DROP‰ž“š
 NICK_DROP_SYNTAX
-	DROP
+	DROP ƒpƒXƒ[ƒh
+NICK_DROP_WARNING
+	’ˆÓFDROPƒRƒ}ƒ“ƒh‚ÍƒŠƒ“ƒN‚³‚ê‚½ƒjƒbƒN‚Ì“o˜^‚ð‘S‚Ä‰ðœ‚µ‚Ü‚·‚Ì‚ÅA‚²’ˆÓ‰º‚³‚¢B
 NICK_DROP_DISABLED
-	ƒjƒbƒN‚ÌÁ‹Ž‚Í‚½‚¾¡•s‰Â”\‚Å‚·B
+	ƒjƒbƒN“o˜^‚Ì‰ðœ‚ÍŒ»Ýo—ˆ‚Ü‚¹‚ñB
+NICK_DROP_FAILED
+	ƒjƒbƒN“o˜^‚Ì‰ðœ‚ªŽ¸”s‚µ‚Ü‚µ‚½B
 NICK_DROPPED
-	ƒjƒbƒN‚ÍÁ‹Ž‚³‚ê‚Ü‚µ‚½B
+	ƒjƒbƒN‚Ì“o˜^‚ð‰ðœ‚µ‚Ü‚µ‚½B
+NICK_DROPPED_LINKS
+	Œ»Ý‚ÌƒjƒbƒN‹y‚Ñ‘S‚Ä‚ÌƒŠƒ“ƒN‚³‚ê‚½ƒjƒbƒN‚Ì“o˜^‚ð‰ðœ‚µ‚Ü‚µ‚½B
+
+# DROPNICK responses
+NICK_DROPNICK_SYNTAX
+	DROPNICK ƒjƒbƒN
 NICK_X_DROPPED
-	%s ‚Æ‚¢‚¤ƒjƒbƒN‚Ì“o˜^‚ÍÁ‹Ž‚³‚ê‚Ü‚µ‚½B
+	ƒjƒbƒNu%sv‚Ì“o˜^‚ð‰ðœ‚µ‚Ü‚µ‚½B
+NICK_X_DROPPED_LINKS
+	ƒjƒbƒNu%sv‹y‚Ñ‘S‚Ä‚ÌƒŠƒ“ƒN‚³‚ê‚½ƒjƒbƒN‚Ì“o˜^‚ð‰ðœ‚µ‚Ü‚µ‚½B
 
-# SET‚Ì”½‰ž
+# DROPEMAILADROPEMAIL-CONFIRM‰ž“š
+NICK_DROPEMAIL_SYNTAX
+	DROPEMAIL ƒpƒ^[ƒ“
+NICK_DROPEMAIL_PATTERN_TOO_LONG
+	ƒpƒ^[ƒ“‚ª’·‚·‚¬‚Ü‚·iÅ‘å%dƒoƒCƒgjB
+NICK_DROPEMAIL_NONE
+	Žw’è‚³‚ê‚½ƒpƒ^[ƒ“‚Éˆê’v‚·‚éƒjƒbƒN‚Í‚ ‚è‚Ü‚¹‚ñB
+NICK_DROPEMAIL_COUNT
+	Žw’è‚³‚ê‚½ƒpƒ^[ƒ“‚Éˆê’v‚·‚éƒjƒbƒN‚ª%dŒÂ‚ ‚è‚Ü‚·B
+	íœ‚ðŽÀs‚·‚é‚É‚ÍAu/msg %s DROPEMAIL-CONFIRM %sv‚ð“ü—Í‚µ‚Ä‚­‚¾‚³‚¢B
+NICK_DROPEMAIL_CONFIRM_SYNTAX
+	DROPEMAIL-CONFIRM ƒpƒ^[ƒ“
+NICK_DROPEMAIL_CONFIRM_UNKNOWN
+	Žw’è‚³‚ê‚½ƒpƒ^[ƒ“‚Í‹L‰¯‚³‚ê‚Ä‚¢‚Ü‚¹‚ñBDROPEMAIL-CONFIRM‚Ì‘O‚ÉAÄ“xA‚±‚Ìƒpƒ^[ƒ“‚ÅDROPEMAIL‚ðŽÀs‚µ‚Ä‚­‚¾‚³‚¢B
+NICK_DROPEMAIL_CONFIRM_DROPPING
+	ƒjƒbƒN‚Ì“o˜^‰ðœ‚ðŠJŽn‚µ‚Ü‚·B
+NICK_DROPEMAIL_CONFIRM_DROPPED
+	ƒjƒbƒN‚Ì“o˜^‰ðœ‚ªŠ®—¹‚µ‚Ü‚µ‚½B
+
+# SET‰ž“š
 NICK_SET_SYNTAX
-	SET option parameters
-NICK_SET_SERVADMIN_SYNTAX
-	SET [nick] option parameters
+	SET Ý’è–¼ ’l
+NICK_SET_OPER_SYNTAX
+	SET [!ƒjƒbƒN] Ý’è–¼ ’l
 NICK_SET_DISABLED
-	ƒjƒbƒN‚ÌƒIƒvƒVƒ‡ƒ“Ý’è‚Í‚½‚¾¡•s‰Â”\‚Å‚·B
+	ƒjƒbƒN‚ÌÝ’è•ÏX‚ÍŒ»Ýo—ˆ‚Ü‚¹‚ñB
 NICK_SET_UNKNOWN_OPTION
-	%s ‚Æ‚¢‚¤ƒIƒvƒVƒ‡ƒ“‚Í•ª‚©‚è‚Ü‚¹‚ñB
-NICK_SET_UNKNOWN_OPTION_OR_BAD_NICK
-	%s ‚ÍƒIƒvƒVƒ‡ƒ“‚Å‚à“o˜^‚µ‚½ƒjƒbƒN‚Å‚à‚ ‚è‚Ü‚¹‚ñB
+	u%sv‚Æ‚¢‚¤Ý’è‚Í‚ ‚è‚Ü‚¹‚ñB
 
-# SET PASSWORD‚Ì”½‰ž
+# SET PASSWORD‰ž“š
 NICK_SET_PASSWORD_FAILED
-	ƒpƒXƒ[ƒh‚Ì•ÏX‚ÍŽ¸”s‚µ‚Ü‚µ‚½B
+	ƒpƒXƒ[ƒh‚Ì•ÏX‚Ío—ˆ‚Ü‚¹‚ñ‚Å‚µ‚½B
 NICK_SET_PASSWORD_CHANGED
-	ƒpƒXƒ[ƒh‚Í•ÏX‚³‚ê‚Ü‚µ‚½B
+	ƒpƒXƒ[ƒh‚ð•ÏX‚µ‚Ü‚µ‚½B
 NICK_SET_PASSWORD_CHANGED_TO
-	ƒpƒXƒ[ƒh‚Í %s ‚É•ÏX‚³‚ê‚Ü‚µ‚½B
+	ƒpƒXƒ[ƒh‚ð %s ‚É•ÏX‚µ‚Ü‚µ‚½B
 
-# SET LANGUAGE‚Ì”½‰ž
+# SET LANGUAGE‰ž“š
 NICK_SET_LANGUAGE_SYNTAX
-	SET LANGUAGE number
+	SET LANGUAGE ”Ô†
 NICK_SET_LANGUAGE_UNKNOWN
-	%d ”Ô‚ÌŒ¾Œê‚Í‘¶Ý‚µ‚Ü‚¹‚ñBŒ¾Œê•\‚ðŒ©‚éê‡Aumsg %s HELP SET LANGUAGEv‚ð“ü—Í‚µ‚Ä‰º‚³‚¢B
+	%d”Ô‚ÌŒ¾Œê‚Í‘¶Ý‚µ‚Ü‚¹‚ñBŒ¾Œêˆê——‚ðŒ©‚éê‡Aumsg %s HELP SET LANGUAGEv‚ð“ü—Í‚µ‚Ä‰º‚³‚¢B
 NICK_SET_LANGUAGE_CHANGED
-	Œ¾Œê‚Í“ú–{ŒêiSJISƒR[ƒhj‚É•ÏX‚³‚ê‚Ü‚µ‚½B
-	’ˆÓF‚±‚ÌƒeƒLƒXƒg‚ÍƒAƒƒŠƒJl‚Éì‚ç‚ê‚Ü‚µ‚½‚Ì‚ÅAŠÔˆá‚¢‚Í‘½‚¢‚Å‚µ‚å‚¤‚ªA‰ä–‚µ‚Ä‰º‚³‚¢B‚à‚µ‚±‚ÌƒeƒLƒXƒg‚ð’¼‚µ‚Ä’¸‚¯‚ê‚ÎA‚Ç‚¤‚¼ achurch@dragonfire.net ‚Ö˜A—‚ð‚¨Šè‚¢’v‚µ‚Ü‚·B
+	Œ¾Œê‚ð%s‚É•ÏX‚µ‚Ü‚µ‚½B
 
-# SET URL‚Ì”½‰ž
+# SET URL‰ž“š
 NICK_SET_URL_CHANGED
-	ƒz[ƒƒy[ƒW‚ÌƒAƒhƒŒƒX‚Í %s ‚É•ÏX‚³‚ê‚Ü‚µ‚½B
-NICK_SET_URL_UNSET
-	ƒz[ƒƒy[ƒW‚ÌƒAƒhƒŒƒX‚ÍÁ‹Ž‚³‚ê‚Ü‚µ‚½B
+	ƒjƒbƒNu%sv‚Ìƒz[ƒ€ƒy[ƒWƒAƒhƒŒƒX‚ðu%sv‚É•ÏX‚µ‚Ü‚µ‚½B
 
-# SET EMAIL‚Ì”½‰ž
+# SET EMAIL‰ž“š
+NICK_SET_EMAIL_PLEASE_WAIT
+	SET EMAILƒRƒ}ƒ“ƒh‚ðÄ“xŽÀs‚·‚é‘O‚ÉA%s‚¨‘Ò‚¿‰º‚³‚¢B
+NICK_SET_EMAIL_UNAUTHED
+	Žw’è‚³‚ê‚½ƒ[ƒ‹ƒAƒhƒŒƒX‚ÍA‚Ü‚¾ƒAƒhƒŒƒXŠm”F‚ªs‚í‚ê‚Ä‚¢‚Ü‚¹‚ñB“o˜^‚·‚é‘O‚É‚ÉƒAƒhƒŒƒXŠm”F‚ðs‚Á‚Ä‚­‚¾‚³‚¢B
+NICK_SET_EMAIL_TOO_MANY_NICKS
+	u%sv‚ÍA‚·‚Å‚É%dŒÂ‚ÌƒjƒbƒN‚ð“o˜^‚µ‚Ä‚¢‚Ü‚· (ãŒÀ%d)Bƒ[ƒ‹ƒAƒhƒŒƒX•ÏX‚ªo—ˆ‚Ü‚¹‚ñ‚Å‚µ‚½B
 NICK_SET_EMAIL_CHANGED
-	“dŽqƒ[ƒ‹‚ÌƒAƒhƒŒƒX‚Í %s ‚É•ÏX‚³‚ê‚Ü‚µ‚½B
-NICK_SET_EMAIL_UNSET
-	“dŽqƒ[ƒ‹‚ÌƒAƒhƒŒƒX‚ÍÁ‹Ž‚³‚ê‚Ü‚µ‚½B
+	ƒjƒbƒNu%sv‚Ìƒ[ƒ‹ƒAƒhƒŒƒX‚ðu%sv‚É•ÏX‚µ‚Ü‚µ‚½B
 
-# SET KILL‚Ì”½‰ž
+# SET INFO‰ž“š
+NICK_SET_INFO_CHANGED
+	ƒjƒbƒNu%sv‚Ìî•ñ‚ð•ÏX‚µ‚Ü‚µ‚½B
+
+# SET KILL‰ž“š
 NICK_SET_KILL_SYNTAX
 	SET KILL {ON | QUICK | OFF}
 NICK_SET_KILL_IMMED_SYNTAX
 	SET KILL {ON | QUICK | IMMED | OFF}
 NICK_SET_KILL_ON
-	Ø’fŽç‚Í ON ‚Å‚·B
+	ƒjƒbƒN•ÛŒìÝ’è‚ð—LŒø‚ÉÝ’è‚µ‚Ü‚µ‚½B
 NICK_SET_KILL_QUICK
-	Ø’fŽç‚Í ON ‚ÅAƒjƒbƒN•ÏXŠúŒÀ‚Í 20 •b‚É‚³‚ê‚Ü‚µ‚½B
+	ƒjƒbƒN•ÛŒìÝ’è‚ð—LŒøiƒjƒbƒN•ÏXŠúŒÀ‚Í20•bj‚ÉÝ’è‚µ‚Ü‚µ‚½B
 NICK_SET_KILL_IMMED
-	Ø’fŽç‚Í ON ‚ÅAØ’f‚Í’¼Ús‚í‚ê‚Ü‚·B
+	ƒjƒbƒN•ÛŒìÝ’è‚ð—LŒøi‘¦ŽžØ’fj‚ÉÝ’è‚µ‚Ü‚µ‚½B
 NICK_SET_KILL_IMMED_DISABLED
-	‚±‚Ìƒlƒbƒgƒ[ƒN‚Å‚ÍAIMMED ‚ð‘I‘ð‚Å‚«‚Ü‚¹‚ñB
+	‚±‚Ìƒlƒbƒgƒ[ƒN‚Å‚ÍAIMMED‚ð‘I‘ð‚Å‚«‚Ü‚¹‚ñB
 NICK_SET_KILL_OFF
-	Ø’fŽç‚Í OFF ‚Å‚·B
+	ƒjƒbƒN•ÛŒìÝ’è‚ð–³Œø‚ÉÝ’è‚µ‚Ü‚µ‚½B
 
-# SET SECURE‚Ì”½‰ž
+# SET SECURE‰ž“š
 NICK_SET_SECURE_SYNTAX
 	SET SECURE {ON | OFF}
 NICK_SET_SECURE_ON
-	ƒZƒLƒ…ƒAƒIƒvƒVƒ‡ƒ“‚Í ON ‚Å‚·B
+	ƒZƒLƒ…ƒAÝ’è‚ð—LŒø‚ÉÝ’è‚µ‚Ü‚µ‚½B
 NICK_SET_SECURE_OFF
-	ƒZƒLƒ…ƒAƒIƒvƒVƒ‡ƒ“‚Í OFF ‚Å‚·B
+	ƒZƒLƒ…ƒAÝ’è‚ð–³Œø‚ÉÝ’è‚µ‚Ü‚µ‚½B
 
-# SET PRIVATE‚Ì”½‰ž
+# SET PRIVATE‰ž“š
 NICK_SET_PRIVATE_SYNTAX
 	SET PRIVATE {ON | OFF}
 NICK_SET_PRIVATE_ON
-	Ž„“IƒIƒvƒVƒ‡ƒ“‚Í ON ‚Å‚·B
+	ƒvƒ‰ƒCƒx[ƒgÝ’è‚ð—LŒø‚ÉÝ’è‚µ‚Ü‚µ‚½B
 NICK_SET_PRIVATE_OFF
-	Ž„“IƒIƒvƒVƒ‡ƒ“‚Í OFF ‚Å‚·B
+	ƒvƒ‰ƒCƒx[ƒgÝ’è‚ð–³Œø‚ÉÝ’è‚µ‚Ü‚µ‚½B
 
-# SET HIDE‚Ì”½‰ž
+# SET NOOP‰ž“š
+NICK_SET_NOOP_SYNTAX
+	SET NOOP {ON | OFF}
+NICK_SET_NOOP_ON
+	ƒ`ƒƒƒ“ƒlƒ‹ƒAƒNƒZƒX‹‘”ÛÝ’è‚ð—LŒø‚É‚µ‚Ü‚µ‚½B
+NICK_SET_NOOP_OFF
+	ƒ`ƒƒƒ“ƒlƒ‹ƒAƒNƒZƒX‹‘”ÛÝ’è‚ð–³Œø‚É‚µ‚Ü‚µ‚½B
+
+# SET HIDE‰ž“š
 NICK_SET_HIDE_SYNTAX
 	SET HIDE {EMAIL | USERMASK | QUIT} {ON | OFF}
 NICK_SET_HIDE_EMAIL_ON
-	“dŽqƒ[ƒ‹‚ÌƒAƒhƒŒƒX‚Í %s ‚Ì INFO •\‚Å•\‚ê‚Ü‚¹‚ñB
+	ƒ[ƒ‹ƒAƒhƒŒƒX‚Í%s‚ÌINFO‰ž“š‚Å•\Ž¦‚³‚ê‚Ü‚¹‚ñB
 NICK_SET_HIDE_EMAIL_OFF
-	“dŽqƒ[ƒ‹‚ÌƒAƒhƒŒƒX‚Í %s ‚Ì INFO •\‚Å•\‚ê‚Ü‚·B
+	ƒ[ƒ‹ƒAƒhƒŒƒX‚Í%s‚ÌINFO‰ž“š‚Å•\Ž¦‚³‚ê‚Ü‚·B
 NICK_SET_HIDE_MASK_ON
-	‘O‚Ìƒ†[ƒU[ƒAƒhƒŒƒX‚Í %s ‚Ì INFO •\‚Å•\‚ê‚Ü‚¹‚ñB
+	‘O‰ñ‚Ìƒ†[ƒUƒAƒhƒŒƒX‚Í%s‚ÌINFO‰ž“š‚Å•\Ž¦‚³‚ê‚Ü‚¹‚ñB
 NICK_SET_HIDE_MASK_OFF
-	‘O‚Ìƒ†[ƒU[ƒAƒhƒŒƒX‚Í %s ‚Ì INFO •\‚Å•\‚ê‚Ü‚·B
+	‘O‰ñ‚Ìƒ†[ƒUƒAƒhƒŒƒX‚Í%s‚ÌINFO‰ž“š‚Å•\Ž¦‚³‚ê‚Ü‚·B
 NICK_SET_HIDE_QUIT_ON
-	‘O‚ÌØ’fƒƒbƒZ[ƒW‚Í %s ‚Ì INFO •\‚Å•\‚ê‚Ü‚¹‚ñB
+	‘O‰ñ‚ÌØ’fƒƒbƒZ[ƒW‚Í%s‚ÌINFO‰ž“š‚Å•\Ž¦‚³‚ê‚Ü‚¹‚ñB
 NICK_SET_HIDE_QUIT_OFF
-	‘O‚ÌØ’fƒƒbƒZ[ƒW‚Í %s ‚Ì INFO •\‚Å•\‚ê‚Ü‚·B
+	‘O‰ñ‚ÌØ’fƒƒbƒZ[ƒW‚Í%s‚ÌINFO‰ž“š‚Å•\Ž¦‚³‚ê‚Ü‚·B
 
-# SET NOEXPIRE‚Ì”½‰ž
+# SET TIMEZONE‰ž“š
+NICK_SET_TIMEZONE_SYNTAX
+	SET TIMEZONE {UTCƒIƒtƒZƒbƒg | ŽžŠÔ‘Ñ–¼ | DEFAULT}
+NICK_SET_TIMEZONE_TO
+	ŽžŠÔ‘ÑÝ’è‚ÍUTC%c%d:%02d‚ÉÝ’è‚µ‚Ü‚µ‚½B
+	‚±‚ÌŽžŠÔ‘Ñ‚Å‚ÌŒ»ÝŽž‚Í%s‚Å‚·B
+NICK_SET_TIMEZONE_DEFAULT
+	ŽžŠÔ‘ÑÝ’è‚ðŠù’è’l‚É–ß‚µ‚Ü‚µ‚½B
+
+# SET MAINNICK‰ž“š
+NICK_SET_MAINNICK_NOT_FOUND
+	ƒjƒbƒNu%sv‚Í‚ ‚È‚½‚ÌƒjƒbƒN‚ÉƒŠƒ“ƒN‚³‚ê‚Ä‚¢‚Ü‚¹‚ñB
+NICK_SET_MAINNICK_CHANGED
+	ƒƒCƒ“ƒjƒbƒN‚ðu%sv‚ÉÝ’è‚µ‚Ü‚µ‚½B
+
+# SET NOEXPIRE‰ž“š
 NICK_SET_NOEXPIRE_SYNTAX
-	SET [nickname] NOEXPIRE {ON | OFF}
+	SET [!ƒjƒbƒN] NOEXPIRE {ON | OFF}
 NICK_SET_NOEXPIRE_ON
-	%s ‚Æ‚¢‚¤ƒjƒbƒN‚Ì“o˜^‚ÍØ‚ê‚Ü‚¹‚ñB
+	ƒjƒbƒNu%sv‚Ì“o˜^‚ÍŽ©“®‰ðœ‚µ‚Ü‚¹‚ñB
 NICK_SET_NOEXPIRE_OFF
-	%s ‚Æ‚¢‚¤ƒjƒbƒN‚Ì“o˜^‚ÍØ‚ê‚Ü‚·B
+	ƒjƒbƒNu%sv‚Ì“o˜^‚ÍŽ©“®‰ðœ‚µ‚Ü‚·B
 
-# ACCESS‚Ì”½‰ž
+# UNSET‰ž“š
+NICK_UNSET_SYNTAX
+	UNSET {URL | EMAIL | INFO}
+NICK_UNSET_SYNTAX_REQ_EMAIL
+	UNSET {URL | INFO}
+NICK_UNSET_OPER_SYNTAX
+	UNSET [!ƒjƒbƒN] {URL | EMAIL | INFO}
+NICK_UNSET_OPER_SYNTAX_REQ_EMAIL
+	UNSET [!ƒjƒbƒN] {URL | INFO}
+NICK_UNSET_URL
+	ƒjƒbƒNu%sv‚Ìƒz[ƒ€ƒy[ƒWƒAƒhƒŒƒX‚ðÁ‹Ž‚µ‚Ü‚µ‚½B
+NICK_UNSET_EMAIL
+	ƒjƒbƒNu%sv‚Ìƒ[ƒ‹ƒAƒhƒŒƒX‚ðÁ‹Ž‚µ‚Ü‚µ‚½B
+NICK_UNSET_INFO
+	ƒjƒbƒNu%sv‚Ìî•ñ‚ðÁ‹Ž‚µ‚Ü‚µ‚½B
+NICK_UNSET_EMAIL_BAD
+	ƒ[ƒ‹ƒAƒhƒŒƒX‚ðÁ‹Ž‚Å‚«‚Ü‚¹‚ñB
+NICK_UNSET_EMAIL_OTHER_BAD
+	ƒjƒbƒN‚Ìƒ[ƒ‹ƒAƒhƒŒƒX‚ðÁ‹Ž‚Å‚«‚Ü‚¹‚ñB
+
+# ACCESS‰ž“š
 NICK_ACCESS_SYNTAX
-	ACCESS {ADD | DEL | LIST} [mask]
+	ACCESS {ADD | DEL | LIST} [ƒ}ƒXƒN]
+NICK_ACCESS_DISABLED
+	ƒjƒbƒN‚Ì—˜—p‹–‰ÂƒŠƒXƒg‚Ì•ÒW‚ÍŒ»Ýo—ˆ‚Ü‚¹‚ñB
 NICK_ACCESS_REACHED_LIMIT
-	ƒjƒbƒN‚ÌƒAƒNƒZƒX•\‚Ìƒ}ƒXƒN”‚Í %d ‚ÉŒÀ‚ç‚ê‚Ä‚¢‚Ü‚·‚Ì‚Å’Ç‰Á‚Å‚«‚Ü‚¹‚ñB
+	—˜—p‹–‰ÂƒŠƒXƒg‚ª‚¢‚Á‚Ï‚¢‚Å‚·B
 NICK_ACCESS_ALREADY_PRESENT
-	%s ‚Í‚·‚Å‚ÉƒAƒNƒZƒX•\‚Å‘¶Ý‚µ‚Ä‚¢‚Ü‚·B
+	u%sv‚Í‚·‚Å‚É—˜—p‹–‰ÂƒŠƒXƒg‚É“o˜^‚³‚ê‚Ä‚¢‚Ü‚·B
+NICK_ACCESS_NO_NICKS
+	’ˆÓF—˜—p‹–‰Âƒ}ƒXƒN‚É‚ÍAƒjƒbƒN‚ðŽg—p‚Å‚«‚Ü‚¹‚ñBƒ}ƒXƒN‚ªuƒ†[ƒU@ƒzƒXƒg–¼vŒ`Ž®‚Å³‚µ‚­“ü—Í‚³‚ê‚Ä‚¢‚é‚©AŠm”F‚µ‚Ä‚­‚¾‚³‚¢B
 NICK_ACCESS_ADDED
-	%s ‚ÍƒAƒNƒZƒX•\‚É’Ç‰Á‚³‚ê‚Ü‚µ‚½B
+	u%sv‚ð—˜—p‹–‰ÂƒŠƒXƒg‚É’Ç‰Á‚µ‚Ü‚µ‚½B
 NICK_ACCESS_NOT_FOUND
-	%s ‚ÍƒAƒNƒZƒX•\‚Å‘¶Ý‚µ‚Ü‚¹‚ñB
+	u%sv‚Í—˜—p‹–‰ÂƒŠƒXƒg‚É“o˜^‚³‚ê‚Ä‚¢‚Ü‚¹‚ñB
 NICK_ACCESS_DELETED
-	%s ‚ÍƒAƒNƒZƒX•\‚©‚çÁ‹Ž‚³‚ê‚Ü‚µ‚½B
+	u%sv‚ð—˜—p‹–‰ÂƒŠƒXƒg‚©‚çíœ‚µ‚Ü‚µ‚½B
+NICK_ACCESS_LIST_EMPTY
+	—˜—p‹–‰ÂƒŠƒXƒg‚Í‹ó‚Å‚·B
 NICK_ACCESS_LIST
-	ƒAƒNƒZƒX•\F
+	—˜—p‹–‰ÂƒŠƒXƒgF
+NICK_ACCESS_LIST_X_EMPTY
+	u%sv‚Ì—˜—p‹–‰ÂƒŠƒXƒg‚Í‹ó‚Å‚·B
 NICK_ACCESS_LIST_X
-	%s ‚ÌƒAƒNƒZƒX•\F
+	u%sv‚Ì—˜—p‹–‰ÂƒŠƒXƒgF
 
-# LINK‚Ì”½‰ž
+# LINK‰ž“š
+NICK_OLD_LINK_SYNTAX
+	LINK ƒjƒbƒN ƒpƒXƒ[ƒh
 NICK_LINK_SYNTAX
-	LINK nick password
+	LINK ƒjƒbƒN
 NICK_LINK_DISABLED
-	LINK ‚Í‚½‚¾¡Žg—p•s‰Â”\‚Å‚·B
+	ƒjƒbƒN‚ÌƒŠƒ“ƒN‚ÍŒ»Ýo—ˆ‚Ü‚¹‚ñB
 NICK_LINK_FAILED
-	ƒŠƒ“ƒN‚ÍŽ¸”s‚µ‚Ü‚µ‚½B
-NICK_NO_LINK_SAME
+	ƒŠƒ“ƒN‚Ío—ˆ‚Ü‚¹‚ñ‚Å‚µ‚½B
+NICK_CANNOT_BE_LINKED
+	ƒjƒbƒNu%sv‚ðƒŠƒ“ƒN‚·‚é‚±‚Æ‚Í‚Å‚«‚Ü‚¹‚ñB
+NICK_OLD_LINK_SAME
 	“¯‚¶ƒjƒbƒN‚ÉƒŠƒ“ƒN‚Å‚«‚Ü‚¹‚ñB
-NICK_LINK_CIRCULAR
-#@@@ ucircular linkv‚Ì–|–ó
-	ŠÛƒŠƒ“ƒN‚ª”­Œ©‚³‚ê‚Ü‚µ‚½‚Ì‚Å %s ‚ÉƒŠƒ“ƒN‚Å‚«‚Ü‚¹‚ñB
+NICK_LINK_SAME
+	“¯‚¶ƒjƒbƒN‚ÉƒŠƒ“ƒN‚Å‚«‚Ü‚¹‚ñB
+NICK_LINK_ALREADY_LINKED
+	ƒjƒbƒNu%sv‚Í‚·‚Å‚ÉƒŠƒ“ƒN‚³‚ê‚Ä‚¢‚Ü‚·B
+NICK_LINK_IN_USE
+	ƒjƒbƒNu%sv‚ÍŽg—p’†‚Å‚·B
+NICK_LINK_TOO_MANY
+	“¯‚¶ƒjƒbƒN‚É%dŒÂ‚ÌƒjƒbƒN‚µ‚©ƒŠƒ“ƒN‚Å‚«‚Ü‚¹‚ñB
+NICK_LINK_TOO_MANY_NICKS
+	‚·‚Å‚É%dŒÂ‚ÌƒjƒbƒN‚ð“o˜^‚µ‚Ä‚¢‚Ü‚· (ãŒÀ%d)BƒŠƒ“ƒN‚Å‚«‚Ü‚¹‚ñB
+NICK_OLD_LINK_TOO_MANY_CHANNELS
+	ƒjƒbƒN‚Ì‡Œv“o˜^ƒ`ƒƒƒ“ƒlƒ‹”‚ÍãŒÀ‚ð‰z‚¦‚é‚½‚ßAƒŠƒ“ƒN‚Å‚«‚Ü‚¹‚ñB
+NICK_OLD_LINKED
+	Œ»Ý‚ÌƒjƒbƒN‚ðƒjƒbƒNu%sv‚ÉƒŠƒ“ƒN‚µ‚Ü‚µ‚½B
 NICK_LINKED
-	ƒjƒbƒN‚Í %s ‚ÉƒŠƒ“ƒN‚³‚ê‚Ü‚µ‚½B
+	ƒjƒbƒNu%sv‚ðŒ»Ý‚ÌƒjƒbƒN‚ÉƒŠƒ“ƒN‚µ‚Ü‚µ‚½B
 
-# UNLINK‚Ì”½‰ž
+# UNLINK‰ž“š
+NICK_OLD_UNLINK_SYNTAX
+	UNLINK [ƒjƒbƒN ƒpƒXƒ[ƒh]
 NICK_UNLINK_SYNTAX
-	LINK [nickname password]
+	UNLINK ƒjƒbƒN
+NICK_UNLINK_OPER_SYNTAX
+	UNLINK ƒjƒbƒN [FORCE]
+NICK_UNLINK_DISABLED
+	ƒjƒbƒN‚ÌƒŠƒ“ƒN‰ðœ‚ÍŒ»Ýo—ˆ‚Ü‚¹‚ñB
 NICK_UNLINK_FAILED
-	ƒAƒ“ƒŠƒ“ƒN‚ÍŽ¸”s‚µ‚Ü‚µ‚½B
-NICK_NOT_LINKED
-	ƒjƒbƒN‚ÍƒŠƒ“ƒN‚³‚ê‚Ä‚¢‚Ü‚¹‚ñB
+	ƒŠƒ“ƒN‰ðœ‚Ío—ˆ‚Ü‚¹‚ñ‚Å‚µ‚½B
+NICK_UNLINK_SAME
+	Œ»Ý‚ÌƒjƒbƒN‚ðƒAƒ“ƒŠƒ“ƒN‚Å‚«‚Ü‚¹‚ñB
+NICK_OLD_UNLINK_NOT_LINKED
+	Œ»Ý‚ÌƒjƒbƒN‚ÍƒŠƒ“ƒN‚³‚ê‚Ä‚¢‚Ü‚¹‚ñB
+NICK_UNLINK_NOT_LINKED_YOURS
+	ƒjƒbƒNu%sv‚Í‚ ‚È‚½‚ÌƒjƒbƒN‚ÉƒŠƒ“ƒN‚³‚ê‚Ä‚¢‚Ü‚¹‚ñB
+NICK_UNLINK_NOT_LINKED
+	ƒjƒbƒNu%sv‚ÍƒŠƒ“ƒN‚³‚ê‚Ä‚¢‚Ü‚¹‚ñB
+NICK_OLD_UNLINKED
+	Œ»Ý‚ÌƒjƒbƒN‚ðu%sv‚©‚çƒAƒ“ƒŠƒ“ƒN‚µ‚Ü‚µ‚½B
 NICK_UNLINKED
-	ƒjƒbƒN‚Í %s ‚©‚çƒAƒ“ƒŠƒ“ƒN‚³‚ê‚Ü‚µ‚½B
-NICK_X_NOT_LINKED
-	%s ‚ÍƒŠƒ“ƒN‚³‚ê‚Ä‚¢‚Ü‚¹‚ñB
+	ƒjƒbƒNu%sv‚ðƒAƒ“ƒŠƒ“ƒN‚µ‚Ü‚µ‚½B
 NICK_X_UNLINKED
-	%s ‚Í %s ‚©‚çƒAƒ“ƒŠƒ“ƒN‚³‚ê‚Ü‚µ‚½B
+	ƒjƒbƒNu%sv‚ðu%sv‚©‚çƒAƒ“ƒŠƒ“ƒN‚µ‚Ü‚µ‚½B
 
-# LISTLINKS‚Ì”½‰ž
+# LISTLINKS‰ž“š
+NICK_OLD_LISTLINKS_SYNTAX
+	LISTLINKS ƒjƒbƒN
 NICK_LISTLINKS_SYNTAX
-	LISTLINKS nickname [ALL]
+	LISTLINKS
 NICK_LISTLINKS_HEADER
-	%s ‚ÉƒŠƒ“ƒN‚µ‚Ä‚¢‚éƒjƒbƒNF
+	u%sv‚ÉƒŠƒ“ƒN‚³‚ê‚Ä‚¢‚éƒjƒbƒNF
 NICK_LISTLINKS_FOOTER
-	%d ŒÂŒ©‚Â‚©‚è‚Ü‚µ‚½B
+	%dŒÂŒ©‚Â‚©‚è‚Ü‚µ‚½B
 
-# INFO‚Ì”½‰ž
+# INFO‰ž“š
 NICK_INFO_SYNTAX
-	INFO nick
+	INFO ƒjƒbƒN [ALL]
 NICK_INFO_REALNAME
-	%s ‚Í %s ‚Å‚·
+	ƒjƒbƒNu%svŠ—LŽÒF%s
 NICK_INFO_ADDRESS
-	‘O‚Ìƒ†[ƒU[ƒAƒhƒŒƒXF%s
+	‘O‰ñÚ‘±‚ÌƒAƒhƒŒƒXF%s
+NICK_INFO_ADDRESS_ONLINE
+	@Ú‘±’†‚ÌƒAƒhƒŒƒXF%s
+NICK_INFO_ADDRESS_ONLINE_NOHOST
+	‚±‚Ìƒ†[ƒU‚ÍŒ»ÝƒIƒ“ƒ‰ƒCƒ“‚Å‚·B
+NICK_INFO_ADDRESS_OTHER_NICK
+	‚±‚Ìƒ†[ƒU‚ÍŒ»ÝAƒjƒbƒNu%sv‚ðŽg—p‚µ‚Ä‚¢‚Ü‚·B
 NICK_INFO_TIME_REGGED
-	@@@@“o˜^‚µ‚½“úŽžF%s
+	@@@@@“o˜^“úŽžF%s
 NICK_INFO_LAST_SEEN
-	@@@@‘O‚ÌŽg—p“úŽžF%s
+	@@@‘O‰ñŽg—p“úŽžF%s
 NICK_INFO_LAST_QUIT
-	@‘O‚ÌØ’fƒƒbƒZ[ƒWF%s
+	‘O‰ñØ’fƒƒbƒZ[ƒWF%s
 NICK_INFO_URL
-	@@@@ƒz[ƒƒy[ƒWF%s
+	@@@ƒz[ƒ€ƒy[ƒWF%s
 NICK_INFO_EMAIL
-	“dŽqƒ[ƒ‹‚ÌƒAƒhƒŒƒXF%s
+	@@ƒ[ƒ‹ƒAƒhƒŒƒXF%s
+NICK_INFO_EMAIL_UNAUTHED
+	@@ƒ[ƒ‹ƒAƒhƒŒƒXF%si–¢Šm”Fj
+NICK_INFO_INFO
+	@@@@@@@î•ñF%s
 NICK_INFO_OPTIONS
-	@@@@@ƒIƒvƒVƒ‡ƒ“F%s
-NICK_INFO_NO_EXPIRE
-	‚±‚ÌƒjƒbƒN‚Ì“o˜^‚ÍØ‚ê‚Ü‚¹‚ñB
+	@@ƒIƒvƒVƒ‡ƒ“Ý’èF%s
 # These strings MUST NOT be empty
 NICK_INFO_OPT_KILL
-	Ø’fŽç
+	ƒjƒbƒN•ÛŒì
 NICK_INFO_OPT_SECURE
 	ƒZƒLƒ…ƒA
 NICK_INFO_OPT_PRIVATE
-	Ž„“I
+	ƒvƒ‰ƒCƒx[ƒg
+NICK_INFO_OPT_NOOP
+	ƒ`ƒƒƒ“ƒlƒ‹ƒAƒNƒZƒX‹‘”Û
 NICK_INFO_OPT_NONE
 	–³‚µ
+NICK_INFO_NO_EXPIRE
+	‚±‚ÌƒjƒbƒN‚Ì“o˜^‚ÍŽ©“®‰ðœ‚³‚ê‚Ü‚¹‚ñB
+NICK_INFO_SUSPEND_DETAILS
+	‚±‚ÌƒjƒbƒN‚Í%s‚É‚æ‚èŽg—p’âŽ~’†‚Å‚·B
+	’âŽ~“úŽžF%si%sj
+NICK_INFO_SUSPEND_REASON
+	’âŽ~——RF%s
+NICK_INFO_SHOW_ALL
+	Ú×î•ñ‚ðŒ©‚éê‡‚ÍAu/msg %s INFO %s ALLv‚ð“ü—Í‚µ‚Ä‰º‚³‚¢B
 
-# LIST‚Ì”½‰ž
+# LISTCHANS‰ž“š
+NICK_LISTCHANS_SYNTAX
+	LISTCHANS
+NICK_LISTCHANS_NONE
+	ƒjƒbƒNu%sv‚Íƒ`ƒƒƒ“ƒlƒ‹‚ð“o˜^‚µ‚Ä‚¢‚Ü‚¹‚ñB
+NICK_LISTCHANS_HEADER
+	ƒjƒbƒNu%sv‚Ì“o˜^ƒ`ƒƒƒ“ƒlƒ‹F
+NICK_LISTCHANS_END
+	%dƒ`ƒƒƒ“ƒlƒ‹“o˜^‚³‚ê‚Ä‚¢‚Ü‚·B
+
+# LIST/LISTEMAIL‰ž“š
 NICK_LIST_SYNTAX
-	LIST pattern
-NICK_LIST_SERVADMIN_SYNTAX
-	LIST pattern [FORBID] [NOEXPIRE]
+	%s [+ŠJŽnˆÊ’u] ƒpƒ^[ƒ“
+NICK_LIST_OPER_SYNTAX
+	%s [+ŠJŽnˆÊ’u] ƒpƒ^[ƒ“ [FORBIDDEN] [NOEXPIRE] [SUSPENDED]
+NICK_LIST_OPER_SYNTAX_AUTH
+	%s [+ŠJŽnˆÊ’u] ƒpƒ^[ƒ“ [FORBIDDEN] [NOEXPIRE] [SUSPENDED] [NOAUTH]
 NICK_LIST_HEADER
-	%s ‚É‡‚¤ƒjƒbƒN•\F
-NICK_LIST_RESULTS
-	LIST I—¹B
+	%s ‚Éˆê’v‚·‚éƒjƒbƒNF
+NICK_LIST_NO_MATCH
+	ˆê’v‚·‚éƒjƒbƒN‚Í‚ ‚è‚Ü‚¹‚ñB
+NICK_LISTEMAIL_NONE
+	i–¢Ý’èj
 
-# RECOVER‚Ì”½‰ž
+# RECOVER‰ž“š
 NICK_RECOVER_SYNTAX
-	RECOVER nickname [password]
+	RECOVER ƒjƒbƒN [ƒpƒXƒ[ƒh]
 NICK_NO_RECOVER_SELF
-	Ž©•ª‚ðƒŠƒJƒo[o—ˆ‚Ü‚¹‚ñB
+	Œ»Ý‚ÌƒjƒbƒN‚É‘Î‚µ‚ÄŽg—p‚Å‚«‚Ü‚¹‚ñB
 NICK_RECOVERED
-	ƒjƒbƒN‚ðŽg—p‚µ‚Ä‚¢‚½ƒ†[ƒU[‚ÍØ’f‚³‚ê‚Ü‚µ‚½B
-	1 •ª‚Ìƒ^ƒCƒƒAƒEƒg‚ªŒo‚Â‘O‚ÉƒjƒbƒN‚ðŽg—p‚µ‚½‚¢ê‡‚ÍA
-	u/msg %s RELEASE %sv‚ð“ü—Í‚µ‚Ä‰º‚³‚¢B
+	ƒjƒbƒN‚ðŽg—p‚µ‚Ä‚¢‚½ƒ†[ƒU‚ðØ’f‚µ‚Ü‚µ‚½B‚P•ªŠÔ‚Ì•Û—¯ƒ^ƒCƒ€ƒAƒEƒg‚ªŒo‚Â‘O‚ÉƒjƒbƒN‚ðŽg—p‚µ‚½‚¢ê‡‚ÍAu/msg %s RELEASE %s ƒpƒXƒ[ƒhv‚ð“ü—Í‚µ‚Ä‰º‚³‚¢B
 
-# RELEASE‚Ì”½‰ž
-#@@@ uƒzƒ‹ƒhv
+# RELEASE‰ž“š
 NICK_RELEASE_SYNTAX
-	RELEASE nickname [password]
+	RELEASE ƒjƒbƒN [ƒpƒXƒ[ƒh]
 NICK_RELEASE_NOT_HELD
-	%s ‚Íƒzƒ‹ƒh‚³‚ê‚Ä‚¢‚Ü‚¹‚ñB
+	ƒjƒbƒNu%sv‚Í•Û—¯‚³‚ê‚Ä‚¢‚Ü‚¹‚ñB
 NICK_RELEASED
-	%s ‚Í‰ð•ú‚³‚ê‚Ü‚µ‚½B
+	ƒjƒbƒNu%sv‚ð‰ð•ú‚µ‚Ü‚µ‚½B
 
-# GHOST‚Ì”½‰ž
+# GHOST‰ž“š
 NICK_GHOST_SYNTAX
-	GHOST nickname [password]
+	GHOST ƒjƒbƒN [ƒpƒXƒ[ƒh]
 NICK_NO_GHOST_SELF
-	Ž©•ª‚ðƒS[ƒXƒgo—ˆ‚Ü‚¹‚ñB
+	Œ»Ý‚ÌƒjƒbƒN‚É‘Î‚µ‚ÄŽg—p‚Å‚«‚Ü‚¹‚ñB
 NICK_GHOST_KILLED
-	%s ‚ÌƒS[ƒXƒg‚ÍØ’f‚³‚ê‚Ü‚µ‚½B
+	ƒjƒbƒNu%sv‚ðØ’f‚µ‚Ü‚µ‚½B
 
-# GETPASS‚Ì”½‰ž
+# GETPASS‰ž“š
 NICK_GETPASS_SYNTAX
-	GETPASS nickname
+	GETPASS ƒjƒbƒN
 NICK_GETPASS_UNAVAILABLE
-	ˆÃ†‰»‚ÍŽg—p‚³‚ê‚Ä‚¢‚Ü‚·‚Ì‚Å GETPASS ‚ÍŽg—p•s‰Â”\‚Å‚·B
+	ƒjƒbƒNu%sv‚ÌƒpƒXƒ[ƒh‚ÍˆÃ†‰»‚³‚ê‚Ä‚¢‚é‚½‚ßAGETPASS‚ðŽg—p‚Å‚«‚Ü‚¹‚ñB
 NICK_GETPASS_PASSWORD_IS
-	%s ‚ÌƒpƒXƒ[ƒh‚Í %s ‚Å‚·B
+	ƒjƒbƒNu%sv‚ÌƒpƒXƒ[ƒh‚Í %s ‚Å‚·B
 
-# FORBID‚Ì”½‰ž
+# FORBID‰ž“š
 NICK_FORBID_SYNTAX
-	FORBID nickname
+	FORBID ƒjƒbƒN
 NICK_FORBID_SUCCEEDED
-	%s ‚Æ‚¢‚¤ƒjƒbƒN‚ÍŽg—p‹ÖŽ~‚É‚³‚ê‚Ü‚µ‚½B
+	ƒjƒbƒNu%sv‚ðŽg—p‹ÖŽ~‚É‚µ‚Ü‚µ‚½B
 NICK_FORBID_FAILED
-	%s ‚Æ‚¢‚¤ƒjƒbƒN‚ðŽg—p‹ÖŽ~‚É‚·‚é‚Ì‚ªŽ¸”s‚µ‚Ü‚µ‚½B
+	ƒjƒbƒNu%sv‚ðŽg—p‹ÖŽ~‚É‚·‚é‚±‚Æ‚ª‚Å‚«‚Ü‚¹‚ñ‚Å‚µ‚½B
+
+# SUSPEND responses
+NICK_SUSPEND_SYNTAX
+	SUSPEND [+ŠúŒÀ] ƒjƒbƒN ——R
+NICK_SUSPEND_SUCCEEDED
+	ƒjƒbƒNu%sv‹y‚Ñ‚»‚ê‚ÉƒŠƒ“ƒN‚³‚ê‚Ä‚¢‚é‘S‚Ä‚ÌƒjƒbƒN‚ðŽg—p’âŽ~‚É‚µ‚Ü‚µ‚½B
+NICK_SUSPEND_ALREADY_SUSPENDED
+	ƒjƒbƒNu%sv‚Í‚·‚Å‚ÉŽg—p’âŽ~‚É‚È‚Á‚Ä‚¢‚Ü‚·B
+
+# UNSUSPEND responses
+NICK_UNSUSPEND_SYNTAX
+	UNSUSPEND ƒjƒbƒN
+NICK_UNSUSPEND_SUCCEEDED
+	ƒjƒbƒNu%sv‚ÌŽg—p’âŽ~‚ð‰ðœ‚µ‚Ü‚µ‚½B
+NICK_UNSUSPEND_NOT_SUSPENDED
+	ƒjƒbƒNu%sv‚ÍŽg—p’âŽ~‚É‚È‚Á‚Ä‚¢‚Ü‚¹‚ñB
+
+################ autojoinƒ‚ƒWƒ…[ƒ‹—pƒƒbƒZ[ƒW
+
+# AJOIN‰ž“š
+NICK_AJOIN_SYNTAX
+	AJOIN {ADD | DEL | LIST} [ƒ`ƒƒƒ“ƒlƒ‹]
+NICK_AJOIN_ADD_SYNTAX
+	AJOIN ADD ƒ`ƒƒƒ“ƒlƒ‹
+NICK_AJOIN_DEL_SYNTAX
+	AJOIN DEL ƒ`ƒƒƒ“ƒlƒ‹
+NICK_AJOIN_DISABLED
+	ƒjƒbƒN‚ÌŽ©“®ŽQ‰ÁƒŠƒXƒg‚Ì•ÒW‚ÍŒ»Ýo—ˆ‚Ü‚¹‚ñB
+NICK_AJOIN_ALREADY_PRESENT
+	ƒ`ƒƒƒ“ƒlƒ‹u%sv‚Í‚·‚Å‚ÉŽ©“®ŽQ‰ÁƒŠƒXƒg‚É“o˜^‚³‚ê‚Ä‚¢‚Ü‚·B
+NICK_AJOIN_LIST_FULL
+	Ž©“®ŽQ‰ÁƒŠƒXƒg‚ª‚¢‚Á‚Ï‚¢‚Å‚·B
+NICK_AJOIN_ADDED
+	ƒ`ƒƒƒ“ƒlƒ‹u%sv‚ðŽ©“®ŽQ‰ÁƒŠƒXƒg‚É’Ç‰Á‚µ‚Ü‚µ‚½B
+NICK_AJOIN_NOT_FOUND
+	ƒ`ƒƒƒ“ƒlƒ‹u%sv‚ÍŽ©“®ŽQ‰ÁƒŠƒXƒg‚É“o˜^‚³‚ê‚Ä‚¢‚Ü‚¹‚ñB
+NICK_AJOIN_DELETED
+	ƒ`ƒƒƒ“ƒlƒ‹u%sv‚ðŽ©“®ŽQ‰ÁƒŠƒXƒg‚©‚çíœ‚µ‚Ü‚µ‚½B
+NICK_AJOIN_LIST_EMPTY
+	Ž©“®ŽQ‰ÁƒŠƒXƒg‚Í‹ó‚Å‚·B
+NICK_AJOIN_LIST
+	Ž©“®ŽQ‰ÁƒŠƒXƒgF
+NICK_AJOIN_LIST_X_EMPTY
+	ƒjƒbƒNu%sv‚ÌŽ©“®ŽQ‰ÁƒŠƒXƒg‚Í‹ó‚Å‚·B
+NICK_AJOIN_LIST_X
+	ƒjƒbƒNu%sv‚ÌŽ©“®ŽQ‰ÁƒŠƒXƒgF
+NICK_AJOIN_AUTO_REMOVE
+	u%sv‚Íƒ`ƒƒƒ“ƒlƒ‹–¼‚Æ‚µ‚Ä–³Œø‚È‚½‚ßAŽ©“®ŽQ‰ÁƒŠƒXƒg‚©‚çíœ‚³‚ê‚Ü‚µ‚½B
+
+################ mail-authƒ‚ƒWƒ…[ƒ‹—pƒƒbƒZ[ƒW
+
+# ‘S”ÊƒƒbƒZ[ƒW
+NICK_AUTH_SENDING
+	ƒ[ƒ‹ƒAƒhƒŒƒXŠm”FƒR[ƒh‚ð%s‚É‘—M‚µ‚Ü‚·B
+NICK_AUTH_FOR_REGISTER
+	ƒƒbƒZ[ƒW‚ðŽóM‚µ‚½‚çAu/msg %s AUTH ƒR[ƒhv(ƒR[ƒh‚Ì‚Æ‚±‚ë‚ÅŽÀÛ‚ÌƒR[ƒh‚ð“ü—Í‚µ‚Ü‚·) ‚ð“ü—Í‚µ‚Ä“o˜^‚ðŠ®—¹‚³‚¹‚Ä‰º‚³‚¢B
+NICK_AUTH_FOR_SET_EMAIL
+	ƒƒbƒZ[ƒW‚ðŽóM‚µ‚½‚çAu/msg %s AUTH ƒR[ƒhv(ƒR[ƒh‚Ì‚Æ‚±‚ë‚ÅŽÀÛ‚ÌƒR[ƒh‚ð“ü—Í‚µ‚Ü‚·) ‚ð“ü—Í‚µ‚ÄƒAƒhƒŒƒX•ÏX‚ðŠ®—¹‚³‚¹‚Ä‰º‚³‚¢B
+	’ˆÓF•ÏX‚ªŠ®—¹‚·‚é‚Ü‚ÅAƒjƒbƒN‚ð—˜—p‚·‚é‚±‚Æ‚ª‚Å‚«‚Ü‚¹‚ñB
+NICK_AUTH_NOT_NEEDED
+	ƒAƒhƒŒƒXŠm”F‚Ì•K—v‚Í‚ ‚è‚Ü‚¹‚ñB
+NICK_AUTH_NO_AUTHCODE
+	ƒjƒbƒNu%sv‚ÍŠm”FƒR[ƒh‚ªÝ’è‚³‚ê‚Ä‚¢‚Ü‚¹‚ñB
+NICK_AUTH_HAS_AUTHCODE
+	ƒjƒbƒNu%sv‚ÍŠm”FƒR[ƒh‚ª‚·‚Å‚ÉÝ’è‚³‚ê‚Ä‚¢‚Ü‚·B
+PASSWORD_WARNING_FOR_AUTH
+	ŒxFŠÔˆá‚Á‚½Šm”FƒR[ƒh‚ð‚ ‚Æ‚P‰ñ“ü—Í‚·‚é‚ÆØ’f‚³‚ê‚Ü‚·
+
+# ƒ[ƒ‹—pƒeƒLƒXƒgBuser@host‘O‚ÌÅŒã‚Ìu%sv‚ÍNICK_AUTH_MAIL_TEXT_*
+# ƒƒbƒZ[ƒW‚Ì‚¢‚¸‚ê‚©‚ª“ü‚éB
+NICK_AUTH_MAIL_SUBJECT
+	u%sv‚Ìƒ[ƒ‹ƒAƒhƒŒƒXŠm”FƒR[ƒh
+# awkward wording, rewrite when we can rearrange printf params
+NICK_AUTH_MAIL_BODY
+	‚±‚Ìƒ[ƒ‹‚ÍIRC Services‚©‚çŽ©“®‘—M‚³‚ê‚½ƒ[ƒ‹‚Å‚·B
+	
+	ƒjƒbƒNu%sv‚Ìƒ[ƒ‹ƒAƒhƒŒƒXŠm”FƒR[ƒh‚Í %09d ‚Å‚·B
+	‚±‚ÌƒR[ƒh‚ð‰º‹LƒRƒ}ƒ“ƒh‚Å%s‚É‘—M‚µ‚Ä‰º‚³‚¢B
+	    /msg %s AUTH %09d
+	
+	‚±‚Ìƒ[ƒ‹‚ÍA%s‚©‚ç‚Ì%si%s@%s‚É‚æ‚éj
+	‚Ì‚½‚ß‚É‘—M‚³‚ê‚Ü‚µ‚½B
+NICK_AUTH_MAIL_TEXT_REG
+	ƒjƒbƒN“o˜^
+NICK_AUTH_MAIL_TEXT_EMAIL
+	ƒ[ƒ‹ƒAƒhƒŒƒX•ÏX
+NICK_AUTH_MAIL_TEXT_SENDAUTH
+	SENDAUTHƒRƒ}ƒ“ƒhŽg—p
+NICK_AUTH_MAIL_TEXT_REAUTH
+	REAUTHƒRƒ}ƒ“ƒhŽg—p
+NICK_AUTH_MAIL_BODY_SETAUTH
+	‚±‚Ìƒ[ƒ‹‚ÍIRC Services‚©‚çŽ©“®‘—M‚³‚ê‚½ƒ[ƒ‹‚Å‚·B
+	
+	ƒjƒbƒNu%sv‚Ìƒ[ƒ‹ƒAƒhƒŒƒXŠm”FƒR[ƒh‚Í %09d ‚Å‚·B
+	‚±‚ÌƒR[ƒh‚ð‰º‹LƒRƒ}ƒ“ƒh‚Å%s‚É‘—M‚µ‚Ä‰º‚³‚¢B
+	    /msg %s AUTH %09d
+
+# AUTH‰ž“š
+NICK_AUTH_SYNTAX
+	AUTH ƒR[ƒh
+NICK_AUTH_DISABLED
+	ƒ[ƒ‹ƒAƒhƒŒƒXŠm”F‚ÍŒ»Ýo—ˆ‚Ü‚¹‚ñB
+NICK_AUTH_FAILED
+	Šm”FƒR[ƒh‚ªŠÔˆá‚Á‚Ä‚¢‚Ü‚·B
+NICK_AUTH_SUCCEEDED_REGISTER
+	ƒ[ƒ‹ƒAƒhƒŒƒXŠm”F‚ª¬Œ÷‚µ‚Ü‚µ‚½BƒjƒbƒN“o˜^‚Í‚±‚ê‚ÅŠ®—¹‚Å‚·B
+NICK_AUTH_SUCCEEDED_SET_EMAIL
+	ƒ[ƒ‹ƒAƒhƒŒƒXŠm”F‚ª¬Œ÷‚µ‚Ü‚µ‚½Bƒ[ƒ‹ƒAƒhƒŒƒX•ÏX‚Í‚±‚ê‚ÅŠ®—¹‚Å‚·B
+NICK_AUTH_SUCCEEDED_REAUTH
+	ƒ[ƒ‹ƒAƒhƒŒƒXŠm”F‚É‚æ‚éƒjƒbƒN”FØ‚ª¬Œ÷‚µ‚Ü‚µ‚½B
+NICK_AUTH_SUCCEEDED_SETAUTH
+	ƒ[ƒ‹ƒAƒhƒŒƒXŠm”F‚ª¬Œ÷‚µ‚Ü‚µ‚½Bˆø‚«‘±‚«ƒjƒbƒN‚ð‚²—˜—p‚Å‚«‚Ü‚·B
+
+# SENDAUTH‰ž“š
+NICK_SENDAUTH_SYNTAX
+	SENDAUTH
+NICK_SENDAUTH_TOO_SOON
+	SENDAUTHƒRƒ}ƒ“ƒh‚ðÄ“xŽÀs‚·‚é‘O‚ÉA%s‚¨‘Ò‚¿‰º‚³‚¢B
+NICK_SENDAUTH_NORESOURCES
+	ƒVƒXƒeƒ€‚ª¬ŽG‚µ‚Ä‚¢‚é‚½‚ßAƒ[ƒ‹ƒAƒhƒŒƒXŠm”FƒR[ƒh‚ð‘—M‚Å‚«‚Ü‚¹‚ñ‚Å‚µ‚½B‚µ‚Î‚ç‚­ŽžŠÔ‚ð’u‚¢‚Ä‚à‚¤ˆê“xŽŽ‚µ‚Ä‚Ý‚é‚©Aƒlƒbƒgƒ[ƒNŠÇ—ŽÒ‚É‚¨–â‚¢‡‚í‚¹‚­‚¾‚³‚¢B
+NICK_SENDAUTH_ERROR
+	ƒVƒXƒeƒ€‚Ì•s‹ï‡‚Ì‚½‚ßAƒ[ƒ‹ƒAƒhƒŒƒXŠm”FƒR[ƒh‚ð‘—M‚Å‚«‚Ü‚¹‚ñ‚Å‚µ‚½B‚µ‚Î‚ç‚­ŽžŠÔ‚ð’u‚¢‚Ä‚à‚¤ˆê“xŽŽ‚µ‚Ä‚Ý‚é‚©Aƒlƒbƒgƒ[ƒNŠÇ—ŽÒ‚É‚¨–â‚¢‡‚í‚¹‚­‚¾‚³‚¢B
+
+# REAUTH‰ž“š
+NICK_REAUTH_SYNTAX
+	REAUTH
+NICK_REAUTH_HAVE_AUTHCODE
+	Šm”FƒR[ƒh‚ª‚·‚Å‚ÉÝ’è‚³‚ê‚Ä‚¢‚Ü‚·B
+NICK_REAUTH_NO_EMAIL
+	ƒ[ƒ‹ƒAƒhƒŒƒX‚ªÝ’è‚³‚ê‚Ä‚¢‚Ü‚¹‚ñB
+NICK_REAUTH_AUTHCODE_SET
+	V‚µ‚¢Šm”FƒR[ƒh‚ªÝ’è‚³‚êAƒ[ƒ‹‘—M‚³‚ê‚Ü‚µ‚½B‚»‚ÌƒR[ƒh‚ðAUTHƒRƒ}ƒ“ƒh‚ÅŽg‚Á‚ÄA”FØ‚ðs‚Á‚Ä‚­‚¾‚³‚¢B
+
+# RESTOREMAIL‰ž“š
+NICK_RESTOREMAIL_SYNTAX
+	RESTOREMAIL ƒpƒXƒ[ƒh
+NICK_RESTOREMAIL_NOT_NOW
+	RESTOREMAIL‚ÍAƒ[ƒ‹ƒAƒhƒŒƒX‚ð•ÏX‚µ‚½ŒãAŠm”FƒR[ƒh‚ð“ü—Í‚·‚é‚Ü‚Å‚µ‚©Žg‚¦‚Ü‚¹‚ñB
+NICK_RESTOREMAIL_DONE
+	‘O‚Ìƒ[ƒ‹ƒAƒhƒŒƒXu%sv‚ð•œŒ³‚µ‚Ü‚µ‚½B
+
+# SETAUTH‰ž“š
+NICK_SETAUTH_SYNTAX
+	SETAUTH ƒjƒbƒN
+NICK_SETAUTH_NO_EMAIL
+	ƒjƒbƒNu%sv‚ÍAƒ[ƒ‹ƒAƒhƒŒƒX‚ªÝ’è‚³‚ê‚Ä‚¢‚Ü‚¹‚ñB
+NICK_SETAUTH_AUTHCODE_SET
+	V‚µ‚¢Šm”FƒR[ƒh (%09d) ‚ðƒjƒbƒNu%sv‚ÉÝ’è‚µ‚Ü‚µ‚½B
+NICK_SETAUTH_SEND_REFUSED
+	ŒxFƒ[ƒ‹ƒT[ƒo‚ªƒ[ƒ‹‚ð‹‘”Û‚µ‚½‚½‚ßAu%sv‚Éƒ[ƒ‹‚ð‘—M‚Å‚«‚Ü‚¹‚ñ‚Å‚µ‚½B
+NICK_SETAUTH_SEND_TIMEOUT
+	ŒxFƒ[ƒ‹ƒT[ƒoÚ‘±’†‚Ü‚½‚Í‘—ŽóM’†‚Éƒ^ƒCƒ€ƒAƒEƒg‚ª”­¶‚µ‚½‚½‚ßAu%sv‚Éƒ[ƒ‹‚ð‘—M‚Å‚«‚Ü‚¹‚ñ‚Å‚µ‚½B
+NICK_SETAUTH_SEND_NORESOURCES
+	ŒxFƒŠƒ\[ƒX•s‘«‚Ì‚½‚ßAu%sv‚Éƒ[ƒ‹‚ð‘—M‚Å‚«‚Ü‚¹‚ñ‚Å‚µ‚½B
+NICK_SETAUTH_SEND_ERROR
+	ŒxF•s–¾‚ÈƒGƒ‰[‚Ì‚½‚ßu%sv‚Éƒ[ƒ‹‚ð‘—M‚Å‚«‚Ü‚¹‚ñ‚Å‚µ‚½B
+NICK_SETAUTH_USER_NOTICE
+	ƒjƒbƒN‚ðˆø‚«‘±‚«—˜—p‚·‚é‚½‚ß‚ÉAƒ[ƒ‹ƒAƒhƒŒƒX‚ðŠm”F‚·‚é•K—v‚ª‚ ‚è‚Ü‚·BŠm”FƒR[ƒh‚ð“o˜^‚³‚ê‚Ä‚¢‚éƒ[ƒ‹ƒAƒhƒŒƒX (%s) ‚É‘—M‚µ‚Ü‚·B
+	Ú‚µ‚­‚ÍAu/msg %s HELP AUTHv‚ð“ü—Í‚µ‚Ä‰º‚³‚¢B
+
+# GETAUTH‰ž“š
+NICK_GETAUTH_SYNTAX
+	GETAUTH ƒjƒbƒN
+NICK_GETAUTH_AUTHCODE_IS
+	ƒjƒbƒNu%sv‚Ìƒ[ƒ‹ƒAƒhƒŒƒXŠm”FƒR[ƒh‚Í %09d ‚Å‚·B
+
+# CLEARAUTH‰ž“š
+NICK_CLEARAUTH_SYNTAX
+	CLEARAUTH ƒjƒbƒN
+NICK_CLEARAUTH_CLEARED
+	ƒjƒbƒNu%sv‚Ìƒ[ƒ‹ƒAƒhƒŒƒXŠm”FƒR[ƒh‚ðƒNƒŠƒA‚µ‚Ü‚µ‚½B
 
 ###########################################################################
 #
@@ -407,430 +845,654 @@ NICK_FORBID_FAILED
 #
 ###########################################################################
 
-# ƒAƒNƒZƒXƒŒƒxƒ‹‚Ì–¼ó
+# ƒAƒNƒZƒXƒŒƒxƒ‹‚Ìà–¾•¶
 CHAN_LEVEL_AUTOOP
-	ƒ`ƒƒƒ“ƒlƒ‹‚É“ü‚é‚Æ +o ƒ‚[ƒh
+	ƒ`ƒƒƒ“ƒlƒ‹ŽQ‰ÁŽž‚ÉƒIƒyƒŒ[ƒ^Œ i+oj•t—^
 CHAN_LEVEL_AUTOVOICE
-	ƒ`ƒƒƒ“ƒlƒ‹‚É“ü‚é‚Æ +v ƒ‚[ƒh
-CHAN_LEVEL_AUTODEOP
-	+o ƒ‚[ƒh‚ð‹Ö‚¶‚é
-CHAN_LEVEL_NOJOIN
-	RESTRICTED ‚Å‚ ‚ê‚Îƒ`ƒƒƒ“ƒlƒ‹‚É“ü‚ê‚È‚¢
+	ƒ`ƒƒƒ“ƒlƒ‹ŽQ‰ÁŽž‚É”­Œ¾Œ i+vj•t—^
 CHAN_LEVEL_INVITE
-	INVITE ‚ÌƒRƒ}ƒ“ƒh‚ªŽg‚¦‚é
+	INVITEƒRƒ}ƒ“ƒhŽg—p‹–‰Â
 CHAN_LEVEL_AKICK
-	AKICK ‚ÌƒRƒ}ƒ“ƒh‚ªŽg‚¦‚é
+	AKICKƒRƒ}ƒ“ƒhŽg—p‹–‰Â
 CHAN_LEVEL_SET
-	SETiFOUNDEREPASSWORD ˆÈŠOj‚ªŽg‚¦‚é
+	SETiFOUNDERAPASSWORDˆÈŠOjŽg—p‹–‰Â
 CHAN_LEVEL_CLEAR
-	CLEAR ‚ÌƒRƒ}ƒ“ƒh‚ªŽg‚¦‚é
+	CLEARƒRƒ}ƒ“ƒhŽg—p‹–‰Â
 CHAN_LEVEL_UNBAN
-	UNBAN ‚ÌƒRƒ}ƒ“ƒh‚ªŽg‚¦‚é
+	UNBANƒRƒ}ƒ“ƒhŽg—p‹–‰Â
 CHAN_LEVEL_OPDEOP
-	OPEDEOP ‚ÌƒRƒ}ƒ“ƒh‚ªŽg‚¦‚é
+	OPADEOPƒRƒ}ƒ“ƒhŽg—p‹–‰Â
 CHAN_LEVEL_ACCESS_LIST
-	ƒAƒNƒZƒX•\‚ðŒ©‚é‚±‚Æ‚ªo—ˆ‚é
+	ƒAƒNƒZƒXˆê——‚ð•\Ž¦‹–‰Â
 CHAN_LEVEL_ACCESS_CHANGE
-	ƒAƒNƒZƒX•\‚ð•ÏX‚Å‚«‚é
+	ƒAƒNƒZƒXˆê——‚ð•ÏX‹–‰Â
 CHAN_LEVEL_MEMO
-	ƒƒ‚‚ª“Ç‚ß‚é
+	ƒ`ƒƒƒ“ƒlƒ‹ƒƒ‚ŽóM
+CHAN_LEVEL_VOICE
+	VOICEADEVOICEƒRƒ}ƒ“ƒhŽg—p‹–‰Â
+CHAN_LEVEL_AUTOHALFOP
+	ƒ`ƒƒƒ“ƒlƒ‹ŽQ‰ÁŽž‚É”¼ƒIƒyƒŒ[ƒ^Œ i+hj•t—^
+CHAN_LEVEL_HALFOP
+	HALFOPADEHALFOPƒRƒ}ƒ“ƒhŽg—p‹–‰Â
+CHAN_LEVEL_AUTOPROTECT
+	ƒ`ƒƒƒ“ƒlƒ‹ŽQ‰ÁŽž‚ÉƒvƒƒeƒNƒgó‘Ôi+aj
+CHAN_LEVEL_PROTECT
+	PROTECTADEPROTECTƒRƒ}ƒ“ƒhŽg—p‹–‰Â
+CHAN_LEVEL_KICK
+	KICKƒRƒ}ƒ“ƒhŽg—p‹–‰Â
+CHAN_LEVEL_STATUS
+	STATUSƒRƒ}ƒ“ƒhŽg—p‹–‰Â
+CHAN_LEVEL_TOPIC
+	TOPICƒRƒ}ƒ“ƒhŽg—p‹–‰Â
 
-# Ž©“®“I‚ÈƒƒbƒZ[ƒW
+# Ž©“®ƒƒbƒZ[ƒW
 CHAN_IS_REGISTERED
 	‚±‚Ìƒ`ƒƒƒ“ƒlƒ‹‚Í“o˜^‚³‚ê‚Ä‚¢‚Ü‚·B
-CHAN_NOT_ALLOWED_OP
-	%s ‚Å +o ƒ‚[ƒh‚É‚Í‚È‚ê‚Ü‚¹‚ñB
 CHAN_MAY_NOT_BE_USED
 	‚±‚Ìƒ`ƒƒƒ“ƒlƒ‹‚ÍŽg—p‹ÖŽ~‚Å‚·B
 CHAN_NOT_ALLOWED_TO_JOIN
 	‚±‚Ìƒ`ƒƒƒ“ƒlƒ‹‚É‚Í“ü‚ê‚Ü‚¹‚ñB
 
-# REGISTER‚Ì”½‰ž
+# ‘½—p‰ž“š
+CHAN_BOUNCY_MODES
+	‚»‚ÌƒRƒ}ƒ“ƒh‚ÍŒ»ÝŽg‚¦‚Ü‚¹‚ñB
+
+# REGISTER‰ž“š
 CHAN_REGISTER_SYNTAX
-	REGISTER channel password description
+	REGISTER ƒ`ƒƒƒ“ƒlƒ‹ ƒpƒXƒ[ƒh à–¾
 CHAN_REGISTER_DISABLED
-	ƒ`ƒƒƒ“ƒlƒ‹‚Ì“o˜^‚Í‚½‚¾¡•s‰Â”\‚Å‚·B
+	ƒ`ƒƒƒ“ƒlƒ‹‚Ì“o˜^‚ÍŒ»Ýo—ˆ‚Ü‚¹‚ñB
+CHAN_REGISTER_SHORT_CHANNEL
+	ƒ`ƒƒƒ“ƒlƒ‹u#v‚Í“o˜^‚Å‚«‚Ü‚¹‚ñB
 CHAN_REGISTER_NOT_LOCAL
-	ƒƒJƒ‹ƒ`ƒƒƒ“ƒlƒ‹‚Ì“o˜^‚Ío—ˆ‚Ü‚¹‚ñB
+	ƒ[ƒJƒ‹ƒ`ƒƒƒ“ƒlƒ‹‚Ì“o˜^‚Ío—ˆ‚Ü‚¹‚ñB
+CHAN_REGISTER_INVALID_NAME
+	“o˜^‚Å‚«‚éƒ`ƒƒƒ“ƒlƒ‹‚ÍA–¼‘O‚ªu#v‚ÅŽn‚Ü‚éƒ`ƒƒƒ“ƒlƒ‹‚Ì‚Ý‚Å‚·B
 CHAN_MUST_REGISTER_NICK
-	ƒ`ƒƒƒ“ƒlƒ‹‚ð“o˜^‚·‚é‚Ì‚É‚ÍAƒjƒbƒN‚ð“o˜^‚·‚é•K—v‚ª‚ ‚è‚Ü‚·BƒjƒbƒN“o˜^î•ñ‚ðŒ©‚éê‡Au/msg %s HELPv‚ð“ü—Í‚µ‚Ä‰º‚³‚¢B
+	ƒ`ƒƒƒ“ƒlƒ‹‚ð“o˜^‚·‚é‚É‚ÍA‚Ü‚¸ƒjƒbƒN‚ð“o˜^‚·‚é•K—v‚ª‚ ‚è‚Ü‚·BƒjƒbƒN“o˜^î•ñ‚ðŒ©‚é‚É‚Íu/msg %s HELPv‚ð“ü—Í‚µ‚Ä‰º‚³‚¢B
 CHAN_MUST_IDENTIFY_NICK
-	ƒ`ƒƒƒ“ƒlƒ‹‚ð“o˜^‚·‚é‚Ì‚É‚ÍAƒjƒbƒN‚ÌƒpƒXƒ[ƒh‚ð“ü—Í‚·‚é•K—v‚ª‚ ‚è‚Ü‚·Bu/msg %s IDENTIFY passwordv‚ð“ü—Í‚µ‚Ä‰º‚³‚¢B
+	ƒ`ƒƒƒ“ƒlƒ‹‚ð“o˜^‚·‚é‚É‚ÍAƒjƒbƒN‚ÌƒpƒXƒ[ƒh”FØ‚ðs‚¤•K—v‚ª‚ ‚è‚Ü‚·Bu/msg %s IDENTIFY ƒpƒXƒ[ƒhv‚ð“ü—Í‚µ‚Ä‰º‚³‚¢B
 CHAN_MAY_NOT_BE_REGISTERED
-	%s ‚ÍŽg—p‹ÖŽ~‚Å‚·‚Ì‚ÅA“o˜^o—ˆ‚Ü‚¹‚ñB
+	ƒ`ƒƒƒ“ƒlƒ‹u%sv‚ÍŽg—p‹ÖŽ~‚Ì‚½‚ßA“o˜^‚Å‚«‚Ü‚¹‚ñB
 CHAN_ALREADY_REGISTERED
-	%s ‚ÍŠù‚É“o˜^‚³‚ê‚Ä‚¢‚Ü‚·B
+	ƒ`ƒƒƒ“ƒlƒ‹u%sv‚Í‚·‚Å‚É“o˜^‚³‚ê‚Ä‚¢‚Ü‚·B
 CHAN_MUST_BE_CHANOP
-	ƒ`ƒƒƒ“ƒlƒ‹‚ð“o˜^‚·‚é‚É‚ÍA‚»‚ÌƒIƒyƒŒƒ^[‚Å‚ ‚é•K—v‚ª‚ ‚è‚Ü‚·B
+	ƒ`ƒƒƒ“ƒlƒ‹‚ð“o˜^‚·‚é‚É‚ÍA‚»‚Ìƒ`ƒƒƒ“ƒlƒ‹‚ÌƒIƒyƒŒ[ƒ^Œ i+oƒ‚[ƒhj‚ðŽ‚Á‚Ä‚¢‚È‚¯‚ê‚Î‚È‚è‚Ü‚¹‚ñB
 CHAN_REACHED_CHANNEL_LIMIT
-#@@@ ‚±‚¦‚é != reach
-	%d ƒ`ƒƒƒ“ƒlƒ‹‚ÌŒÀ‚è‚ð‰z‚¦‚Ä‚¢‚Ü‚·‚Ì‚Å“o˜^‚Å‚«‚Ü‚¹‚ñB
+	ƒ`ƒƒƒ“ƒlƒ‹“o˜^”‚ÌãŒÀi%dj‚É’B‚µ‚Ä‚¢‚Ü‚·‚Ì‚Å“o˜^‚Å‚«‚Ü‚¹‚ñB
 CHAN_EXCEEDED_CHANNEL_LIMIT
-	%d ƒ`ƒƒƒ“ƒlƒ‹‚ÌŒÀ‚è‚ð‰z‚¦‚Ä‚¢‚Ü‚·‚Ì‚Å“o˜^‚Å‚«‚Ü‚¹‚ñB
+	ƒ`ƒƒƒ“ƒlƒ‹“o˜^”‚ÌãŒÀi%dj‚ð’´‚¦‚Ä‚¢‚Ü‚·‚Ì‚Å“o˜^‚Å‚«‚Ü‚¹‚ñB
 CHAN_REGISTRATION_FAILED
 	“o˜^‚ÍŽ¸”s‚µ‚Ü‚µ‚½B
 CHAN_REGISTERED
-	%s ‚Í“o˜^‚³‚ê‚Ü‚µ‚½B
+	ƒ`ƒƒƒ“ƒlƒ‹u%sv‚ð“o˜^‚µ‚Ü‚µ‚½B
 CHAN_PASSWORD_IS
-	ƒ`ƒƒƒ“ƒlƒ‹‚ÌƒpƒXƒ[ƒh‚Í %s ‚Å‚·BŠo‚¦‚Ä‚¨‚¢‚Ä‰º‚³‚¢B
+	ƒ`ƒƒƒ“ƒlƒ‹‚ÌƒpƒXƒ[ƒh‚Í %s ‚Å‚·B–Y‚ê‚È‚¢‚æ‚¤‚É‚µ‚Ä‰º‚³‚¢B
 
-# IDENTIFY‚Ì”½‰ž
+# IDENTIFY‰ž“š
 CHAN_IDENTIFY_SYNTAX
-	IDENTIFY channel password
+	IDENTIFY ƒ`ƒƒƒ“ƒlƒ‹ ƒpƒXƒ[ƒh
 CHAN_IDENTIFY_FAILED
 	IDENTIFY‚ÍŽ¸”s‚µ‚Ü‚µ‚½B
 CHAN_IDENTIFY_SUCCEEDED
-#@@@
-	³‚µ‚¢ƒpƒXƒ[ƒh‚Å‚·B‚±‚ê‚©‚ç %s ‚Åƒtƒ@ƒEƒ“ƒ_[‚Ì“ÁŒ ‚ðŽ‚Á‚Ä‚¢‚Ü‚·B
+	ƒ`ƒƒƒ“ƒlƒ‹”FØ‚ª¬Œ÷‚µ‚Ü‚µ‚½B
 
-# DROP‚Ì”½‰ž
+# DROP‰ž“š
 CHAN_DROP_SYNTAX
-	DROP channel
+	DROP ƒ`ƒƒƒ“ƒlƒ‹ ƒpƒXƒ[ƒh
 CHAN_DROP_DISABLED
-	ƒ`ƒƒƒ“ƒlƒ‹‚ÌÁ‹Ž‚Í‚½‚¾¡•s‰Â”\‚Å‚·B
+	ƒ`ƒƒƒ“ƒlƒ‹“o˜^‚Ì‰ðœ‚ÍŒ»Ýo—ˆ‚Ü‚¹‚ñB
 CHAN_DROPPED
-	%s ‚Æ‚¢‚¤ƒ`ƒƒƒ“ƒlƒ‹‚Ì“o˜^‚ÍÁ‹Ž‚³‚ê‚Ü‚µ‚½B
+	ƒ`ƒƒƒ“ƒlƒ‹u%sv‚Ì“o˜^‚ð‰ðœ‚µ‚Ü‚µ‚½B
 
-# SET‚Ì”½‰ž
+# DROPCHAN‰ž“š
+CHAN_DROPCHAN_SYNTAX
+	DROPCHAN ƒ`ƒƒƒ“ƒlƒ‹
+
+# SET‰ž“š
 CHAN_SET_SYNTAX
-	SET channel option parameters
+	SET ƒ`ƒƒƒ“ƒlƒ‹ Ý’è–¼ ’l
 CHAN_SET_DISABLED
-	ƒ`ƒƒƒ“ƒlƒ‹‚ÌƒIƒvƒVƒ‡ƒ“Ý’è‚Í‚½‚¾¡•s‰Â”\‚Å‚·B
+	ƒ`ƒƒƒ“ƒlƒ‹‚ÌÝ’è•ÏX‚ÍŒ»Ýo—ˆ‚Ü‚¹‚ñB
 CHAN_SET_UNKNOWN_OPTION
-	%s ‚Æ‚¢‚¤ƒIƒvƒVƒ‡ƒ“‚Í•ª‚©‚è‚Ü‚¹‚ñB
+	u%sv‚Æ‚¢‚¤Ý’è‚Í‚ ‚è‚Ü‚¹‚ñB
 
-# SET FOUNDER‚Ì”½‰ž
+# SET FOUNDER‰ž“š
 CHAN_SET_FOUNDER_TOO_MANY_CHANS
-	%s ‚Íƒ`ƒƒƒ“ƒlƒ‹‚Ì”‚ÌŒÀ‚è‚ð‰z‚¦‚Ä‚¢‚Ü‚·‚Ì‚Åƒtƒ@ƒEƒ“ƒ_[‚ð•ÏXo—ˆ‚Ü‚¹‚ñB
+	ƒjƒbƒNu%sv‚Íƒ`ƒƒƒ“ƒlƒ‹“o˜^”‚ÌãŒÀ‚ð’´‚¦‚Ä‚¢‚é‚½‚ßA‘nÝŽÒ‚ÉÝ’è‚Å‚«‚Ü‚¹‚ñB
 CHAN_FOUNDER_CHANGED
-	%s ‚Ìƒtƒ@ƒEƒ“ƒ_[‚Í %s ‚É•ÏX‚³‚ê‚Ü‚µ‚½B
+	ƒ`ƒƒƒ“ƒlƒ‹u%sv‚Ì‘nÝŽÒ‚ð%s‚É•ÏX‚µ‚Ü‚µ‚½B
 
-# SET SUCCESSOR‚Ì”½‰ž
+# SET SUCCESSOR‰ž“š
 CHAN_SUCCESSOR_CHANGED
-	%s ‚ÌŽŸŠúƒtƒ@ƒEƒ“ƒ_[‚Í %s ‚É•ÏX‚³‚ê‚Ü‚µ‚½B
-CHAN_SUCCESSOR_UNSET
-#@@@
-	%s ‚ÌŽŸŠúƒtƒ@ƒEƒ“ƒ_[Ý’è‚ÍƒLƒƒƒ“ƒZƒ‹‚³‚ê‚Ü‚µ‚½B
+	ƒ`ƒƒƒ“ƒlƒ‹u%sv‚ÌŒãŒpŽÒ‚ð%s‚É•ÏX‚µ‚Ü‚µ‚½B
+CHAN_SUCCESSOR_IS_FOUNDER
+	ƒtƒ@ƒEƒ“ƒ_‚ÆŒãŒpŽÒ—¼•û‚É“¯‚¶ƒjƒbƒN‚ðÝ’è‚·‚é‚±‚Æ‚Í‚Å‚«‚Ü‚¹‚ñB
 
-# SET PASSWORD‚Ì”½‰ž
+# SET PASSWORD‰ž“š
 CHAN_SET_PASSWORD_FAILED
 	ƒpƒXƒ[ƒh‚Ì•ÏX‚ÍŽ¸”s‚µ‚Ü‚µ‚½B
 CHAN_PASSWORD_CHANGED
-	%s ‚ÌƒpƒXƒ[ƒh‚Í•ÏX‚³‚ê‚Ü‚µ‚½B
+	ƒ`ƒƒƒ“ƒlƒ‹u%sv‚ÌƒpƒXƒ[ƒh‚ð•ÏX‚µ‚Ü‚µ‚½B
 CHAN_PASSWORD_CHANGED_TO
-	%s ‚ÌƒpƒXƒ[ƒh‚Í %s ‚É•ÏX‚³‚ê‚Ü‚µ‚½B
+	ƒ`ƒƒƒ“ƒlƒ‹u%sv‚ÌƒpƒXƒ[ƒh‚ð %s ‚É•ÏX‚µ‚Ü‚µ‚½B
 
-# SET DESC‚Ì”½‰ž
+# SET DESC‰ž“š
 CHAN_DESC_CHANGED
-	%s ‚Ì–¼ó‚Íu%sv‚É•ÏX‚³‚ê‚Ü‚µ‚½B
+	ƒ`ƒƒƒ“ƒlƒ‹u%sv‚Ìà–¾‚ðu%sv‚É•ÏX‚µ‚Ü‚µ‚½B
 
-# SET URL‚Ì”½‰ž
+# SET URL‰ž“š
 CHAN_URL_CHANGED
-	%s ‚Ìƒz[ƒƒy[ƒW‚ÌƒAƒhƒŒƒX‚Í %s ‚É•ÏX‚³‚ê‚Ü‚µ‚½B
-CHAN_URL_UNSET
-	%s ‚Ìƒz[ƒƒy[ƒW‚ÌƒAƒhƒŒƒX‚ÍÁ‹Ž‚³‚ê‚Ü‚µ‚½B
+	ƒ`ƒƒƒ“ƒlƒ‹u%sv‚Ìƒz[ƒ€ƒy[ƒWƒAƒhƒŒƒX‚ðu%sv‚ÉÝ’è‚µ‚Ü‚µ‚½B
 
-# SET EMAIL‚Ì”½‰ž
+# SET EMAIL‰ž“š
 CHAN_EMAIL_CHANGED
-	%s ‚Ì“dŽqƒ[ƒ‹‚ÌƒAƒhƒŒƒX‚Í %s ‚É•ÏX‚³‚ê‚Ü‚µ‚½B
-CHAN_EMAIL_UNSET
-	%s ‚Ì“dŽqƒ[ƒ‹‚ÌƒAƒhƒŒƒX‚ÍÁ‹Ž‚³‚ê‚Ü‚µ‚½B
+	ƒ`ƒƒƒ“ƒlƒ‹u%sv‚Ìƒ[ƒ‹ƒAƒhƒŒƒX‚ðu%sv‚ÉÝ’è‚µ‚Ü‚µ‚½B
 
-# SET ENTRYMSG‚Ì”½‰ž
+# SET ENTRYMSG‰ž“š
 CHAN_ENTRY_MSG_CHANGED
-	%s ‚Ì“üƒƒbƒZ[ƒW‚Í•ÏX‚³‚ê‚Ü‚µ‚½B
-CHAN_ENTRY_MSG_UNSET
-	%s ‚Ì“üƒƒbƒZ[ƒW‚ÍÁ‹Ž‚³‚ê‚Ü‚µ‚½B
+	ƒ`ƒƒƒ“ƒlƒ‹u%sv‚ÌŽQ‰ÁŽžƒƒbƒZ[ƒW‚ðÝ’è‚µ‚Ü‚µ‚½B
 
-# SET TOPIC‚Ì”½‰ž
-CHAN_SET_TOPIC_FAILED
-	ƒgƒsƒbƒN‚Ì•ÏX‚ÍŽ¸”s‚µ‚Ü‚µ‚½B
-
-# SET MLOCK‚Ì”½‰ž
-CHAN_SET_MLOCK_KEY_REQUIRED
-	ƒ‚[ƒhƒƒbƒN‚ð +k ‚É‚·‚é‚É‚Íƒpƒ‰ƒ[ƒ^[‚ª•K—v‚Å‚·B
-CHAN_SET_MLOCK_LIMIT_REQUIRED
-	ƒ‚[ƒhƒƒbƒN‚ð +l ‚É‚·‚é‚É‚Íƒpƒ‰ƒ[ƒ^[‚ª•K—v‚Å‚·B
-CHAN_SET_MLOCK_LIMIT_POSITIVE
-	ƒ‚[ƒhƒƒbƒN‚ð +l ‚É‚·‚é‚É‚Í³”‚Ìƒpƒ‰ƒ[ƒ^[‚ª•K—v‚Å‚·B
+# SET MLOCK‰ž“š
+CHAN_SET_MLOCK_NEED_PLUS_MINUS
+	ƒ‚[ƒhƒŠƒXƒg‚Ìæ“ª‚É‚Íu+v‚©u-v‚ª•K—v‚Å‚·B
+CHAN_SET_MLOCK_NEED_PARAM
+	ƒ‚[ƒhu+%cv‚É‚Íƒpƒ‰ƒ[ƒ^‚ª•K—v‚Å‚·B
+CHAN_SET_MLOCK_NEED_POSITIVE
+	ƒ‚[ƒhu+%cv‚É‚Í³”ƒpƒ‰ƒ[ƒ^‚ª•K—v‚Å‚·B
+CHAN_SET_MLOCK_MODE_REG_BAD
+	ƒ‚[ƒhu+%cv‚ÍA“o˜^‚³‚ê‚½ƒ`ƒƒƒ“ƒlƒ‹‚É‚Íí‚ÉÝ’è‚³‚êASET MLOCK‚Å‚ÍŽg‚¦‚Ü‚¹‚ñB
+CHAN_SET_MLOCK_LINK_BAD
+	ƒ‚[ƒhu+%cv‚Ìƒpƒ‰ƒ[ƒ^‚Í—LŒø‚Èƒ`ƒƒƒ“ƒlƒ‹–¼‚Å‚Í‚ ‚è‚Ü‚¹‚ñB
+CHAN_SET_MLOCK_LINK_SAME
+	ƒ‚[ƒhu+%cv‚Ìƒpƒ‰ƒ[ƒ^‚ÉA“¯‚¶ƒ`ƒƒƒ“ƒlƒ‹‚ðŽw’è‚·‚é‚±‚Æ‚Í‚Å‚«‚Ü‚¹‚ñB
+CHAN_SET_MLOCK_REQUIRES
+	ƒ‚[ƒhu+%cv‚ðƒƒbƒN‚·‚é‚Æ‚«‚ÍAƒ‚[ƒhu+%cv‚ð“¯Žž‚ÉƒƒbƒN‚µ‚È‚¯‚ê‚Î‚È‚è‚Ü‚¹‚ñB
+CHAN_SET_MLOCK_BAD_PARAM
+	ƒ‚[ƒhu+%cv‚Ìƒpƒ‰ƒ[ƒ^‚Í–³Œø‚Å‚·B
 CHAN_SET_MLOCK_UNKNOWN_CHAR
-	%c ‚Æ‚¢‚¤ƒ‚[ƒh‚ÍŠÔˆá‚Á‚Ä‚¢‚Ü‚·‚Ì‚Å–³Ž‹‚³‚ê‚Ü‚µ‚½B
+	u%cvFƒ‚[ƒh•¶Žš‚ª–³Œø‚Å‚·B
+CHAN_SET_MLOCK_CANNOT_LOCK
+	ƒ‚[ƒhu+%cv‚ÍƒƒbƒN‚Å‚«‚Ü‚¹‚ñB
 CHAN_MLOCK_CHANGED
-	%s ‚Ìƒ‚[ƒhƒƒbƒN‚Í %s ‚É•ÏX‚³‚ê‚Ü‚µ‚½B
+	ƒ`ƒƒƒ“ƒlƒ‹u%sv‚Ìƒ‚[ƒhƒƒbƒN‚ðu%sv‚ÉÝ’è‚µ‚Ü‚µ‚½B
 CHAN_MLOCK_REMOVED
-	%s ‚Ìƒ‚[ƒhƒƒbƒN‚ÍÁ‹Ž‚³‚ê‚Ü‚µ‚½B
+	ƒ`ƒƒƒ“ƒlƒ‹u%sv‚Ìƒ‚[ƒhƒƒbƒN‚ð‰ðœ‚µ‚Ü‚µ‚½B
 
-# SET KEEPTOPIC‚Ì”½‰ž
+# SET HIDE‰ž“š
+CHAN_SET_HIDE_SYNTAX
+	SET ƒ`ƒƒƒ“ƒlƒ‹ HIDE {EMAIL | TOPIC | MLOCK} {ON | OFF}
+CHAN_SET_HIDE_EMAIL_ON
+	ƒ`ƒƒƒ“ƒlƒ‹u%sv‚Ì“dŽqƒ[ƒ‹ƒAƒhƒŒƒX‚Í%s‚ÌINFO‰ž“š‚Å•\Ž¦‚³‚ê‚Ü‚¹‚ñB
+CHAN_SET_HIDE_EMAIL_OFF
+	ƒ`ƒƒƒ“ƒlƒ‹u%sv‚Ì“dŽqƒ[ƒ‹ƒAƒhƒŒƒX‚Í%s‚ÌINFO‰ž“š‚Å•\Ž¦‚³‚ê‚Ü‚·B
+CHAN_SET_HIDE_TOPIC_ON
+	ƒ`ƒƒƒ“ƒlƒ‹u%sv‚ÌƒgƒsƒbƒN‚Í%s‚ÌINFO‰ž“š‚Å•\Ž¦‚³‚ê‚Ü‚¹‚ñB
+CHAN_SET_HIDE_TOPIC_OFF
+	ƒ`ƒƒƒ“ƒlƒ‹u%sv‚ÌƒgƒsƒbƒN‚Í%s‚ÌINFO‰ž“š‚Å•\Ž¦‚³‚ê‚Ü‚·B
+CHAN_SET_HIDE_MLOCK_ON
+	ƒ`ƒƒƒ“ƒlƒ‹u%sv‚Ìƒ‚[ƒhƒƒbƒN‚Í%s‚ÌINFO‰ž“š‚Å•\Ž¦‚³‚ê‚Ü‚¹‚ñB
+CHAN_SET_HIDE_MLOCK_OFF
+	ƒ`ƒƒƒ“ƒlƒ‹u%sv‚Ìƒ‚[ƒhƒƒbƒN‚Í%s‚ÌINFO‰ž“š‚Å•\Ž¦‚³‚ê‚Ü‚·B
+
+# SET KEEPTOPIC‰ž“š
 CHAN_SET_KEEPTOPIC_SYNTAX
-	SET channel KEEPTOPIC {ON | OFF}
+	SET ƒ`ƒƒƒ“ƒlƒ‹ KEEPTOPIC {ON | OFF}
 CHAN_SET_KEEPTOPIC_ON
-	ƒgƒsƒbƒN‹L˜^ƒIƒvƒVƒ‡ƒ“‚Í ON ‚Å‚·B
+	ƒgƒsƒbƒN‹L˜^Ý’è‚ð—LŒø‚ÉÝ’è‚µ‚Ü‚µ‚½B
 CHAN_SET_KEEPTOPIC_OFF
-	ƒgƒsƒbƒN‹L˜^ƒIƒvƒVƒ‡ƒ“‚Í OFF ‚Å‚·B
+	ƒgƒsƒbƒN‹L˜^Ý’è‚ð–³Œø‚ÉÝ’è‚µ‚Ü‚µ‚½B
 
-# SET TOPICLOCK‚Ì”½‰ž
+# SET TOPICLOCK‰ž“š
 CHAN_SET_TOPICLOCK_SYNTAX
-	SET channel TOPICLOCK {ON | OFF}
+	SET ƒ`ƒƒƒ“ƒlƒ‹ TOPICLOCK {ON | OFF}
 CHAN_SET_TOPICLOCK_ON
-	ƒgƒsƒbƒNƒƒbƒNƒIƒvƒVƒ‡ƒ“‚Í ON ‚Å‚·B
+	ƒgƒsƒbƒN•ÏX‹ÖŽ~Ý’è‚ð—LŒø‚ÉÝ’è‚µ‚Ü‚µ‚½B
 CHAN_SET_TOPICLOCK_OFF
-	ƒgƒsƒbƒNƒƒbƒNƒIƒvƒVƒ‡ƒ“‚Í OFF ‚Å‚·B
+	ƒgƒsƒbƒN•ÏX‹ÖŽ~Ý’è‚ð–³Œø‚ÉÝ’è‚µ‚Ü‚µ‚½B
 
-# SET PRIVATE‚Ì”½‰ž
+# SET PRIVATE‰ž“š
 CHAN_SET_PRIVATE_SYNTAX
-	SET channel PRIVATE {ON | OFF}
+	SET ƒ`ƒƒƒ“ƒlƒ‹ PRIVATE {ON | OFF}
 CHAN_SET_PRIVATE_ON
-	Ž„“IƒIƒvƒVƒ‡ƒ“‚Í ON ‚Å‚·B
+	ƒvƒ‰ƒCƒx[ƒgÝ’è‚ð—LŒø‚ÉÝ’è‚µ‚Ü‚µ‚½B
 CHAN_SET_PRIVATE_OFF
-	Ž„“IƒIƒvƒVƒ‡ƒ“‚Í OFF ‚Å‚·B
+	ƒvƒ‰ƒCƒx[ƒgÝ’è‚ð–³Œø‚ÉÝ’è‚µ‚Ü‚µ‚½B
 
-# SET SECUREOPS‚Ì”½‰ž
+# SET SECUREOPS‰ž“š
 CHAN_SET_SECUREOPS_SYNTAX
-	SET channel SECUREOPS {ON | OFF}
+	SET ƒ`ƒƒƒ“ƒlƒ‹ SECUREOPS {ON | OFF}
 CHAN_SET_SECUREOPS_ON
-	+o ƒ‚[ƒh§ŒäƒIƒvƒVƒ‡ƒ“‚Í ON ‚Å‚·B
+	ƒIƒyƒŒ[ƒ^Œ §ŒÀÝ’è‚ð—LŒø‚ÉÝ’è‚µ‚Ü‚µ‚½B
 CHAN_SET_SECUREOPS_OFF
-	+o ƒ‚[ƒh§ŒäƒIƒvƒVƒ‡ƒ“‚Í OFF ‚Å‚·B
+	ƒIƒyƒŒ[ƒ^Œ §ŒÀÝ’è‚ð–³Œø‚ÉÝ’è‚µ‚Ü‚µ‚½B
 
-# SET LEAVEOPS‚Ì”½‰ž
+# SET LEAVEOPS‰ž“š
 CHAN_SET_LEAVEOPS_SYNTAX
-	SET channel LEAVEOPS {ON | OFF}
-#@@@
+	SET ƒ`ƒƒƒ“ƒlƒ‹ LEAVEOPS {ON | OFF}
 CHAN_SET_LEAVEOPS_ON
-	Leave ops option is now ON.
+	ƒIƒyƒŒ[ƒ^Œ •ú’uÝ’è‚ð—LŒø‚ÉÝ’è‚µ‚Ü‚µ‚½B
 CHAN_SET_LEAVEOPS_OFF
-	Leave ops option is now OFF.
+	ƒIƒyƒŒ[ƒ^Œ •ú’uÝ’è‚ð–³Œø‚ÉÝ’è‚µ‚Ü‚µ‚½B
 
-# SET RESTRICTED‚Ì”½‰ž
+# SET RESTRICTED‰ž“š
 CHAN_SET_RESTRICTED_SYNTAX
-	SET channel RESTRICTED {ON | OFF}
+	SET ƒ`ƒƒƒ“ƒlƒ‹ RESTRICTED {ON | OFF}
 CHAN_SET_RESTRICTED_ON
-	ƒAƒNƒZƒX§ŒäƒIƒvƒVƒ‡ƒ“‚Í ON ‚Å‚·B
+	ŽQ‰Á§ŒÀÝ’è‚ð—LŒø‚ÉÝ’è‚µ‚Ü‚µ‚½B
 CHAN_SET_RESTRICTED_OFF
-	ƒAƒNƒZƒX§ŒäƒIƒvƒVƒ‡ƒ“‚Í OFF ‚Å‚·B
+	ŽQ‰Á§ŒÀÝ’è‚ð–³Œø‚ÉÝ’è‚µ‚Ü‚µ‚½B
 
-# SET SECURE‚Ì”½‰ž
+# SET SECURE‰ž“š
 CHAN_SET_SECURE_SYNTAX
-	SET channel SECURE {ON | OFF}
+	SET ƒ`ƒƒƒ“ƒlƒ‹ SECURE {ON | OFF}
 CHAN_SET_SECURE_ON
-	ƒZƒLƒ…ƒAƒIƒvƒVƒ‡ƒ“‚Í ON ‚Å‚·B
+	ƒZƒLƒ…ƒAÝ’è‚ð—LŒø‚ÉÝ’è‚µ‚Ü‚µ‚½B
 CHAN_SET_SECURE_OFF
-	ƒZƒLƒ…ƒAƒIƒvƒVƒ‡ƒ“‚Í OFF ‚Å‚·B
+	ƒZƒLƒ…ƒAÝ’è‚ð–³Œø‚ÉÝ’è‚µ‚Ü‚µ‚½B
 
-# SET OPNOTICE‚Ì”½‰ž
+# SET OPNOTICE‰ž“š
 CHAN_SET_OPNOTICE_SYNTAX
-	SET channel OPNOTICE {ON | OFF}
+	SET ƒ`ƒƒƒ“ƒlƒ‹ OPNOTICE {ON | OFF}
 CHAN_SET_OPNOTICE_ON
-	OP •ñƒIƒvƒVƒ‡ƒ“‚Í ON ‚Å‚·B
+	OPŽü’mÝ’è‚ð—LŒø‚ÉÝ’è‚µ‚Ü‚µ‚½B
 CHAN_SET_OPNOTICE_OFF
-	OP •ñƒIƒvƒVƒ‡ƒ“‚Í OFF ‚Å‚·B
+	OPŽü’mÝ’è‚ð–³Œø‚ÉÝ’è‚µ‚Ü‚µ‚½B
 
-# SET NOEXPIRE‚Ì”½‰ž
+# SET ENFORCE‰ž“š
+CHAN_SET_ENFORCE_SYNTAX
+	SET ƒ`ƒƒƒ“ƒlƒ‹ ENFORCE {ON | OFF}
+CHAN_SET_ENFORCE_ON
+	ƒ`ƒƒƒ“ƒlƒ‹Œ ŒÀŠÇ—Ý’è‚ð—LŒø‚É‚µ‚Ü‚µ‚½B
+CHAN_SET_ENFORCE_OFF
+	ƒ`ƒƒƒ“ƒlƒ‹Œ ŒÀŠÇ—Ý’è‚ð–³Œø‚É‚µ‚Ü‚µ‚½B
+
+# SET MEMO-RESTRICTED‰ž“š
+CHAN_SET_MEMO_RESTRICTED_SYNTAX
+	SET ƒ`ƒƒƒ“ƒlƒ‹ MEMO-RESTRICTED {ON | OFF}
+CHAN_SET_MEMO_RESTRICTED_ON
+	ƒƒ‚‘—M§ŒÀÝ’è‚ð—LŒø‚ÉÝ’è‚µ‚Ü‚µ‚½B
+CHAN_SET_MEMO_RESTRICTED_OFF
+	ƒƒ‚‘—M§ŒÀÝ’è‚ð–³Œø‚ÉÝ’è‚µ‚Ü‚µ‚½B
+
+# SET NOEXPIRE‰ž“š
 CHAN_SET_NOEXPIRE_SYNTAX
-	SET channel NOEXPIRE {ON | OFF}
+	SET ƒ`ƒƒƒ“ƒlƒ‹ NOEXPIRE {ON | OFF}
 CHAN_SET_NOEXPIRE_ON
-	%s ‚Æ‚¢‚¤ƒ`ƒƒƒ“ƒlƒ‹‚Ì“o˜^‚ÍØ‚ê‚Ü‚¹‚ñB
+	ƒ`ƒƒƒ“ƒlƒ‹u%sv‚Ì“o˜^‚ÍŽ©“®‰ðœ‚µ‚Ü‚¹‚ñB
 CHAN_SET_NOEXPIRE_OFF
-	%s ‚Æ‚¢‚¤ƒ`ƒƒƒ“ƒlƒ‹‚Ì“o˜^‚ÍØ‚ê‚Ü‚·B
+	ƒ`ƒƒƒ“ƒlƒ‹u%sv‚Ì“o˜^‚ÍŽ©“®‰ðœ‚µ‚Ü‚·B
+
+# UNSET responses
+CHAN_UNSET_SYNTAX
+	UNSET ƒ`ƒƒƒ“ƒlƒ‹ {SUCCESSOR | URL | EMAIL | ENTRYMSG}
+CHAN_SUCCESSOR_UNSET
+	ƒ`ƒƒƒ“ƒlƒ‹u%sv‚ÌŒãŒpŽÒÝ’è‚ð‰ðœ‚µ‚Ü‚µ‚½B
+CHAN_URL_UNSET
+	ƒ`ƒƒƒ“ƒlƒ‹u%sv‚Ìƒz[ƒ€ƒy[ƒWƒAƒhƒŒƒX‚ðÁ‹Ž‚µ‚Ü‚µ‚½B
+CHAN_EMAIL_UNSET
+	ƒ`ƒƒƒ“ƒlƒ‹u%sv‚Ìƒ[ƒ‹ƒAƒhƒŒƒX‚ðÁ‹Ž‚µ‚Ü‚µ‚½B
+CHAN_ENTRY_MSG_UNSET
+	ƒ`ƒƒƒ“ƒlƒ‹u%sv‚ÌŽQ‰ÁŽžƒƒbƒZ[ƒW‚ðÁ‹Ž‚µ‚Ü‚µ‚½B
 
 # ACCESS messages
 CHAN_ACCESS_SYNTAX
-	ACCESS channel {ADD|DEL|LIST} [nick [level] | entry-list]
+	ACCESS ƒ`ƒƒƒ“ƒlƒ‹ {ADD | DEL | LIST | LISTLEVEL | COUNT} [ƒpƒ‰ƒ[ƒ^]
+CHAN_ACCESS_ADD_SYNTAX
+	ACCESS ƒ`ƒƒƒ“ƒlƒ‹ ADD ƒjƒbƒN ƒŒƒxƒ‹
+CHAN_ACCESS_DEL_SYNTAX
+	ACCESS ƒ`ƒƒƒ“ƒlƒ‹ DEL ƒjƒbƒN
+CHAN_ACCESS_LIST_SYNTAX
+	ACCESS ƒ`ƒƒƒ“ƒlƒ‹ LIST [+ŠJŽnˆÊ’u] [ƒpƒ^[ƒ“]
+CHAN_ACCESS_LISTLEVEL_SYNTAX
+	ACCESS ƒ`ƒƒƒ“ƒlƒ‹ LISTLEVEL [+ŠJŽnˆÊ’u] [ƒŒƒxƒ‹]
+CHAN_ACCESS_COUNT_SYNTAX
+	ACCESS ƒ`ƒƒƒ“ƒlƒ‹ COUNT
 CHAN_ACCESS_DISABLED
-	ƒAƒNƒZƒX•\‚Ì•ÏX‚Í‚½‚¾¡•s‰Â”\‚Å‚·B
+	ƒAƒNƒZƒXƒŠƒXƒg‚Ì•ÒW‚ÍŒ»Ýo—ˆ‚Ü‚¹‚ñB
 CHAN_ACCESS_LEVEL_NONZERO
-	ƒAƒNƒZƒXƒŒƒxƒ‹‚Íƒ[ƒ‚Å‚ ‚Á‚Ä‚Í‚È‚è‚Ü‚¹‚ñB
+	ƒAƒNƒZƒXƒŒƒxƒ‹‚Íƒ[ƒ‚É‚ÍÝ’è‚Å‚«‚Ü‚¹‚ñB
 CHAN_ACCESS_LEVEL_RANGE
-	ƒAƒNƒZƒXƒŒƒxƒ‹‚ÍA%d ˆÈã‚ÅA%d ˆÈ‰º‚Ì”‚É‚µ‚Ä‰º‚³‚¢B
+	ƒAƒNƒZƒXƒŒƒxƒ‹%d`%d‚Ì”ÍˆÍ“à‚ÉÝ’è‚µ‚Ä‰º‚³‚¢B
 CHAN_ACCESS_NICKS_ONLY
-	ƒ`ƒƒƒ“ƒlƒ‹‚ÌƒAƒNƒZƒX•\‚É’Ç‰Áo—ˆ‚é‚Ì‚Í“o˜^‚³‚ê‚½ƒjƒbƒN‚Ì‚Ý‚Å‚·B
+	ƒAƒNƒZƒXƒŠƒXƒg‚É’Ç‰Á‚Å‚«‚é‚Ì‚Í“o˜^Ï‚ÝƒjƒbƒN‚Ì‚Ý‚Å‚·B
+CHAN_ACCESS_NOOP
+	%s‚Íƒ`ƒƒƒ“ƒlƒ‹ƒAƒNƒZƒXƒŠƒXƒg‚É“o˜^‚Å‚«‚Ü‚¹‚ñB
 CHAN_ACCESS_REACHED_LIMIT
-	ƒ`ƒƒƒ“ƒlƒ‹‚ÌƒAƒNƒZƒX•\‚ÌƒjƒbƒN”‚Í %d ‚ÉŒÀ‚ç‚ê‚Ä‚¢‚Ü‚·‚Ì‚Å’Ç‰Á‚Å‚«‚Ü‚¹‚ñB
+	ƒAƒNƒZƒXƒŠƒXƒg‚ª‚¢‚Á‚Ï‚¢‚Å‚·B
 CHAN_ACCESS_LEVEL_UNCHANGED
-	%s ‚Ì %s ‚Å‚ÌƒAƒNƒZƒXƒŒƒxƒ‹‚Í %d ‚©‚ç•ÏX‚³‚ê‚Ü‚¹‚ñ‚Å‚µ‚½B
+	%s‚Ì%s‚Å‚ÌƒAƒNƒZƒXƒŒƒxƒ‹‚Í‚·‚Å‚É%d‚Æ‚È‚Á‚Ä‚¢‚Ü‚·B
 CHAN_ACCESS_LEVEL_CHANGED
-	%s ‚Ì %s ‚Å‚ÌƒAƒNƒZƒXƒŒƒxƒ‹‚Í %d ‚É•ÏX‚³‚ê‚Ü‚µ‚½B
+	%s‚Ì%s‚Å‚ÌƒAƒNƒZƒXƒŒƒxƒ‹‚ð%d‚É•ÏX‚µ‚Ü‚µ‚½B
 CHAN_ACCESS_ADDED
-	%s ‚Í %s ‚ÌƒAƒNƒZƒX•\‚ÉAƒŒƒxƒ‹ %d ‚Å’Ç‰Á‚³‚ê‚Ü‚µ‚½B
-CHAN_ACCESS_NO_SUCH_ENTRY
-	%d ”Ô‚ÌƒGƒ“ƒgƒŠ[‚Í %s ‚ÌƒAƒNƒZƒX•\‚É‘¶Ý‚µ‚Ü‚¹‚ñB
-CHAN_ACCESS_NO_MATCH
-	%s ‚É‡‚¤ƒGƒ“ƒgƒŠ[‚Í %s ‚ÌƒAƒNƒZƒX•\‚É‘¶Ý‚µ‚Ü‚¹‚ñB
+	%s‚ð%s‚ÌƒAƒNƒZƒXƒŠƒXƒg‚ÉAƒŒƒxƒ‹%d‚Å’Ç‰Á‚µ‚Ü‚µ‚½B
 CHAN_ACCESS_NOT_FOUND
-	%s ‚Í %s ‚ÌƒAƒNƒZƒX•\‚É‘¶Ý‚µ‚Ü‚¹‚ñB
+	%s‚Í%s‚ÌƒAƒNƒZƒXƒŠƒXƒg‚É“ü‚Á‚Ä‚¢‚Ü‚¹‚ñB
 CHAN_ACCESS_DELETED
-	%s ‚Í %s ‚ÌƒAƒNƒZƒX•\‚©‚çÁ‹Ž‚³‚ê‚Ü‚µ‚½B
-CHAN_ACCESS_DELETED_ONE
-	%s ‚ÌƒAƒNƒZƒX•\‚©‚çƒGƒ“ƒgƒŠ[‚ð 1 Á‹Ž‚µ‚Ü‚µ‚½B
-CHAN_ACCESS_DELETED_SEVERAL
-	%s ‚ÌƒAƒNƒZƒX•\‚©‚çƒGƒ“ƒgƒŠ[‚ð %d Á‹Ž‚µ‚Ü‚µ‚½B
+	%s‚ð%s‚ÌƒAƒNƒZƒXƒŠƒXƒg‚©‚çÁ‹Ž‚µ‚Ü‚µ‚½B
 CHAN_ACCESS_LIST_EMPTY
-	%s ‚ÌƒAƒNƒZƒX•\‚Í‹ó‚Å‚·B
+	%s‚ÌƒAƒNƒZƒXƒŠƒXƒg‚Í‹ó‚Å‚·B
+CHAN_ACCESS_NO_MATCH
+	%s‚ÌƒAƒNƒZƒXƒŠƒXƒg‚É‚Íˆê’v‚·‚éƒGƒ“ƒgƒŠ[‚Í‚ ‚è‚Ü‚¹‚ñB
 CHAN_ACCESS_LIST_HEADER
-	%s ‚ÌƒAƒNƒZƒX•\F
-	 ”Ô†  ƒŒƒxƒ‹   ƒjƒbƒN
+	%s‚ÌƒAƒNƒZƒXƒŠƒXƒgF
+	   ƒŒƒxƒ‹   ƒjƒbƒN
 CHAN_ACCESS_LIST_FORMAT
-	%5d    %4d   %s%s%s%s
+	     %4d   %s
+CHAN_ACCESS_COUNT
+	%s‚ÌƒAƒNƒZƒXƒŠƒXƒg‚É‚Í%dƒGƒ“ƒgƒŠ[‚ª‚ ‚è‚Ü‚·B
 
-# AOP/SOP‚ÌƒGƒ‰[ƒƒbƒZ[ƒW
-CHAN_NO_AOP_SOP
-	ƒ`ƒƒƒ“ƒlƒ‹‚Ì“ÁŒ ‚ðƒ†[ƒU[‚ÉŠ„‚è“–‚Ä‚é‚É‚ÍAuACCESSv‚Æ‚¢‚¤
-	ƒRƒ}ƒ“ƒh‚ðŽg—p‚µ‚Ä‰º‚³‚¢BÚ‚µ‚¢î•ñ‚ð“Ç‚Þ‚É‚ÍA
-	u/msg %s HELP ACCESSv‚ð“ü—Í‚µ‚Ä‰º‚³‚¢B
+# XOP (SOP/AOP“™) ‰ž“š
+CHAN_SOP_SYNTAX
+	SOP ƒ`ƒƒƒ“ƒlƒ‹ {ADD | DEL | LIST | COUNT} [ƒpƒ‰ƒ[ƒ^]
+CHAN_AOP_SYNTAX
+	AOP ƒ`ƒƒƒ“ƒlƒ‹ {ADD | DEL | LIST | COUNT} [ƒpƒ‰ƒ[ƒ^]
+CHAN_HOP_SYNTAX
+	HOP ƒ`ƒƒƒ“ƒlƒ‹ {ADD | DEL | LIST | COUNT} [ƒpƒ‰ƒ[ƒ^]
+CHAN_VOP_SYNTAX
+	VOP ƒ`ƒƒƒ“ƒlƒ‹ {ADD | DEL | LIST | COUNT} [ƒpƒ‰ƒ[ƒ^]
+CHAN_NOP_SYNTAX
+	NOP ƒ`ƒƒƒ“ƒlƒ‹ {ADD | DEL | LIST | COUNT} [ƒpƒ‰ƒ[ƒ^]
+CHAN_SOP_LIST_SYNTAX
+	SOP ƒ`ƒƒƒ“ƒlƒ‹ LIST [+ŠJŽnˆÊ’u] [ƒpƒ^[ƒ“]
+CHAN_AOP_LIST_SYNTAX
+	AOP ƒ`ƒƒƒ“ƒlƒ‹ LIST [+ŠJŽnˆÊ’u] [ƒpƒ^[ƒ“]
+CHAN_HOP_LIST_SYNTAX
+	HOP ƒ`ƒƒƒ“ƒlƒ‹ LIST [+ŠJŽnˆÊ’u] [ƒpƒ^[ƒ“]
+CHAN_VOP_LIST_SYNTAX
+	VOP ƒ`ƒƒƒ“ƒlƒ‹ LIST [+ŠJŽnˆÊ’u] [ƒpƒ^[ƒ“]
+CHAN_NOP_LIST_SYNTAX
+	NOP ƒ`ƒƒƒ“ƒlƒ‹ LIST [+ŠJŽnˆÊ’u] [ƒpƒ^[ƒ“]
+CHAN_XOP_ADDED
+	%s‚ð%s‚Ì%sƒŠƒXƒg‚É’Ç‰Á‚µ‚Ü‚µ‚½B
+CHAN_XOP_LEVEL_CHANGED
+	%s‚ð%s‚Ì%sƒŠƒXƒg‚ÉˆÚ“®‚µ‚Ü‚µ‚½B
+CHAN_XOP_LEVEL_UNCHANGED
+	%s‚Í‚·‚Å‚É%s‚Ì%sƒŠƒXƒg‚É“ü‚Á‚Ä‚¢‚Ü‚·B
+CHAN_XOP_NICKS_ONLY
+	SOPAAOPAVOP‹y‚ÑNOPƒŠƒXƒg‚É’Ç‰Á‚Å‚«‚é‚Ì‚Í“o˜^Ï‚ÝƒjƒbƒN‚Ì‚Ý‚Å‚·B
+CHAN_XOP_NOOP
+	%s‚Íƒ`ƒƒƒ“ƒlƒ‹ƒAƒNƒZƒXƒŠƒXƒg‚É“o˜^‚Å‚«‚Ü‚¹‚ñB
+CHAN_XOP_NICKS_ONLY_HOP
+	SOPAAOPAHOPAVOP‹y‚ÑNOPƒŠƒXƒg‚É’Ç‰Á‚Å‚«‚é‚Ì‚Í“o˜^Ï‚ÝƒjƒbƒN‚Ì‚Ý‚Å‚·B
+CHAN_XOP_REACHED_LIMIT
+	SOPAAOPAVOP‹y‚ÑNOPƒŠƒXƒg‚ÌƒGƒ“ƒgƒŠ[”‚Í‡Œv%dŒÂ‚ð’´‚¦‚é‚½‚ßA’Ç‰Á‚Å‚«‚Ü‚¹‚ñB
+CHAN_XOP_REACHED_LIMIT_HOP
+	SOPAAOPAHOPAVOP‹y‚ÑNOPƒŠƒXƒg‚ÌƒGƒ“ƒgƒŠ[”‚Í‡Œv%dŒÂ‚ð’´‚¦‚é‚½‚ßA’Ç‰Á‚Å‚«‚Ü‚¹‚ñB
+CHAN_XOP_NOT_FOUND
+	%s‚ÍA%s‚Ì%sƒŠƒXƒg‚É“ü‚Á‚Ä‚¢‚Ü‚¹‚ñB
+CHAN_XOP_DELETED
+	%s‚ðA%s‚Ì%sƒŠƒXƒg‚©‚çÁ‹Ž‚µ‚Ü‚µ‚½B
+CHAN_XOP_LIST_EMPTY
+	%s‚Ì%sƒŠƒXƒg‚Í‹ó‚Å‚·B
+CHAN_XOP_NO_MATCH
+	%s‚Ì%sƒŠƒXƒg‚É‚Íˆê’v‚·‚éƒGƒ“ƒgƒŠ[‚Í‚ ‚è‚Ü‚¹‚ñB
+CHAN_XOP_LIST_HEADER
+	%sƒŠƒXƒg (%s)F
+CHAN_XOP_COUNT
+	%s‚Ì%sƒŠƒXƒg‚É‚Í%dŒÂ‚ÌƒGƒ“ƒgƒŠ[‚ª‚ ‚è‚Ü‚·B
 
-# AKICK‚Ì”½‰ž
+# AKICK‰ž“š
 CHAN_AKICK_SYNTAX
-	AKICK channel {ADD | DEL | LIST} [nick-or-usermask]
+	AKICK ƒ`ƒƒƒ“ƒlƒ‹ {ADD | DEL | LIST | VIEW | COUNT | ENFORCE} [ƒpƒ‰ƒ[ƒ^]
+CHAN_AKICK_LIST_SYNTAX
+	AKICK ƒ`ƒƒƒ“ƒlƒ‹ LIST [+ŠJŽnˆÊ’u] [ƒpƒ^[ƒ“]
+CHAN_AKICK_VIEW_SYNTAX
+	AKICK ƒ`ƒƒƒ“ƒlƒ‹ LIST [+ŠJŽnˆÊ’u] [ƒpƒ^[ƒ“]
 CHAN_AKICK_DISABLED
-	Ž©“®R•\‚Ì•ÏX‚Í‚½‚¾¡•s‰Â”\‚Å‚·B
+	Ž©“®ƒLƒbƒNƒŠƒXƒg‚Ì•ÒW‚ÍŒ»Ý‚Å‚«‚Ü‚¹‚ñB
 CHAN_AKICK_ALREADY_EXISTS
-	%s ‚ÍŠù‚É %s ‚ÌŽ©“®R•\‚Å‘¶Ý‚µ‚Ä‚¢‚Ü‚·B
+	u%sv‚Í‚·‚Å‚É%s‚ÌŽ©“®ƒLƒbƒNƒŠƒXƒg‚É‘¶Ý‚µ‚Ä‚¢‚Ü‚·B
 CHAN_AKICK_REACHED_LIMIT
-	Ž©“®R•\‚Ìƒ}ƒXƒN‚Ì”‚Í %d ‚ÉŒÀ‚Á‚Ä‚¢‚Ü‚·‚Ì‚Å’Ç‰Á‚Å‚«‚Ü‚¹‚ñB
+	Ž©“®ƒLƒbƒNƒŠƒXƒg‚ª‚¢‚Á‚Ï‚¢‚Å‚·B
 CHAN_AKICK_ADDED
-	%s ‚Í %s ‚ÌŽ©“®R•\‚É’Ç‰Á‚³‚ê‚Ü‚µ‚½B
-CHAN_AKICK_NO_SUCH_ENTRY
-	%d ”Ô‚ÌƒGƒ“ƒgƒŠ[‚Í %s ‚ÌŽ©“®R•\‚Å‘¶Ý‚µ‚Ü‚¹‚ñB
-CHAN_AKICK_NO_MATCH
-	%s ‚É‡‚¤ƒGƒ“ƒgƒŠ[‚Í %s ‚ÌŽ©“®R•\‚Å‘¶Ý‚µ‚Ü‚¹‚ñB
+	u%sv‚ð%s‚ÌŽ©“®ƒLƒbƒNƒŠƒXƒg‚É’Ç‰Á‚µ‚Ü‚µ‚½B
 CHAN_AKICK_NOT_FOUND
-	%s ‚Í %s ‚ÌŽ©“®R•\‚Å‘¶Ý‚µ‚Ü‚¹‚ñB
+	u%sv‚Í%s‚ÌŽ©“®ƒLƒbƒNƒŠƒXƒg‚Å‘¶Ý‚µ‚Ü‚¹‚ñB
 CHAN_AKICK_DELETED
-	%s ‚Í %s ‚ÌŽ©“®R•\‚©‚çÁ‹Ž‚³‚ê‚Ü‚µ‚½B
-CHAN_AKICK_DELETED_ONE
-	%s ‚ÌŽ©“®R•\‚©‚çƒGƒ“ƒgƒŠ[‚ð 1 Á‹Ž‚µ‚Ü‚µ‚½B
-CHAN_AKICK_DELETED_SEVERAL
-	%s ‚ÌŽ©“®R•\‚©‚çƒGƒ“ƒgƒŠ[‚ð %d Á‹Ž‚µ‚Ü‚µ‚½B
+	u%sv‚ð%s‚ÌŽ©“®ƒLƒbƒNƒŠƒXƒg‚©‚çÁ‹Ž‚µ‚Ü‚µ‚½B
 CHAN_AKICK_LIST_EMPTY
-	%s ‚ÌŽ©“®R•\‚Í‹ó‚Å‚·B
+	%s‚ÌŽ©“®ƒLƒbƒNƒŠƒXƒg‚Í‹ó‚Å‚·B
+CHAN_AKICK_NO_MATCH
+	%s‚ÌŽ©“®ƒLƒbƒNƒŠƒXƒg‚Å‚Íˆê’v‚·‚éƒGƒ“ƒgƒŠ[‚Í‚ ‚è‚Ü‚¹‚ñB
 CHAN_AKICK_LIST_HEADER
-	%s‚ÌŽ©“®R•\F
-CHAN_AKICK_LIST_FORMAT
-	  %3d %s%s
+	%s‚ÌŽ©“®ƒLƒbƒNƒŠƒXƒgF
+# mask, set-by, set-time, last-used, reason
+CHAN_AKICK_VIEW_FORMAT
+	    %s (%s‚É‚æ‚è’Ç‰Á)
+	        Ý’èŽžF%sEÅ‹ßŽg—pŽžF%s
+	        ——RF%s
+# mask, set-by, set-time, reason
+CHAN_AKICK_VIEW_UNUSED_FORMAT
+	    %s (%s‚É‚æ‚è’Ç‰Á)
+	        Ý’èŽžF%sE–¢Žg—p
+	        ——RF%s
+CHAN_AKICK_COUNT
+	%s‚ÌŽ©“®ƒLƒbƒNƒŠƒXƒg‚É%dŒÂ‚ÌƒGƒ“ƒgƒŠ[‚ª‚ ‚è‚Ü‚·B
+CHAN_AKICK_ENFORCE_DONE
+	%s‚É‚¨‚¯‚éAKICK ENFORCE‚ªŠ®—¹‚µ‚Ü‚µ‚½B%dl‚Ìƒ†[ƒU‚ªƒLƒbƒN‚³‚ê‚Ü‚µ‚½B
 
-# LEVELS‚Ì”½‰ž
+# LEVELS‰ž“š
 CHAN_LEVELS_SYNTAX
-	LEVELS channel {SET | DIS[ABLE] | LIST | RESET} [item [level]]
+	LEVELS ƒ`ƒƒƒ“ƒlƒ‹ {SET | DIS[ABLE] | LIST | RESET} [€–Ú [ƒŒƒxƒ‹]]
+CHAN_LEVELS_READONLY
+	ƒ`ƒƒƒ“ƒlƒ‹‚ÌŒ ŒÀƒŒƒxƒ‹Ý’è‚Ì•ÏX‚ÍŒ»Ýo—ˆ‚Ü‚¹‚ñB
 CHAN_LEVELS_RANGE
-	ƒŒƒxƒ‹‚ÍA%d ˆÈã‚ÅA%d ˆÈ‰º‚Ì”‚ð“ü—Í‚µ‚Ä‰º‚³‚¢B
+	ƒŒƒxƒ‹‚ÍA%d`%d‚Ì”ÍˆÍ“à‚ÉÝ’è‚µ‚Ä‰º‚³‚¢B
 CHAN_LEVELS_CHANGED
-	%s ‚ÌƒŒƒxƒ‹‚ð %s ‚Å %d ‚É•ÏX‚³‚ê‚Ü‚µ‚½B
+	%s‚ÌƒŒƒxƒ‹‚ð%s‚Å%d‚É•ÏX‚µ‚Ü‚µ‚½B
 CHAN_LEVELS_UNKNOWN
-	%s ‚Æ‚¢‚¤ƒŒƒxƒ‹‚Í•ª‚©‚è‚Ü‚¹‚ñBƒŒƒxƒ‹•\‚ðŒ©‚éê‡‚ÍAu/msg %s HELP LEVELS DESCv‚ð“ü—Í‚µ‚Ä‰º‚³‚¢B
+	%s‚Æ‚¢‚¤€–Ú‚Í‚ ‚è‚Ü‚¹‚ñB€–Úˆê——‚ðŒ©‚éê‡‚ÍAu/msg %s HELP LEVELS DESCv‚ð“ü—Í‚µ‚Ä‰º‚³‚¢B
 CHAN_LEVELS_DISABLED
-	%s ‚Í %s ‚Å•s“®‚É‚³‚ê‚Ü‚µ‚½B
+	%s‚ð%s‚Å–³Œø‚É‚µ‚Ü‚µ‚½B
 CHAN_LEVELS_LIST_HEADER
-	%s ‚ÌƒŒƒxƒ‹•\F
+	%s‚ÌŒ ŒÀƒŒƒxƒ‹ˆê——F
 CHAN_LEVELS_LIST_DISABLED
-	    %-*s  (•s“®)
+	    %-*s  –³Œø
 CHAN_LEVELS_LIST_FOUNDER
-	    %-*s  (ƒtƒ@ƒEƒ“ƒ_[‚Ì‚Ý)
+	    %-*s  ‘nÝŽÒ‚Ì‚Ý
 CHAN_LEVELS_LIST_NORMAL
-	    %-*s  %d
+	    %-*s  %4d
 CHAN_LEVELS_RESET
-	%s ‚ÌƒŒƒxƒ‹•\‚ÍŠù’è’l‚É–ß‚³‚ê‚Ü‚µ‚½B
+	%s‚ÌŒ ŒÀƒŒƒxƒ‹‚ðŠù’è’l‚É–ß‚µ‚Ü‚µ‚½B
 
-# INFO‚Ì”½‰ž
+# INFO‰ž“š
 CHAN_INFO_SYNTAX
-	INFO channel
+	INFO ƒ`ƒƒƒ“ƒlƒ‹ [ALL]
 CHAN_INFO_HEADER
 	%s‚Ìî•ñF
 CHAN_INFO_FOUNDER
-	@@@@ƒtƒ@ƒEƒ“ƒ_[F%s (%s)
-CHAN_INFO_NO_FOUNDER
-	@@@@ƒtƒ@ƒEƒ“ƒ_[F%s
+	@@@@@‘nÝŽÒF%s
+CHAN_INFO_SUCCESSOR
+	@@@@@ŒãŒpŽÒF%s
 CHAN_INFO_DESCRIPTION
-	@@@@@@@@–¼óF%s
+	@@@@@@à–¾F%s
+CHAN_INFO_ENTRYMSG
+	ŽQ‰ÁŽžƒƒbƒZ[ƒWF
 CHAN_INFO_TIME_REGGED
-	@@@@“o˜^‚µ‚½“úŽžF%s
+	@@@@“o˜^“úŽžF%s
 CHAN_INFO_LAST_USED
-	@‘O‚ÌŽg—p‚³‚ê‚½“úŽžF%s
+	@@Å‹ßŽg—p“úŽžF%s
 CHAN_INFO_LAST_TOPIC
-	@@@@‘O‚ÌƒgƒsƒbƒNF%s
+	@Å‹ß‚ÌƒgƒsƒbƒNF%s
 CHAN_INFO_TOPIC_SET_BY
-	@@ƒgƒsƒbƒN‚ÌÝ’èŽÒF%s
+	@ƒgƒsƒbƒNÝ’èŽÒF%s
 CHAN_INFO_URL
-	@@@@ƒz[ƒƒy[ƒWF%s
+	@@ƒz[ƒ€ƒy[ƒWF%s
 CHAN_INFO_EMAIL
-	“dŽqƒ[ƒ‹‚ÌƒAƒhƒŒƒXF%s
+	@ƒ[ƒ‹ƒAƒhƒŒƒXF%s
 CHAN_INFO_OPTIONS
-	@@@@@ƒIƒvƒVƒ‡ƒ“F%s
+	@@@ƒIƒvƒVƒ‡ƒ“F%s
 CHAN_INFO_OPT_PRIVATE
-	Ž„“I
+	ƒvƒ‰ƒCƒx[ƒg
 CHAN_INFO_OPT_KEEPTOPIC
 	ƒgƒsƒbƒN‹L˜^
 CHAN_INFO_OPT_TOPICLOCK
-	ƒgƒsƒbƒNƒƒbƒN
+	ƒgƒsƒbƒN•ÏX‹ÖŽ~
 CHAN_INFO_OPT_SECUREOPS
-	+o ƒ‚[ƒh§Œä
+	ƒIƒyƒŒ[ƒ^Œ §ŒÀ
 CHAN_INFO_OPT_LEAVEOPS
-#@@@
+	ƒIƒyƒŒ[ƒ^Œ •ú’u
 CHAN_INFO_OPT_RESTRICTED
-	ƒAƒNƒZƒX§Œä
+	ƒAƒNƒZƒX§ŒÀ
 CHAN_INFO_OPT_SECURE
 	ƒZƒLƒ…ƒA
+CHAN_INFO_OPT_OPNOTICE
+	OPŽü’m
+CHAN_INFO_OPT_ENFORCE
+	ƒ`ƒƒƒ“ƒlƒ‹Œ ŒÀŠÇ—
+CHAN_INFO_OPT_MEMO_RESTRICTED
+	ƒƒ‚‘—M§ŒÀ
 CHAN_INFO_OPT_NONE
 	–³‚µ
 CHAN_INFO_MODE_LOCK
-	@@@@ƒ‚[ƒhƒƒbƒNF%s
+	@@ƒ‚[ƒhƒƒbƒNF%s
+CHAN_INFO_NO_EXPIRE
+	‚±‚Ìƒ`ƒƒƒ“ƒlƒ‹‚Ì“o˜^‚ÍŽ©“®‰ðœ‚³‚ê‚Ü‚¹‚ñB
+CHAN_INFO_SUSPEND_DETAILS
+	%s‚É‚æ‚èA%s‚ÉŽg—p’âŽ~‚É‚³‚ê‚Ä‚¢‚Ü‚·i%sjB
+CHAN_INFO_SUSPEND_REASON
+	——RF%s
+CHAN_INFO_SHOW_ALL
+	Ú×î•ñ‚ð•\Ž¦‚·‚éê‡Au/msg %s INFO %s ALLv‚ð“ü—Í‚µ‚Ä‰º‚³‚¢B
 
-# LIST‚Ì”½‰ž
+# LIST‰ž“š
 CHAN_LIST_SYNTAX
-	LIST pattern
+	LIST [+ŠJŽnˆÊ’u] ƒpƒ^[ƒ“
+CHAN_LIST_OPER_SYNTAX
+	LIST [+ŠJŽnˆÊ’u] ƒpƒ^[ƒ“ [FORBIDDEN] [NOEXPIRE] [SUSPENDED]
 CHAN_LIST_HEADER
-	%s ‚É‡‚¤ƒ`ƒƒƒ“ƒlƒ‹•\F
-CHAN_LIST_FORMAT
-	    %-20s  %s
-CHAN_LIST_END
-	LIST I—¹B
+	u%sv‚Éˆê’v‚·‚éƒ`ƒƒƒ“ƒlƒ‹F
+CHAN_LIST_NO_MATCH
+	ˆê’v‚·‚éƒ`ƒƒƒ“ƒlƒ‹‚Í‚ ‚è‚Ü‚¹‚ñB
 
-# INVITE‚Ì”½‰ž
+# INVITE‰ž“š
 CHAN_INVITE_SYNTAX
-	INVITE channel
+	INVITE ƒ`ƒƒƒ“ƒlƒ‹
+CHAN_INVITE_OK
+	%s‚ðƒ`ƒƒƒ“ƒlƒ‹u%sv‚É—U‚¢‚Ü‚µ‚½B
 
-# OP‚Ì”½‰ž
-CHAN_OP_SYNTAX
-	OP channel nick
+# OP/DEOP/VOICE/DEVOICE‰ž“š
+CHAN_OPVOICE_SYNTAX
+	%s ƒ`ƒƒƒ“ƒlƒ‹ [ƒjƒbƒN]
+CHAN_OP_SUCCEEDED
+	u%sv‚Éƒ`ƒƒƒ“ƒlƒ‹u%sv‚ÌƒIƒyƒŒ[ƒ^Œ ‚ð•t—^‚µ‚Ü‚µ‚½B
+CHAN_OP_ALREADY
+	u%sv‚Í‚·‚Å‚Éƒ`ƒƒƒ“ƒlƒ‹u%sv‚ÌƒIƒyƒŒ[ƒ^Œ ‚ðŽ‚Á‚Ä‚¢‚Ü‚·B
+CHAN_OP_FAILED
+	u%sv‚Éƒ`ƒƒƒ“ƒlƒ‹u%sv‚ÌƒIƒyƒŒ[ƒ^Œ ‚ð•t—^‚Å‚«‚Ü‚¹‚ñ‚Å‚µ‚½B
+CHAN_DEOP_SUCCEEDED
+	u%sv‚©‚çƒ`ƒƒƒ“ƒlƒ‹u%sv‚ÌƒIƒyƒŒ[ƒ^Œ ‚ð‰ðœ‚µ‚Ü‚µ‚½B
+CHAN_DEOP_ALREADY
+	u%sv‚Íƒ`ƒƒƒ“ƒlƒ‹u%sv‚ÌƒIƒyƒŒ[ƒ^Œ ‚ðŽ‚Á‚Ä‚¢‚Ü‚¹‚ñB
+CHAN_DEOP_FAILED
+	u%sv‚©‚çƒ`ƒƒƒ“ƒlƒ‹u%sv‚ÌƒIƒyƒŒ[ƒ^Œ ‚ð‰ðœ‚Å‚«‚Ü‚¹‚ñ‚Å‚µ‚½B
+CHAN_VOICE_SUCCEEDED
+	u%sv‚Éƒ`ƒƒƒ“ƒlƒ‹u%sv‚Ì”­Œ¾Œ ‚ð•t—^‚µ‚Ü‚µ‚½B
+CHAN_VOICE_ALREADY
+	u%sv‚Í‚·‚Å‚Éƒ`ƒƒƒ“ƒlƒ‹u%sv‚Ì”­Œ¾Œ ‚ðŽ‚Á‚Ä‚¢‚Ü‚·B
+CHAN_VOICE_FAILED
+	u%sv‚Éƒ`ƒƒƒ“ƒlƒ‹u%sv‚Ì”­Œ¾Œ ‚ð•t—^‚Å‚«‚Ü‚¹‚ñ‚Å‚µ‚½B
+CHAN_DEVOICE_SUCCEEDED
+	u%sv‚©‚çƒ`ƒƒƒ“ƒlƒ‹u%sv‚Ì”­Œ¾Œ ‚ð‰ðœ‚µ‚Ü‚µ‚½B
+CHAN_DEVOICE_ALREADY
+	u%sv‚Íƒ`ƒƒƒ“ƒlƒ‹u%sv‚Ì”­Œ¾Œ ‚ðŽ‚Á‚Ä‚¢‚Ü‚¹‚ñB
+CHAN_DEVOICE_FAILED
+	u%sv‚©‚çƒ`ƒƒƒ“ƒlƒ‹u%sv‚Ì”­Œ¾Œ ‚ð‰ðœ‚Å‚«‚Ü‚¹‚ñ‚Å‚µ‚½B
+CHAN_HALFOP_SUCCEEDED
+	u%sv‚Éƒ`ƒƒƒ“ƒlƒ‹u%sv‚Ì”¼ƒIƒyƒŒ[ƒ^Œ ‚ð•t—^‚µ‚Ü‚µ‚½B
+CHAN_HALFOP_ALREADY
+	u%sv‚Í‚·‚Å‚Éƒ`ƒƒƒ“ƒlƒ‹u%sv‚Ì”¼ƒIƒyƒŒ[ƒ^Œ ‚ðŽ‚Á‚Ä‚¢‚Ü‚·B
+CHAN_HALFOP_FAILED
+	u%sv‚Éƒ`ƒƒƒ“ƒlƒ‹u%sv‚Ì”¼ƒIƒyƒŒ[ƒ^Œ ‚ð•t—^‚Å‚«‚Ü‚¹‚ñ‚Å‚µ‚½B
+CHAN_DEHALFOP_SUCCEEDED
+	u%sv‚©‚çƒ`ƒƒƒ“ƒlƒ‹u%sv‚Ì”¼ƒIƒyƒŒ[ƒ^Œ ‚ð‰ðœ‚µ‚Ü‚µ‚½B
+CHAN_DEHALFOP_ALREADY
+	u%sv‚Íƒ`ƒƒƒ“ƒlƒ‹u%sv‚Ì”¼ƒIƒyƒŒ[ƒ^Œ ‚ðŽ‚Á‚Ä‚¢‚Ü‚¹‚ñB
+CHAN_DEHALFOP_FAILED
+	u%sv‚©‚çƒ`ƒƒƒ“ƒlƒ‹u%sv‚Ì”¼ƒIƒyƒŒ[ƒ^Œ ‚ð‰ðœ‚Å‚«‚Ü‚¹‚ñ‚Å‚µ‚½B
+CHAN_PROTECT_SUCCEEDED
+	u%sv‚ðƒ`ƒƒƒ“ƒlƒ‹u%sv‚ÅƒvƒƒeƒNƒgó‘Ô‚É‚µ‚Ü‚µ‚½B
+CHAN_PROTECT_ALREADY
+	u%sv‚Í‚·‚Å‚Éƒ`ƒƒƒ“ƒlƒ‹u%sv‚ÅƒvƒƒeƒNƒgó‘Ô‚É‚È‚Á‚Ä‚¢‚Ü‚·B
+CHAN_PROTECT_FAILED
+	u%sv‚ðƒ`ƒƒƒ“ƒlƒ‹u%sv‚ÅƒvƒƒeƒNƒgó‘Ô‚É‚·‚é‚±‚Æ‚ª‚Å‚«‚Ü‚¹‚ñ‚Å‚µ‚½B
+CHAN_DEPROTECT_SUCCEEDED
+	u%sv‚ðƒ`ƒƒƒ“ƒlƒ‹u%sv‚Å”ñƒvƒƒeƒNƒgó‘Ô‚É‚µ‚Ü‚µ‚½B
+CHAN_DEPROTECT_ALREADY
+	u%sv‚Í‚·‚Å‚Éƒ`ƒƒƒ“ƒlƒ‹u%sv‚Å”ñƒvƒƒeƒNƒgó‘Ô‚É‚È‚Á‚Ä‚¢‚Ü‚·B
+CHAN_DEPROTECT_FAILED
+	u%sv‚ðƒ`ƒƒƒ“ƒlƒ‹u%sv‚Å”ñƒvƒƒeƒNƒgó‘Ô‚É‚·‚é‚±‚Æ‚ª‚Å‚«‚Ü‚¹‚ñ‚Å‚µ‚½B
 
-# DEOP‚Ì”½‰ž
-CHAN_DEOP_SYNTAX
-	DEOP channel nick
-
-# UNBAN‚Ì”½‰ž
+# UNBAN‰ž“š
 CHAN_UNBAN_SYNTAX
-	UNBAN channel
+	UNBAN ƒ`ƒƒƒ“ƒlƒ‹
 CHAN_UNBANNED
-	%s ‚Å‚Ì’Ç•úƒ}ƒXƒN‚Í‰ð‚©‚ê‚Ü‚µ‚½B
+	‚ ‚È‚½‚É‘Î‚·‚é%s‚Ì’Ç•úƒ}ƒXƒN‚ðÁ‹Ž‚µ‚Ü‚µ‚½B
 
-# CLEAR‚Ì”½‰ž
+# KICK‰ž“š
+CHAN_KICK_SYNTAX
+	KICK ƒ`ƒƒƒ“ƒlƒ‹ ƒjƒbƒN [——R]
+CHAN_KICK_PROTECTED
+	u%sv‚ðƒ`ƒƒƒ“ƒlƒ‹u%sv‚©‚çƒLƒbƒN‚Å‚«‚Ü‚¹‚ñB
+CHAN_KICKED
+	u%sv‚ðƒ`ƒƒƒ“ƒlƒ‹u%sv‚©‚çƒLƒbƒN‚µ‚Ü‚µ‚½B
+
+# TOPIC‰ž“š
+CHAN_TOPIC_SYNTAX
+	TOPIC ƒ`ƒƒƒ“ƒlƒ‹ ƒgƒsƒbƒN
+
+# CLEAR‰ž“š
 CHAN_CLEAR_SYNTAX
-	CLEAR channel what
+	CLEAR ƒ`ƒƒƒ“ƒlƒ‹ €–Ú
 CHAN_CLEARED_BANS
-	%s ‚Ì’Ç•úƒ}ƒXƒN‚Í‘S‚ÄÁ‹Ž‚³‚ê‚Ü‚µ‚½B
+	ƒ`ƒƒƒ“ƒlƒ‹u%sv‚Ì’Ç•úƒ}ƒXƒN‚ð‘S‚ÄÁ‹Ž‚µ‚Ü‚µ‚½B
+CHAN_CLEARED_EXCEPTIONS
+	ƒ`ƒƒƒ“ƒlƒ‹u%sv‚Ì’Ç•ú—áŠOƒ}ƒXƒN‚ðÁ‹Ž‚µ‚Ü‚µ‚½B
+CHAN_CLEARED_INVITES
+	ƒ`ƒƒƒ“ƒlƒ‹u%sv‚Ì—U‚¢iinvitejƒ}ƒXƒN‚ðÁ‹Ž‚µ‚Ü‚µ‚½B
 CHAN_CLEARED_MODES
-	%s ‚Ìƒ‚[ƒh‚ÍŠù’è’l‚É–ß‚³‚ê‚Ü‚µ‚½B
+	ƒ`ƒƒƒ“ƒlƒ‹u%sv‚Ìƒ‚[ƒh‚ðŠù’è’l‚É–ß‚µ‚Ü‚µ‚½B
 CHAN_CLEARED_OPS
-	+o ƒ‚[ƒh‚Í %s ‚©‚çÁ‹Ž‚³‚ê‚Ü‚µ‚½B
+	ƒIƒyƒŒ[ƒ^Œ ‚ðƒ`ƒƒƒ“ƒlƒ‹u%sv‚©‚çÁ‹Ž‚µ‚Ü‚µ‚½B
+CHAN_CLEARED_HALFOPS
+	”¼ƒIƒyƒŒ[ƒ^Œ ‚ðƒ`ƒƒƒ“ƒlƒ‹u%sv‚©‚çÁ‹Ž‚µ‚Ü‚µ‚½B
 CHAN_CLEARED_VOICES
-	+v ƒ‚[ƒh‚Í %s ‚©‚çÁ‹Ž‚³‚ê‚Ü‚µ‚½B
+	”­Œ¾Œ ‚ðƒ`ƒƒƒ“ƒlƒ‹u%sv‚©‚çÁ‹Ž‚µ‚Ü‚µ‚½B
 CHAN_CLEARED_USERS
-	%s ‚Ìƒ†[ƒU[‚Í‘S‚ÄR‚èo‚³‚ê‚Ü‚µ‚½B
+	ƒ`ƒƒƒ“ƒlƒ‹u%sv‚Ìƒ†[ƒU‚ð‘S‚ÄƒLƒbƒN‚µ‚Ü‚µ‚½B
 
-# GETPASS‚Ì”½‰ž
+# GETPASS‰ž“š
 CHAN_GETPASS_SYNTAX
-	GETPASS channel
+	GETPASS ƒ`ƒƒƒ“ƒlƒ‹
 CHAN_GETPASS_UNAVAILABLE
-	ˆÃ†‰»‚ÍŽg—p‚³‚ê‚Ä‚¢‚Ü‚·‚Ì‚Å GETPASS ‚ÍŽg—p•s‰Â”\‚Å‚·B
+	ƒ`ƒƒƒ“ƒlƒ‹u%sv‚ÌƒpƒXƒ[ƒh‚ÍˆÃ†‰»‚³‚ê‚Ä‚¢‚é‚½‚ßAGETPASS‚ðŽg—p‚Å‚«‚Ü‚¹‚ñB
 CHAN_GETPASS_PASSWORD_IS
-	%s ‚ÌƒpƒXƒ[ƒh‚Í %s ‚Å‚·B
+	ƒ`ƒƒƒ“ƒlƒ‹u%sv‚ÌƒpƒXƒ[ƒh‚Í %s ‚Å‚·B
 
-# FORBID‚Ì”½‰ž
+# FORBID‰ž“š
 CHAN_FORBID_SYNTAX
-	FORBID channel
+	FORBID ƒ`ƒƒƒ“ƒlƒ‹
+CHAN_FORBID_SHORT_CHANNEL
+	ƒ`ƒƒƒ“ƒlƒ‹u#v‚ðŽg—p‹ÖŽ~‚É‚·‚é‚±‚Æ‚Í‚Å‚«‚Ü‚¹‚ñB
 CHAN_FORBID_SUCCEEDED
-	%s ‚ÍŽg—p‹ÖŽ~‚É‚³‚ê‚Ü‚µ‚½B
+	ƒ`ƒƒƒ“ƒlƒ‹u%sv‚ðŽg—p‹ÖŽ~‚É‚µ‚Ü‚µ‚½B
 CHAN_FORBID_FAILED
-	%s ‚ðŽg—p‹ÖŽ~‚É‚·‚é‚Ì‚ªŽ¸”s‚µ‚Ü‚µ‚½B
+	ƒ`ƒƒƒ“ƒlƒ‹u%sv‚ðŽg—p‹ÖŽ~‚É‚·‚é‚±‚Æ‚ª‚Å‚«‚Ü‚¹‚ñ‚Å‚µ‚½B
+
+CHAN_SUSPEND_SYNTAX
+	SUSPEND [+—LŒøŠúŒÀ] ƒ`ƒƒƒ“ƒlƒ‹ ——R
+CHAN_SUSPEND_SUCCEEDED
+	ƒ`ƒƒƒ“ƒlƒ‹u%sv‚ðŽg—p’âŽ~‚É‚µ‚Ü‚µ‚½B
+CHAN_SUSPEND_ALREADY_SUSPENDED
+	ƒ`ƒƒƒ“ƒlƒ‹u%sv‚Í‚·‚Å‚ÉŽg—p’âŽ~‚É‚È‚Á‚Ä‚¢‚Ü‚·B
+
+CHAN_UNSUSPEND_SYNTAX
+	UNSUSPEND ƒ`ƒƒƒ“ƒlƒ‹
+CHAN_UNSUSPEND_SUCCEEDED
+	ƒ`ƒƒƒ“ƒlƒ‹u%sv‚ÌŽg—p’âŽ~‚ð‰ðœ‚µ‚Ü‚µ‚½B
+CHAN_UNSUSPEND_NOT_SUSPENDED
+	ƒ`ƒƒƒ“ƒlƒ‹u%sv‚ÍŽg—p’âŽ~‚É‚È‚Á‚Ä‚¢‚Ü‚¹‚ñB
 
 ###########################################################################
 #
@@ -838,188 +1500,286 @@ CHAN_FORBID_FAILED
 #
 ###########################################################################
 
-# Ž©“®“I‚ÈƒƒbƒZ[ƒW
+# Ž©“®ƒƒbƒZ[ƒW
 MEMO_HAVE_NEW_MEMO
-	Vƒƒ‚‚ª1‚ ‚è‚Ü‚·B
+	V’…ƒƒ‚‚ª1Œ‚ ‚è‚Ü‚·B
 MEMO_HAVE_NEW_MEMOS
-	Vƒƒ‚‚ª%d‚ ‚è‚Ü‚·B
+	V’…ƒƒ‚‚ª%dŒ‚ ‚è‚Ü‚·B
 MEMO_TYPE_READ_LAST
-	“Ç‚Þ‚Ì‚É‚Íu/msg %s READ LASTv‚ð“ü—Í‚µ‚Ä‰º‚³‚¢B
+	“Ç‚Þ‚É‚Íu/msg %s READ LASTv‚ð“ü—Í‚µ‚Ä‰º‚³‚¢B
 MEMO_TYPE_READ_NUM
-	“Ç‚Þ‚Ì‚É‚Íu/msg %s READ %dv‚ð“ü—Í‚µ‚Ä‰º‚³‚¢B
+	“Ç‚Þ‚É‚Íu/msg %s READ %dv‚ð“ü—Í‚µ‚Ä‰º‚³‚¢B
 MEMO_TYPE_LIST_NEW
-	•\‚·‚Ì‚É‚Íu/msg %s LIST NEWv‚ð“ü—Í‚µ‚Ä‰º‚³‚¢B
+	•\Ž¦‚·‚é‚É‚Íu/msg %s LIST NEWv‚ð“ü—Í‚µ‚Ä‰º‚³‚¢B
 MEMO_AT_LIMIT
-	’ˆÓFƒƒ‚‚Ì”‚ÌŒÀ‚èi%dj‚É‚È‚è‚Ü‚µ‚½Bƒƒ‚‚ðˆê‚ÂˆÈãÁ‹Ž‚·‚é‚Ü‚ÅV‚½‚Èƒƒ‚‚Í“Í‚«‚Ü‚¹‚ñB
+	’ˆÓF•Û‘¶ƒƒ‚Œ”‚ªãŒÀi%dŒj‚É’B‚µ‚Ä‚¢‚Ü‚·Bƒƒ‚‚ðÁ‹Ž‚·‚é‚Ü‚ÅV‚½‚Èƒƒ‚‚ðŽóM‚Å‚«‚Ü‚¹‚ñB
 MEMO_OVER_LIMIT
-	’ˆÓFƒƒ‚‚Ì”‚ÌŒÀ‚èi%dj‚ð‰ß‚¬‚Ü‚µ‚½Bƒƒ‚‚ðÁ‹Ž‚·‚é‚Ü‚ÅV‚½‚Èƒƒ‚‚Í“Í‚«‚Ü‚¹‚ñB
+	’ˆÓF•Û‘¶ƒƒ‚Œ”‚ªãŒÀi%dŒj‚ð’´‚¦‚Ä‚¢‚Ü‚·Bƒƒ‚‚ðÁ‹Ž‚·‚é‚Ü‚ÅV‚½‚Èƒƒ‚‚ðŽóM‚Å‚«‚Ü‚¹‚ñB
 MEMO_NEW_MEMO_ARRIVED
 	%s‚©‚çƒƒ‚‚ª“Í‚«‚Ü‚µ‚½B
-	“Ç‚Þ‚Ì‚É‚Íu/msg %s READ %dv‚ð“ü—Í‚µ‚Ä‰º‚³‚¢B
+	“Ç‚Þ‚É‚Íu/msg %s READ %dv‚ð“ü—Í‚µ‚Ä‰º‚³‚¢B
+MEMO_NEW_CHAN_MEMO_ARRIVED
+	%s‚©‚ç%sˆ¶‚Ä‚Ìƒƒ‚‚ª“Í‚«‚Ü‚µ‚½B
+	“Ç‚Þ‚É‚Íu/msg %s READ %dv‚ð“ü—Í‚µ‚Ä‰º‚³‚¢B
 
-# ‘½—p‚ÌƒƒbƒZ[ƒW
+# ‘½—p‰ž“š
 MEMO_HAVE_NO_MEMOS
-	ƒƒ‚‚ª‚ ‚è‚Ü‚¹‚ñB
-MEMO_X_HAS_NO_MEMOS
-	%s ‚Íƒƒ‚‚ª‚ ‚è‚Ü‚¹‚ñB
-MEMO_DOES_NOT_EXIST
-	%d ”Ô‚Ìƒƒ‚‚Í‘¶Ý‚µ‚Ü‚¹‚ñB
-MEMO_LIST_NOT_FOUND
-	%s ‚É‡‚¤ƒƒ‚‚Í‚ ‚è‚Ü‚¹‚ñB
-
-# SEND‚Ì”½‰ž
-MEMO_SEND_SYNTAX
-	SEND {nick | channel} memo-text
-MEMO_SEND_DISABLED
-	ƒƒ‚‚Ì‘—M‚Í‚½‚¾¡•s‰Â”\‚Å‚·B
-MEMO_SEND_PLEASE_WAIT
-	SEND ‚ÌƒRƒ}ƒ“ƒh‚ðÄ“ü—Í‚·‚é‘O‚É %d •b‚¨‘Ò‚¿‰º‚³‚¢B
-MEMO_X_HAS_TOO_MANY_MEMOS
-	%s ‚ÍŒ»Ýƒƒ‚‚ª‘½‚·‚¬‚Ü‚·‚Ì‚ÅVƒƒ‚‚ðŽóM‚Å‚«‚Ü‚¹‚ñB
-MEMO_X_GETS_NO_MEMOS
-	%s ‚Íƒƒ‚‚ðŽóM‚Å‚«‚Ü‚¹‚ñB
-MEMO_SENT
-	%s ‚Éƒƒ‚‚ð‘—M‚Ü‚µ‚½B
-
-# LIST‚Ì”½‰ž
-MEMO_LIST_SYNTAX
-	LIST [channel] [list | NEW]
+	•Û‘¶ƒƒ‚‚Í‚ ‚è‚Ü‚¹‚ñB
 MEMO_HAVE_NO_NEW_MEMOS
-	Vƒƒ‚‚ª‚ ‚è‚Ü‚¹‚ñB
-MEMO_X_HAS_NO_NEW_MEMOS
-	%s ‚ÍVƒƒ‚‚ª‚ ‚è‚Ü‚¹‚ñB
-MEMO_LIST_MEMOS
-	%s ‚Ìƒƒ‚•\B“Ç‚Þ‚É‚Íu/msg %s READ numv
-MEMO_LIST_NEW_MEMOS
-	%s ‚ÌVƒƒ‚•\B“Ç‚Þ‚É‚Íu/msg %s READ numv
-MEMO_LIST_CHAN_MEMOS
-	%s ‚Ìƒƒ‚•\B“Ç‚Þ‚É‚Íu/msg %s READ %s numv
-MEMO_LIST_CHAN_NEW_MEMOS
-	%s ‚ÌVƒƒ‚•\B“Ç‚Þ‚É‚Íu/msg %s READ %s numv
-MEMO_LIST_HEADER
-	 ”Ô†   ·ol            “úŽž
-MEMO_LIST_FORMAT
-	%c%4d   %-16s  %s
+	V’…ƒƒ‚‚Í‚ ‚è‚Ü‚¹‚ñB
+MEMO_DOES_NOT_EXIST
+	ƒƒ‚”Ô†%d‚Í‘¶Ý‚µ‚Ü‚¹‚ñB
+MEMO_LIST_NOT_FOUND
+	%s‚Éˆê’v‚·‚é•Û‘¶ƒƒ‚‚Í‚ ‚è‚Ü‚¹‚ñB
 
-# READ‚Ì”½‰ž
+# SEND‰ž“š
+MEMO_SEND_SYNTAX
+	SEND {ƒjƒbƒN | ƒ`ƒƒƒ“ƒlƒ‹} ƒeƒLƒXƒg
+MEMO_SEND_DISABLED
+	ƒƒ‚‚Ì‘—M‚ÍŒ»Ýo—ˆ‚Ü‚¹‚ñB
+MEMO_SEND_PLEASE_WAIT
+	SENDƒRƒ}ƒ“ƒh‚ðÄ“xŽÀs‚·‚é‘O‚É%s‚¨‘Ò‚¿‰º‚³‚¢B
+MEMO_SEND_CHAN_NOT_AVAIL
+	ƒ`ƒƒƒ“ƒlƒ‹ƒƒ‚‚Í‚²—˜—p‚Å‚«‚Ü‚¹‚ñB
+MEMO_X_HAS_TOO_MANY_MEMOS
+	%s‚ÍŒ»ÝA•Û‘¶ƒƒ‚‚ª‘½‚·‚¬‚é‚½‚ßAV‚½‚Èƒƒ‚‚ðŽóM‚Å‚«‚Ü‚¹‚ñB
+MEMO_X_GETS_NO_MEMOS
+	%s‚Íƒƒ‚‚ðŽóM‚Å‚«‚Ü‚¹‚ñB
+MEMO_SENT
+	%s‚Éƒƒ‚‚ð‘—M‚µ‚Ü‚µ‚½B
+MEMO_SEND_FAILED
+	%s‚Éƒƒ‚‚ð‘—M‚Å‚«‚Ü‚¹‚ñ‚Å‚µ‚½B
+
+# LIST‰ž“š
+MEMO_LIST_SYNTAX
+	LIST [”Ô† | ƒŠƒXƒg | NEW]
+MEMO_LIST_MEMOS
+	%s‚Ìƒƒ‚ˆê——B“Ç‚Þ‚É‚Íu/msg %s READ ”Ô†v
+MEMO_LIST_NEW_MEMOS
+	%s‚ÌV’…ƒƒ‚ˆê——B“Ç‚Þ‚É‚Íu/msg %s READ ”Ô†v
+MEMO_LIST_HEADER
+	   ”Ô†  ·ol            “úŽž
+MEMO_LIST_FORMAT
+	%c%c%c%4d  %-16s  %s
+
+# READ‰ž“š
 MEMO_READ_SYNTAX
-	READ [channel] {list | LAST | NEW}
+	READ {”Ô† | ƒŠƒXƒg | LAST | NEW}
 MEMO_HEADER
-	%d ”Ô‚Ìƒƒ‚i%s ‚©‚ç %s ‚É‘—M‚³‚ê‚½jBÁ‚·‚É‚Íu/msg %s DEL %dv
+	%d”Ô‚Ìƒƒ‚i%sA%sjBÁ‹Ž‚·‚é‚É‚Íu/msg %s DEL %dv
 MEMO_CHAN_HEADER
-	%d ”Ô‚Ìƒƒ‚i%s ‚©‚ç %s ‚É‘—M‚³‚ê‚½jBÁ‚·‚É‚Íu/msg %s DEL %s %dv
-MEMO_TEXT
+	%d”Ô‚Ìƒƒ‚i%sA%sˆ¶‚ÄA%sjBÁ‹Ž‚·‚é‚É‚Íu/msg %s DEL %dv
+
+# SAVE‰ž“š
+MEMO_SAVE_SYNTAX
+	SAVE {”Ô† | ƒŠƒXƒg}
+MEMO_SAVED_ONE
+	%d”Ô‚Ìƒƒ‚‚ð•Û‘¶‚µ‚Ü‚µ‚½B
+MEMO_SAVED_SEVERAL
+	ƒƒ‚‚ð%dŒ•Û‘¶‚µ‚Ü‚µ‚½B
+
+# DEL‰ž“š
+MEMO_DEL_SYNTAX
+	DEL {”Ô† | ƒŠƒXƒg | ALL}
+MEMO_DELETED_NONE
+	“ü—Í‚µ‚½”Ô†‚Éˆê’v‚·‚éƒƒ‚‚Í‚ ‚è‚Ü‚¹‚ñB
+MEMO_DELETED_ONE
+	%d”Ô‚Ìƒƒ‚‚ðÁ‹Ž‚µ‚Ü‚µ‚½B
+MEMO_DELETED_SEVERAL
+	ƒƒ‚‚ð%dŒÁ‹Ž‚µ‚Ü‚µ‚½B
+MEMO_DELETED_ALL
+	ƒƒ‚‚ð‘S‚ÄÁ‹Ž‚µ‚Ü‚µ‚½B
+
+# RENUMBER‰ž“š
+MEMO_RENUMBER_ONLY_YOU
+	RENUMBER‚ÍŽ©•ª‚Ìƒƒ‚‚É‘Î‚µ‚Ä‚µ‚©Žg‚¦‚Ü‚¹‚ñB
+MEMO_RENUMBER_DONE
+	ƒƒ‚”Ô†‚ðU‚è’¼‚µ‚Ü‚µ‚½B
+
+# SET‰ž“š
+MEMO_SET_SYNTAX
+	SET Ý’è–¼ ’l
+MEMO_SET_DISABLED
+	ƒƒ‚‚ÌƒIƒvƒVƒ‡ƒ“Ý’è‚ÍŒ»Ýo—ˆ‚Ü‚¹‚ñB
+MEMO_SET_UNKNOWN_OPTION
+	%s‚Æ‚¢‚¤Ý’è–¼‚Í‚ ‚è‚Ü‚¹‚ñB
+
+# SET NOTIFY‰ž“š
+MEMO_SET_NOTIFY_SYNTAX
+	SET NOTIFY {ON | LOGON | NEW | OFF}
+MEMO_SET_NOTIFY_ON
+	ƒƒ‚’Ê’m‚ÍAƒƒOƒCƒ“ŽžEŽóMŽž‚ÉÝ’è‚µ‚Ü‚µ‚½B
+MEMO_SET_NOTIFY_LOGON
+	ƒƒ‚’Ê’m‚ÍAƒƒOƒCƒ“Žž‚Ì‚Ý‚ÉÝ’è‚µ‚Ü‚µ‚½B
+MEMO_SET_NOTIFY_NEW
+	ƒƒ‚’Ê’m‚ÍAŽóMŽž‚Ì‚Ý‚ÉÝ’è‚µ‚Ü‚µ‚½B
+MEMO_SET_NOTIFY_OFF
+	ƒƒ‚’Ê’m‚ð–³Œø‚É‚µ‚Ü‚µ‚½B
+
+# SET LIMIT‰ž“š
+MEMO_SET_LIMIT_SYNTAX
+	SET LIMIT ãŒÀ
+MEMO_SET_LIMIT_OPER_SYNTAX
+	SET LIMIT [ƒjƒbƒN] {ãŒÀ | NONE | DEFAULT} [HARD]
+MEMO_SET_YOUR_LIMIT_FORBIDDEN
+	ƒƒ‚Œ”ãŒÀ‚ð•ÏX‚Å‚«‚Ü‚¹‚ñB
+MEMO_SET_LIMIT_FORBIDDEN
+	%s‚Ìƒƒ‚Œ”ãŒÀ‚ð•ÏX‚Å‚«‚Ü‚¹‚ñB
+MEMO_SET_YOUR_LIMIT_TOO_HIGH
+	ƒƒ‚Œ”ãŒÀ‚Í%dŒˆÈ“à‚ÉÝ’è‚µ‚Ä‰º‚³‚¢B
+MEMO_SET_LIMIT_TOO_HIGH
+	%s‚Ìƒƒ‚Œ”ãŒÀ‚Í%dŒˆÈ“à‚ÉÝ’è‚µ‚Ä‰º‚³‚¢B
+MEMO_SET_LIMIT_OVERFLOW
+	ãŒÀ‚ð%d‚É§ŒÀ‚µ‚Ü‚µ‚½B
+MEMO_SET_YOUR_LIMIT
+	ƒƒ‚Œ”ãŒÀ‚ð%dŒ‚ÉÝ’è‚µ‚Ü‚µ‚½B
+MEMO_SET_YOUR_LIMIT_ZERO
+	ƒƒ‚‚ðŽóM‹‘”Û‚ÉÝ’è‚µ‚Ü‚µ‚½B
+MEMO_SET_YOUR_LIMIT_DEFAULT
+	ƒƒ‚Œ”ãŒÀ‚ðŠù’è’li%dj‚É–ß‚µ‚Ü‚µ‚½B
+MEMO_UNSET_YOUR_LIMIT
+	ƒƒ‚Œ”‚ÌãŒÀ‚ð–³ŒÀ‚ÉÝ’è‚µ‚Ü‚µ‚½B
+MEMO_SET_LIMIT
+	%s‚Ìƒƒ‚”‚ÌãŒÀ‚ð%dŒ‚ÉÝ’è‚µ‚Ü‚µ‚½B
+MEMO_SET_LIMIT_ZERO
+	%s‚Ìƒƒ‚‚ðŽóM‹‘”Û‚ÉÝ’è‚µ‚Ü‚µ‚½B
+MEMO_SET_LIMIT_DEFAULT
+	%s‚Ìƒƒ‚Œ”ãŒÀ‚ðŠù’è’li%dj‚É–ß‚µ‚Ü‚µ‚½B
+MEMO_UNSET_LIMIT
+	%s‚Ìƒƒ‚Œ”‚ÌãŒÀ‚Í–³ŒÀ‚ÉÝ’è‚µ‚Ü‚µ‚½B
+
+# INFO‰ž“š
+MEMO_INFO_NO_MEMOS
+	•Û‘¶‚³‚ê‚Ä‚¢‚éƒƒ‚‚Í‚ ‚è‚Ü‚¹‚ñB
+MEMO_INFO_MEMO
+	ƒƒ‚‚ª1Œ‚ ‚è‚Ü‚·B
+MEMO_INFO_MEMO_UNREAD
+	ƒƒ‚‚ª1Œ‚ ‚èA–¢“Ç‚Å‚·B
+MEMO_INFO_MEMOS
+	ƒƒ‚‚ª%dŒ‚ ‚è‚Ü‚·B
+MEMO_INFO_MEMOS_ONE_UNREAD
+	ƒƒ‚‚ª%dŒ‚ ‚èA1Œ‚Í–¢“Ç‚Å‚·B
+MEMO_INFO_MEMOS_SOME_UNREAD
+	ƒƒ‚‚ª%dŒ‚ ‚èA%dŒ‚Í–¢“Ç‚Å‚·B
+MEMO_INFO_MEMOS_ALL_UNREAD
+	ƒƒ‚‚ª%dŒ‚ ‚èA‘S‚Ä–¢“Ç‚Å‚·B
+MEMO_INFO_LIMIT
+	ƒƒ‚Œ”ãŒÀ‚Í%dŒ‚Å‚·B
+MEMO_INFO_HARD_LIMIT
+	ƒƒ‚Œ”ãŒÀ‚Í%dŒ‚ÅA•ÏX‚Å‚«‚Ü‚¹‚ñB
+MEMO_INFO_LIMIT_ZERO
+	ƒƒ‚‚ÍŽóM‹‘”Û‚ÉÝ’è‚³‚ê‚Ä‚¢‚Ü‚·B
+MEMO_INFO_HARD_LIMIT_ZERO
+	ƒƒ‚‚ÍŽóM‹‘”Û‚ÉÝ’è‚³‚ê‚Ä‚¨‚èA•ÏX‚Å‚«‚Ü‚¹‚ñB
+MEMO_INFO_NO_LIMIT
+	ƒƒ‚Œ”ãŒÀ‚Í‚ ‚è‚Ü‚¹‚ñB
+MEMO_INFO_NOTIFY_OFF
+	V’…ƒƒ‚’Ê’m‚Ís‚¢‚Ü‚¹‚ñB
+MEMO_INFO_NOTIFY_ON
+	V’…ƒƒ‚’Ê’m‚ÍÚ‘±ŽžA/AWAY‰ðœŽžAŽóMŽž‚És‚¢‚Ü‚·B
+MEMO_INFO_NOTIFY_RECEIVE
+	V’…ƒƒ‚’Ê’m‚ÍŽóMŽž‚É‚Ì‚Ýs‚¢‚Ü‚·B
+MEMO_INFO_NOTIFY_SIGNON
+	V’…ƒƒ‚’Ê’m‚ÍÚ‘±ŽžA/AWAY‰ðœŽž‚É‚Ì‚Ýs‚¢‚Ü‚·B
+MEMO_INFO_X_NO_MEMOS
+	%s‚Í•Û‘¶‚³‚ê‚Ä‚¢‚éƒƒ‚‚ª‚ ‚è‚Ü‚¹‚ñB
+MEMO_INFO_X_MEMO
+	%s‚Íƒƒ‚‚ª1Œ‚ ‚è‚Ü‚·B
+MEMO_INFO_X_MEMO_UNREAD
+	%s‚Íƒƒ‚‚ª1Œ‚ ‚èA–¢“Ç‚Å‚·B
+MEMO_INFO_X_MEMOS
+	%s‚Íƒƒ‚‚ª%dŒ‚ ‚è‚Ü‚·B
+MEMO_INFO_X_MEMOS_ONE_UNREAD
+	%s‚Íƒƒ‚‚ª%dŒ‚ ‚èA1Œ‚Í–¢“Ç‚Å‚·B
+MEMO_INFO_X_MEMOS_SOME_UNREAD
+	%s‚Íƒƒ‚‚ª%dŒ‚ ‚èA%dŒ‚Í–¢“Ç‚Å‚·B
+MEMO_INFO_X_MEMOS_ALL_UNREAD
+	%s‚Íƒƒ‚‚ª%dŒ‚ ‚èA‘S‚Ä–¢“Ç‚Å‚·B
+MEMO_INFO_X_LIMIT
+	%s‚Ìƒƒ‚Œ”ãŒÀ‚Í%dŒ‚Å‚·B
+MEMO_INFO_X_HARD_LIMIT
+	%s‚Ìƒƒ‚Œ”ãŒÀ‚Í%dŒ‚ÅA•ÏX‚Å‚«‚Ü‚¹‚ñB
+MEMO_INFO_X_NO_LIMIT
+	%s‚Ìƒƒ‚Œ”ãŒÀ‚Í‚ ‚è‚Ü‚¹‚ñB
+MEMO_INFO_X_NOTIFY_OFF
+	%s‚Ö‚ÌV’…ƒƒ‚’Ê’m‚Ís‚¢‚Ü‚¹‚ñB
+MEMO_INFO_X_NOTIFY_ON
+	%s‚Ö‚ÌV’…ƒƒ‚’Ê’m‚ÍÚ‘±ŽžA/AWAY‰ðœŽžAŽóMŽž‚És‚¢‚Ü‚·B
+MEMO_INFO_X_NOTIFY_RECEIVE
+	%s‚Ö‚ÌV’…ƒƒ‚’Ê’m‚ÍŽóMŽž‚É‚Ì‚Ýs‚¢‚Ü‚·B
+MEMO_INFO_X_NOTIFY_SIGNON
+	%s‚Ö‚ÌV’…ƒƒ‚’Ê’m‚ÍÚ‘±ŽžA/AWAY‰ðœŽž‚É‚Ì‚Ýs‚¢‚Ü‚·B
+
+################ forwardƒ‚ƒWƒ…[ƒ‹—pƒƒbƒZ[ƒW
+
+# ƒ[ƒ‹“à—e
+MEMO_FORWARD_MAIL_SUBJECT
+	%s‚³‚ñ‚Ö‚Ìƒƒ‚
+MEMO_FORWARD_MULTIPLE_MAIL_SUBJECT
+	%s‚³‚ñ‚Ö‚Ìƒƒ‚
+MEMO_FORWARD_MAIL_BODY
+	%s‚³‚ñ‚©‚ç‚Ìƒƒ‚i‘—M“úŽžF%sj
+	%s
+MEMO_FORWARD_CHANMEMO_MAIL_BODY
+	%s‚³‚ñ‚©‚ç‚Ìƒƒ‚i%sˆ¶‚ÄA‘—M“úŽžF%sj
 	%s
 
-# DEL‚Ì”½‰ž
-MEMO_DEL_SYNTAX
-	DEL [channel] {num | list | ALL}
-MEMO_DELETED_NONE
-	“ü—Í‚µ‚½”Ô†‚É‡‚¤ƒƒ‚‚Í‚ ‚è‚Ü‚¹‚ñB
-MEMO_DELETED_ONE
-	%d ”Ô‚Ìƒƒ‚‚ÍÁ‹Ž‚³‚ê‚Ü‚µ‚½B
-MEMO_DELETED_SEVERAL
-	%s ”Ô‚Ìƒƒ‚‚ÍÁ‹Ž‚³‚ê‚Ü‚µ‚½B
-MEMO_DELETED_ALL
-	ƒƒ‚‚Í‘S‚ÄÁ‹Ž‚³‚ê‚Ü‚µ‚½B
+# FORWARD‰ž“š
+MEMO_FORWARD_SYNTAX
+	FORWARD {”Ô† | ƒŠƒXƒg | ALL}
+MEMO_FORWARD_NEED_EMAIL
+	ƒƒ‚‚ð“]‘—‚·‚é‚É‚ÍAƒjƒbƒN‚Éƒ[ƒ‹ƒAƒhƒŒƒX‚ð“o˜^‚µ‚È‚¯‚ê‚Î‚È‚è‚Ü‚¹‚ñB
+MEMO_FORWARD_PLEASE_WAIT
+	FORWARDƒRƒ}ƒ“ƒh‚ðÄ“xŽÀs‚·‚é‘O‚ÉA%s‚¨‘Ò‚¿‰º‚³‚¢B
+MEMO_FORWARD_FAILED
+	ƒƒ‚“]‘—‚ªŽ¸”s‚µ‚Ü‚µ‚½B
+MEMO_FORWARDED_NONE
+	ƒƒ‚“]‘—‚ðs‚¢‚Ü‚¹‚ñ‚Å‚µ‚½B
+MEMO_FORWARDED_ONE
+	%d”Ô‚Ìƒƒ‚‚ð“]‘—‚µ‚Ü‚µ‚½B
+MEMO_FORWARDED_SEVERAL
+	ƒƒ‚‚ð%dŒ“]‘—‚µ‚Ü‚µ‚½B
+MEMO_FORWARDED_ALL
+	‚·‚×‚Ä‚Ìƒƒ‚‚ð“]‘—‚µ‚Ü‚µ‚½B
 
-# SET‚Ì”½‰ž
-MEMO_SET_SYNTAX
-	SET option parameters
-MEMO_SET_DISABLED
-	ƒƒ‚‚ÌƒIƒvƒVƒ‡ƒ“Ý’è‚Í‚½‚¾¡•s‰Â”\‚Å‚·B
-MEMO_SET_UNKNOWN_OPTION
-	%s ‚Æ‚¢‚¤ƒIƒvƒVƒ‡ƒ“‚Í•ª‚©‚è‚Ü‚¹‚ñB
+# SET FORWARD responses
+MEMO_SET_FORWARD_SYNTAX
+	SET FORWARD {ON | COPY | OFF}
+MEMO_SET_FORWARD_ON
+	V’…ƒƒ‚‚ÍA‚ ‚È‚½‚Ìƒ[ƒ‹ƒAƒhƒŒƒXu%sv‚É“]‘—‚³‚ê‚Ü‚·B
+MEMO_SET_FORWARD_COPY
+	V’…ƒƒ‚‚ÍA‚ ‚È‚½‚Ìƒ[ƒ‹ƒAƒhƒŒƒXu%sv‚É“]‘—‚³‚ê‚Ü‚·B
+	Services‚Ìƒf[ƒ^ƒx[ƒX‚É‚à•Û‘¶‚³‚ê‚Ü‚·B
+MEMO_SET_FORWARD_OFF
+	V’…ƒƒ‚‚Ìƒ[ƒ‹“]‘—‚ðs‚¢‚Ü‚¹‚ñB
 
-# SET NOTIFY‚Ì”½‰ž
-MEMO_SET_NOTIFY_SYNTAX
-	SET NOTIFY {ON | LOGON | NEW | OFF}
-MEMO_SET_NOTIFY_ON
-	%s ‚Í‚±‚ê‚©‚çƒƒOƒIƒ“‚·‚éŽž‚ÉVƒƒ‚‚ª‚ ‚ê‚Î•ñ‚µAƒƒ‚‚ª“Í‚­Žž‚É‚à•ñ‚µ‚Ü‚·B
-MEMO_SET_NOTIFY_LOGON
-	%s ‚Í‚±‚ê‚©‚çƒƒOƒIƒ“‚·‚éŽž‚ÆIRC‚É–ß‚éŽž‚ÉVƒƒ‚‚ª‚ ‚ê‚Î•ñ‚µ‚Ü‚·B
-MEMO_SET_NOTIFY_NEW
-	%s ‚Í‚±‚ê‚©‚çƒƒ‚‚ª“Í‚­Žž‚É•ñ‚µ‚Ü‚·B
-MEMO_SET_NOTIFY_OFF
-	%s ‚Í‚±‚ê‚©‚çƒƒ‚‚Ì•ñ‚ð‚µ‚Ü‚¹‚ñB
+################ ignoreƒ‚ƒWƒ…[ƒ‹—pƒƒbƒZ[ƒW
 
-# SET LIMIT‚Ì”½‰ž
-MEMO_SET_LIMIT_SYNTAX
-	SET LIMIT [channel] limit
-MEMO_SET_LIMIT_SERVADMIN_SYNTAX
-	SET LIMIT [user | channel] {limit | NONE} [HARD]
-MEMO_SET_YOUR_LIMIT_FORBIDDEN
-	ƒƒ‚‚Ì”‚ÌŒÀ‚è‚ð•ÏX‚Å‚«‚Ü‚¹‚ñB
-MEMO_SET_LIMIT_FORBIDDEN
-	%s ‚Ìƒƒ‚‚Ì”‚ÌŒÀ‚è‚ð•ÏX‚Å‚«‚Ü‚¹‚ñB
-MEMO_SET_YOUR_LIMIT_TOO_HIGH
-	ƒƒ‚‚Ì”‚ÌŒÀ‚è‚ÍAƒ[ƒ‚© %d ˆÈ‰º‚Ì³”‚É‚µ‚©Ý’è‚Å‚«‚Ü‚¹‚ñB
-MEMO_SET_LIMIT_TOO_HIGH
-	%s ‚Ìƒƒ‚‚Ì”‚ÌŒÀ‚è‚ÍAƒ[ƒ‚© %d ˆÈ‰º‚Ì³”‚É‚µ‚©Ý’è‚Å‚«‚Ü‚¹‚ñB
-MEMO_SET_LIMIT_OVERFLOW
-	ŒÀ‚è‚Ì”’l‚Í‘å‚«‚·‚¬‚Ü‚·‚Ì‚ÅA%d ‚É‚È‚è‚Ü‚·B
-MEMO_SET_YOUR_LIMIT
-	ƒƒ‚‚Ì”‚ÌŒÀ‚è‚Í %d ‚ÉÝ’è‚³‚ê‚Ü‚µ‚½B
-MEMO_SET_YOUR_LIMIT_ZERO
-	‚±‚ê‚©‚çƒƒ‚‚ðŽóM‚µ‚Ü‚¹‚ñB
-MEMO_UNSET_YOUR_LIMIT
-	ƒƒ‚‚Ì”‚ÌŒÀ‚è‚Í•s“®‚É‚³‚ê‚Ü‚µ‚½B
-MEMO_SET_LIMIT
-	%s ‚Ìƒƒ‚‚Ì”‚ÌŒÀ‚è‚Í %d ‚ÉÝ’è‚³‚ê‚Ü‚µ‚½B
-MEMO_SET_LIMIT_ZERO
-	%s ‚Ìƒƒ‚‚Ì”‚ÌŒÀ‚è‚Í 0 ‚ÉÝ’è‚³‚ê‚Ü‚µ‚½B
-MEMO_UNSET_LIMIT
-	%s ‚Ìƒƒ‚‚Ì”‚ÌŒÀ‚è‚Í•s“®‚É‚³‚ê‚Ü‚µ‚½B
-
-# INFO‚Ì”½‰ž
-MEMO_INFO_SYNTAX
-	INFO [channel]
-MEMO_INFO_SERVADMIN_SYNTAX
-	INFO [nick | channel]
-MEMO_INFO_NO_MEMOS
-	ƒƒ‚‚Í‚ ‚è‚Ü‚¹‚ñB
-MEMO_INFO_MEMO
-	ƒƒ‚‚ª 1 ‚ ‚è‚Ü‚·B
-MEMO_INFO_MEMO_UNREAD
-	ƒƒ‚‚ª 1 ‚ ‚èA‚Ü‚¾“Ç‚ñ‚Å‚¢‚Ü‚¹‚ñB
-MEMO_INFO_MEMOS
-	ƒƒ‚‚ª %d ‚ ‚è‚Ü‚·B
-MEMO_INFO_MEMOS_ONE_UNREAD
-	ƒƒ‚‚ª %d ‚ ‚èA1 ‚Í“Ç‚ñ‚Å‚¢‚Ü‚¹‚ñB
-MEMO_INFO_MEMOS_SOME_UNREAD
-	ƒƒ‚‚ª %d ‚ ‚èA%d ‚Í“Ç‚ñ‚Å‚¢‚Ü‚¹‚ñB
-MEMO_INFO_MEMOS_ALL_UNREAD
-	ƒƒ‚‚ª %d ‚ ‚èA‘S‚Ä‚Í“Ç‚ñ‚Å‚¢‚Ü‚¹‚ñB
-MEMO_INFO_LIMIT
-	ƒƒ‚‚Ì”‚ÌŒÀ‚è‚Í %d ‚Å‚·B
-MEMO_INFO_HARD_LIMIT
-	ƒƒ‚‚Ì”‚ÌŒÀ‚è‚Í %d ‚ÅA‚»‚ÌŒÀ‚è‚Í•ÏX‚Å‚«‚Ü‚¹‚ñB
-MEMO_INFO_LIMIT_ZERO
-	ƒƒ‚‚Ì”‚ÌŒÀ‚è‚Í 0 ‚Å‚·‚Ì‚ÅAƒƒ‚‚ðŽó‚¯‚ç‚ê‚Ü‚¹‚ñB
-MEMO_INFO_HARD_LIMIT_ZERO
-	ƒƒ‚‚Ì”‚ÌŒÀ‚è‚Í 0 ‚Å‚·‚Ì‚ÅAƒƒ‚‚ðŽó‚¯‚ç‚ê‚Ü‚¹‚ñB‚»‚ÌŒÀ‚è‚Í•ÏX‚Å‚«‚Ü‚¹‚ñB
-MEMO_INFO_NO_LIMIT
-	ƒƒ‚‚Ì”‚ÍŒÀ‚ç‚ê‚Ä‚¢‚Ü‚¹‚ñB
-MEMO_INFO_X_NO_MEMOS
-	%s ‚Íƒƒ‚‚ª‚ ‚è‚Ü‚¹‚ñB
-MEMO_INFO_X_MEMO
-	%s ‚Íƒƒ‚‚ª 1 ‚ ‚è‚Ü‚·B
-MEMO_INFO_X_MEMO_UNREAD
-	%s ‚Íƒƒ‚‚ª 1 ‚ ‚èA‚Ü‚¾“Ç‚ñ‚Å‚¢‚Ü‚¹‚ñB
-MEMO_INFO_X_MEMOS
-	%s ‚Íƒƒ‚‚ª %d ‚ ‚è‚Ü‚·B
-MEMO_INFO_X_MEMOS_ONE_UNREAD
-	%s ‚Íƒƒ‚‚ª %d ‚ ‚èA1 ‚Í“Ç‚ñ‚Å‚¢‚Ü‚¹‚ñB
-MEMO_INFO_X_MEMOS_SOME_UNREAD
-	%s ‚Íƒƒ‚‚ª %d ‚ ‚èA%d ‚Í“Ç‚ñ‚Å‚¢‚Ü‚¹‚ñB
-MEMO_INFO_X_MEMOS_ALL_UNREAD
-	%s ‚Íƒƒ‚‚ª %d ‚ ‚èA‘S‚Ä‚Í“Ç‚ñ‚Å‚¢‚Ü‚¹‚ñB
-MEMO_INFO_X_LIMIT
-	%s ‚Ìƒƒ‚‚Ì”‚ÌŒÀ‚è‚Í %d ‚Å‚·B
-MEMO_INFO_X_HARD_LIMIT
-	%s ‚Ìƒƒ‚‚Ì”‚ÌŒÀ‚è‚Í %d ‚ÅAŒÀ‚è‚ð•ÏX‚Å‚«‚Ü‚¹‚ñB
-MEMO_INFO_X_NO_LIMIT
-	%s ‚Ìƒƒ‚‚Ì”‚ÍŒÀ‚ç‚ê‚Ä‚¢‚Ü‚¹‚ñB
+# IGNORE responses
+MEMO_IGNORE_SYNTAX
+	IGNORE {ADD | DEL | LIST} [ƒjƒbƒN | ƒ}ƒXƒN]
+MEMO_IGNORE_ADD_SYNTAX
+	IGNORE ADD ƒjƒbƒN | ƒ}ƒXƒN
+MEMO_IGNORE_DEL_SYNTAX
+	IGNORE DEL ƒjƒbƒN | ƒ}ƒXƒN
+MEMO_IGNORE_LIST_FULL
+	ŽóM‹‘”ÛƒŠƒXƒg‚ª‚¢‚Á‚Ï‚¢‚Å‚·B
+MEMO_IGNORE_ALREADY_PRESENT
+	u%sv‚Í‚·‚Å‚ÉŽóM‹‘”ÛƒŠƒXƒg‚É“o˜^‚³‚ê‚Ä‚¢‚Ü‚·B
+MEMO_IGNORE_ADDED
+	u%sv‚ðŽóM‹‘”ÛƒŠƒXƒg‚É’Ç‰Á‚µ‚Ü‚µ‚½B
+MEMO_IGNORE_NOT_FOUND
+	u%sv‚ÍŽóM‹‘”ÛƒŠƒXƒg‚É“o˜^‚³‚ê‚Ä‚¢‚Ü‚¹‚ñB
+MEMO_IGNORE_DELETED
+	u%sv‚ðŽóM‹‘”ÛƒŠƒXƒg‚©‚çíœ‚µ‚Ü‚µ‚½B
+MEMO_IGNORE_LIST_EMPTY
+	ŽóM‹‘”ÛƒŠƒXƒg‚Í‹ó‚Å‚·B
+MEMO_IGNORE_LIST
+	ŽóM‹‘”ÛƒŠƒXƒgF
+MEMO_IGNORE_LIST_X_EMPTY
+	u%sv‚ÌŽóM‹‘”ÛƒŠƒXƒg‚Í‹ó‚Å‚·B
+MEMO_IGNORE_LIST_X
+	u%sv‚ÌŽóM‹‘”ÛƒŠƒXƒgF
 
 ###########################################################################
 #
@@ -1027,748 +1787,1346 @@ MEMO_INFO_X_NO_LIMIT
 #
 ###########################################################################
 
-# ‘½—p‚ÌƒƒbƒZ[ƒW
+# ‘½—pƒƒbƒZ[ƒW
 OPER_BOUNCY_MODES
-	Services‚Íƒ‚[ƒh‚ð•ÏX‚Å‚«‚Ü‚¹‚ñBƒT[ƒo[‚ÌÝ’è‚ðƒ`ƒFƒbƒN‚µ‚Ä‰º‚³‚¢B
+	Services‚Íƒ‚[ƒh‚ð•ÏX‚Å‚«‚Ü‚¹‚ñBƒT[ƒo‚ÌÝ’è‚ðŠm”F‚µ‚Ä‰º‚³‚¢B
 OPER_BOUNCY_MODES_U_LINE
-	Services‚Íƒ‚[ƒh‚ð•ÏX‚Å‚«‚Ü‚¹‚ñBƒT[ƒo[‚ÌuU:ƒ‰ƒCƒ“v‚ÌÝ’è‚ðƒ`ƒFƒbƒN‚µ‚Ä‰º‚³‚¢B
+	Services‚Íƒ‚[ƒh‚ð•ÏX‚Å‚«‚Ü‚¹‚ñBƒT[ƒo‚ÌU:lineÝ’è‚ðŠm”F‚µ‚Ä‰º‚³‚¢B
 
-# GLOBAL‚Ì”½‰ž
+# GLOBAL‰ž“š
 OPER_GLOBAL_SYNTAX
-	GLOBAL message
+	GLOBAL ƒƒbƒZ[ƒW
 
-# STATS‚Ì”½‰ž
+# STATS‰ž“š
 OPER_STATS_UNKNOWN_OPTION
-	%s ‚Æ‚¢‚¤STATS‚ÌƒIƒvƒVƒ‡ƒ“‚Í•ª‚©‚è‚Ü‚¹‚ñB
+	u%sv‚Æ‚¢‚¤STATSƒpƒ‰ƒ[ƒ^‚Í‚ ‚è‚Ü‚¹‚ñB
+OPER_STATS_RESET_USER_COUNT
+	Å‘åƒ†[ƒU”‚ðƒŠƒZƒbƒg‚µ‚Ü‚µ‚½B
+
 OPER_STATS_CURRENT_USERS
-	Œ»Ýƒ†[ƒU[”F%d
-	ƒIƒyƒŒ[ƒ^[”F%d
+	Œ»Ýƒ†[ƒU”F%d
+	ƒIƒyƒŒ[ƒ^”F%d
 OPER_STATS_MAX_USERS
-	Å‘åƒ†[ƒU[”F%di%sj
-OPER_STATS_UPTIME_DHMS
-	‹N“®‚©‚ç@@@F%d“ú%02dŽžŠÔ%02d•ª
-OPER_STATS_UPTIME_1DHMS
-	‹N“®‚©‚ç@@@F%d“ú%02dŽžŠÔ%02d•ª
-OPER_STATS_UPTIME_HMS
-	‹N“®‚©‚ç@@@F%02dŽžŠÔ%02d•ª
-OPER_STATS_UPTIME_HM1S
-	‹N“®‚©‚ç@@@F%02dŽžŠÔ%02d•ª
-OPER_STATS_UPTIME_H1MS
-	‹N“®‚©‚ç@@@F%02dŽžŠÔ%02d•ª
-OPER_STATS_UPTIME_H1M1S
-	‹N“®‚©‚ç@@@F%02dŽžŠÔ%02d•ª
-OPER_STATS_UPTIME_1HMS
-	‹N“®‚©‚ç@@@F%02dŽžŠÔ%02d•ª
-OPER_STATS_UPTIME_1HM1S
-	‹N“®‚©‚ç@@@F%02dŽžŠÔ%02d•ª
-OPER_STATS_UPTIME_1H1MS
-	‹N“®‚©‚ç@@@F%02dŽžŠÔ%02d•ª
-OPER_STATS_UPTIME_1H1M1S
-	‹N“®‚©‚ç@@@F%02dŽžŠÔ%02d•ª
-OPER_STATS_UPTIME_MS
-	‹N“®‚©‚ç@@@F%02d•ª%02d•b
-OPER_STATS_UPTIME_M1S
-	‹N“®‚©‚ç@@@F%02d•ª%02d•b
-OPER_STATS_UPTIME_1MS
-	‹N“®‚©‚ç@@@F%02d•ª%02d•b
-OPER_STATS_UPTIME_1M1S
-	‹N“®‚©‚ç@@@F%02d•ª%02d•b
-OPER_STATS_USER_MEM
-	ƒ†[ƒU[@F%6dƒŒƒR[ƒhE%5dƒLƒ
-OPER_STATS_CHANNEL_MEM
-	ƒ`ƒƒƒ“ƒlƒ‹F%6dƒŒƒR[ƒhE%5dƒLƒ
-OPER_STATS_NICKSERV_MEM
-	NickServ@F%6dƒŒƒR[ƒhE%5dƒLƒ
-OPER_STATS_CHANSERV_MEM
-	ChanServ@F%6dƒŒƒR[ƒhE%5dƒLƒ
-OPER_STATS_OPERSERV_MEM
-	OperServ@F%6dƒŒƒR[ƒhE%5dƒLƒ
-OPER_STATS_AKILL_COUNT
-	Ž©“®Ø’fƒ}ƒXƒN‚Ì”F%d
-OPER_STATS_AKILL_EXPIRE_DAYS
-	Ž©“®Ø’fƒ}ƒXƒN‚ÌŠù’èŽõ–½F%d“ú
-OPER_STATS_AKILL_EXPIRE_DAY
-	Ž©“®Ø’fƒ}ƒXƒN‚ÌŠù’èŽõ–½F%d“ú
-OPER_STATS_AKILL_EXPIRE_HOURS
-	Ž©“®Ø’fƒ}ƒXƒN‚ÌŠù’èŽõ–½F%dŽžŠÔ
-OPER_STATS_AKILL_EXPIRE_HOUR
-	Ž©“®Ø’fƒ}ƒXƒN‚ÌŠù’èŽõ–½F%dŽžŠÔ
-OPER_STATS_AKILL_EXPIRE_MINS
-	Ž©“®Ø’fƒ}ƒXƒN‚ÌŠù’èŽõ–½F%d•ª
-OPER_STATS_AKILL_EXPIRE_MIN
-	Ž©“®Ø’fƒ}ƒXƒN‚ÌŠù’èŽõ–½F%d•ª
-OPER_STATS_AKILL_EXPIRE_NONE
-	Ž©“®Ø’fƒ}ƒXƒN‚ÌŠù’èŽõ–½F–³‚µ
+	Å‘åƒ†[ƒU”F%di%sj
+OPER_STATS_UPTIME_DHM
+	‹N“®‚©‚çF%d%s%02dŽžŠÔ%02d•ª
+OPER_STATS_UPTIME_HM_MS
+	‹N“®‚©‚çF%s
 
-# MODE‚Ì”½‰ž
+OPER_STATS_KBYTES_READ
+	ŽóMƒf[ƒ^—ÊF        %10u kB
+OPER_STATS_KBYTES_WRITTEN
+	‘—Mƒf[ƒ^—ÊF        %10u kB
+OPER_STATS_NETBUF_SOCK
+	ƒ\ƒPƒbƒgƒoƒbƒtƒ@ (ƒT[ƒo)F%5u kB
+OPER_STATS_NETBUF_SOCK_PERCENT
+	ƒ\ƒPƒbƒgƒoƒbƒtƒ@ (ƒT[ƒo)F%5u kB (%d%%)
+OPER_STATS_NETBUF_TOTAL
+	ƒ\ƒPƒbƒgƒoƒbƒtƒ@ (‘S‘Ì)F  %5u kB
+OPER_STATS_NETBUF_TOTAL_PERCENT
+	ƒ\ƒPƒbƒgƒoƒbƒtƒ@ (‘S‘Ì)F  %5u kB (%d%%)
+
+OPER_STATS_ALL_USER_MEM
+	ƒ†[ƒU        : %6d ƒŒƒR[ƒhA%5d kB
+OPER_STATS_ALL_CHANNEL_MEM
+	ƒ`ƒƒƒ“ƒlƒ‹    : %6d ƒŒƒR[ƒhA%5d kB
+OPER_STATS_ALL_SERVER_MEM
+	ƒT[ƒo        : %6d ƒŒƒR[ƒhA%5d kB
+OPER_STATS_ALL_NICKGROUPINFO_MEM
+	ƒjƒbƒNƒOƒ‹[ƒv: %6d ƒŒƒR[ƒhA%5d kB
+OPER_STATS_ALL_NICKINFO_MEM
+	ƒjƒbƒN        : %6d ƒŒƒR[ƒhA%5d kB
+OPER_STATS_ALL_CHANSERV_MEM
+	ChanServ      : %6d ƒŒƒR[ƒhA%5d kB
+OPER_STATS_ALL_STATSERV_MEM
+	StatServ      : %6d ƒŒƒR[ƒhA%5d kB
+OPER_STATS_ALL_NEWS_MEM
+	News          : %6d ƒŒƒR[ƒhA%5d kB
+OPER_STATS_ALL_AKILL_MEM
+	Ž©“®Ø’fƒ}ƒXƒN: %6d ƒŒƒR[ƒhA%5d kB
+OPER_STATS_ALL_EXCEPTION_MEM
+	ƒZƒbƒVƒ‡ƒ“—áŠO: %6d ƒŒƒR[ƒhA%5d kB
+OPER_STATS_ALL_SGLINE_MEM
+	SGlines       : %6d ƒŒƒR[ƒhA%5d kB
+OPER_STATS_ALL_SQLINE_MEM
+	SQlines       : %6d ƒŒƒR[ƒhA%5d kB
+OPER_STATS_ALL_SZLINE_MEM
+	SZlines       : %6d ƒŒƒR[ƒhA%5d kB
+OPER_STATS_ALL_SESSION_MEM
+	ƒZƒbƒVƒ‡ƒ“    : %6d ƒŒƒR[ƒhA%5d kB
+
+# GETKEY‰ž“š
+OPER_GETKEY_SYNTAX
+	GETKEY ƒ`ƒƒƒ“ƒlƒ‹
+OPER_GETKEY_KEY_IS
+	ƒ`ƒƒƒ“ƒlƒ‹u%sv‚ÌƒL[ƒ[ƒh‚ÍF%s
+OPER_GETKEY_NO_KEY
+	ƒ`ƒƒƒ“ƒlƒ‹u%sv‚É‚ÍƒL[ƒ[ƒh‚ªÝ’è‚³‚ê‚Ä‚¢‚Ü‚¹‚ñB
+
+# MODE‰ž“š
 OPER_MODE_SYNTAX
-	MODE channel modes
+	MODE ƒ`ƒƒƒ“ƒlƒ‹ ƒ‚[ƒh
 
-# CLEARMODES‚Ì”½‰ž
+# CLEARMODES‰ž“š
 OPER_CLEARMODES_SYNTAX
-	CLEARMODES channel [ALL]
+	CLEARMODES ƒ`ƒƒƒ“ƒlƒ‹ [ALL]
 OPER_CLEARMODES_DONE
-	%s ‚Ì“üØƒ‚[ƒh‚Æ’Ç•úƒ}ƒXƒN‚ÍƒNƒŠƒA‚³‚ê‚Ü‚µ‚½B
+	ƒ`ƒƒƒ“ƒlƒ‹u%sv‚Ìƒ`ƒƒƒ“ƒlƒ‹ƒ‚[ƒh‚ðƒNƒŠƒA‚µ‚Ü‚µ‚½B
 OPER_CLEARMODES_ALL_DONE
-	%s ‚Ìƒ‚[ƒh‚Í‘S‚ÄƒNƒŠƒA‚³‚ê‚Ü‚µ‚½B
+	ƒ`ƒƒƒ“ƒlƒ‹u%sv‚Ì‘Sƒ‚[ƒh‚ðƒNƒŠƒA‚µ‚Ü‚µ‚½B
 
-# KICK‚Ì”½‰ž
+# CLEARCHAN‰ž“š
+OPER_CLEARCHAN_SYNTAX
+	CLEARCHAN ƒ`ƒƒƒ“ƒlƒ‹
+OPER_CLEARCHAN_DONE
+	ƒ`ƒƒƒ“ƒlƒ‹u%sv‚©‚ç‘S‚Ä‚Ìƒ†[ƒU‚ðƒLƒbƒN‚µ‚Ü‚µ‚½B
+
+# KICK‰ž“š
 OPER_KICK_SYNTAX
-	KICK channel user reason
+	KICK ƒ`ƒƒƒ“ƒlƒ‹ ƒjƒbƒN ——R
 
-# ADMIN‚Ì”½‰ž
+# ADMIN‰ž“š
 OPER_ADMIN_SYNTAX
-	ADMIN {ADD | DEL | LIST} [nick]
+	ADMIN {ADD | DEL | LIST} [ƒjƒbƒN]
 OPER_ADMIN_ADD_SYNTAX
-	ADMIN ADD nick
+	ADMIN ADD ƒjƒbƒN
 OPER_ADMIN_DEL_SYNTAX
-	ADMIN ADD nick
-OPER_ADMIN_SKELETON
-	Services ‚ÍƒXƒPƒŒƒgƒ“ƒ‚[ƒh‚Å“®‚¢‚Ä‚¢‚Ü‚·‚Ì‚ÅAADMIN ‚ÌƒRƒ}ƒ“ƒh‚ÍŽg—p•s‰Â”\‚Å‚·B
+	ADMIN DEL ƒjƒbƒN
+OPER_ADMIN_NO_NICKSERV
+	NickServ‚ª“®ì‚µ‚Ä‚¢‚È‚¢‚½‚ßAADMINƒRƒ}ƒ“ƒh‚ÍŽg‚¦‚Ü‚¹‚ñB
 OPER_ADMIN_EXISTS
-	%s ‚ÍŠù‚É Services ‚ÌƒAƒhƒ~ƒ“•\‚Å‘¶Ý‚µ‚Ä‚¢‚Ü‚·B
+	ƒjƒbƒNu%sv‚Í‚·‚Å‚ÉServicesƒAƒhƒ~ƒ“ƒŠƒXƒg‚É“o˜^‚³‚ê‚Ä‚¢‚Ü‚·B
 OPER_ADMIN_ADDED
-	%s ‚Í Services ‚ÌƒAƒhƒ~ƒ“•\‚É’Ç‰Á‚³‚ê‚Ü‚µ‚½B
+	ƒjƒbƒNu%sv‚ðServicesƒAƒhƒ~ƒ“ƒŠƒXƒg‚É’Ç‰Á‚µ‚Ü‚µ‚½B
 OPER_ADMIN_TOO_MANY
-	Services ‚ÌƒAƒhƒ~ƒ“•\‚Í–ž”t‚Å‚·‚Ì‚Å’Ç‰Áo—ˆ‚Ü‚¹‚ñB
+	ServicesƒAƒhƒ~ƒ“ƒŠƒXƒg‚Í‚¢‚Á‚Ï‚¢‚Å‚·‚Ì‚Å’Ç‰Á‚Å‚«‚Ü‚¹‚ñB
 OPER_ADMIN_REMOVED
-	%s ‚Í Services ‚ÌƒAƒhƒ~ƒ“•\‚©‚çÁ‹Ž‚³‚ê‚Ü‚µ‚½B
+	ƒjƒbƒNu%sv‚ðServicesƒAƒhƒ~ƒ“ƒŠƒXƒg‚©‚çÁ‹Ž‚µ‚Ü‚µ‚½B
 OPER_ADMIN_NOT_FOUND
-	%s ‚Í Services ‚ÌƒAƒhƒ~ƒ“•\‚Å‘¶Ý‚µ‚Ü‚¹‚ñB
+	ƒjƒbƒNu%sv‚ÍServicesƒAƒhƒ~ƒ“ƒŠƒXƒg‚É“o˜^‚³‚ê‚Ä‚¢‚Ü‚¹‚ñB
 OPER_ADMIN_LIST_HEADER
-	Services ‚ÌƒAƒhƒ~ƒ“•\F
+	ServicesƒAƒhƒ~ƒ“ƒŠƒXƒgF
 
-# OPER‚Ì”½‰ž
+# OPER‰ž“š
 OPER_OPER_SYNTAX
-	OPER {ADD | DEL | LIST} [nick]
+	OPER {ADD | DEL | LIST} [ƒjƒbƒN]
 OPER_OPER_ADD_SYNTAX
-	OPER ADD nick
+	OPER ADD ƒjƒbƒN
 OPER_OPER_DEL_SYNTAX
-	OPER ADD nick
-OPER_OPER_SKELETON
-	Services ‚ÍƒXƒPƒŒƒgƒ“ƒ‚[ƒh‚Å“®‚¢‚Ä‚¢‚Ü‚·‚Ì‚ÅAOPER ‚ÌƒRƒ}ƒ“ƒh‚ÍŽg—p•s‰Â”\‚Å‚·B
+	OPER DEL ƒjƒbƒN
+OPER_OPER_NO_NICKSERV
+	NickServ‚ª“®ì‚µ‚Ä‚¢‚È‚¢‚½‚ßAOPERƒRƒ}ƒ“ƒh‚ÍŽg‚¦‚Ü‚¹‚ñB
 OPER_OPER_EXISTS
-	%s ‚ÍŠù‚É Services ‚ÌƒIƒyƒŒ[ƒ^[•\‚Å‘¶Ý‚µ‚Ä‚¢‚Ü‚·B
+	ƒjƒbƒNu%sv‚Í‚·‚Å‚ÉServicesƒIƒyƒŒ[ƒ^ƒŠƒXƒg‚É“o˜^‚³‚ê‚Ä‚¢‚Ü‚·B
 OPER_OPER_ADDED
-	%s ‚Í Services ‚ÌƒIƒyƒŒ[ƒ^[•\‚É’Ç‰Á‚³‚ê‚Ü‚µ‚½B
+	ƒjƒbƒNu%sv‚ðServicesƒIƒyƒŒ[ƒ^ƒŠƒXƒg‚É’Ç‰Á‚µ‚Ü‚µ‚½B
 OPER_OPER_TOO_MANY
-	Services ‚ÌƒIƒyƒŒ[ƒ^[•\‚Í–ž”t‚Å‚·‚Ì‚Å’Ç‰Áo—ˆ‚Ü‚¹‚ñB
+	ServicesƒIƒyƒŒ[ƒ^ƒŠƒXƒg‚Í‚¢‚Á‚Ï‚¢‚Å‚·‚Ì‚Å’Ç‰Á‚Å‚«‚Ü‚¹‚ñB
 OPER_OPER_REMOVED
-	%s ‚Í Services ‚ÌƒIƒyƒŒ[ƒ^[•\‚©‚çÁ‹Ž‚³‚ê‚Ü‚µ‚½B
+	ƒjƒbƒNu%sv‚ðServicesƒIƒyƒŒ[ƒ^ƒŠƒXƒg‚©‚çÁ‹Ž‚µ‚Ü‚µ‚½B
 OPER_OPER_NOT_FOUND
-	%s ‚Í Services ‚ÌƒIƒyƒŒ[ƒ^[•\‚Å‘¶Ý‚µ‚Ü‚¹‚ñB
+	ƒjƒbƒNu%sv‚ÍServicesƒIƒyƒŒ[ƒ^ƒŠƒXƒg‚É“o˜^‚³‚ê‚Ä‚¢‚Ü‚¹‚ñB
 OPER_OPER_LIST_HEADER
-	Services ‚ÌƒIƒyƒŒ[ƒ^[•\F
+	ServicesƒIƒyƒŒ[ƒ^ƒŠƒXƒgF
 
-# AKILL‚Ì”½‰ž
-OPER_AKILL_SYNTAX
-	AKILL {ADD | DEL | LIST | VIEW} [[+expiry] mask [reason]]
-OPER_AKILL_ADD_SYNTAX
-	AKILL ADD [+expiry] mask reason
-OPER_AKILL_DEL_SYNTAX
-	AKILL DEL mask
-OPER_AKILL_NO_NICK
-	’ˆÓFŽ©“®Ø’fƒ}ƒXƒN‚Íƒ†[ƒU[–¼‚ÆƒzƒXƒg–¼‚ð‚¾‚¯ŠÜ‚Ý‚Ü‚·‚Ì‚ÅAƒjƒbƒN‚ð“ü—Í‚µ‚È‚©‚Á‚½‚æ‚¤‚ÉŠm”F‚µ‚Ä‰º‚³‚¢B
-OPER_TOO_MANY_AKILLS
-	Ž©“®Ø’f•\‚Í–ž”t‚Å‚·‚Ì‚Å’Ç‰Á‚Å‚«‚Ü‚¹‚ñB
-OPER_AKILL_ADDED
-	%s ‚ÍŽ©“®Ø’f•\‚É’Ç‰Á‚³‚ê‚Ü‚µ‚½B
-OPER_AKILL_REMOVED
-	%s ‚ÍŽ©“®Ø’f•\‚©‚çÁ‹Ž‚³‚ê‚Ü‚µ‚½B
-OPER_AKILL_NOT_FOUND
-	%s ‚ÍŽ©“®Ø’f•\‚Å‘¶Ý‚µ‚Ü‚¹‚ñB
-OPER_AKILL_LIST_HEADER
-	Ž©“®Ø’f•\F
+# AKILLEEXCLUDEESxLINE‹¤’Ê‰ž“š
+OPER_MASKDATA_SYNTAX
+	%s {ADD | DEL | LIST | VIEW | CHECK | COUNT} [[+—LŒøŠúŒÀ] ƒ}ƒXƒN [——R]]
+OPER_MASKDATA_ADD_SYNTAX
+	%s ADD [+—LŒøŠúŒÀ] ƒ}ƒXƒN ——R
+OPER_MASKDATA_DEL_SYNTAX
+	%s DEL ƒ}ƒXƒN
+OPER_MASKDATA_CLEAR_SYNTAX
+	%s CLEAR ALL
+OPER_MASKDATA_LIST_SYNTAX
+	%s {LIST | VIEW} [+ŠJŽnˆÊ’u] [ƒpƒ^[ƒ“] [NOEXPIRE]
+OPER_MASKDATA_CHECK_SYNTAX
+	%s CHECK ƒ}ƒXƒN
 # mask, reason
-OPER_AKILL_LIST_FORMAT
+OPER_MASKDATA_LIST_FORMAT
 	%-32s  %s
+# mask, set-by, set-time, last-used, expires, reason
+OPER_MASKDATA_VIEW_FORMAT
+	%s
+	@@@Ý’èŽÒF%s
+	@@Ý’èŽžF%s
+	@@Å‹ßŽg—pF%s
+	@@—LŒøŠúŒÀF%s
+	@@@@——RF%s
 # mask, set-by, set-time, expires, reason
-OPER_AKILL_VIEW_FORMAT
-	%s (%s ‚É %s ‚É’Ç‰Á‚³‚êA%s)
-	    %s
-OPER_AKILL_NO_EXPIRE
-	Ø‚ê‚È‚¢
-OPER_AKILL_EXPIRES_SOON
-	ŽŸ‚Ìƒf[ƒ^•Û‘¶‚Æ‚«‚ÉØ‚ê‚é
-OPER_AKILL_EXPIRES_M
-	%d•ªŒãØ‚ê‚é
-OPER_AKILL_EXPIRES_1M
-	%d•ªŒãØ‚ê‚é
-OPER_AKILL_EXPIRES_HM
-	%dŽž%d•ªŒãØ‚ê‚é
-OPER_AKILL_EXPIRES_H1M
-	%dŽž%d•ªŒãØ‚ê‚é
-OPER_AKILL_EXPIRES_1HM
-	%dŽž%d•ªŒãØ‚ê‚é
-OPER_AKILL_EXPIRES_1H1M
-	%dŽž%d•ªŒãØ‚ê‚é
-OPER_AKILL_EXPIRES_D
-	%d“úŒãØ‚ê‚é
-OPER_AKILL_EXPIRES_1D
-	%d“úŒãØ‚ê‚é
+OPER_MASKDATA_VIEW_UNUSED_FORMAT
+	%s
+	@@@Ý’èŽÒF%s
+	@@Ý’èŽžF%s
+	@@Å‹ßŽg—pF–¢Žg—p
+	@@—LŒøŠúŒÀF%s
+	@@@@——RF%s
 
-# SET‚Ì”½‰ž
+# AKILL‰ž“š
+OPER_TOO_MANY_AKILLS
+	Ž©“®Ø’fƒŠƒXƒg‚Í‚¢‚Á‚Ï‚¢‚Å‚·‚Ì‚Å’Ç‰Á‚Å‚«‚Ü‚¹‚ñB
+OPER_AKILL_EXISTS
+	u%sv‚Í‚·‚Å‚ÉŽ©“®Ø’fƒŠƒXƒg‚É‘¶Ý‚µ‚Ü‚·B
+OPER_AKILL_NO_NICK
+	Ž©“®Ø’fƒ}ƒXƒN‚É‚ÍƒjƒbƒN‚ðŽg‚¦‚Ü‚¹‚ñBƒ}ƒXƒN‚ðŠm”F‚µ‚Ä‰º‚³‚¢B
+OPER_AKILL_MASK_TOO_GENERAL
+	ƒ}ƒXƒN‚Ì“K—p”ÍˆÍ‚ªL‚·‚¬‚Ü‚·B
+OPER_AKILL_EXPIRY_LIMITED
+	—LŒøŠúŒÀ‚Í%s‚Ü‚Å‚µ‚©Ý’è‚Å‚«‚Ü‚¹‚ñB
+OPER_AKILL_ADDED
+	u%sv‚ðŽ©“®Ø’fƒŠƒXƒg‚É’Ç‰Á‚µ‚Ü‚µ‚½B
+OPER_AKILL_REMOVED
+	u%sv‚ðŽ©“®Ø’fƒŠƒXƒg‚©‚çÁ‹Ž‚µ‚Ü‚µ‚½B
+OPER_AKILL_CLEARED
+	Ž©“®Ø’fƒŠƒXƒg‚ðƒNƒŠƒA‚µ‚Ü‚µ‚½B
+OPER_AKILL_NOT_FOUND
+	u%sv‚ÍŽ©“®Ø’fƒŠƒXƒg‚É“o˜^‚³‚ê‚Ä‚¢‚Ü‚¹‚ñB
+OPER_AKILL_LIST_HEADER
+	Ž©“®Ø’fƒŠƒXƒgF
+OPER_AKILL_LIST_EMPTY
+	Ž©“®Ø’fƒŠƒXƒg‚Í‹ó‚Å‚·B
+OPER_AKILL_LIST_NO_MATCH
+	Ž©“®Ø’fƒŠƒXƒg‚Éˆê’v‚·‚éƒ}ƒXƒN‚Í‚ ‚è‚Ü‚¹‚ñB
+OPER_AKILL_CHECK_NO_MATCH
+	%s‚Éˆê’v‚·‚éŽ©“®Ø’fƒ}ƒXƒN‚ÍŒ©‚Â‚©‚è‚Ü‚¹‚ñ‚Å‚µ‚½B
+OPER_AKILL_CHECK_HEADER
+	%s‚Éˆê’v‚·‚éŽ©“®Ø’fƒ}ƒXƒNF
+OPER_AKILL_CHECK_TRAILER
+	%dƒ}ƒXƒNŒ©‚Â‚©‚è‚Ü‚µ‚½B
+OPER_AKILL_COUNT
+	%dŒÂ‚Ìƒ}ƒXƒN‚ªŽ©“®Ø’fƒŠƒXƒg‚É“o˜^‚³‚ê‚Ä‚¢‚Ü‚·B
+
+# AKILLCHAN‰ž“š
+OPER_AKILLCHAN_SYNTAX
+	AKILLCHAN [KILL] [+—LŒøŠúŒÀ] ƒ`ƒƒƒ“ƒlƒ‹ ——R
+OPER_AKILLCHAN_AKILLED
+	%dƒ†[ƒU‚ðŽ©“®Ø’fƒŠƒXƒg‚É’Ç‰Á‚µ‚Ü‚µ‚½B
+OPER_AKILLCHAN_KILLED
+	%dƒ†[ƒU‚ðØ’f‚µ‚Ü‚µ‚½B
+OPER_AKILLCHAN_AKILLED_ONE
+	1ƒ†[ƒU‚ðŽ©“®Ø’fƒŠƒXƒg‚É’Ç‰Á‚µ‚Ü‚µ‚½B
+OPER_AKILLCHAN_KILLED_ONE
+	1ƒ†[ƒU‚ðØ’f‚µ‚Ü‚µ‚½B
+
+# EXCLUDE‰ž“š
+OPER_TOO_MANY_EXCLUDES
+	Ž©“®Ø’fœŠOƒŠƒXƒg‚Í‚¢‚Á‚Ï‚¢‚Å‚·‚Ì‚Å’Ç‰Á‚Å‚«‚Ü‚¹‚ñB
+OPER_EXCLUDE_EXISTS
+	u%sv‚Í‚·‚Å‚ÉŽ©“®Ø’fœŠOƒŠƒXƒg‚É‘¶Ý‚µ‚Ü‚·B
+OPER_EXCLUDE_ADDED
+	u%sv‚ðŽ©“®Ø’fœŠOƒŠƒXƒg‚É’Ç‰Á‚µ‚Ü‚µ‚½B
+OPER_EXCLUDE_REMOVED
+	u%sv‚ðŽ©“®Ø’fœŠOƒŠƒXƒg‚©‚çÁ‹Ž‚µ‚Ü‚µ‚½B
+OPER_EXCLUDE_CLEARED
+	Ž©“®Ø’fœŠOƒŠƒXƒg‚ðƒNƒŠƒA‚µ‚Ü‚µ‚½B
+OPER_EXCLUDE_NOT_FOUND
+	u%sv‚ÍŽ©“®Ø’fœŠOƒŠƒXƒg‚É“o˜^‚³‚ê‚Ä‚¢‚Ü‚¹‚ñB
+OPER_EXCLUDE_LIST_HEADER
+	Ž©“®Ø’fœŠOƒŠƒXƒgF
+OPER_EXCLUDE_LIST_EMPTY
+	Ž©“®Ø’fœŠOƒŠƒXƒg‚Í‹ó‚Å‚·B
+OPER_EXCLUDE_LIST_NO_MATCH
+	Ž©“®Ø’fœŠOƒŠƒXƒg‚Éˆê’v‚·‚éƒ}ƒXƒN‚Í‚ ‚è‚Ü‚¹‚ñB
+OPER_EXCLUDE_CHECK_NO_MATCH
+	%s‚Éˆê’v‚·‚éŽ©“®Ø’fœŠOƒ}ƒXƒN‚ÍŒ©‚Â‚©‚è‚Ü‚¹‚ñ‚Å‚µ‚½B
+OPER_EXCLUDE_CHECK_HEADER
+	%s‚Éˆê’v‚·‚éŽ©“®Ø’fœŠOƒ}ƒXƒNF
+OPER_EXCLUDE_CHECK_TRAILER
+	%dƒ}ƒXƒNŒ©‚Â‚©‚è‚Ü‚µ‚½B
+OPER_EXCLUDE_COUNT
+	%dŒÂ‚Ìƒ}ƒXƒN‚ªŽ©“®Ø’fœŠOƒŠƒXƒg‚É“o˜^‚³‚ê‚Ä‚¢‚Ü‚·B
+
+# SLINE‰ž“š
+OPER_TOO_MANY_SLINES
+	%sƒŠƒXƒg‚Í‚¢‚Á‚Ï‚¢‚Å‚·‚Ì‚Å’Ç‰Á‚Å‚«‚Ü‚¹‚ñB
+OPER_SLINE_EXISTS
+	u%sv‚Í‚·‚Å‚É%sƒŠƒXƒg‚É‘¶Ý‚µ‚Ü‚·B
+OPER_SLINE_MASK_TOO_GENERAL
+	ƒ}ƒXƒN‚Ì“K—p”ÍˆÍ‚ªL‚·‚¬‚Ü‚·B
+OPER_SLINE_ADDED
+	u%sv‚ð%sƒŠƒXƒg‚É’Ç‰Á‚µ‚Ü‚µ‚½B
+OPER_SLINE_REMOVED
+	u%sv‚ð%sƒŠƒXƒg‚©‚çÁ‹Ž‚µ‚Ü‚µ‚½B
+OPER_SLINE_CLEARED
+	%sƒŠƒXƒg‚ðƒNƒŠƒA‚µ‚Ü‚µ‚½B
+OPER_SLINE_NOT_FOUND
+	u%sv‚Í%sƒŠƒXƒg‚É“o˜^‚³‚ê‚Ä‚¢‚Ü‚¹‚ñB
+OPER_SLINE_LIST_HEADER
+	%sƒŠƒXƒgF
+OPER_SLINE_LIST_EMPTY
+	%sƒŠƒXƒg‚Í‹ó‚Å‚·B
+OPER_SLINE_LIST_NO_MATCH
+	%sƒŠƒXƒg‚Éˆê’v‚·‚éƒ}ƒXƒN‚Í‚ ‚è‚Ü‚¹‚ñB
+OPER_SLINE_CHECK_NO_MATCH
+	%s‚Éˆê’v‚·‚é%sƒ}ƒXƒN‚ÍŒ©‚Â‚©‚è‚Ü‚¹‚ñ‚Å‚µ‚½B
+OPER_SLINE_CHECK_HEADER
+	%s‚Éˆê’v‚·‚é%sƒ}ƒXƒNF
+OPER_SLINE_CHECK_TRAILER
+	%dƒ}ƒXƒNŒ©‚Â‚©‚è‚Ü‚µ‚½B
+OPER_SLINE_COUNT
+	%dŒÂ‚Ìƒ}ƒXƒN‚ª%sƒŠƒXƒg‚É“o˜^‚³‚ê‚Ä‚¢‚Ü‚·B
+OPER_SZLINE_NOT_AVAIL
+	‚±‚ÌIRCƒT[ƒo‚Å‚ÍASZLINE‚ÍŽg‚¦‚Ü‚¹‚ñB
+
+# SU‰ž“š
+OPER_SU_SYNTAX
+	SU ƒpƒXƒ[ƒh
+OPER_SU_NO_PASSWORD
+	ƒX[ƒp[ƒ†[ƒUƒpƒXƒ[ƒh‚ªÝ’è‚³‚ê‚Ä‚¢‚È‚¢‚½‚ßASUƒRƒ}ƒ“ƒh‚ðŽg‚¦‚Ü‚¹‚ñB
+OPER_SU_SUCCEEDED
+	ƒX[ƒp[ƒ†[ƒUŒ ‚ÌŽæ“¾‚É¬Œ÷‚µ‚Ü‚µ‚½B
+OPER_SU_FAILED
+	ƒpƒXƒ[ƒh‚ðŠm”F‚·‚é‚±‚Æ‚ª‚Å‚«‚Ü‚¹‚ñ‚Å‚µ‚½B
+
+# SET‰ž“š
 OPER_SET_SYNTAX
-	SET option setting
+	SET Ý’è–¼ ’l
 OPER_SET_IGNORE_ON
-	ƒCƒOƒmƒAƒR[ƒh‚Íì“®‚µ‚Ü‚·B
+	ƒ†[ƒU–³Ž‹ˆ—‚ð—LŒø‚ÉÝ’è‚µ‚Ü‚µ‚½B
 OPER_SET_IGNORE_OFF
-	ƒCƒOƒmƒAƒR[ƒh‚Íì“®‚µ‚Ü‚¹‚ñB
+	ƒ†[ƒU–³Ž‹ˆ—‚Í–³Œø‚ÉÝ’è‚µ‚Ü‚µ‚½B
 OPER_SET_IGNORE_ERROR
-	IGNORE ‚Ìƒpƒ‰ƒ[ƒ^[‚Í ON ‚© OFF ‚É‚µ‚Ä‰º‚³‚¢B
+	IGNORE‚Ì’l‚ÍON‚©OFF‚É‚µ‚Ä‰º‚³‚¢B
 OPER_SET_READONLY_ON
-	Services ‚Í‚±‚ê‚©‚çƒŠ[ƒhƒIƒ“ƒŠ[ƒ‚[ƒh‚Åì“®‚µ‚Ü‚·B
+	“Ç‚ÝŽæ‚èê—pƒ‚[ƒh‚ÉˆÚs‚µ‚Ü‚·B
 OPER_SET_READONLY_OFF
-	Services ‚Í‚±‚ê‚©‚çƒŠ[ƒhƒ‰ƒCƒgƒ‚[ƒh‚Åì“®‚µ‚Ü‚·B
+	“Ç‚Ý‘‚«i’Êíjƒ‚[ƒh‚ÉˆÚs‚µ‚Ü‚·B
 OPER_SET_READONLY_ERROR
-	READONLY ‚Ìƒpƒ‰ƒ[ƒ^[‚ÍAON ‚© OFF ‚É‚µ‚Ä‰º‚³‚¢B
+	READONLY‚Ì’l‚ÍON‚©OFF‚É‚µ‚Ä‰º‚³‚¢B
 OPER_SET_DEBUG_ON
-	Services ‚Í‚±‚ê‚©‚çƒfƒoƒbƒOƒ‚[ƒh‚Å“®‚«‚Ü‚·B
+	ƒfƒoƒbƒOˆ—‚ð—LŒø‚ÉÝ’è‚µ‚Ü‚µ‚½B
 OPER_SET_DEBUG_OFF
-	Services ‚Í‚±‚ê‚©‚ç’Êíƒ‚[ƒh‚Å“®‚«‚Ü‚·B
+	ƒfƒoƒbƒOˆ—‚ð–³Œø‚ÉÝ’è‚µ‚Ü‚µ‚½B
 OPER_SET_DEBUG_LEVEL
-	Services ‚Í‚±‚ê‚©‚çƒfƒo[ƒOƒ‚[ƒh‚Å“®‚«‚Ü‚·B
+	ƒfƒoƒbƒOˆ—‚ð—LŒøiƒŒƒxƒ‹%dj‚ÉÝ’è‚µ‚Ü‚µ‚½B
 OPER_SET_DEBUG_ERROR
-	DEBUG ‚Ìƒpƒ‰ƒ[ƒ^[‚ÍAON ‚© OFF ‚©³”‚É‚µ‚Ä‰º‚³‚¢B
+	DEBUG‚Ì’l‚ÍAONAOFF‚Ü‚½‚Í³”‚É‚µ‚Ä‰º‚³‚¢B
+OPER_SET_SUPASS_FAILED
+	ƒX[ƒp[ƒ†[ƒUƒpƒXƒ[ƒh‚ÌÝ’è‚ªŽ¸”s‚µ‚Ü‚µ‚½B
+OPER_SET_SUPASS_OK
+	ƒX[ƒp[ƒ†[ƒUƒpƒXƒ[ƒh‚ðÝ’è‚µ‚Ü‚µ‚½B
+OPER_SET_SUPASS_NONE
+	ƒX[ƒp[ƒ†[ƒUƒpƒXƒ[ƒh‚ðÁ‹Ž‚µ‚Ü‚µ‚½B
 OPER_SET_UNKNOWN_OPTION
-	%s ‚Æ‚¢‚¤ƒIƒvƒVƒ‡ƒ“‚Í•ª‚©‚è‚Ü‚¹‚ñB
+	u%sv‚Æ‚¢‚¤Ý’è–¼‚Í‚ ‚è‚Ü‚¹‚ñB
 
-# JUPE‚Ì”½‰ž
+# JUPE‰ž“š
 OPER_JUPE_SYNTAX
-	JUPE servername [reason]
+	JUPE ƒT[ƒo–¼ [——R]
+OPER_JUPE_INVALID_NAME
+	ƒT[ƒo–¼‚Í–³Œø‚Å‚·BiƒsƒŠƒIƒhu.v‚ª•K—v‚Å‚·j
+OPER_JUPE_ALREADY_JUPED
+	ƒT[ƒou%sv‚Í‚·‚Å‚ÉƒWƒ…ƒsƒ^[‚³‚ê‚Ä‚¢‚Ü‚·B
 
-# RAW‚Ì”½‰ž
+# RAW‰ž“š
 OPER_RAW_SYNTAX
-	RAW text
+	RAW ƒeƒLƒXƒg
 
-# UPDATE‚Ì”½‰ž
+# UPDATE‰ž“š
+OPER_UPDATE_SYNTAX
+	UPDATE [FORCE]
+OPER_UPDATE_FORCE_FAILED
+	ƒf[ƒ^ƒx[ƒX‚ÌƒƒbƒN‚ð‰ðœ‚Å‚«‚Ü‚¹‚ñ‚Å‚µ‚½B
 OPER_UPDATING
 	ƒf[ƒ^ƒx[ƒX‚ð•Û‘¶‚µ‚Ä‚¢‚Ü‚·B
+OPER_UPDATE_COMPLETE
+	ƒf[ƒ^ƒx[ƒX‚Ì•Û‘¶‚ªŠ®—¹‚µ‚Ü‚µ‚½B
+OPER_UPDATE_FAILED
+	ƒf[ƒ^ƒx[ƒX‚ð•Û‘¶‚Å‚«‚Ü‚¹‚ñ‚Å‚µ‚½B
 
-# RESTART‚Ì”½‰ž
-OPER_CANNOT_RESTART
-	SERVICES_BIN ‚ÍÝ’è‚³‚ê‚Ä‚¢‚Ü‚¹‚ñ‚Ì‚ÅÄ‹N“®‚Å‚«‚Ü‚¹‚ñB
-	RESTART ‚ÌƒRƒ}ƒ“ƒh‚ðŽg—p‰Â”\‚É‚·‚é‚Ì‚É‚ÍA‚à‚¤ˆê‰ñ configure
-	‚ðŽÀs‚µAServices ‚ðÄƒRƒ“ƒpƒCƒ‹‚µ‚Ä‰º‚³‚¢B
+# REHASH‰ž“š
+OPER_REHASHING
+	ŠÂ‹«Ý’èƒtƒ@ƒCƒ‹‚ðÄ“Ç‚Ýž‚Ý‚µ‚Ä‚¢‚Ü‚·B
+OPER_REHASHED
+	ŠÂ‹«Ý’è‚ª³í‚ÉXV‚³‚ê‚Ü‚µ‚½B
+OPER_REHASH_ERROR
+	ŠÂ‹«Ý’èƒtƒ@ƒCƒ‹‚ÌÄ“Ç‚Ýž‚Ý’†‚ÉƒGƒ‰[‚ª”­¶‚µ‚Ü‚µ‚½BƒƒOƒtƒ@ƒCƒ‹‚ðŠm”F‚µ‚Ä‚­‚¾‚³‚¢B
 
-# IGNORE‚Ì”½‰ž
-OPER_IGNORE_LIST
-	Services‚ÌƒCƒOƒmƒA•\F
-OPER_IGNORE_LIST_EMPTY
-	Services‚ÌƒCƒOƒmƒA•\‚Í‹ó‚Å‚·B
+# KILLCLONES‰ž“š
+OPER_KILLCLONES_SYNTAX
+	KILLCLONES ƒjƒbƒN
+OPER_KILLCLONES_UNKNOWN_NICK
+	ƒ†[ƒUu%sv‚ÍŒ©‚Â‚©‚è‚Ü‚¹‚ñB
+OPER_KILLCLONES_KILLED
+	%s‚Íƒ†[ƒUu%sv‚ð‘ÎÛ‚ÉKILLCLONESƒRƒ}ƒ“ƒh‚ðŽÀs‚µA%dƒNƒ‰ƒCƒAƒ“ƒg‚ªØ’f‚³‚ê‚Ü‚µ‚½B
+OPER_KILLCLONES_KILLED_AKILL
+	%s‚Íƒ†[ƒUu%sv‚ð‘ÎÛ‚ÉKILLCLONESƒRƒ}ƒ“ƒh‚ðŽÀs‚µA%dƒNƒ‰ƒCƒAƒ“ƒg‚ªØ’f‚³‚ê‚Ü‚µ‚½BˆêŽž“I‚ÈŽ©“®Ø’fƒ}ƒXƒNu%sv‚ðŽ©“®Ø’fƒŠƒXƒg‚É’Ç‰Á‚µ‚Ü‚µ‚½B
 
 ###########################################################################
 #
-# ˆÄ“àƒVƒXƒeƒ‚ÌƒƒbƒZ[ƒW
+# ƒZƒbƒVƒ‡ƒ“§ŒÀ—pƒƒbƒZ[ƒW
+#
+###########################################################################
+
+# EXCEPTION‰ž“š
+OPER_EXCEPTION_SYNTAX
+	EXCEPTION {ADD | DEL | CLEAR | MOVE | LIST | VIEW} [ƒpƒ‰ƒ[ƒ^]
+OPER_EXCEPTION_ADD_SYNTAX
+	EXCEPTION ADD [+—LŒøŠúŒÀ] ƒ}ƒXƒN ãŒÀ ——R
+OPER_EXCEPTION_DEL_SYNTAX
+	EXCEPTION DEL {ƒ}ƒXƒN | ƒŠƒXƒg}
+OPER_EXCEPTION_CLEAR_SYNTAX
+	EXCEPTION CLEAR ALL
+OPER_EXCEPTION_MOVE_SYNTAX
+	EXCEPTION MOVE ”Ô† V”Ô†
+OPER_EXCEPTION_LIST_SYNTAX
+	EXCEPTION {LIST | VIEW} [[+ŠJŽnˆÊ’u] ƒpƒ^[ƒ“ | ƒŠƒXƒg]
+OPER_EXCEPTION_ALREADY_PRESENT
+	ƒ}ƒXƒNu%sv‚Í‚·‚Å‚ÉƒZƒbƒVƒ‡ƒ“§ŒÀ—áŠOƒŠƒXƒg‚É‘¶Ý‚µ‚Ü‚·B
+OPER_EXCEPTION_TOO_MANY
+	ƒZƒbƒVƒ‡ƒ“§ŒÀ—áŠOƒŠƒXƒg‚ª‚¢‚Á‚Ï‚¢‚Å‚·‚Ì‚Å’Ç‰Á‚Å‚«‚Ü‚¹‚ñB
+OPER_EXCEPTION_ADDED
+	u%sv(ãŒÀF%d) ‚ðƒZƒbƒVƒ‡ƒ“§ŒÀ—áŠOƒŠƒXƒg‚É’Ç‰Á‚µ‚Ü‚µ‚½B
+OPER_EXCEPTION_MOVED
+	u%sv‚ð%d”Ô‚©‚ç%d”Ô‚ÉˆÚ“®‚µ‚Ü‚µ‚½B
+OPER_EXCEPTION_NO_SUCH_ENTRY
+	%d”Ô‚ÌƒGƒ“ƒgƒŠ‚ÍƒZƒbƒVƒ‡ƒ“§ŒÀ—áŠOƒŠƒXƒg‚É‘¶Ý‚µ‚Ü‚¹‚ñB
+OPER_EXCEPTION_NOT_FOUND
+	u%sv‚ÍƒZƒbƒVƒ‡ƒ“§ŒÀ—áŠOƒŠƒXƒg‚É“o˜^‚³‚ê‚Ä‚¢‚Ü‚¹‚ñB
+OPER_EXCEPTION_NO_MATCH
+	ƒZƒbƒVƒ‡ƒ“§ŒÀ—áŠOƒŠƒXƒg‚Éˆê’v‚·‚éƒ}ƒXƒN‚Í‚ ‚è‚Ü‚¹‚ñB
+OPER_EXCEPTION_EMPTY
+	ƒZƒbƒVƒ‡ƒ“§ŒÀ—áŠOƒŠƒXƒg‚Í‹ó‚Å‚·B
+OPER_EXCEPTION_DELETED
+	u%sv‚ðƒZƒbƒVƒ‡ƒ“§ŒÀ—áŠOƒŠƒXƒg‚©‚çíœ‚µ‚Ü‚µ‚½B
+OPER_EXCEPTION_DELETED_ONE
+	ƒZƒbƒVƒ‡ƒ“§ŒÀ—áŠOƒŠƒXƒg‚©‚ç1ŒÂ‚Ìƒ}ƒXƒN‚ðíœ‚µ‚Ü‚µ‚½B
+OPER_EXCEPTION_DELETED_SEVERAL
+	ƒZƒbƒVƒ‡ƒ“§ŒÀ—áŠOƒŠƒXƒg‚©‚ç%dŒÂ‚Ìƒ}ƒXƒN‚ðíœ‚µ‚Ü‚µ‚½B
+OPER_EXCEPTION_CLEARED
+	ƒZƒbƒVƒ‡ƒ“§ŒÀ—áŠOƒŠƒXƒg‚ðƒNƒŠƒA‚µ‚Ü‚µ‚½B
+OPER_EXCEPTION_LIST_HEADER
+	ƒZƒbƒVƒ‡ƒ“§ŒÀ—áŠOƒŠƒXƒgF
+# number, limit, host
+OPER_EXCEPTION_LIST_COLHEAD
+	”Ô†  ãŒÀ  ƒzƒXƒg
+OPER_EXCEPTION_LIST_FORMAT
+	 %3d  %4d  %s
+# number, mask, set-by, set-time, expires, limit, reason
+OPER_EXCEPTION_VIEW_FORMAT
+	%d. %s
+	@@@Ý’èŽÒF%s
+	@@Ý’èŽžF%s
+	@@—LŒøŠúŒÀF%s
+	@ƒ†[ƒUãŒÀF%d
+	@@@@——RF%s
+OPER_EXCEPTION_CHECK_SYNTAX
+	EXCEPTION CHECK ƒ}ƒXƒN
+OPER_EXCEPTION_CHECK_NO_MATCH
+	%s‚Éˆê’v‚·‚éƒZƒbƒVƒ‡ƒ“§ŒÀ—áŠOƒ}ƒXƒN‚ÍŒ©‚Â‚©‚è‚Ü‚¹‚ñ‚Å‚µ‚½B
+OPER_EXCEPTION_CHECK_HEADER
+	%s‚Éˆê’v‚·‚éƒZƒbƒVƒ‡ƒ“§ŒÀ—áŠOƒ}ƒXƒNF
+OPER_EXCEPTION_CHECK_TRAILER
+	%dƒ}ƒXƒNŒ©‚Â‚©‚è‚Ü‚µ‚½B
+OPER_EXCEPTION_COUNT
+	ƒZƒbƒVƒ‡ƒ“§ŒÀ—áŠOƒŠƒXƒg‚É‚Í%dŒÂ‚ÌƒGƒ“ƒgƒŠ‚ª“o˜^‚³‚ê‚Ä‚¢‚Ü‚·B
+OPER_EXCEPTION_INVALID_LIMIT
+	ƒ†[ƒUãŒÀÝ’è‚ª–³Œø‚Å‚·B0ˆÈãA%dˆÈ‰º‚Ì”’l‚ðŽw’è‚µ‚Ä‚­‚¾‚³‚¢B
+OPER_EXCEPTION_INVALID_HOSTMASK
+	ƒZƒbƒVƒ‡ƒ“§ŒÀ—áŠOƒ}ƒXƒN‚ÍƒzƒXƒg–¼‚Ì‚Ý‚Ìƒ}ƒXƒN‚ÅAƒjƒbƒNEƒ†[ƒU–¼‚ðŽw’è‚Å‚«‚Ü‚¹‚ñBƒ}ƒXƒN‚ðŠm”F‚µ‚Ä‚­‚¾‚³‚¢B
+
+# SESSION‰ž“š
+OPER_SESSION_SYNTAX
+	SESSION {LIST ‰ºŒÀ | VIEW ƒzƒXƒg–¼}
+OPER_SESSION_LIST_SYNTAX
+	SESSION LIST ‰ºŒÀ
+OPER_SESSION_VIEW_SYNTAX
+	SESSION VIEW ƒzƒXƒg–¼
+OPER_SESSION_INVALID_THRESHOLD
+	ƒ†[ƒU”‰ºŒÀÝ’è‚Í–³Œø‚Å‚·B2ˆÈã‚Ì”’l‚ðŽw’è‚µ‚Ä‚­‚¾‚³‚¢B
+OPER_SESSION_NOT_FOUND
+	ƒzƒXƒgu%sv‚ÍŒ©‚Â‚©‚è‚Ü‚¹‚ñB
+OPER_SESSION_LIST_HEADER
+	%dƒ†[ƒUˆÈã‚ÌƒzƒXƒgF
+OPER_SESSION_LIST_COLHEAD
+	ƒ†[ƒU”  ƒzƒXƒg–¼
+OPER_SESSION_LIST_FORMAT
+	  %6d  %s
+OPER_SESSION_VIEW_FORMAT
+	ƒzƒXƒgu%sv‚ÍŒ»Ý%dƒ†[ƒU‚ªÚ‘±‚µ‚Ä‚¨‚èAƒ†[ƒUãŒÀ‚Í%d‚Å‚·B
+
+
+###########################################################################
+#
+# ƒjƒ…[ƒXƒVƒXƒeƒ€—pƒƒbƒZ[ƒW
 #
 ###########################################################################
 
 NEWS_LOGON_TEXT
-	iƒƒOƒIƒ“ˆÄ“à  %sj %s
+	iƒƒOƒIƒ“ˆÄ“àE%sj %s
 NEWS_OPER_TEXT
-	iƒIƒyƒŒ[ƒ^[ˆÄ“à  %sj %s
+	iƒIƒyƒŒ[ƒ^ˆÄ“àE%sj %s
 
 NEWS_LOGON_SYNTAX
-	Syntax: LOGONNEWS {ADD|DEL|LIST} [text|num]
+	LOGONNEWS {ADD | DEL | LIST} [“à—e | ”Ô†]
 NEWS_LOGON_ADD_SYNTAX
-	Syntax: LOGONNEWS ADD text
+	LOGONNEWS ADD “à—e
 NEWS_LOGON_DEL_SYNTAX
-	Syntax: LOGONNEWS DEL {num | ALL}
+	LOGONNEWS DEL {”Ô† | ALL}
 NEWS_LOGON_LIST_HEADER
-	ƒƒOƒIƒ“ˆÄ“à•\F
+	ƒƒOƒIƒ“ˆÄ“àƒŠƒXƒgF
 NEWS_LOGON_LIST_ENTRY
-	%5d (%s  %s)
+	%5d (%sE%s)
 	    %s
 NEWS_LOGON_LIST_NONE
-	ƒƒOƒIƒ“ˆÄ“àŒ‚Í‚ ‚è‚Ü‚¹‚ñB
+	ƒƒOƒIƒ“ˆÄ“à‚Í“o˜^‚³‚ê‚Ä‚¢‚Ü‚¹‚ñB
 NEWS_LOGON_ADD_FULL
-	ƒƒOƒIƒ“ˆÄ“à•\‚Í–ž”t‚Å‚·B
+	ƒƒOƒIƒ“ˆÄ“àƒŠƒXƒg‚ª‚¢‚Á‚Ï‚¢‚Å‚·B
 NEWS_LOGON_ADDED
-	VƒƒOƒIƒ“ˆÄ“àŒi%d”Ôj‚ð’Ç‰Á‚µ‚Ü‚µ‚½B
+	ƒƒOƒIƒ“ˆÄ“ài%d”Ôj‚ð’Ç‰Á‚µ‚Ü‚µ‚½B
 NEWS_LOGON_DEL_NOT_FOUND
-	%d ”Ô–Ú‚ÌƒƒOƒIƒ“ˆÄ“àŒ‚Í‘¶Ý‚µ‚Ü‚¹‚ñB
+	%d”Ô–Ú‚ÌƒƒOƒIƒ“ˆÄ“à‚Í‘¶Ý‚µ‚Ü‚¹‚ñB
 NEWS_LOGON_DELETED
-	%d ”Ô–Ú‚ÌƒƒOƒIƒ“ˆÄ“àŒ‚ÍÁ‹Ž‚³‚ê‚Ü‚µ‚½B
+	%d”Ô–Ú‚ÌƒƒOƒIƒ“ˆÄ“à‚ðÁ‹Ž‚µ‚Ü‚µ‚½B
 NEWS_LOGON_DEL_NONE
-	ƒƒOƒIƒ“ˆÄ“àŒ‚Í‚ ‚è‚Ü‚¹‚ñB
+	ƒƒOƒIƒ“ˆÄ“à‚Í“o˜^‚³‚ê‚Ä‚¢‚Ü‚¹‚ñB
 NEWS_LOGON_DELETED_ALL
-	ƒƒOƒIƒ“ˆÄ“àŒ‚Í‘S‚ÄÁ‹Ž‚³‚ê‚Ü‚µ‚½B
+	ƒƒOƒIƒ“ˆÄ“à‚ð‘S‚ÄÁ‹Ž‚µ‚Ü‚µ‚½B
 
 NEWS_OPER_SYNTAX
-	Syntax: OPERNEWS {ADD|DEL|LIST} [text|num]
+	OPERNEWS {ADD | DEL | LIST} [“à—e | ”Ô†]
 NEWS_OPER_ADD_SYNTAX
-	Syntax: OPERNEWS ADD text
+	OPERNEWS ADD “à—e
 NEWS_OPER_DEL_SYNTAX
-	Syntax: OPERNEWS DEL {num | ALL}
+	OPERNEWS DEL {”Ô† | ALL}
 NEWS_OPER_LIST_HEADER
-	ƒIƒyƒŒ[ƒ^[ˆÄ“à•\F
+	ƒIƒyƒŒ[ƒ^ˆÄ“àƒŠƒXƒgF
 NEWS_OPER_LIST_ENTRY
-	%5d (%s  %s)
+	%5d (%sE%s)
 	    %s
 NEWS_OPER_LIST_NONE
-	ƒIƒyƒŒ[ƒ^[ˆÄ“àŒ‚Í‚ ‚è‚Ü‚¹‚ñB
+	ƒIƒyƒŒ[ƒ^ˆÄ“à‚Í“o˜^‚³‚ê‚Ä‚¢‚Ü‚¹‚ñB
 NEWS_OPER_ADD_FULL
-	ƒIƒyƒŒ[ƒ^[ˆÄ“à•\‚Í–ž”t‚Å‚·B
+	ƒIƒyƒŒ[ƒ^ˆÄ“àƒŠƒXƒg‚ª‚¢‚Á‚Ï‚¢‚Å‚·B
 NEWS_OPER_ADDED
-	VƒIƒyƒŒ[ƒ^[ˆÄ“àŒi%d”Ôj‚ð’Ç‰Á‚µ‚Ü‚µ‚½B
+	ƒIƒyƒŒ[ƒ^ˆÄ“ài%d”Ôj‚ð’Ç‰Á‚µ‚Ü‚µ‚½B
 NEWS_OPER_DEL_NOT_FOUND
-	%d ”Ô–Ú‚ÌƒIƒyƒŒ[ƒ^[ˆÄ“àŒ‚Í‘¶Ý‚µ‚Ü‚¹‚ñB
+	%d”Ô–Ú‚ÌƒIƒyƒŒ[ƒ^ˆÄ“à‚Í‘¶Ý‚µ‚Ü‚¹‚ñB
 NEWS_OPER_DELETED
-	%d ”Ô–Ú‚ÌƒIƒyƒŒ[ƒ^[ˆÄ“àŒ‚ÍÁ‹Ž‚³‚ê‚Ü‚µ‚½B
+	%d”Ô–Ú‚ÌƒIƒyƒŒ[ƒ^ˆÄ“à‚ðÁ‹Ž‚µ‚Ü‚µ‚½B
 NEWS_OPER_DEL_NONE
-	ƒIƒyƒŒ[ƒ^[ˆÄ“àŒ‚Í‚ ‚è‚Ü‚¹‚ñB
+	ƒIƒyƒŒ[ƒ^ˆÄ“à‚Í“o˜^‚³‚ê‚Ä‚¢‚Ü‚¹‚ñB
 NEWS_OPER_DELETED_ALL
-	ƒIƒyƒŒ[ƒ^[ˆÄ“àŒ‚Í‘S‚ÄÁ‹Ž‚³‚ê‚Ü‚µ‚½B
+	ƒIƒyƒŒ[ƒ^ˆÄ“à‚ð‘S‚ÄÁ‹Ž‚µ‚Ü‚µ‚½B
 
 NEWS_HELP_LOGON
-	ƒVƒ“ƒ^ƒNƒXFLOGONNEWS ADD text
-	@@@@@@LOGONNEWS DEL {num | ALL}
+	ƒVƒ“ƒ^ƒNƒXFLOGONNEWS ADD “à—e
+	@@@@@@LOGONNEWS DEL {”Ô† | ALL}
 	@@@@@@LOGONNEWS LIST
 	
-	ƒƒOƒIƒ“ˆÄ“à•\‚Ì•ÒW‚Æ•\Ž¦‚ÌƒRƒ}ƒ“ƒh‚Å‚·Bƒ†[ƒU[‚Íƒlƒbƒg
-	ƒ[ƒN‚ÉÚ‘±‚ÆAServices ‚Í‚±‚ÌƒƒbƒZ[ƒW‚ðƒ†[ƒU[‚É‘—‚è‚Ü
-	‚·B‚½‚¾‚µAƒƒbƒZ[ƒW‚ª‚S‚ÂˆÈã‚Ìê‡Aƒ†[ƒU[‚É‘å—Ê‚Ìƒƒb
-	ƒZ[ƒW‚ð‘—‚ç‚È‚¢‚æ‚¤‚ÉÅV‚Ì‚R‚Â‚¾‚¯‚ð‘—‚è‚Ü‚·B
+	ƒƒOƒIƒ“ˆÄ“à‚ð’Ç‰ÁEíœE•\Ž¦‚µ‚Ü‚·BƒƒOƒIƒ“ˆÄ“à‚ÍAƒ†[ƒU
+	‚ªƒlƒbƒgƒ[ƒN‚ÉÚ‘±‚·‚éŽž‚ÉŽ©“®“I‚É‘—M‚³‚ê‚Ü‚·‚ªA‚SŒˆÈã
+	“o˜^‚µ‚Ä‚àAÅV‚Ì‚RŒ‚µ‚©‘—‚ç‚ê‚Ü‚¹‚ñB
 	
-	LOGONNEWS LIST ‚Æ‚¢‚¤Œ`‚ÅAIRC ƒIƒyƒŒ[ƒ^[‚ÍƒƒOƒIƒ“ˆÄ“à•\
-	‚ð•\‚·‚±‚Æ‚ªo—ˆ‚Ü‚·‚ªAADDEDEL ‚Ì•ÒWƒRƒ}ƒ“ƒh‚ðŽg‚¤‚Ì‚Í
-	Services ‚ÌƒAƒhƒ~ƒ“‚Ì‚Ý‚Å‚·B
+	LOGONNEWS LISTi•\Ž¦j‚Í‘S‚Ä‚ÌIRCƒIƒyƒŒ[ƒ^‚ªŽg‚¦‚Ü‚·‚ªA•Ò
+	WƒRƒ}ƒ“ƒhiADD‚ÆDELj‚ÌŽg—p‚ÍServicesƒIƒyƒŒ[ƒ^‚ÉŒÀ‚ç‚ê‚Ä‚¢
+	‚Ü‚·B
 
 NEWS_HELP_OPER
 	ƒVƒ“ƒ^ƒNƒXFOPERNEWS ADD text
 	@@@@@@OPERNEWS DEL {num | ALL}
 	@@@@@@OPERNEWS LIST
 	
-	ƒIƒyƒŒ[ƒ^[ˆÄ“à•\‚Ì•ÒW‚Æ•\Ž¦‚ÌƒRƒ}ƒ“ƒh‚Å‚·Bƒ†[ƒU[‚ª
-	IRC ƒIƒyƒŒ[ƒ^[‚É‚È‚é‚ÆAServices ‚Í‚±‚ÌƒƒbƒZ[ƒW‚ðƒ†[
-	ƒU[‚É‘—‚è‚Ü‚·B‚½‚¾‚µAƒƒbƒZ[ƒW‚ª‚S‚ÂˆÈã‚Ìê‡Aƒ†[
-	ƒU[‚É‘å—Ê‚ÌƒƒbƒZ[ƒW‚ð‘—‚ç‚È‚¢‚æ‚¤‚ÉÅV‚Ì‚R‚Â‚¾‚¯‚ð‘—‚è
-	‚Ü‚·B
+	ƒIƒyƒŒ[ƒ^ˆÄ“à‚ð’Ç‰ÁEíœE•\Ž¦‚µ‚Ü‚·BƒIƒyƒŒ[ƒ^ˆÄ“à‚ÍAƒ†
+	[ƒU‚ª/operƒRƒ}ƒ“ƒh‚ÅIRCƒIƒyƒŒ[ƒ^Œ ŒÀ‚ðŽæ“¾‚µ‚½Žž‚É‘—M‚³‚ê
+	‚Ü‚·‚ªA‚SŒˆÈã“o˜^‚µ‚Ä‚àAÅV‚Ì‚RŒ‚µ‚©‘—‚ç‚ê‚Ü‚¹‚ñB
 	
-	OPERNEWS LIST ‚Æ‚¢‚¤Œ`‚ÅAIRC ƒIƒyƒŒ[ƒ^[‚ÍƒƒOƒIƒ“ˆÄ“à•\
-	‚ð•\‚·‚±‚Æ‚ªo—ˆ‚Ü‚·‚ªAADDEDEL ‚Ì•ÒWƒRƒ}ƒ“ƒh‚ðŽg‚¤‚Ì‚Í
-	Services ‚ÌƒAƒhƒ~ƒ“‚Ì‚Ý‚Å‚·B
+	OPERNEWS LISTi•\Ž¦j‚Í‘S‚Ä‚ÌIRCƒIƒyƒŒ[ƒ^‚ªŽg‚¦‚Ü‚·‚ªA•ÒW
+	ƒRƒ}ƒ“ƒhiADD‚ÆDELj‚ÌŽg—p‚ÍServicesƒIƒyƒŒ[ƒ^‚ÉŒÀ‚ç‚ê‚Ä‚¢‚Ü
+	‚·B
+
 
 ###########################################################################
 #
-# NickServ‚Ìƒwƒ‹ƒvƒƒbƒZ[ƒW
+# StatServ—pƒƒbƒZ[ƒW
+#
+###########################################################################
+
+# General SERVERS responses
+STAT_SERVERS_REMOVE_SERV_FIRST
+	ƒT[ƒou%sv‚Íƒlƒbƒgƒ[ƒN‚ÉÚ‘±‚µ‚Ä‚¢‚Ü‚·BØ’f‚µ‚Ä‚©‚ç‚â‚è’¼‚µ‚Ä‚­‚¾‚³‚¢B
+STAT_SERVERS_SERVER_EXISTS
+	ƒT[ƒou%sv‚Í‚·‚Å‚É‘¶Ý‚µ‚Ü‚·B
+
+# SERVERS command syntax
+STAT_SERVERS_SYNTAX
+	SERVERS ƒIƒvƒVƒ‡ƒ“ ƒpƒ‰ƒ[ƒ^
+
+# STATS responses
+STAT_SERVERS_STATS_TOTAL
+	‘ƒT[ƒo”F%2d
+STAT_SERVERS_STATS_ON_OFFLINE
+	ƒIƒ“ƒ‰ƒCƒ“F%2d (%d%%)  ƒIƒtƒ‰ƒCƒ“F%2d (%d%%)
+STAT_SERVERS_LASTQUIT_WAS
+	Å‹ß‚ÌØ’fF%-30s  %s
+
+# LIST responses
+STAT_SERVERS_LIST_HEADER
+	ƒT[ƒo–¼                       ƒ†[ƒU”   ƒIƒyƒŒ[ƒ^”
+STAT_SERVERS_LIST_FORMAT
+	%-30s %3d (%2d%%)  %3d (%2d%%)
+STAT_SERVERS_LIST_RESULTS
+	LISTI—¹i%d/%dƒT[ƒo‚ð•\Ž¦jB
+
+# VIEW responses
+STAT_SERVERS_VIEW_HEADER_ONLINE
+	%-30s  (ƒIƒ“ƒ‰ƒCƒ“)
+STAT_SERVERS_VIEW_HEADER_OFFLINE
+	%-30s  (ƒIƒtƒ‰ƒCƒ“)
+STAT_SERVERS_VIEW_LASTJOIN
+	@@Å‹ßÚ‘±ŽžF%s
+STAT_SERVERS_VIEW_LASTQUIT
+	@@Å‹ßØ’fŽžF%s
+STAT_SERVERS_VIEW_QUITMSG
+	Ø’fƒƒbƒZ[ƒWF%s
+STAT_SERVERS_VIEW_USERS_OPERS
+	@@@ƒ†[ƒU”F%3d (%2d%%)  ƒIƒyƒŒ[ƒ^”F%3d (%2d%%)
+STAT_SERVERS_VIEW_RESULTS
+	LISTI—¹i%d/%dƒT[ƒo‚ð•\Ž¦jB
+
+# DELETE responses
+STAT_SERVERS_DELETE_SYNTAX
+	SERVERS DELETE ƒT[ƒo
+STAT_SERVERS_DELETE_DONE
+	ƒT[ƒou%sv‚Ì“Œvî•ñ‚ðíœ‚µ‚Ü‚µ‚½B
+
+# COPY responses
+STAT_SERVERS_COPY_SYNTAX
+	SERVERS COPY ƒT[ƒo VƒT[ƒo–¼
+STAT_SERVERS_COPY_DONE
+	ƒT[ƒou%sv‚Ì“Œvî•ñ‚ðu%sv‚ÉƒRƒs[‚µ‚Ü‚µ‚½B
+
+# RENAME responses
+STAT_SERVERS_RENAME_SYNTAX
+	SERVERS RENAME ƒT[ƒo VƒT[ƒo–¼
+STAT_SERVERS_RENAME_DONE
+	ƒT[ƒou%sv‚Ì“Œvî•ñ‚ðu%sv‚É–¼‘O‚ð•ÏX‚µ‚Ü‚µ‚½B
+
+# USERS responses
+STAT_USERS_SYNTAX
+	USERS STATS
+STAT_USERS_TOTUSERS
+	@@@@@@@@@‘Sƒ†[ƒU”F%d
+STAT_USERS_TOTOPERS
+	@@@@@@@‘SƒIƒyƒŒ[ƒ^”F%d
+STAT_USERS_SERVUSERS
+	@@ƒT[ƒo“–‚½‚è•½‹Ïƒ†[ƒU”F%d
+STAT_USERS_SERVOPERS
+	ƒT[ƒo“–‚½‚è•½‹ÏƒIƒyƒŒ[ƒ^”F%d.%d
+
+
+###########################################################################
+#
+# NickServ—pƒwƒ‹ƒvƒƒbƒZ[ƒW
 #
 ###########################################################################
 
 NICK_HELP
-	%S ‚ÍAƒjƒbƒN‚Ì“o˜^ƒT[ƒrƒX‚Å‚·B‚±‚ÌƒT[ƒrƒX‚ðŽg‚¢
-	ƒjƒbƒN‚ð“o˜^‚·‚ê‚ÎA‘¼‚Ìƒ†[ƒU[‚Í‚»‚ÌƒjƒbƒN‚ðŽg‚¦‚È‚­‚È‚è
-	‚Ü‚·B‚½‚¾‚µAƒjƒbƒN‚ð%d“úŠÔŽg‚í‚È‚¢‚Æ“o˜^‚ÍØ‚ê‚Ä‚µ‚Ü‚¢‚Ü
-	‚·BŽŸ‚ÌƒRƒ}ƒ“ƒh‚ÅƒjƒbƒN‚ð“o˜^‚âƒIƒvƒVƒ‡ƒ“‚Ì•ÏX‚ªo—ˆ‚Ü‚·B
-	ƒRƒ}ƒ“ƒh‚ðŽg‚¤ê‡‚Íu/msg %S commandv‚ð“ü—Í‚µ‚Ä‰º
-	‚³‚¢BƒRƒ}ƒ“ƒh‚Ìƒwƒ‹ƒv‚ð“Ç‚Þê‡‚ÍAu/msg %S HELP
-	commandv‚ð“ü—Í‚µ‚Ä‰º‚³‚¢B
+	%S‚ÍAƒjƒbƒN“o˜^ƒT[ƒrƒX‚Å‚·B‚±‚ÌƒT[ƒrƒX‚ðŽg‚Á‚Äƒjƒb
+	ƒN‚ð“o˜^‚·‚ê‚ÎA‘¼‚Ìƒ†[ƒU‚ªŽg—p‚µ‚È‚¢‚æ‚¤‚É%S‚ªŠÄŽ‹‚µ
+	‚Ü‚·B%S‚ð§Œä‚·‚é‚É‚ÍAu/msg %S ƒRƒ}ƒ“ƒh–¼v‚Ì‚æ‚¤‚É
+	ƒRƒ}ƒ“ƒh‚ðŽg‚¢‚Ü‚·BŽg—p‚Å‚«‚éƒRƒ}ƒ“ƒh‚Ìˆê——‚Í
+	u/msg %S HELP COMMANDSv‚Å•\Ž¦‚Å‚«‚Ü‚·B‚Ü‚½A“Á’è‚Ì
+	ƒRƒ}ƒ“ƒh‚É‚Â‚¢‚Ä‚Íu/msg %S HELP ƒRƒ}ƒ“ƒh–¼v‚Åƒwƒ‹ƒv
+	î•ñ‚ð•\Ž¦‚Å‚«‚Ü‚·B
+NICK_HELP_EXPIRES
 	
-	    REGISTER   ƒjƒbƒN‚Ì“o˜^
-#@@@ uidentifyv
-	    IDENTIFY   ƒpƒXƒ[ƒh‚Åidentify‚·‚é
-	    ACCESS     ƒAƒNƒZƒX•\‚Ì•ÏX
-	    LINK       ‘¼‚ÌƒjƒbƒN‚ÉƒŠƒ“ƒN‚ðì‚é
-	    SET        ƒIƒvƒVƒ‡ƒ“‚ÌÝ’è
-	    DROP       “o˜^‚ÌÁ‹Ž
-	    RECOVER    ƒjƒbƒN‚ðŽg—p‚µ‚Ä‚¢‚éƒ†[ƒU[‚ðØ’f‚·‚é
-	    RELEASE    RECOVER ‚ðŽg‚Á‚Ä‚©‚çƒjƒbƒN‚ðŽg—p‰Â”\‚É‚·‚é
+	“o˜^‚³‚ê‚½ƒjƒbƒN‚ÍA%s‚ÌŠÔŽg—p‚³‚ê‚È‚¢‚ÆA“o˜^‚ª‰ðœ‚³‚ê‚Ü‚·B
+NICK_HELP_WARNING
 	
-	‘¼‚ÌƒRƒ}ƒ“ƒhFUNLINKEGHOSTEINFOELISTESTATUS
-	
-	ŒxF‚±‚ÌƒT[ƒrƒX‚ÍAƒ†[ƒU[‚ÌgŒ³‚ðŽç‚éˆ×‚ÌƒT[ƒrƒX‚Å‚·B
-	ƒjƒbƒN‚Ìu“‚Ýv“™‚Ìˆ«—p‚Ì‚½‚ß‚ÌƒT[ƒrƒX‚Å‚Í‚ ‚è‚Ü‚¹‚ñ‚Ì‚ÅA
-	‚»‚Ì‚æ‚¤‚Èsˆ×‚Í‚¨‚â‚ß‰º‚³‚¢B
+	’ˆÓF‚±‚ÌƒT[ƒrƒX‚ÍAƒ†[ƒU‚ÌgŒ³‚ðŽç‚é‚½‚ß‚ÌƒT[ƒrƒX‚Å‚·B
+	ƒjƒbƒN‚Ì“—p‚È‚ÇAƒT[ƒrƒX‚Ìˆ«—p‚Í‹–‚³‚ê‚Ü‚¹‚ñ‚Ì‚Å‚²’ˆÓ‚­‚¾
+	‚³‚¢B
 
-NICK_HELP_EXPIRE_ZERO
-	%S ‚ÍAƒjƒbƒN‚Ì“o˜^ƒT[ƒrƒX‚Å‚·B‚±‚ÌƒT[ƒrƒX‚ðŽg‚¢
-	ƒjƒbƒN‚ð“o˜^‚·‚ê‚ÎA‘¼‚Ìƒ†[ƒU[‚Í‚»‚ÌƒjƒbƒN‚ðŽg‚¦‚È‚­‚È‚è
-	‚Ü‚·BŽŸ‚ÌƒRƒ}ƒ“ƒh‚ÅƒjƒbƒN‚ð“o˜^‚âƒIƒvƒVƒ‡ƒ“‚Ì•ÏX‚ªo—ˆ‚Ü
-	‚·BƒRƒ}ƒ“ƒh‚ðŽg‚¤ê‡‚Íu/msg %S commandv‚ð“ü—Í‚µ‚Ä
-	‰º‚³‚¢BƒRƒ}ƒ“ƒh‚Ìƒwƒ‹ƒv‚ð“Ç‚Þê‡‚ÍAu/msg %S HELP
-	commandv‚ð“ü—Í‚µ‚Ä‰º‚³‚¢B
+NICK_HELP_COMMANDS
+	%S‚Å‚ÍA‰º‹LƒRƒ}ƒ“ƒh‚ªŽg‚¦‚Ü‚·B
 	
-	    REGISTER   ƒjƒbƒN‚Ì“o˜^
-#@@@ uidentifyv
-	    IDENTIFY   ƒpƒXƒ[ƒh‚Åidentify‚·‚é
-	    ACCESS     ƒAƒNƒZƒX•\‚Ì•ÏX
-	    LINK       ‘¼‚ÌƒjƒbƒN‚ÉƒŠƒ“ƒN‚ðì‚é
-	    SET        ƒIƒvƒVƒ‡ƒ“‚ÌÝ’è
-	    DROP       “o˜^‚ÌÁ‹Ž
-	    RECOVER    ƒjƒbƒN‚ðŽg—p‚µ‚Ä‚¢‚éƒ†[ƒU[‚ðØ’f‚·‚é
-	    RELEASE    RECOVER ‚ðŽg‚Á‚Ä‚©‚çƒjƒbƒN‚ðŽg—p‰Â”\‚É‚·‚é
-	
-	‘¼‚ÌƒRƒ}ƒ“ƒhFUNLINKEGHOSTEINFOELISTESTATUS
-	
-	ŒxF‚±‚ÌƒT[ƒrƒX‚ÍAƒ†[ƒU[‚ÌgŒ³‚ðŽç‚éˆ×‚ÌƒT[ƒrƒX‚Å‚·B
-	ƒjƒbƒN‚Ìu“‚Ýv“™‚Ìˆ«—p‚Ì‚½‚ß‚ÌƒT[ƒrƒX‚Å‚Í‚ ‚è‚Ü‚¹‚ñ‚Ì‚ÅA
-	‚»‚Ì‚æ‚¤‚Èsˆ×‚Í‚¨‚â‚ß‰º‚³‚¢B
+	    REGISTER     ƒjƒbƒN‚ð“o˜^‚·‚é
+	    IDENTIFY     ƒpƒXƒ[ƒh”FØ‚ðs‚¤
+	    DROP         ƒjƒbƒN‚Ì“o˜^‚ð‰ðœ‚·‚é
+NICK_HELP_COMMANDS_AUTH
+	    AUTH         ƒjƒbƒN“o˜^Žž‚Ìƒ[ƒ‹ƒAƒhƒŒƒXŠm”F‚ðs‚¤
+	    SENDAUTH     ƒAƒhƒŒƒXŠm”F‚ÌƒR[ƒh‚ðÄ‘—‚·‚é
+	    REAUTH       ƒpƒXƒ[ƒh‚ð–Y‚ê‚½ê‡AŠm”FƒR[ƒh‚ðÝ’è‚·‚é
+	    RESTOREMAIL  ÅŒã‚É—LŒøŠm”F‚³‚ê‚½ƒ[ƒ‹ƒAƒhƒŒƒX‚ð•œŒ³‚·‚é
+NICK_HELP_COMMANDS_LINK
+	    LINK         ‘¼‚ÌƒjƒbƒN‚ðƒŠƒ“ƒN‚·‚é
+	    UNLINK       ƒjƒbƒN‚ÌƒŠƒ“ƒN‚ð‰ðœ‚·‚é
+	    LISTLINKS    ƒŠƒ“ƒN‚³‚ê‚Ä‚¢‚éƒjƒbƒN‚ð•\Ž¦‚·‚é
+NICK_HELP_COMMANDS_ACCESS
+	    ACCESS       —˜—p‹–‰ÂƒAƒhƒŒƒXƒŠƒXƒg‚ð•ÒW‚·‚é
+NICK_HELP_COMMANDS_AJOIN
+	    AJOIN        Ž©“®ƒ`ƒƒƒ“ƒlƒ‹ŽQ‰ÁƒŠƒXƒg‚ð•ÒW‚·‚é
+NICK_HELP_COMMANDS_SET
+	    SET          ƒjƒbƒN•ÛŒì‚È‚Ç‚ÌÝ’è‚ð•ÏX‚·‚é
+	    UNSET        ƒjƒbƒNŠÖ˜Aî•ñ‚ðÁ‹Ž‚·‚é
+	    RECOVER      ƒjƒbƒN‚ð•s³‚ÉŽg—p‚µ‚Ä‚¢‚éƒ†[ƒU‚ðØ’f‚·‚é
+	    RELEASE      RECOVER‚ðŽg—pŒãAƒjƒbƒN‚ðÄ‚Ñ—˜—p‰Â”\‚É‚·‚é
+	    GHOST        uƒS[ƒXƒgvÚ‘±‚ðØ’f‚·‚é
+	    INFO         ƒjƒbƒNî•ñ‚ð•\Ž¦‚·‚é
+NICK_HELP_COMMANDS_LIST
+	    LIST         ƒpƒ^[ƒ“‚Éˆê’v‚·‚éƒjƒbƒN‚Ìˆê——‚ð•\Ž¦‚·‚é
+	    LISTEMAIL    ƒ[ƒ‹ƒAƒhƒŒƒX‚ÅƒjƒbƒN‚ðŒŸõ‚·‚é
+NICK_HELP_COMMANDS_LISTCHANS
+	    LISTCHANS    “o˜^‚µ‚½ƒ`ƒƒƒ“ƒlƒ‹‚Ìˆê——‚ð•\Ž¦‚·‚é
+	    STATUS       ƒjƒbƒN‚Ì”FØó‹µ‚ð’²‚×‚é
 
 NICK_HELP_REGISTER
-	ƒVƒ“ƒ^ƒNƒXFREGISTER password
+	—p–@F%s
 	
 	Œ»ÝŽg—p‚µ‚Ä‚¢‚éƒjƒbƒN‚ð%S‚Ìƒf[ƒ^ƒx[ƒX‚É“o˜^‚µ‚Ü‚·B
-	ƒjƒbƒN‚ð“o˜^‚µ‚Ä‚©‚çASETEACCESS“™‚ÌƒRƒ}ƒ“ƒh‚ÅƒjƒbƒN‚ÌƒI
-	ƒvƒVƒ‡ƒ“‚Ì•ÏX‚ªo—ˆ‚Ü‚·B‚½‚¾‚µAÝ’è‚ð•ÏX‚·‚é‚Ì‚É‚ÍƒpƒX
-	ƒ[ƒh‚ª•K—v‚Å‚·‚Ì‚ÅA“o˜^‚·‚é‚Æ‚«‚É‘I‚ñ‚¾ƒpƒXƒ[ƒh‚ð‚æ‚­
-	Šo‚¦‚Ä‚¨‚¢‚Ä‰º‚³‚¢B‚Ü‚½AƒjƒbƒN‚âƒ`ƒƒƒ“ƒlƒ‹‚Æˆá‚Á‚ÄAƒpƒX
-	ƒ[ƒh‚Å‘å•¶Žš‚Æ¬•¶Žš‚Íˆá‚¢‚Ü‚·B—á‚¦‚ÎAFIDOEFidoEfido
-	“™‚Í‘S‚Äˆá‚¢‚Ü‚·B
+	ƒjƒbƒN‚ð“o˜^ŒãASET‚âACCESS‚È‚Ç‚ÌƒRƒ}ƒ“ƒh‚ÅƒjƒbƒN‚ÌÝ’è‚ð•Ï
+	X‚µ‚½‚èAƒz[ƒ€ƒy[ƒWƒAƒhƒŒƒXiURLj‚È‚Ç‚ÌŠÖ˜Aî•ñ‚ð“o˜^‚·
+	‚é‚±‚Æ‚ª‚Å‚«‚Ü‚·B‚È‚¨A“o˜^‚¨‚æ‚ÑÝ’è•ÏX‚É‚ÍƒpƒXƒ[ƒh‚ª•K
+	—v‚Å‚·‚Ì‚ÅA“o˜^‚ÅŽg‚Á‚½ƒpƒXƒ[ƒh‚ð‚æ‚­Šo‚¦‚Ä‚¨‚¢‚Ä‚­‚¾‚³‚¢B
+	iƒpƒXƒ[ƒh‚Å‚Í‘å•¶Žš‚Æ¬•¶Žš‚Í‹æ•Ê‚³‚ê‚Ü‚·j
+NICK_HELP_REGISTER_EMAIL
 	
-	ƒpƒXƒ[ƒh‚ð‘I‚Ô‚Æ‚«‚ÍA•s–¾‚È•û‚ÌƒpƒXƒ[ƒh‚É‚µ‚Ä‰º‚³‚¢B
-	‚¨–¼‘OEƒjƒbƒN“™‚Ì‚æ‚¤‚È“–‚Ä‚â‚·‚¢ƒpƒXƒ[ƒh‚Í‚¨Ž~‚ß‰º‚³‚¢B
-	‚S•¶ŽšˆÈ‰º‚ÌƒpƒXƒ[ƒh‚Í‰½‚Å‚à“–‚Ä‚â‚·‚¢•û‚Å‚·‚Ì‚ÅA‚T•¶Žš
-	ã‚ÌƒpƒXƒ[ƒhˆÈã‚É‚µ‚Ä‰º‚³‚¢B‚È‚¨AƒpƒXƒ[ƒh‚ÅƒXƒy[ƒX
-	‚ðŽg‚¦‚Ü‚¹‚ñBˆê•ûA“ú–{Œêi‰¼–¼‚ÆŠ¿Žšj‚ÅƒpƒXƒ[ƒh‚ð“ü—Í
-	‚·‚é‚±‚Æ‚ào—ˆ‚Ü‚·B
+	“o˜^Žž‚É“dŽqƒ[ƒ‹ƒAƒhƒŒƒX‚à“¯Žž‚É“o˜^‚Å‚«‚Ü‚·B“o˜^‚µ‚È‚©‚Á
+	‚½ê‡‚Å‚àASET EMAILƒRƒ}ƒ“ƒh‚ðŽg‚Á‚ÄŒã‚Å“o˜^‚Å‚«‚Ü‚·B
+NICK_HELP_REGISTER_EMAIL_REQ
+	
+	“o˜^Žž‚ÉA“dŽqƒ[ƒ‹ƒAƒhƒŒƒX‚à“o˜^‚µ‚È‚¯‚ê‚Î‚È‚è‚Ü‚¹‚ñBƒA
+	ƒhƒŒƒX‚ð‘¼l‚É’m‚ç‚ê‚½‚­‚È‚¢ê‡‚ÍASET HIDEƒRƒ}ƒ“ƒh‚Å‰B‚·
+	‚±‚Æ‚ª‚Å‚«‚Ü‚·iÚ×‚É‚Â‚¢‚Ä‚Íu/msg %S HELP SET HIDEv
+	‚ð“ü—Í‚µ‚Ä‰º‚³‚¢jB
+NICK_HELP_REGISTER_EMAIL_AUTH
+	
+	“o˜^Žž‚ÉA“dŽqƒ[ƒ‹ƒAƒhƒŒƒX‚à“o˜^‚µ‚È‚¯‚ê‚Î‚È‚è‚Ü‚¹‚ñB
+	%S‚ÍA‚±‚ÌƒAƒhƒŒƒX‚ÉŠm”FƒR[ƒh‚ð‘—M‚µ‚Ü‚·‚Ì‚ÅA“o˜^ŒãA
+	‚±‚ÌƒR[ƒh‚ðAUTHƒRƒ}ƒ“ƒh‚ÉŽg‚Á‚Ä“o˜^‚ðŠ®—¹‚³‚¹‚Ä‚­‚¾‚³‚¢BƒA
+	ƒhƒŒƒX‚ð‘¼l‚É’m‚ç‚ê‚½‚­‚È‚¢ê‡‚ÍASET HIDEƒRƒ}ƒ“ƒh‚Å‰B‚·‚±
+	‚Æ‚ª‚Å‚«‚Ü‚·iÚ×‚É‚Â‚¢‚Ä‚Íu/msg %S HELP SET HIDEv
+	‚ð“ü—Í‚µ‚Ä‰º‚³‚¢jB
+NICK_HELP_REGISTER_END
+	
+	ƒpƒXƒ[ƒh‚ÍA‘¼l‚É•ª‚©‚è‚É‚­‚¢‚à‚Ì‚ð‘I‚ñ‚Å‰º‚³‚¢B“Á‚ÉA
+	‚¨–¼‘OEƒjƒbƒN“™‚Ì‚æ‚¤‚È“–‚Ä‚â‚·‚¢ƒpƒXƒ[ƒh‚Í‚¨‚â‚ß‰º‚³‚¢
+	iƒjƒbƒN‚ÍƒpƒXƒ[ƒh‚Æ‚µ‚Ä‚ÍŽg‚¦‚Ü‚¹‚ñjB‚S•¶ŽšˆÈ‰º‚ÌƒpƒX
+	ƒ[ƒh‚àUŒ‚‚ÉŽã‚¢‚½‚ßA‚T•¶ŽšˆÈã‚ÌƒpƒXƒ[ƒh‚É‚µ‚Ä‰º‚³‚¢B
+	“ú–{Œêi‰¼–¼‚ÆŠ¿Žšj‚ðƒpƒXƒ[ƒh‚ÅŽg—p‚·‚é‚±‚Æ‚Í‚Å‚«‚Ü‚·‚ªA
+	’[––‚É‚æ‚Á‚Ä‚Í³í‚É“o˜^‚³‚ê‚È‚¢ê‡‚à‚ ‚è‚Ü‚·‚Ì‚Å‚²’ˆÓ‰º
+	‚³‚¢B
 
 NICK_HELP_IDENTIFY
-	ƒVƒ“ƒ^ƒNƒXFIDENTIFY password
+	—p–@FIDENTIFY ƒpƒXƒ[ƒh
 	
-#@@@  uØ‹’v‚È‚ÇEChanServ‚Ì‚à‚ ‚é
-	%S‚ÉƒjƒbƒN‚Ì•Û—LŽÒ‚Å‚ ‚éØ‹’‚ðŽ¦‚µ‚Ü‚·B‚±‚ÌƒRƒ}ƒ“ƒh
-	‚ðŽg‚í‚È‚¯‚ê‚ÎA‚Ù‚Æ‚ñ‚Ç‚ÌServices‚ÌƒRƒ}ƒ“ƒh‚ÍŽg‚¦‚Ü‚¹‚ñB
-	password‚ÍREGISTER‚ÌƒRƒ}ƒ“ƒh‚ð“ü—Í‚µ‚½‚Æ‚«‚Ì‚Æ“¯‚¶ƒpƒXƒ[
-	ƒh‚Å‚·B
+	%S‚É‘Î‚µ‚ÄƒpƒXƒ[ƒh”FØ‚ðs‚¢‚Ü‚·B“o˜^Žž‚Ü‚½‚Í
+	SET PASSWORDƒRƒ}ƒ“ƒh‚ÅÝ’è‚µ‚½ƒpƒXƒ[ƒh‚ð“ü—Í‚·‚é‚±‚Æ‚ÅAƒj
+	ƒbƒN‚ÌŠ—LŽÒ‚Å‚ ‚é‚±‚Æ‚ð%S‚ÉØ–¾‚Å‚«AƒjƒbƒN‚ÌÝ’è•ÏX
+	‚È‚Ç‚ªo—ˆ‚é‚æ‚¤‚É‚È‚è‚Ü‚·B
 
 NICK_HELP_DROP
-	ƒVƒ“ƒ^ƒNƒXFDROP
+	—p–@FDROP ƒpƒXƒ[ƒh
 	
-	%S‚Ìƒf[ƒ^ƒx[ƒX‚©‚çƒjƒbƒN‚ðÁ‹Ž‚µ‚Ü‚·BÁ‹Ž‚µ‚½ƒjƒb
-	ƒN‚ÍA’N‚Å‚àÄ“o˜^‚ªo—ˆ‚Ü‚·B
+	ƒjƒbƒN‚Ì“o˜^‚ð‰ðœ‚µ‚Ü‚·B“o˜^‚ð‰ðœ‚µ‚½ƒjƒbƒN‚ÍA’N‚Å‚àÄ“x
+	“o˜^‚·‚é‚±‚Æ‚ªo—ˆ‚Ü‚·B
+NICK_HELP_DROP_LINK
 	
-	‚±‚ÌƒRƒ}ƒ“ƒh‚ðŽg‚¤‚Ì‚É‚ÍAƒpƒXƒ[ƒh‚ð“ü—Í‚·‚é•K—v‚ª‚ ‚è‚Ü
-	‚·BƒpƒXƒ[ƒh‚Ì“ü—Í‚Ìƒwƒ‹ƒv‚ðŒ©‚é‚Ì‚É‚ÍA
-	u/msg %S HELP IDENTIFYv‚ð“ü—Í‚µ‚Ä‰º‚³‚¢B
+	‚Ü‚½AƒjƒbƒN‚Ì“o˜^‚ð‰ðœ‚·‚é‚ÆAƒŠƒ“ƒN‚³‚ê‚Ä‚¢‚éƒjƒbƒN‚à‘S‚Ä
+	“o˜^‚ª‰ðœ‚³‚ê‚Ü‚·BƒŠƒ“ƒN‚ðˆê‚Â‚¾‚¯‰ðœ‚·‚éê‡‚ÍUNLINKƒRƒ}
+	ƒ“ƒh‚ð‚²—˜—p‚­‚¾‚³‚¢B
+NICK_HELP_DROP_END
+	
+	Œë‚Á‚½“o˜^‰ðœ‚ð–h‚®‚½‚ßAƒjƒbƒN‚ÌƒpƒXƒ[ƒh‚à“ü—Í‚µ‚È‚¯‚ê‚Î
+	‚È‚è‚Ü‚¹‚ñB
+
+NICK_HELP_AUTH
+	—p–@FAUTH ƒR[ƒh
+	
+	ƒjƒbƒN‚Ì“o˜^‚âƒ[ƒ‹ƒAƒhƒŒƒX‚Ì•ÏXŒãAƒ[ƒ‹ƒAƒhƒŒƒXŠm”F‚ðs
+	‚¢‚Ü‚·Bƒ[ƒ‹ƒAƒhƒŒƒX‚ª—LŒø‚Å‚ ‚é‚±‚Æ‚ðŠm”F‚·‚é‚½‚ßA
+	%S‚ÍŠm”F‚Ì”ŽšƒR[ƒh‚ðŠÜ‚ß‚½ƒ[ƒ‹‚ð‚»‚ÌƒAƒhƒŒƒXˆ¶‚Ä‚É
+	‘—M‚µ‚Ü‚·B‚±‚ÌƒRƒ}ƒ“ƒh‚ÅAƒ[ƒ‹‚É‘‚¢‚Ä‚ ‚éƒR[ƒh‚ð
+	Services‚É’Ê’m‚·‚é‚±‚Æ‚ÅAƒ[ƒ‹ƒAƒhƒŒƒX‚ª—LŒø‚Å‚ ‚é‚±‚Æ‚ªŠm
+	”F‚³‚ê‚Ü‚·B
+
+NICK_HELP_SENDAUTH
+	—p–@FSENDAUTH
+	
+	REGISTER‚âSET EMAIL‚Å‘—M‚³‚ê‚½ƒ[ƒ‹ƒAƒhƒŒƒXŠm”FƒR[ƒh‚ðÄ
+	‘—‚µ‚Ü‚·BŠm”F—pƒR[ƒh‚ð‹LÚ‚µ‚½ƒ[ƒ‹‚ð–³‚­‚µ‚Ä‚µ‚Ü‚Á‚½ê‡A
+	‚±‚ÌƒRƒ}ƒ“ƒh‚Å‚à‚¤ˆê“x‘—M‚·‚é‚±‚Æ‚ª‚Å‚«‚Ü‚·B
+	
+	ˆ«—p‚ð–h‚®‚½‚ßA‚±‚ÌƒRƒ}ƒ“ƒh‚ð24ŽžŠÔ‚Éˆê‰ñ‚µ‚©Žg‚¦‚Ü‚¹‚ñB
+
+NICK_HELP_REAUTH
+	—p–@FREAUTH
+	
+	ƒpƒXƒ[ƒh‘ã‚í‚è‚ÌŠm”FƒR[ƒh‚ðÝ’è‚µ‚Ü‚·BƒpƒXƒ[ƒh‚ð–Y‚ê‚½
+	ê‡A‚±‚ÌƒRƒ}ƒ“ƒh‚ÅŠm”FƒR[ƒh‚ðÝ’è‚µAƒ[ƒ‹‘—M‚³‚ê‚½Šm”F
+	ƒR[ƒh‚ðAUTHƒRƒ}ƒ“ƒh‚ÅŽg‚¤‚ÆASET PASSWORD‚ÅƒpƒXƒ[ƒh‚ð•ÏX
+	‚Å‚«‚é‚æ‚¤‚É‚È‚è‚Ü‚·B
+
+NICK_HELP_RESTOREMAIL
+	—p–@FRESTOREMAIL ƒpƒXƒ[ƒh
+	
+	ÅŒã‚É—LŒøŠm”F‚³‚ê‚½ƒ[ƒ‹ƒAƒhƒŒƒX‚ð•œŒ³‚µ‚Ü‚·BSET EMAILƒR
+	ƒ}ƒ“ƒh‚ÅŒë‚Á‚½ƒ[ƒ‹ƒAƒhƒŒƒX‚ðŽw’è‚µ‚Ä‚µ‚Ü‚Á‚½‚Æ‚«A‚±‚ÌƒRƒ}
+	ƒ“ƒh‚ðŽg‚¦‚ÎA‘O‚ÌƒAƒhƒŒƒX‚ð•œŒ³‚µ‚ÄŠm”FƒR[ƒh‚ðƒNƒŠƒA‚·‚é‚±
+	‚Æ‚ª‚Å‚«AÄ‚ÑƒpƒXƒ[ƒh”FØ‚Å‚«‚é‚æ‚¤‚É‚È‚è‚Ü‚·B‚±‚ÌƒRƒ}ƒ“
+	ƒh‚ðŽg‚¤‚É‚ÍAƒpƒXƒ[ƒh‚ð“ü—Í‚µ‚È‚¯‚ê‚Î‚È‚è‚Ü‚¹‚ñB
+	
+	RESTOREMAIL‚ÍASET EMAIL‚ðŽg—p‚µ‚½ŒãAAUTHƒRƒ}ƒ“ƒh‚ÅŠm”FƒR[
+	ƒh‚ð“ü—Í‚·‚é‚Ü‚Å‚Ì‚ÝŽg‚¦‚Ü‚·B
+
+NICK_HELP_LINK
+	—p–@FLINK ƒjƒbƒN
+	
+	Œ»ÝŽg‚Á‚Ä‚¢‚éƒjƒbƒN‚ÉV‚µ‚¢ƒjƒbƒNi‘ÎÛƒjƒbƒNj‚ðƒŠƒ“ƒN‚µ‚Ü
+	‚·BƒŠƒ“ƒN‚µ‚½Œã‚ÍA‘ÎÛƒjƒbƒN‚ÅŒ»Ý‚ÌƒjƒbƒN‚Æ“¯‚¶ƒ`ƒƒƒ“ƒlƒ‹
+	Œ ŒÀ‚ª—^‚¦‚ç‚êAƒƒ‚‚à‹¤—L‚³‚ê‚Ü‚·B
+	
+	ƒŠƒ“ƒN‚ð‰ðœ‚·‚éŽž‚ÍAUNLINKƒRƒ}ƒ“ƒh‚ðŽg‚¢‚Ü‚·B
+	
+	‚±‚ÌƒRƒ}ƒ“ƒh‚ðŽg‚¤‚É‚ÍAIDENTIFYƒRƒ}ƒ“ƒh‚Å”FØ‚ðs‚¤•K—v‚ª‚ 
+	‚è‚Ü‚·B‚Ü‚½A‘ÎÛƒjƒbƒN‚ª“o˜^‚³‚ê‚Ä‚¢‚éA‚Ü‚½‚ÍŒ»ÝŽg—p’†‚Ì
+	ê‡‚ÍƒŠƒ“ƒN‚Å‚«‚Ü‚¹‚ñB
+
+NICK_HELP_UNLINK
+	—p–@FUNLINK ƒjƒbƒN
+	
+	Œ»Ý‚ÌƒjƒbƒN‚Ö‚ÌƒŠƒ“ƒN‚ð‰ðœ‚µ‚Ü‚·BƒŠƒ“ƒN‚ð‰ðœ‚µ‚½ƒjƒbƒN‚ÍA
+	“o˜^‰ðœ‚Æ“¯—l‚É’N‚Å‚àŽg‚¤‚±‚Æ‚ªo—ˆ‚Ü‚·BŒ»Ý‚ÌƒjƒbƒN‚ðíœ
+	‚·‚éê‡‚ÍA‚Ü‚¸•Ê‚ÌƒjƒbƒN‚É•Ï‚¦‚È‚¯‚ê‚Î‚È‚è‚Ü‚¹‚ñB
+	
+	SET MAINNICKƒRƒ}ƒ“ƒh‚ÅÝ’è‚µ‚½uƒƒCƒ“ƒjƒbƒNv‚ÌƒŠƒ“ƒN‚ð‰ðœ
+	‚·‚é‚ÆAƒƒCƒ“ƒjƒbƒN‚ÍŒ»Ý‚ÌƒjƒbƒN‚ÉÝ’è‚³‚ê‚Ü‚·B
+
+NICK_HELP_LISTLINKS
+	—p–@FLISTLINKS
+	
+	Œ»Ý‚ÌƒjƒbƒN‚ÉƒŠƒ“ƒN‚³‚ê‚Ä‚¢‚é‘S‚Ä‚ÌƒjƒbƒN‚ð•\Ž¦‚µ‚Ü‚·BƒƒC
+	ƒ“ƒjƒbƒN‚É‚Íu*v‚ªæ“ª‚É•t‚«‚Ü‚·B
 
 NICK_HELP_ACCESS
-	ƒVƒ“ƒ^ƒNƒXFACCESS ADD mask
-	@@@@@@ACCESS DEL mask
-	@@@@@@ACCESS LIST
+	—p–@FACCESS ADD ƒ}ƒXƒN
+	@@@ACCESS DEL ƒ}ƒXƒN
+	@@@ACCESS LIST
 	
-	ƒjƒbƒN‚ÌƒAƒNƒZƒX•\‚Ì•ÏX‚Æ•\Ž¦‚ÌƒRƒ}ƒ“ƒh‚Å‚·BƒAƒNƒZƒX•\‚Æ
-	‚ÍA•Û—LŽÒ‚Ìƒ†[ƒU[ƒAƒhƒŒƒXiuser@host‚Æ‚¢‚¤ƒAƒhƒŒƒXj‚ÌƒŠ
-	ƒXƒg‚Å‚·Bƒ†[ƒU[‚ÌƒAƒhƒŒƒX‚ÍƒAƒNƒZƒX•\‚Ìƒ}ƒXƒN‚Ìˆê‚Â‚É‡
-	‚¦‚ÎA%S‚ÉØ’f‚³‚ê‚Ü‚¹‚ñB‚Ü‚½ASECURE‚Æ‚¢‚¤ƒIƒvƒVƒ‡ƒ“‚ðOFF
-	‚É‚·‚ê‚ÎƒpƒXƒ[ƒh‚ð“ü—Í‚¹‚¸‚ÉServices‚ÌƒRƒ}ƒ“ƒh‚ðŽg‚¦‚Ü‚·B
+	ƒjƒbƒN‚Ì—˜—p‹–‰ÂƒAƒhƒŒƒXƒŠƒXƒg‚ð•ÒW‚Ü‚½‚Í•\Ž¦‚µ‚Ü‚·BIRC‚É
+	Ú‘±‚·‚éŽžAƒ†[ƒU–¼EƒzƒXƒg–¼‚ª‚±‚ÌƒŠƒXƒg‚ÉÚ‚Á‚Ä‚¢‚ê‚ÎAŽb
+	’è“I‚ÉƒjƒbƒN‚ÌŠ—LŽÒ‚Æ‚Ý‚È‚³‚êAŽ©“®Ø’fiSET KILLjÝ’è‚ÉŠÖ
+	‚í‚ç‚¸Ø’f‚³‚ê‚Ü‚¹‚ñB‚Ü‚½ASECUREÝ’è‚ªOFF‚É‚È‚Á‚Ä‚¢‚éê‡
+	‚ÍƒpƒXƒ[ƒh”FØ‚ðs‚í‚¸‚Éƒ`ƒƒƒ“ƒlƒ‹Œ ŒÀ‚ð“¾‚é‚±‚Æ‚à‚Å‚«‚Ü‚·B
+	
+	ADD‚ÆDEL‚ÅŽw’è‚·‚éƒ}ƒXƒN‚ÉAƒƒCƒ‹ƒhƒJ[ƒh•¶Žši* ‚Æ ?j‚ðŽg
+	‚¤‚±‚Æ‚à‚Å‚«‚Ü‚·B
 	
 	—áF
 	    ACCESS ADD achurch@*.dragonfire.net
-	        dragonfire.net‚Æ‚¢‚¤ƒhƒ[ƒ“‚ÌƒzƒXƒg‚©‚çachurch‚Æ‚¢
-	        ‚¤ƒ†[ƒU[‚ðƒAƒNƒZƒX•\‚É’Ç‰Á‚µ‚Ü‚·B
+	        dragonfire.netƒhƒƒCƒ““à‚Ìƒ}ƒVƒ“‚©‚çAƒ†[ƒUachurch
+	        ‚É—˜—p‹–‰Â‚ð—^‚¦‚Ü‚·B
 	
 	    ACCESS DEL achurch@*.dragonfire.net
-	        ‘O‚Ì—á‚Æ‹t‚ÌŒ‹‰Ê‚Å‚·B
+	        ã‹L‚Ì—á‚Å’Ç‰Á‚µ‚½ƒ}ƒXƒN‚ðíœ‚µ‚Ü‚·B
 	
 	    ACCESS LIST
-	        ƒAƒNƒZƒX•\‚ð•\‚µ‚Ü‚·B
-
-NICK_HELP_LINK
-	ƒVƒ“ƒ^ƒNƒXFLINK nick password
-	
-	nick‚Æ‚¢‚¤ƒjƒbƒN‚ÉƒŠƒ“ƒN‚ðì‚èAŒ»Ý‚ÌƒjƒbƒN‚ð“ü—Í‚µ‚½ƒjƒb
-	ƒN‚Ì‰¼–¼‚É‚µ‚Ü‚·B‚±‚ÌƒRƒ}ƒ“ƒh‚ðŽg‚¤‚ÆAŒ»Ý‚ÌƒjƒbƒN‚ÌƒAƒN
-	ƒZƒX•\‚ÍÁ‚¦Aƒƒ‚‚Í“ü—Í‚µ‚½ƒjƒbƒN‚Ìƒƒ‚•\‚É’Ç‰Á‚³‚ê‚Ü‚·
-	i‚»‚ê‚Å“ü—Í‚µ‚½ƒjƒbƒN‚Ìƒƒ‚•\‚ªƒƒ‚‚Ì”‚ÌŒÀ‚è‚ð‰ß‚¬‚é‚±‚Æ
-	‚à‚ ‚è‚Ü‚·‚Ì‚Å‚²’ˆÓ‰º‚³‚¢jB
-	
-	ƒŠƒ“ƒN‚ªì‚ç‚ê‚Ä‚©‚çAŒ»Ý‚ÌƒjƒbƒN‚ÍServices‚Ìƒf[ƒ^ƒx[ƒX
-	‚Å“ü—Í‚µ‚½ƒjƒbƒN‚É•Ï‰»‚µ‚Ü‚·B%S‚ÌUNLINK‚ÆDROP‚ÌƒRƒ}
-	ƒ“ƒhˆÈŠOA‘S‚Ä‚ÌServices‚ÌƒRƒ}ƒ“ƒh‚ÍŒ»Ý‚ÌƒjƒbƒN‚Ì‘ã‚í‚è‚É
-	ƒŠƒ“ƒN‚³‚ê‚½ƒjƒbƒN‚ðŽg‚¢‚Ü‚·B—á‚¦‚ÎAƒŠƒ“ƒN‚³‚ê‚½ƒjƒbƒN‚Ì
-	ƒƒ‚‚ðŒ©‚½‚¢ê‡‚ÍA‚Ç‚¿‚ç‚ÌƒjƒbƒN‚Å‚àŒ©‚ç‚ê‚Ü‚·B‚»‚µ‚ÄA
-	‘¼‚Ìƒ†[ƒU[‚©‚çƒƒ‚‚ðŽó‚¯‚éê‡‚ÍA‚»‚Ìƒ†[ƒU[‚Í‚Ç‚¿‚ç‚Ì
-	ƒjƒbƒN‚É‘—‚Á‚Ä‚à“¯‚¶ƒƒ‚•\‚É’Ç‰Á‚³‚ê‚Ü‚·B‚Ü‚½Aƒ`ƒƒƒ“ƒlƒ‹
-	‚ÌƒAƒNƒZƒX•\‚Å‚Ç‚¿‚ç‚©‚ÌƒjƒbƒN‚ª‘¶Ý‚µ‚Ä‚¢‚ê‚ÎA‚Ç‚¿‚ç‚Ì
-	ƒjƒbƒN‚Å‚à“¯‚¶“ÁŒ ‚ð“¾‚Ü‚·B
-	
-	‚±‚ÌƒRƒ}ƒ“ƒh‚ðŽg‚¤‚Ì‚É‚ÍAƒpƒXƒ[ƒh‚ð“ü—Í‚·‚é•K—v‚ª‚ ‚è‚Ü
-	‚·B‚È‚¨AƒŠƒ“ƒN‚µ‚½‚¢ƒjƒbƒN‚ÌƒpƒXƒ[ƒh‚ð‚±‚ÌƒRƒ}ƒ“ƒh‚Ìƒp
-	ƒ‰ƒ[ƒ^[‚Æ‚µ‚Ä“ü—Í‚·‚é•K—v‚ª‚ ‚è‚Ü‚·B
-
-NICK_HELP_UNLINK
-	ƒVƒ“ƒ^ƒNƒXFUNLINK [nick password]
-	
-	ƒjƒbƒN‚ÌƒŠƒ“ƒN‚ðÁ‹Ž‚µ‚Ü‚·B‚±‚ÌƒRƒ}ƒ“ƒh‚ðŽg‚¤‚ÆAƒŠƒ“ƒN‚³
-	‚ê‚Ä‚¢‚½ƒjƒbƒN‚ÌƒAƒNƒZƒX•\‚ÆƒIƒvƒVƒ‡ƒ“‚ÌÝ’è‚ÍŒ»Ý‚ÌƒjƒbƒN
-	‚ÉƒRƒs[‚³‚ê‚Ü‚·‚ªAƒƒ‚‚ÍƒRƒs[‚³‚ê‚Ü‚¹‚ñB
-	
-	‚±‚ÌƒRƒ}ƒ“ƒh‚ðŽg‚¤‚Ì‚É‚ÍAƒpƒXƒ[ƒh‚ð“ü—Í‚·‚é•K—v‚ª‚ ‚è‚Ü
-	‚·BƒpƒXƒ[ƒh‚Ì“ü—Í‚Ìƒwƒ‹ƒv‚ðŒ©‚é‚Ì‚É‚ÍAu/msg %S
-	HELP IDENTIFYv‚ð“ü—Í‚µ‚Ä‰º‚³‚¢B
-	
-	•Ê‚ÌƒjƒbƒN‚ÌƒŠƒ“ƒN‚ðÁ‹Ž‚µ‚½‚¢Žž‚ÍA‚»‚ÌƒjƒbƒN‚ÆƒpƒXƒ[ƒh
-	‚ð“ü—Í‚·‚ê‚ÎÁ‹Ž‚Å‚«‚Ü‚·B
+	        —˜—p‹–‰ÂƒŠƒXƒg‚ð•\Ž¦‚µ‚Ü‚·B
 
 NICK_HELP_SET
-	ƒVƒ“ƒ^ƒNƒXFSET option parameters
+	—p–@FSET Ý’è–¼ ’l
 	
-	ƒjƒbƒN‚ÌƒIƒvƒVƒ‡ƒ“‚ðÝ’è‚µ‚Ü‚·Boption‚Ì‘I‘ð‚ÍŽŸ‚Ì’Ê‚è‚Å‚·B
+	ƒjƒbƒN‚ÌÝ’è‚ð•ÏX‚µ‚Ü‚·BuÝ’è–¼v‚É‚ÍˆÈ‰º‚Ì‚à‚Ì‚ª‚ ‚è‚Ü‚·B
 	
-	    PASSWORD   ƒpƒXƒ[ƒh‚Ì•ÏX
-	    LANGUAGE   Services‚ªŽg‚¤Œ¾Œê‚ÌÝ’è
-	    URL        ƒz[ƒƒy[ƒW‚ÌƒAƒhƒŒƒX‚Ì“ü—Í
-	    EMAIL      “dŽqƒ[ƒ‹‚ÌƒAƒhƒŒƒX‚Ì“ü—Í
-#@@@  Ø’fuƒIƒvƒVƒ‡ƒ“vA‚»‚ê‚ÆuŽçv...H
-	    KILL       Ø’fƒIƒvƒVƒ‡ƒ“‚Ì“üØ
-	    SECURE     ƒZƒLƒ…ƒAƒIƒvƒVƒ‡ƒ“‚Ì“üØ
-	    PRIVATE    LIST‚ÌƒRƒ}ƒ“ƒh‚©‚çƒjƒbƒN‚ð‰B‚·
-	    HIDE       INFO‚ÌƒRƒ}ƒ“ƒh‚©‚çƒjƒbƒN‚Ìî•ñ‚ð‰B‚·
+	    PASSWORD   ƒjƒbƒN‚Ì”FØ—pƒpƒXƒ[ƒh‚ð•ÏX‚·‚é
+	    LANGUAGE   Services‚ª‰ž“š‚·‚éŒ¾Œê‚ð•ÏX‚·‚é
+	    URL        ƒjƒbƒN‚Éƒz[ƒ€ƒy[ƒWƒAƒhƒŒƒX‚ð“o˜^‚·‚é
+	    EMAIL      ƒjƒbƒN‚É“dŽqƒ[ƒ‹ƒAƒhƒŒƒX‚ð“o˜^‚·‚é
+	    INFO       INFOƒRƒ}ƒ“ƒh‚Å•\Ž¦‚³‚ê‚éƒeƒLƒXƒg‚ð“o˜^‚·‚é
+	    KILL       Ž©“®Ø’fÝ’è‚ð•ÏX‚·‚é
+	    SECURE     ƒZƒLƒ…ƒAÝ’è‚ð•ÏX‚·‚é
+	    PRIVATE    ƒjƒbƒN‚ðLISTƒRƒ}ƒ“ƒh‚©‚ç‰B‚·
+	    NOOP       ƒ`ƒƒƒ“ƒlƒ‹ƒAƒNƒZƒXƒŠƒXƒg‚Ö‚Ì“o˜^‚ð‹‘”Û‚·‚é
+	    HIDE       ƒjƒbƒN‚Ìî•ñ‚ðINFOƒRƒ}ƒ“ƒh‚©‚ç‰B‚·
+	    TIMEZONE   Žž‚ð•\Ž¦‚·‚éê‡‚ÌŽžŠÔ‘Ñ‚ð•ÏX‚·‚é
+NICK_HELP_SET_OPTION_MAINNICK
+	    MAINNICK   ƒ`ƒƒƒ“ƒlƒ‹ƒAƒNƒZƒXƒŠƒXƒg‚É•\Ž¦‚·‚éƒjƒbƒN‚ð•ÏX
+NICK_HELP_SET_END
 	
-	‚±‚ÌƒRƒ}ƒ“ƒh‚ðŽg‚¤‚Ì‚É‚ÍAƒpƒXƒ[ƒh‚ð“ü—Í‚·‚é•K—v‚ª‚ ‚è‚Ü
-	‚·BƒpƒXƒ[ƒh‚Ì“ü—Í‚Ìƒwƒ‹ƒv‚ðŒ©‚é‚Ì‚É‚ÍAu/msg %S
-	HELP IDENTIFYv‚ð“ü—Í‚µ‚Ä‰º‚³‚¢B
+	‚±‚ÌƒRƒ}ƒ“ƒh‚ðŽg‚¤‚É‚ÍAIDENTIFYƒRƒ}ƒ“ƒh‚Å”FØ‚ðs‚¤•K—v‚ª‚ 
+	‚è‚Ü‚·B
 	
-	ƒIƒvƒVƒ‡ƒ“‚Ìî•ñ‚ð“Ç‚Þ‚Ì‚É‚ÍAu/msg %S HELP SET optionv‚ð
-	“ü—Í‚µ‚Ä‰º‚³‚¢B
+	‚»‚ê‚¼‚ê‚ÌÝ’è‚ÌÚ‚µ‚¢î•ñ‚ðŒ©‚éê‡‚Í
+	u/msg %S HELP SET Ý’è–¼v‚ð“ü—Í‚µ‚Ä‚­‚¾‚³‚¢B
 
 NICK_HELP_SET_PASSWORD
-	ƒVƒ“ƒ^ƒNƒXFSET PASSWORD new-password
+	—p–@FSET PASSWORD VƒpƒXƒ[ƒh
 	
-	ƒjƒbƒN‚Ì•Û—LŽÒ‚ÌƒpƒXƒ[ƒh‚ð•ÏX‚µ‚Ü‚·B
+	ƒjƒbƒN‚Ì”FØ—pƒpƒXƒ[ƒh‚ð•ÏX‚µ‚Ü‚·B
 
 NICK_HELP_SET_LANGUAGE
-	ƒVƒ“ƒ^ƒNƒXFSET LANGUAGE number
+	—p–@FSET LANGUAGE ”Ô†
 	
-	Services‚ªŽg‚¤Œ¾Œê‚ðÝ’è‚µ‚Ü‚·Bnumber‚Ì‘I‘ð‚ÍŽŸ‚Ì’Ê‚è‚Å‚·B
+	Services‚ª‰ž“š‚·‚éŒ¾Œê‚ðÝ’è‚µ‚Ü‚·Bnumber‚Ì‘I‘ðŽˆ‚ÍˆÈ‰º
+	‚Ì’Ê‚è‚Å‚·B
 	
 
 NICK_HELP_SET_URL
-	ƒVƒ“ƒ^ƒNƒXFSET URL url
+	—p–@FSET URL ƒAƒhƒŒƒX
 	
-	url‚Æ‚¢‚¤ƒz[ƒƒy[ƒW‚ÌƒAƒhƒŒƒX‚ðƒjƒbƒN‚Ìî•ñ‚É’Ç‰Á‚µ‚Ü‚·B
-	‚±‚ÌƒAƒhƒŒƒX‚ÍINFO‚ÌƒRƒ}ƒ“ƒh‚Ìî•ñ‚Å•\‚ê‚Ü‚·B
+	ƒz[ƒ€ƒy[ƒWƒAƒhƒŒƒX‚ðƒjƒbƒNî•ñ‚É’Ç‰Á‚µ‚Ü‚·B‚±‚ÌƒAƒhƒŒƒX‚Í
+	INFOƒRƒ}ƒ“ƒh‚Å•\Ž¦‚³‚ê‚Ü‚·B
 
 NICK_HELP_SET_EMAIL
-	ƒVƒ“ƒ^ƒNƒXFSET EMAIL address
+	—p–@FSET EMAIL ƒAƒhƒŒƒX
 	
-	address‚Æ‚¢‚¤“dŽqƒ[ƒ‹‚ÌƒAƒhƒŒƒX‚ðƒjƒbƒN‚Ìî•ñ‚É’Ç‰Á‚µ‚Ü‚·B
-	‚±‚ÌƒAƒhƒŒƒX‚ÍINFO‚ÌƒRƒ}ƒ“ƒh‚Ìî•ñ‚Å•\‚ê‚Ü‚·B
+	“dŽqƒ[ƒ‹ƒAƒhƒŒƒX‚ðƒjƒbƒNî•ñ‚É’Ç‰Á‚µ‚Ü‚·B‚±‚ÌƒAƒhƒŒƒX‚Í
+	INFOƒRƒ}ƒ“ƒh‚Å•\Ž¦‚³‚ê‚Ü‚·B
+
+NICK_HELP_SET_INFO
+	—p–@FSET INFO ƒeƒLƒXƒg
+	
+	Žw’è‚³‚ê‚½ƒeƒLƒXƒg‚ðƒjƒbƒNî•ñ‚É’Ç‰Á‚µ‚Ü‚·B‚±‚ÌƒeƒLƒXƒg‚Í
+	INFOƒRƒ}ƒ“ƒh‚Å•\Ž¦‚³‚ê‚Ü‚·B
 
 NICK_HELP_SET_KILL
-	ƒVƒ“ƒ^ƒNƒXFSET KILL {ON | QUICK | IMMED | OFF}
+	—p–@FSET KILL {ON | QUICK | IMMED | OFF}
 	
-	ƒjƒbƒN‚ÌØ’fƒIƒvƒVƒ‡ƒ“‚ðÝ’è‚µ‚Ü‚·BON‚É‚·‚é‚ÆA‘¼‚Ìƒ†[
-	ƒU[‚ªƒjƒbƒN‚ðŽg‚¨‚¤‚Æ‚·‚ê‚ÎA%S‚ÉŒx‚³‚êAˆê•ªˆÈ“à
-	‚ÅƒjƒbƒN‚ð•Ï‚¦‚È‚¢‚ÆØ’f‚³‚ê‚Ü‚·BQUICK‚É‚·‚é‚ÆAƒjƒbƒN‚ð•Ï
-	‚¦‚éŽžŒÀ‚Í20•b‚É‚È‚è‚Ü‚·BIMMED‚É‚·‚é‚ÆA%S‚ÍŒx‚¹‚¸
-	‚Éƒ†[ƒU[‚ðØ’f‚µ‚Ü‚·‚Ì‚ÅA•K—v‚Èê‡‚É‚µ‚©‚±‚Ì‘I‘ð‚É‚µ‚È
-	‚¢‚Å‰º‚³‚¢B‚È‚¨A‚±‚Ì‘I‘ð‚Íƒlƒbƒg‚Ì‰^‰cŽÒ‚É‚æ‚èŽg—p•s‰Â”\
-	‚È‚±‚Æ‚à‚ ‚è‚Ü‚·B
+	ƒjƒbƒN‚ÌŽ©“®Ø’fÝ’è‚ð•ÏX‚µ‚Ü‚·BON‚É‚·‚é‚ÆA‘¼‚Ìƒ†[ƒU‚ªƒj
+	ƒbƒN‚ðŽg‚¨‚¤‚Æ‚µ‚½ŽžA%S‚ªŒx‚µA‚P•ªˆÈ“à‚ÉƒjƒbƒN‚ð•Ï‚¦‚È‚¢
+	‚ÆØ’f‚³‚ê‚Ü‚·B
+	
+	QUICK‚É‚·‚é‚ÆAƒjƒbƒN‚ð•Ï‚¦‚éŽžŠÔ‚Í20•b‚É’Zk‚³‚ê‚Ü‚·B
+	
+	IMMED‚É‚·‚é‚ÆAƒ†[ƒU‚ÍÚ‘±‚µ‚Ä‚·‚®‚ÉØ’f‚³‚ê‚Ü‚·Bi’A‚µA
+	IRCƒlƒbƒgƒ[ƒN‚ÌŠÇ—ŽÒ‚ÌÝ’è‚É‚æ‚èAIMMED‚ðŽg‚¦‚È‚¢ê‡‚ª
+	‚ ‚è‚Ü‚·j
 
 NICK_HELP_SET_SECURE
-	ƒVƒ“ƒ^ƒNƒXFSET SECURE {ON | OFF}
+	—p–@FSET SECURE {ON | OFF}
 	
-	ƒZƒLƒ…ƒAƒIƒvƒVƒ‡ƒ“‚ðÝ’è‚µ‚Ü‚·BON‚É‚·‚é‚ÆAƒ†[ƒU[ƒAƒhƒŒ
-	ƒX‚ªƒAƒNƒZƒX•\‚É‘¶Ý‚µ‚Ä‚¢‚Ä‚àƒpƒXƒ[ƒh‚ð“ü—Í‚µ‚È‚¯‚ê‚Î•Û
-	—LŽÒ‚Ì“ÁŒ ‚ð“¾‚Ü‚¹‚ñB‚½‚¾‚µAƒ†[ƒU[ƒAƒhƒŒƒX‚ªƒAƒNƒZƒX•\
-	‚É‚ ‚ê‚ÎAØ’fƒIƒvƒVƒ‡ƒ“‚ªƒIƒ“‚ÉÝ’è‚³‚ê‚Ä‚àØ’f‚³‚ê‚Ü‚¹‚ñB
+	ƒZƒLƒ…ƒAÝ’è‚ð•ÏX‚µ‚Ü‚·BON‚É‚·‚é‚ÆAƒ†[ƒUƒAƒhƒŒƒX‚ª—˜—p‹–
+	‰ÂƒAƒhƒŒƒXƒŠƒXƒg‚É“ü‚Á‚Ä‚¢‚Ä‚àAIDENTIFY‚ÅƒpƒXƒ[ƒh”FØ‚ðs
+	‚í‚È‚¢ŒÀ‚èƒ`ƒƒƒ“ƒlƒ‹Œ ŒÀ‚ª—^‚¦‚ç‚ê‚Ü‚¹‚ñB
 
 NICK_HELP_SET_PRIVATE
-	ƒVƒ“ƒ^ƒNƒXFSET PRIVATE {ON | OFF}
+	—p–@FSET PRIVATE {ON | OFF}
 	
-	uŽ„“Iv‚Æ‚¢‚¤ƒIƒvƒVƒ‡ƒ“‚ðÝ’è‚µ‚Ü‚·BON‚É‚·‚é‚ÆAƒjƒbƒN‚Í
-	u/msg %S LISTv‚ÌƒŠƒXƒg‚Å•\‚ê‚Ü‚¹‚ñB‚½‚¾‚µAON‚É‚µ
-	‚Ä‚àƒjƒbƒN‚ð’m‚Á‚Ä‚¢‚éƒ†[ƒU[‚ÍINFO‚ÌƒRƒ}ƒ“ƒh‚ÅƒjƒbƒN‚Ìî
-	•ñ‚ðŒ©‚é‚±‚Æ‚ªo—ˆ‚Ü‚·B
+	ƒvƒ‰ƒCƒx[ƒgÝ’è‚ð•ÏX‚µ‚Ü‚·BON‚É‚·‚é‚ÆAƒjƒbƒN‚ÍLISTƒRƒ}ƒ“
+	ƒh‚ÌŒ‹‰Ê‚É‚Í•\Ž¦‚³‚ê‚Ü‚¹‚ñBi‚½‚¾AINFOƒRƒ}ƒ“ƒh‚Í’Êí’Ê‚èî
+	•ñ‚ð•\Ž¦‚µ‚Ü‚·j
+
+NICK_HELP_SET_NOOP
+	—p–@FSET NOOP {ON | OFF}
+	
+	ƒ`ƒƒƒ“ƒlƒ‹ƒAƒNƒZƒX‹‘”ÛÝ’è‚ð•ÏX‚µ‚Ü‚·BON‚É‚·‚é‚ÆAƒjƒbƒN‚Í
+	ƒ`ƒƒƒ“ƒlƒ‹‚ÌƒAƒNƒZƒXƒŠƒXƒg‚É“o˜^‚³‚ê‚È‚­‚È‚èA“o˜^‚µ‚æ‚¤‚Æ‚µ
+	‚½ê‡‚ÍƒGƒ‰[‚É‚È‚è‚Ü‚·Bi‚½‚¾AŠù‚É“o˜^‚³‚ê‚Ä‚¢‚éƒ`ƒƒƒ“ƒl
+	ƒ‹‚©‚ç‚ÍÁ‹Ž‚³‚ê‚Ü‚¹‚ñj
 
 NICK_HELP_SET_HIDE
-	ƒVƒ“ƒ^ƒNƒXFSET HIDE {EMAIL | USERMASK | QUIT} {ON | OFF}
+	—p–@FSET HIDE {EMAIL | USERMASK | QUIT} {ON | OFF}
 	
-	ƒjƒbƒN‚Ìî•ñ‚ð%S‚ÌINFO‚ÌƒRƒ}ƒ“ƒh‚©‚ç‰B‚µ‚Ü‚·B‰B‚¹‚é
-	‚Ì‚ÍA“dŽqƒ[ƒ‹‚ÌƒAƒhƒŒƒXiEMAILjA‘O‚Ìƒ†[ƒU[ƒAƒhƒŒƒX
-	iUSERMASKjA‘O‚ÌØ’fƒƒbƒZ[ƒWiQUITj‚Å‚·B“ñ”Ô–Ú‚Ìƒpƒ‰
-	ƒ[ƒ^[‚ÍAON‚É‚·‚é‚Æî•ñ‚ð‰B‚µAOFF‚É‚·‚é‚Æî•ñ‚ð•\‚µ‚Ü
-	‚·B
+	ƒjƒbƒN‚Ìî•ñ‚ðINFOƒRƒ}ƒ“ƒh‚©‚ç‰B‚µ‚Ü‚·B‰B‚¹‚é‚Ì‚ÍA“dŽqƒ[
+	ƒ‹ƒAƒhƒŒƒXiEMAILjA‘O‰ñ‚Ìƒ†[ƒUƒAƒhƒŒƒXiUSERMASKjA‘O‰ñ
+	‚ÌØ’fƒƒbƒZ[ƒWiQUITj‚Ì‚R€–Ú‚Å‚·B‚Q”Ô–Ú‚Ìƒpƒ‰ƒ[ƒ^‚ÍA
+	ON‚É‚·‚é‚Æî•ñ‚ð‰B‚µAOFF‚É‚·‚é‚Æî•ñ‚ð•\Ž¦‚µ‚Ü‚·B
+
+NICK_HELP_SET_TIMEZONE
+	—p–@FSET TIMEZONE {UTCƒIƒtƒZƒbƒg | ŽžŠÔ‘Ñ–¼ | DEFAULT}
+	
+	INFOƒRƒ}ƒ“ƒh“™‚Å•\Ž¦‚³‚ê‚éŽž‚ðA‚Ç‚ÌŽžŠÔ‘Ñ‚Å•\Ž¦‚·‚é‚©Ý’è
+	‚µ‚Ü‚·B–¢Ý’è‚Ìê‡‚ÍAServices‚ª“®ì‚µ‚Ä‚¢‚éƒT[ƒo‚ÌŽžŠÔ‘Ñ
+	‚Å•\Ž¦‚µ‚Ü‚·BŽžŠÔ‘Ñ‚ÌÝ’è•û–@‚Í
+	
+	@EUTCƒIƒtƒZƒbƒgi¢ŠE•W€Žž‚Æ‚Ì·j
+	@EŽžŠÔ‘Ñ–¼iuJSTv‚È‚ÇA’A‚µ”FŽ¯‚Å‚«‚È‚¢‚à‚Ì‚à‚ ‚éj
+	@EuDEFAULTvi–¢Ý’èó‘Ô‚É–ß‚·j
+	
+	‚Ì‚R’Ê‚è‚Å‚·BUTCƒIƒtƒZƒbƒg‚ÅŽw’è‚·‚éê‡Au+v‚Ü‚½‚Íu-v
+	‚É‘±‚«AŽžŠÔ·‚ðŽžŠÔ”‚Ü‚½‚Íuhh:mmvŒ`Ž®‚ÅŽw’è‚µ‚Ü
+	‚·i‰º‹LŽQÆjB
+	
+	’ˆÓFƒTƒ}[ƒ^ƒCƒ€‚Ì‚ ‚éŽžŠÔ‘Ñ‚Å‚ÍAServices‚ÍŽ©“®’²®‚ðs‚¢
+	@@@‚Ü‚¹‚ñBƒTƒ}[ƒ^ƒCƒ€‚ªŠJŽnEI—¹‚µ‚½Žž‚ÉŽè“®‚ÅÝ’è‚µ‚Ä
+	@@@‚­‚¾‚³‚¢B
+	
+	—áF
+	
+	    SET TIMEZONE -5
+	        ¢ŠE•W€Žž‚æ‚è‚TŽžŠÔ’x‚¢i¼jŽžŠÔ‘Ñ‚ÉÝ’è‚µ‚Ü‚·B
+	
+	    SET TIMEZONE +3:30
+	        ¢ŠE•W€Žž‚æ‚è‚RŽžŠÔ”¼‘‚¢i“ŒjŽžŠÔ‘Ñ‚ÉÝ’è‚µ‚Ü‚·B
+	
+	    SET TIMEZONE JST
+	        ŽžŠÔ‘Ñ‚ð“ú–{ŽžŠÔiJSTj‚ÉÝ’è‚µ‚Ü‚·B
+
+NICK_HELP_SET_MAINNICK
+	—p–@FSET MAINNICK ƒjƒbƒN
+	
+	•¡”‚ÌƒjƒbƒN‚ðƒŠƒ“ƒN‚µ‚Ä‚¢‚éê‡Aƒ`ƒƒƒ“ƒlƒ‹‚ÌƒAƒNƒZƒXƒŠƒXƒg
+	‚Å•\Ž¦‚³‚ê‚éƒjƒbƒN‚ðÝ’è‚µ‚Ü‚·B‚±‚ÌƒjƒbƒN‚ÌƒŠƒ“ƒN‚ª‰ðœ‚³‚ê
+	‚½ê‡A•Ê‚ÌƒjƒbƒN‚ªŽ©“®“I‚É‘I‘ð‚³‚ê‚Ü‚·B
+
+NICK_HELP_UNSET
+	—p–@FUNSET {URL | EMAIL | INFO}
+	
+	ƒjƒbƒN‚Ìƒz[ƒ€ƒy[ƒWƒAƒhƒŒƒXiURLjAƒ[ƒ‹ƒAƒhƒŒƒXiEMAILjA
+	‚Ü‚½‚ÍƒeƒLƒXƒgî•ñiINFOj‚ðÁ‹Ž‚µ‚Ü‚·B
+
+NICK_HELP_UNSET_REQ_EMAIL
+	—p–@FUNSET {URL | INFO}
+	
+	ƒjƒbƒN‚Ìƒz[ƒ€ƒy[ƒWƒAƒhƒŒƒXiURLj‚Ü‚½‚ÍƒeƒLƒXƒgî•ñiINFOj
+	‚ðÁ‹Ž‚µ‚Ü‚·B
 
 NICK_HELP_RECOVER
-	ƒVƒ“ƒ^ƒNƒXFRECOVER nickname [password]
+	—p–@FRECOVER ƒjƒbƒN [ƒpƒXƒ[ƒh]
 	
-	‘¼‚Ìƒ†[ƒU[‚ÉƒjƒbƒN‚ªŽæ‚ç‚ê‚½‚ç‚»‚ÌƒjƒbƒN‚ðŽæ‚è–ß‚µ‚Ü‚·B
-#@@@  Ø’fŽç‚Ìu‚ ‚év
-	‚±‚ÌƒRƒ}ƒ“ƒh‚ðŽg‚¤‚ÆAØ’fŽç‚ªÝ’è‚µ‚Ä‚ ‚éƒjƒbƒN‚©‚çˆê•ªˆÈ
-	“à‚ÅƒjƒbƒN‚ð•Ï‚¦‚È‚¢ê‡‚Æ“¯‚¶Œ‹‰Ê‚ªo‚Ü‚·BƒjƒbƒN‚ðŽg—p‚µ
-	‚Ä‚¢‚éƒ†[ƒU[‚ðØ’f‚µ‚Ä‚©‚çA%S‚Í‚»‚ÌƒjƒbƒN‚ðŽæ‚èA
-	ˆê•ªŠÔ’N‚àŽg‚¦‚È‚­‚È‚è‚Ü‚·B‚»‚Ìˆê•ª‚ª‚½‚Á‚Ä‚©‚çƒjƒbƒN‚ðŽæ
-	‚è–ß‚¹‚Ü‚·B‚»‚ê‚ÆA%S‚ÌRELEASE‚ÌƒRƒ}ƒ“ƒh‚ðŽg‚¦‚Îˆê
-	•ª‚ªŒo‚Â‘O‚ÉŽæ‚è–ß‚¹‚Ü‚·B
+	‘¼‚Ìƒ†[ƒU‚ª‚ ‚È‚½‚ÌƒjƒbƒN‚ðŽg‚Á‚Ä‚¢‚éŽžA‚»‚ÌƒjƒbƒN‚ð‹­§“I
+	‚ÉŽæ‚è–ß‚µ‚Ü‚·BŽ©“®Ø’fÝ’è‚ª—LŒø‚ÈƒjƒbƒN‚ðŽg‚Á‚½ê‡‚Æ“¯—l
+	‚ÉAƒ†[ƒU‚ªIRC‚©‚çØ’f‚³‚ê‚Ü‚·B‚È‚¨ƒ†[ƒU‚ªØ’f‚³‚ê‚½Œã‚ÍA
+	“¯‚¶ƒjƒbƒN‚Å‚ÌÄÚ‘±‚ð–h‚®‚½‚ß‚ÉAServices‚Íu‹^Ž—ƒ†[ƒUv‚Å
+	%sŠÔA‚»‚ÌƒjƒbƒN‚ð•Û—¯‚µ‚Ü‚·B•Û—¯ŽžŠÔ‚ª‰ß‚¬‚é‘O‚ÉƒjƒbƒN‚ð
+	—˜—p‚µ‚½‚¢ê‡‚ÍRELEASEƒRƒ}ƒ“ƒh‚Å•Û—¯‚ð‰ðœ‚Å‚«‚Ü‚·B
 	
-	RECOVER‚ÌƒRƒ}ƒ“ƒh‚ðŽg‚¤‚Ì‚É‚ÍAŒ»Ý‚Ìƒ†[ƒU[ƒAƒhƒŒƒX‚ª
-	nickname‚Æ‚¢‚¤ƒjƒbƒN‚ÌƒAƒNƒZƒX•\‚É‚ ‚é•K—v‚ª‚ ‚è‚Ü‚·B‚Ü‚½A
-	ƒpƒXƒ[ƒh‚ð“ü—Í‚·‚ê‚ÎƒjƒbƒN‚ðŽæ‚è–ß‚¹‚Ü‚·B
+	‚±‚ÌƒRƒ}ƒ“ƒh‚ðŽg‚¤‚É‚ÍAƒjƒbƒN‚Ì”FØ—pƒpƒXƒ[ƒh‚ð“ü—Í‚·‚é‚©A
+	ƒjƒbƒN‚ÉƒŠƒ“ƒN‚³‚ê‚Ä‚¢‚é•Ê‚ÌƒjƒbƒN‚É‘Î‚µ‚Ä”FØ‚ðs‚¤•K—v‚ª‚ 
+	‚è‚Ü‚·B
 
 NICK_HELP_RELEASE
-	ƒVƒ“ƒ^ƒNƒXFRELEASE nickname [password]
+	—p–@FRELEASE ƒjƒbƒN [ƒpƒXƒ[ƒh]
 	
-#@@@  uƒzƒ‹ƒhv
-	ƒjƒbƒN‚Ìƒzƒ‹ƒh‚ð‰ð•ú‚µ‚Ü‚·BƒjƒbƒN‚ðŽg—p‚µ‚Ä‚¢‚½ƒ†[ƒU[‚ª
-	Ø’f‚³‚ê‚Ä‚©‚çAƒjƒbƒN‚Íˆê•ªŠÔŽg‚¦‚È‚­‚È‚è‚Ü‚·B‚»‚Ìˆê•ª‚ª
-	‚½‚Â‘O‚ÉƒjƒbƒN‚ðŽg—p‚µ‚½‚¢ê‡‚Í‚±‚ÌƒRƒ}ƒ“ƒh‚ðŽg‚¤‚Ì‚Å‚·B
+	RECOVERƒRƒ}ƒ“ƒhi‚Ü‚½‚ÍŽ©“®Ø’fj‚É‚æ‚Á‚ÄƒjƒbƒN‚ªServices‚É
+	•Û—¯‚³‚ê‚Ä‚¢‚éê‡A•Û—¯‚ð‰ðœ‚µ‚Ü‚·BRELEASE‚ðŽg‚í‚È‚¢ê‡A
+	•Û—¯‚Í%sŒã‚ÉŽ©“®‰ðœ‚³‚ê‚Ü‚·B
 	
-	RELEASE‚ÌƒRƒ}ƒ“ƒh‚ðŽg‚¤‚Ì‚É‚ÍAŒ»Ý‚Ìƒ†[ƒU[ƒAƒhƒŒƒX‚ª
-	nickname‚Æ‚¢‚¤ƒjƒbƒN‚ÌƒAƒNƒZƒX•\‚É‚ ‚é•K—v‚ª‚ ‚è‚Ü‚·B‚Ü‚½A
-	ƒpƒXƒ[ƒh‚ð“ü—Í‚·‚ê‚ÎƒjƒbƒN‚Ìƒzƒ‹ƒh‚ª‰ð•ú‚³‚ê‚Ü‚·B
+	‚±‚ÌƒRƒ}ƒ“ƒh‚ðŽg‚¤‚É‚ÍAƒjƒbƒN‚Ì”FØ—pƒpƒXƒ[ƒh‚ð“ü—Í‚·‚é‚©A
+	ƒjƒbƒN‚ÉƒŠƒ“ƒN‚³‚ê‚Ä‚¢‚é•Ê‚ÌƒjƒbƒN‚É‘Î‚µ‚Ä”FØ‚ðs‚¤•K—v‚ª‚ 
+	‚è‚Ü‚·B
 
 NICK_HELP_GHOST
-	ƒVƒ“ƒ^ƒNƒXFGHOST nickname [password]
+	—p–@FGHOST ƒjƒbƒN [ƒpƒXƒ[ƒh]
 	
-	uƒS[ƒXƒgv‚Æ‚¢‚¤Ú‘±‚ðØ’f‚µ‚Ü‚·BƒS[ƒXƒg‚ÍA–{“–‚É‘¶Ý
-	‚µ‚Ä‚¢‚È‚¢Ú‘±‚Ì‚±‚Æ‚Å‚·B•’Ê‚ÍAƒS[ƒXƒg‚ªo‚é‚Ì‚Íƒpƒ\ƒR
-	ƒ“‚ªƒtƒŒ[ƒY‚µ‚½‚èƒ‚ƒfƒ‚ÌÚ‘±‚ªØ’f‚³‚ê‚½‚è‚·‚é‚Æ‚«‚Å‚·B
-	‚à‚¿‚ë‚ñAƒS[ƒXƒg‚¾‚¯‚Å‚È‚­•’Ê‚Ìƒ†[ƒU[‚à‚±‚ÌƒRƒ}ƒ“ƒh‚Å
-	Ø’f‚Å‚«‚Ü‚·‚ªA‘½‚­‚ÌIRCƒNƒ‰ƒCƒAƒ“ƒg‚ÍØ’f‚³‚ê‚½‚ç‚·‚®ÄÚ
-	‘±‚µ‚Ü‚·‚Ì‚ÅA‚±‚ÌƒRƒ}ƒ“ƒh‚ðŽg‚Á‚Ä‚àƒjƒbƒN‚ðŽæ‚è–ß‚¹‚È‚¢‚±
-	‚Æ‚à‚ ‚è‚Ü‚·B‚»‚Ìê‡‚ÍARECOVER‚ÌƒRƒ}ƒ“ƒh‚ðŽg‚Á‚Ä‰º‚³‚¢B
+	uƒS[ƒXƒgvƒ†[ƒU‚ðØ’f‚µ‚Ü‚·BuƒS[ƒXƒg (—H—ì)vƒ†[ƒU‚ÍA
+	ŽÀÛ‚É‚ÍØ’f‚µ‚Ä‚¢‚é‚Ì‚ÉAIRC‚ÉŽc‚Á‚Ä‚¢‚éƒ†[ƒU‚Ì‚±‚Æ‚ÅAƒC
+	ƒ“ƒ^[ƒlƒbƒg‰ñü‚ªØ‚ê‚½‚èƒpƒ\ƒRƒ“‚ªŒÅ‚Ü‚Á‚½‚è‚µ‚½Žž‚É”­¶‚µ
+	‚Ü‚·B
 	
-	GHOST‚ÌƒRƒ}ƒ“ƒh‚ðŽg‚¤‚Ì‚É‚ÍAŒ»Ý‚Ìƒ†[ƒU[ƒAƒhƒŒƒX‚ª
-	nickname‚Æ‚¢‚¤ƒjƒbƒN‚ÌƒAƒNƒZƒX•\‚É‚ ‚é•K—v‚ª‚ ‚è‚Ü‚·B‚Ü‚½A
-	ƒpƒXƒ[ƒh‚ð“ü—Í‚·‚ê‚ÎƒS[ƒXƒg‚ðØ’f‚Å‚«‚Ü‚·B
+	‚±‚ÌƒRƒ}ƒ“ƒh‚ðŽg‚¤‚É‚ÍAƒjƒbƒN‚Ì”FØ—pƒpƒXƒ[ƒh‚ð“ü—Í‚·‚é‚©A
+	ƒjƒbƒN‚ÉƒŠƒ“ƒN‚³‚ê‚Ä‚¢‚é•Ê‚ÌƒjƒbƒN‚É‘Î‚µ‚Ä”FØ‚ðs‚¤•K—v‚ª‚ 
+	‚è‚Ü‚·B
 
 NICK_HELP_INFO
-	ƒVƒ“ƒ^ƒNƒXFINFO nickname
+	—p–@FINFO ƒjƒbƒN [ALL]
 	
-	nickname‚Æ‚¢‚¤ƒjƒbƒN‚Ìî•ñi•Û—LŽÒ‚Ì–¼‘OEƒ†[ƒU[ƒAƒhƒŒƒXA
-	‘O‚ÌŽg—p‚µ‚½“úŽžAƒIƒvƒVƒ‡ƒ“‚ÌÝ’è‚È‚Çj‚ð•\‚µ‚Ü‚·B
+	ƒjƒbƒN‚Ìî•ñiŠ—LŽÒ‚Ì–¼‘OEƒ†[ƒUƒAƒhƒŒƒXA‘O‰ñŽg—p‚µ‚½“úŽžA
+	ƒIƒvƒVƒ‡ƒ“‚ÌÝ’è‚È‚Çj‚ð•\Ž¦‚µ‚Ü‚·BƒpƒXƒ[ƒh”FØ‚ðs‚Á‚½ƒj
+	ƒbƒN‚Ìê‡‚ÍAALL‚ð’Ç‰Á‚·‚é‚±‚Æ‚ÅASET HIDEÝ’è‚ÉŠÖ‚í‚ç‚¸‘S
+	‚Ä‚Ìî•ñ‚ª•\Ž¦‚³‚ê‚Ü‚·B
+NICK_HELP_INFO_AUTH
+	
+	ƒ[ƒ‹ƒAƒhƒŒƒX‚ÌŠm”F‚ª‚Å‚«‚Ä‚¢‚È‚¢ƒjƒbƒN‚É‚Â‚¢‚Ä‚ÍAƒ[ƒ‹ƒA
+	ƒhƒŒƒXƒjƒbƒN‚ÌŠ—LŽÒ‚ÆServicesƒAƒhƒ~ƒjƒXƒgƒŒ[ƒ^‚É‚µ‚©•\Ž¦‚³
+	‚ê‚Ü‚¹‚ñB
+
+NICK_HELP_LISTCHANS
+	—p–@FLISTCHANS
+	
+	‚ ‚È‚½‚ÌƒjƒbƒN‚Å“o˜^‚³‚ê‚Ä‚¢‚éƒ`ƒƒƒ“ƒlƒ‹‚ð•\Ž¦‚µ‚Ü‚·B
 
 NICK_HELP_LIST
-	ƒVƒ“ƒ^ƒNƒXFLIST pattern
+	—p–@FLIST [+ŠJŽnˆÊ’u] ƒpƒ^[ƒ“
 	
-	pattern‚É‡‚¤ƒjƒbƒN‚Æ‚»‚ÌƒjƒbƒN‚Ìƒ†[ƒU[ƒAƒhƒŒƒX‚ð•\‚µ‚Ü
-	‚·B‚½‚¾‚µAŽ„“IƒIƒvƒVƒ‡ƒ“‚ª ON ‚ÌƒjƒbƒN‚Í•\‚ê‚Ü‚¹‚ñB
-	pattern‚ðnick!user@host‚Æ‚¢‚¤Œ`‚Å“ü—Í‚µ‚Ä‰º‚³‚¢B
+	ƒjƒbƒN‚Æ‘O‰ñƒ†[ƒUƒAƒhƒŒƒX‚Ì‚Ç‚¿‚ç‚©‚ªŽw’è‚³‚ê‚½ƒpƒ^[ƒ“‚Éˆê
+	’v‚·‚éƒjƒbƒN‚Ìˆê——‚ð•\Ž¦‚µ‚Ü‚·BPRIVATEÝ’è‚ª—LŒø‚É‚È‚Á‚Ä‚¢
+	‚éƒjƒbƒN‚Í•\Ž¦‚³‚ê‚Ü‚¹‚ñBŠJŽnˆÊ’u‚ÅAÅ‰‚É•\Ž¦‚·‚éƒŒƒR[ƒh
+	‚ðŽw’è‚Å‚«‚Ü‚·i—á‚¦‚ÎAu+50v‚ðŽw’è‚·‚é‚ÆÅ‰‚Ì50ŒÂ‚ÌŠY“–
+	ƒŒƒR[ƒh‚ð”ò‚Î‚µA51ŒÂ–Ú‚©‚ç•\Ž¦‚µ‚Ü‚·jB
 	
 	—áF
-	    LIST *!joeuser@foo.com
-	        joeuser@foo.com‚ª•Û—L‚µ‚Ä‚¢‚éƒjƒbƒN‚ð•\‚µ‚Ü‚·B
+	    LIST joeuser@foo.com
+	        ‘O‰ñ‚Ìƒ†[ƒUƒAƒhƒŒƒX‚ªjoeuser@foo.com‚Å‚ ‚éƒjƒbƒN‚ð
+	        •\Ž¦‚µ‚Ü‚·B
 	    LIST *Bot*!*@*
-	        uBotv‚ðŠÜ‚ÞƒjƒbƒN‚ð•\‚µ‚Ü‚·B
-	    LIST *!*@*.bar.org
-	        bar.org‚Ìƒ†[ƒU[‚ª•Û—L‚µ‚Ä‚¢‚éƒjƒbƒN‚ð•\‚µ‚Ü‚·B
+	        uBotv‚ðŠÜ‚ÞƒjƒbƒN‚ð•\Ž¦‚µ‚Ü‚·Bi‘å•¶ŽšE¬•¶Žš‚Í
+	        ‹æ•Ê‚¹‚¸j
+	    LIST *@*.bar.org
+	        ‘O‰ñ‚Ìƒ†[ƒUƒAƒhƒŒƒX‚ªbar.orgƒhƒƒCƒ““à‚ÌƒjƒbƒN‚ð•\
+	        Ž¦‚µ‚Ü‚·B
+NICK_HELP_LIST_OPERSONLY
+	
+	‚±‚ÌƒRƒ}ƒ“ƒh‚ÌŽg—p‚ÍIRCƒIƒyƒŒ[ƒ^‚É§ŒÀ‚³‚ê‚Ä‚¢‚Ü‚·B
+
+NICK_HELP_LISTEMAIL
+	—p–@F%s
+	
+	“dŽqƒ[ƒ‹ƒAƒhƒŒƒX‚ªŽw’è‚³‚ê‚½ƒpƒ^[ƒ“‚Éˆê’v‚·‚éƒjƒbƒN‚ð•\Ž¦
+	‚µ‚Ü‚·BÚ‚µ‚­‚ÍLISTƒRƒ}ƒ“ƒh‚Ìî•ñ‚ð‚²——‚­‚¾‚³‚¢B
+	i/msg %S HELP LISTj
 
 NICK_HELP_STATUS
-	ƒVƒ“ƒ^ƒNƒXFSTATUS nickname...
+	—p–@FSTATUS ƒjƒbƒN...
 	
-#@@@ –¼óEChanServ‚É‚à‚ ‚é
-	nickname‚Æ‚¢‚¤ƒjƒbƒN‚ðŽg—p‚µ‚Ä‚¢‚éƒ†[ƒU[‚Í‚»‚ÌƒjƒbƒN‚Ì•Û
-	—LŽÒ‚Å‚ ‚é‚©‚»‚¤‚Å‚È‚¢‚©‚Æ‚¢‚¤‚±‚Æ‚ð•\Ž¦‚µ‚Ü‚·B”½‰ž‚Í‚±‚Ì
-	Œ`‚Å‚·F
-	
-	    nickname status-code
-	
-	nickname‚ÍƒRƒ}ƒ“ƒh‚ð“ü—Í‚µ‚½‚Æ‚«‚Æ“¯‚¶ƒjƒbƒN‚ÅAstatus-code
-	‚ÍŽŸ‚Ì”’l‚Ìˆê‚Â‚Å‚·B
-	
-	    0 - ƒ†[ƒU[‚ÍŒ»ÝÚ‘±‚µ‚Ä‚¢‚È‚¢‚©AƒjƒbƒN‚Í“o˜^‚³‚ê‚Ä
-	        @@‚¢‚È‚¢
-	    1 - ƒ†[ƒU[‚Í•Û—LŽÒ‚Å‚Í‚È‚¢‚©AƒZƒLƒ…ƒAƒIƒvƒVƒ‡ƒ“‚Í“ü
-	        @@‚ÉÝ’è‚³‚ê‚Ä‚¢‚Äƒ†[ƒU[‚ÍƒpƒXƒ[ƒh‚ð“ü—Í‚µ‚Ä
-	        @@‚¢‚È‚¢
-	    2 - ƒ†[ƒU[‚ÌƒAƒhƒŒƒX‚ÍƒAƒNƒZƒX•\‚É‚ ‚èAƒZƒLƒ…ƒAƒIƒv
-	        @@ƒVƒ‡ƒ“‚ÍƒIƒt‚ÉÝ’è‚³‚ê‚Ä‚¢‚é
-	    3 - ƒ†[ƒU[‚ÍIDENTIFY‚ÅƒpƒXƒ[ƒh‚ð“ü—Í‚µ‚½
-	
-	ƒRƒ}ƒ“ƒh‚¸‚Â‚ÉƒjƒbƒN‚ð16ˆÈ‰º‚ð“ü—Í‚Å‚«‚Ü‚·‚ªA17ˆÈã‚Ìê‡
-	‚ÆƒjƒbƒN‚ð“ü—Í‚µ‚È‚¢ê‡‚É‚ÍƒGƒ‰[ƒƒbƒZ[ƒW‚Ío‚Ü‚¹‚ñB
+	Žw’è‚³‚ê‚½ƒjƒbƒN‚Ì”FØó‹µ‚ð•\Ž¦‚µ‚Ü‚·B‰ž“š‚Í‚Ps‚É‚PƒjƒbƒN
+	‚ÅAƒjƒbƒN‚ÌŒã‚É‹ó”’‚Æó‹µ‚ðŽ¦‚·”Žš‚ª•t‰Á‚³‚ê‚Ü‚·B”Žš‚ÌˆÓ
+	–¡‚ÍˆÈ‰º‚Ì’Ê‚è‚Å‚·B
+	    E0: ƒjƒbƒN‚ªŽg—p‚³‚ê‚Ä‚¢‚È‚¢‚©A–¢“o˜^
+	    E1: ”FØ‚³‚ê‚Ä‚¢‚È‚¢
+	    E2: —˜—p‹–‰ÂƒŠƒXƒg‚É“ü‚Á‚Ä‚¢‚é‚ªAƒpƒXƒ[ƒh”FØ‚³‚ê‚Ä
+	         ‚¢‚È‚¢
+	    E3: ƒpƒXƒ[ƒh”FØ‚³‚ê‚Ä‚¢‚é
+	‚P‰ñ‚ÅŽw’è‚Å‚«‚éƒjƒbƒN‚Í16ŒÂ‚Ü‚Å‚ÅA17ŒÂ–ÚˆÈ~‚Í–³Ž‹‚³‚ê‚Ü‚·B
 
-NICK_SERVADMIN_HELP
+NICK_HELP_AJOIN
+	—p–@FAJOIN ADD ƒ`ƒƒƒ“ƒlƒ‹
+	@@@AJOIN DEL ƒ`ƒƒƒ“ƒlƒ‹
+	@@@AJOIN LIST
 	
-	Services‚ÌƒAƒhƒ~ƒ“‚ÍŽŸ‚ÌƒRƒ}ƒ“ƒh‚àŽg‚¦‚Ü‚·B
+	ƒjƒbƒN‚ÌŽ©“®ŽQ‰ÁƒŠƒXƒg‚ð•ÒW‚Ü‚½‚Í•\Ž¦‚µ‚Ü‚·B‚±‚ÌƒŠƒXƒg‚É’Ç
+	‰Á‚³‚ê‚½ƒ`ƒƒƒ“ƒlƒ‹‚ÍAƒjƒbƒN”FØ‚ðs‚¤Žž‚ÉŽ©“®“I‚ÉŽQ‰Á‚³‚¹‚ç
+	‚ê‚Ü‚·B‚½‚¾‚µ’Ç‰Á‚Å‚«‚é‚Ì‚ÍA–¼‘O‚ªu#v‚ÅŽn‚Ü‚éƒ`ƒƒƒ“ƒlƒ‹
+	‚Ì‚Ý‚Å‚·iƒ[ƒJƒ‹ƒ`ƒƒƒ“ƒlƒ‹‚ð’Ç‰Á‚Å‚«‚Ü‚¹‚ñjB
 	
-	    GETPASS    ƒjƒbƒN‚ÌƒpƒXƒ[ƒh‚ðŒ©‚é
-	               @@iˆÃ†‰»‚ªŽg‚í‚ê‚Ä‚¢‚È‚¢ê‡‚Ì‚Ýj
-	    FORBID     ƒjƒbƒN‚ðŽg—p•s‰Â”\‚É‚·‚é
-	
-	‚È‚¨AServices‚ÌƒAƒhƒ~ƒ“‚ÍƒpƒXƒ[ƒh‚ð“ü—Í‚¹‚¸‚ÉƒjƒbƒN‚Ì“o
-	˜^‚ðÁ‹Ž‚·‚é‚±‚Æ‚àƒAƒNƒZƒX•\‚ðŒ©‚é‚±‚Æ‚ào—ˆ‚Ü‚·BƒAƒNƒZƒX
-	•\‚ðŒ©‚é‚Ì‚É‚Íu/msg %S ACCESS LIST nickv‚Æ‚¢‚¤Œ`‚ð
-	Žg‚¤‚Ì‚Å‚·B
+NICK_HELP_AJOIN_END
+	‚Ü‚½AIRCƒT[ƒo‚É‚æ‚Á‚Äƒ`ƒƒƒ“ƒlƒ‹ŽQ‰Á‚ð‹‘”Û‚³‚ê‚é‚±‚Æ‚ª‚ ‚è
+	‚Ü‚·iƒL[‚ðÝ’è‚³‚ê‚½ƒ`ƒƒƒ“ƒlƒ‹‚âAƒCƒ“ƒoƒCƒgê—pƒ`ƒƒƒ“ƒlƒ‹
+	‚È‚ÇjB
+NICK_HELP_AJOIN_END_CHANSERV
+	‚Ü‚½AIRCƒT[ƒo‚É‚æ‚Á‚Äƒ`ƒƒƒ“ƒlƒ‹ŽQ‰Á‚ð‹‘”Û‚³‚ê‚é‚±‚Æ‚ª‚ ‚è
+	‚Ü‚·iƒL[‚ðÝ’è‚³‚ê‚½ƒ`ƒƒƒ“ƒlƒ‹‚âAƒCƒ“ƒoƒCƒgê—pƒ`ƒƒƒ“ƒlƒ‹
+	‚È‚ÇjB‚½‚¾AƒCƒ“ƒoƒCƒgê—pƒ`ƒƒƒ“ƒlƒ‹‚ÅA%s‚É“o˜^‚³‚êA
+	‚»‚Ìƒ`ƒƒƒ“ƒlƒ‹‚ÅINVITEƒRƒ}ƒ“ƒh‚ðŽg‚¤Œ —˜‚ª‚ ‚éê‡‚ÍA
+	%S‚ªŽ©“®“I‚Éƒ`ƒƒƒ“ƒlƒ‹‚É—U‚¢‚Ü‚·B
 
-NICK_SERVADMIN_HELP_DROP
-	ƒVƒ“ƒ^ƒNƒXFDROP [nickname]
+
+NICK_OPER_HELP_COMMANDS
 	
-	ƒpƒ‰ƒ[ƒ^[‚ª‚È‚¢ê‡‚ÍAŒ»ÝŽg—p‚µ‚Ä‚¢‚éƒjƒbƒN‚ð%S
-	‚Ìƒf[ƒ^ƒx[ƒX‚©‚çÁ‹Ž‚µ‚Ü‚·B
+	ServicesƒAƒhƒ~ƒjƒXƒgƒŒ[ƒ^‚ÍŽŸ‚ÌƒRƒ}ƒ“ƒh‚àŽg‚¦‚Ü‚·B
 	
-	ƒpƒ‰ƒ[ƒ^[‚ª‚ ‚éê‡‚ÍA“ü—Í‚µ‚½ƒjƒbƒN‚ðƒf[ƒ^ƒx[ƒX‚©‚ç
-	Á‹Ž‚µ‚Ü‚·B‚±‚ÌŽg‚¢•û‚ðŽg‚¦‚é‚Ì‚ÍServices‚ÌƒAƒhƒ~ƒ“‚Ì‚Ý‚Å
+	    DROPNICK     ”CˆÓ‚ÌƒjƒbƒN‚Ì“o˜^‚ð‰ðœ‚·‚é
+NICK_OPER_HELP_COMMANDS_DROPEMAIL
+	    DROPEMAIL    Žw’è‚³‚ê‚½ƒ[ƒ‹ƒAƒhƒŒƒX‚ðŽ‚ÂƒjƒbƒN‚ð‚·‚×‚Ä
+	                 @@“o˜^‰ðœ‚·‚é
+NICK_OPER_HELP_COMMANDS_GETPASS
+	    GETPASS      ƒjƒbƒN‚ÌƒpƒXƒ[ƒh‚ð•\Ž¦‚·‚é
+	                 @@iˆÃ†‰»‚ªŽg‚í‚ê‚Ä‚¢‚È‚¢ê‡‚Ì‚Ýj
+NICK_OPER_HELP_COMMANDS_FORBID
+	    FORBID       ƒjƒbƒN‚ðŽg—p‹ÖŽ~‚É‚·‚é
+	    SUSPEND      ƒjƒbƒN‚ðŽg—p’âŽ~‚É‚·‚é
+	    UNSUSPEND    ƒjƒbƒN‚ÌŽg—p’âŽ~‚ð‰ðœ‚·‚é
+NICK_OPER_HELP_COMMANDS_SETAUTH
+	    SETAUTH      ƒjƒbƒN‚Ìƒ[ƒ‹Šm”FƒR[ƒh‚ðÝ’è‚·‚é
+	    GETAUTH      ƒjƒbƒN‚Ìƒ[ƒ‹Šm”FƒR[ƒh‚ð•\Ž¦‚·‚é
+	    CLEARAUTH    ƒjƒbƒN‚Ìƒ[ƒ‹Šm”FƒR[ƒh‚ðÁ‹Ž‚·‚é
+NICK_OPER_HELP_COMMANDS_END
+	
+	‚È‚¨AServicesƒAƒhƒ~ƒjƒXƒgƒŒ[ƒ^‚ÍSETAACCESS LISTAINFO ALL
+	‚ÌŠeƒRƒ}ƒ“ƒh‚ð‚Ç‚ÌƒjƒbƒN‚É‘Î‚µ‚Ä‚àŽg—p‚Å‚«‚Ü‚·BÚ‚µ‚­‚Í“–ŠY
+	ƒRƒ}ƒ“ƒh‚Ìƒwƒ‹ƒvî•ñ‚ð‚²——‚­‚¾‚³‚¢B
+
+NICK_OPER_HELP_DROPNICK
+	—p–@FDROPNICK ƒjƒbƒN
+	
+	Žw’è‚³‚ê‚½ƒjƒbƒN‚Ì“o˜^‚ð‰ðœ‚µ‚Ü‚·BŽw’èƒjƒbƒN‚É‘¼‚ÌƒjƒbƒN‚ª
+	ƒŠƒ“ƒN‚³‚ê‚Ä‚¢‚éê‡AƒŠƒ“ƒN‚à‰ðœ‚µ‚Ü‚·B
+	
+	‚±‚ÌƒRƒ}ƒ“ƒh‚ÌŽg—p‚ÍServicesƒAƒhƒ~ƒ“‚É§ŒÀ‚³‚ê‚Ä‚¢‚Ü‚·B
+
+NICK_OPER_HELP_DROPEMAIL
+	—p–@FDROPEMAIL ƒpƒ^[ƒ“
+	@@@DROPEMAIL-CONFIRM ƒpƒ^[ƒ“
+	
+	Žw’è‚³‚ê‚½ƒpƒ^[ƒ“‚É“dŽqƒ[ƒ‹ƒAƒhƒŒƒX‚ªˆê’v‚·‚é‘S‚Ä‚ÌƒjƒbƒN
+	‚Ì“o˜^‚ð‰ðœ‚µ‚Ü‚·Bƒpƒ^[ƒ“‚ªu-vi”¼Šp‚ÌƒnƒCƒtƒ“j‚Å‚ ‚é
+	ê‡Aƒ[ƒ‹ƒAƒhƒŒƒX‚ªÝ’è‚³‚ê‚Ä‚¢‚È‚¢ƒjƒbƒN‚Ì“o˜^‚ð‰ðœ‚µ‚Ü
 	‚·B
+	
+	Œë‚Á‚½“o˜^‰ðœ‚ð–hŽ~‚·‚é‚½‚ßA‚±‚ÌƒRƒ}ƒ“ƒh‚Í‚Q’iŠK‚ÅŽÀs‚µ‚Ü
+	‚·B‚Ü‚¸‚ÍDROPEMAILƒRƒ}ƒ“ƒh‚Åƒpƒ^[ƒ“‚ðŽw’è‚µAŠY“–‚·‚éƒjƒb
+	ƒN‚Ì”‚ðŠm”F‚µ‚Ä‚©‚çADROPEMAIL-CONFIRMƒRƒ}ƒ“ƒh‚ÅŽÀÛ‚É“o˜^
+	‰ðœ‚ðs‚¢‚Ü‚·BDROPEMAIL-CONFIRM‚ÍADROPEMAIL‚ÌŽÀs‚©‚ç%s
+	ˆÈ“àA‚©‚Â“¯‚¶ƒ†[ƒU‚É‚æ‚Á‚ÄŽÀs‚³‚ê‚È‚¯‚ê‚Î‚È‚è‚Ü‚¹‚ñB‚È‚¨A
+	DROPEMAILƒRƒ}ƒ“ƒh‚ª‚T‚ÂˆÈã˜A‘±‚ÅŽó‚¯•t‚¯‚½ê‡‚Íˆê”ÔŒÃ‚¢‚à
+	‚Ì‚©‚ç‘—MŽÒEŠY“–ƒjƒbƒNî•ñ‚ªÁ‚¦AŽžŠÔ“à‚Å‚à
+	DROPEMAIL-CONFIRMƒRƒ}ƒ“ƒh‚ªŽg‚¦‚È‚­‚È‚è‚Ü‚·B
+	
+	‚±‚ÌƒRƒ}ƒ“ƒh‚ÌŽg—p‚ÍServicesƒAƒhƒ~ƒ“‚É§ŒÀ‚³‚ê‚Ä‚¢‚Ü‚·B
 
-NICK_SERVADMIN_HELP_SET
+NICK_OPER_HELP_SET
 	
-	Services‚ÌƒAƒhƒ~ƒ“‚ÍNOEXPIRE‚Æ‚¢‚¤ƒIƒvƒVƒ‡ƒ“‚ðÝ’è‚Å‚«‚Ü‚·B
-	‚±‚ÌƒIƒvƒVƒ‡ƒ“‚ÅƒjƒbƒN‚Ì“o˜^‚ðØ‚ê‚È‚­‚·‚é‚±‚Æ‚ªo—ˆ‚Ü‚·B
-	‚È‚¨AServices‚ÌƒAƒhƒ~ƒ“‚ÍƒpƒXƒ[ƒh‚ð“ü—Í‚¹‚¸‚É‚Ç‚ÌƒjƒbƒN
-	‚Å‚àƒIƒvƒVƒ‡ƒ“‚ðÝ’è‚Å‚«‚Ü‚·B‘¼‚ÌƒjƒbƒN‚ÌƒIƒvƒVƒ‡ƒ“‚ðÝ’è
-	‚·‚éê‡‚ÍuSET nickname option parametersv‚Æ‚¢‚¤Œ`‚Å‚·B
+	ServicesƒAƒhƒ~ƒ“‚ÍAuNOEXPIREvi“o˜^‚ÌŽ©“®‰ðœ‚Ì—L–³jÝ’è
+	‚à•ÏX‚Å‚«‚Ü‚·B‚Ü‚½A‘¼‚ÌƒjƒbƒN‚ÌÝ’è•ÏX‚à‚Å‚«‚Ü‚·B
+	i—p–@FSET !ƒjƒbƒN option parametersj
 
-NICK_SERVADMIN_HELP_SET_NOEXPIRE
-	ƒVƒ“ƒ^ƒNƒXFSET NOEXPIRE [nickname] {ON | OFF}
+NICK_OPER_HELP_SET_NOEXPIRE
+	—p–@FSET NOEXPIRE [!ƒjƒbƒN] {ON | OFF}
 	
-	nickname‚Æ‚¢‚¤ƒjƒbƒN‚Ì“o˜^‚ÍØ‚ê‚é‚©‚ðÝ’è‚µ‚Ü‚·BON‚É‚·‚é
-	‚ÆA“o˜^‚ÍØ‚ê‚Ü‚¹‚ñBƒjƒbƒN‚ð“ü—Í‚µ‚È‚¢ê‡‚ÍAŽ©•ª‚Ìƒjƒb
-	ƒN‚ÌƒIƒvƒVƒ‡ƒ“‚ðÝ’è‚µ‚Ü‚·B
+	Žw’è‚³‚ê‚½ƒjƒbƒNiŽw’è‚Ì‚È‚¢ê‡‚ÍŒ»ÝŽg‚Á‚Ä‚¢‚éƒjƒbƒNj‚Ì“o
+	˜^‚ªŽ©“®“I‚É‰ðœ‚³‚ê‚é‚©‚Ç‚¤‚©‚ðÝ’è‚µ‚Ü‚·B
 	
-	‚±‚ÌƒRƒ}ƒ“ƒh‚ÌŽg—p‚ÍServices‚ÌƒAƒhƒ~ƒ“‚ÉŒÀ‚Á‚Ä‚¢‚Ü‚·B
+	‚±‚ÌƒRƒ}ƒ“ƒh‚ÌŽg—p‚ÍServicesƒAƒhƒ~ƒ“‚É§ŒÀ‚³‚ê‚Ä‚¢‚Ü‚·B
 
-NICK_SERVADMIN_HELP_UNLINK
+NICK_OPER_HELP_UNSET
 	
-	Services‚ÌƒAƒhƒ~ƒ“‚ÍAƒpƒXƒ[ƒh‚ð“ü—Í‚¹‚¸‚É‚Ç‚ÌƒjƒbƒN‚ÌƒŠƒ“
-	ƒN‚Å‚àÁ‹Ž‚Å‚«‚Ü‚·B
+	ServicesƒAƒhƒ~ƒ“‚ÍASETƒRƒ}ƒ“ƒh“¯—lAÝ’è–¼‚Ì‘O‚Éu!v‚Æƒjƒb
+	ƒN‚ð“ü‚ê‚é‚±‚Æ‚Å‘¼‚ÌƒjƒbƒN‚É‘Î‚µ‚Ä‚àUNSETƒRƒ}ƒ“ƒh‚ðŽg‚¦‚Ü‚·B
+	iUNSET !ƒjƒbƒN Ý’è–¼j
 
-NICK_SERVADMIN_HELP_LISTLINKS
-	ƒVƒ“ƒ^ƒNƒXFLISTLINKS nickname [ALL]
+NICK_OPER_HELP_OLD_UNLINK
 	
-	“ü—Í‚µ‚½ƒjƒbƒN‚ÉƒŠƒ“ƒN‚µ‚Ä‚¢‚éƒjƒbƒN‚ð•\‚µ‚Ü‚·BALL ‚ð“ü—Í‚·
-	‚é‚ÆA‘ÎÛƒjƒbƒN‚Æ“¯‚¶Œ —˜‚ðŽ‚Á‚Ä‚¢‚éƒjƒbƒN‚ð‘S‚Ä•\‚µA“ü—Í
-	‚µ‚È‚¢ê‡‚ÍA‘ÎÛƒjƒbƒN‚ªƒŠƒ“ƒN‚Ì’¼Ú‘ÎÛ‚É‚È‚Á‚Ä‚¢‚éƒjƒbƒN
-	‚¾‚¯‚ð•\‚µ‚Ü‚·B
-	
-	‚±‚ÌƒRƒ}ƒ“ƒh‚ÌŽg—p‚ÍServices‚ÌƒAƒhƒ~ƒ“‚ÉŒÀ‚Á‚Ä‚¢‚Ü‚·B
+	ServicesƒAƒhƒ~ƒ“‚ÍAƒpƒXƒ[ƒh‚ð“ü—Í‚¹‚¸‚É‘¼‚ÌƒjƒbƒN‚ÌƒŠƒ“ƒN
+	‚à‰ðœ‚Å‚«‚Ü‚·B
 
-NICK_SERVADMIN_HELP_LIST
-	ƒVƒ“ƒ^ƒNƒXFLIST pattern [FORBIDDEN] [NOEXPIRE]
+NICK_OPER_HELP_UNLINK
+	—p–@FUNLINK ƒjƒbƒN [FORCE]
 	
-	pattern‚É‡‚¤ƒjƒbƒN‚Æ‚»‚ÌƒjƒbƒN‚Ìƒ†[ƒU[ƒAƒhƒŒƒX‚ð•\‚µ‚Ü
-	‚·B‚½‚¾‚µAŽ„“IƒIƒvƒVƒ‡ƒ“‚ÌON‚ÌƒjƒbƒN‚ÍServices‚ÌƒAƒhƒ~ƒ“
-	‚É‚µ‚©•\‚ê‚Ü‚¹‚ñBpattern‚ðnick!user@host‚Æ‚¢‚¤Œ`‚Å“ü—Í
-	‚µ‚Ä‰º‚³‚¢B
+	Œ»Ý‚ÌƒjƒbƒN‚Ö‚ÌƒŠƒ“ƒN‚ð‰ðœ‚µ‚Ü‚·BƒŠƒ“ƒN‚ð‰ðœ‚µ‚½ƒjƒbƒN‚ÍA
+	“o˜^‰ðœ‚Æ“¯—l‚É’N‚Å‚àŽg‚¤‚±‚Æ‚ªo—ˆ‚Ü‚·BŒ»Ý‚ÌƒjƒbƒN‚ðíœ
+	‚·‚éê‡‚ÍA‚Ü‚¸•Ê‚ÌƒjƒbƒN‚É•Ï‚¦‚È‚¯‚ê‚Î‚È‚è‚Ü‚¹‚ñB
 	
-	‚Ü‚½AServices‚ÌƒAƒhƒ~ƒ“‚É‚Ì‚ÝA“o˜^‚ÌØ‚ê‚È‚¢ƒjƒbƒN‚Ì“ª‚É
-	u!vˆó‚ª•\‚ê‚Ü‚·B
+	SET MAINNICKƒRƒ}ƒ“ƒh‚ÅÝ’è‚µ‚½uƒƒCƒ“ƒjƒbƒNv‚ÌƒŠƒ“ƒN‚ð‰ðœ
+	‚·‚é‚ÆAƒƒCƒ“ƒjƒbƒN‚ÍŒ»Ý‚ÌƒjƒbƒN‚ÉÝ’è‚³‚ê‚Ü‚·B
 	
-	FORBIDDEN ‚Ü‚½‚Í NOEXPIRE ‚ð’Ç‰Á‚·‚ê‚ÎAƒŠƒXƒg‚É•\‚ê‚éƒjƒb
-	ƒN‚ð§ŒÀ‚·‚é‚±‚Æ‚ªo—ˆ‚Ü‚·BFORBIDDEN ‚Ìê‡‚ÍŽg—p‹ÖŽ~ƒjƒb
-	ƒNANOEXPIRE ‚Ìê‡‚Í“o˜^‚ÌØ‚ê‚È‚¢ƒjƒbƒN‚ª•\‚ê‚Ü‚·B—¼•û
-	‚ð“ü—Í‚·‚ê‚ÎA—¼•û‚Ìƒ^ƒCƒv‚ÌƒjƒbƒN‚ª•\‚ê‚Ü‚·B‚½‚¾‚µA‚±‚Ì
-	ƒIƒvƒVƒ‡ƒ“‚ðŽg‚¤‚Ì‚ÍServices‚ÌƒAƒhƒ~ƒ“‚Ì‚Ý‚Å‚·B
+	ServicesƒAƒhƒ~ƒ“‚ÍAFORCEƒIƒvƒVƒ‡ƒ“‚ð’Ç‰Á‚·‚é‚±‚Æ‚ÅŽ©•ªˆÈŠO
+	‚ÌƒjƒbƒN‚Ö‚ÌƒŠƒ“ƒN‚ð‰ðœ‚Å‚«‚Ü‚·B
+
+NICK_OPER_HELP_OLD_LISTLINKS
+	—p–@FLISTLINKS ƒjƒbƒN
+	
+	Žw’è‚³‚ê‚½ƒjƒbƒN‚ÉƒŠƒ“ƒN‚³‚ê‚Ä‚¢‚éƒjƒbƒN‚ð•\Ž¦‚µ‚Ü‚·B
+	
+	‚±‚ÌƒRƒ}ƒ“ƒh‚ÌŽg—p‚ÍServicesƒAƒhƒ~ƒ“‚É§ŒÀ‚³‚ê‚Ä‚¢‚Ü‚·B
+
+NICK_OPER_HELP_LISTLINKS
+	—p–@FLISTLINKS [ƒjƒbƒN]
+	
+	Œ»Ý‚ÌƒjƒbƒN‚ÉƒŠƒ“ƒN‚³‚ê‚Ä‚¢‚é‘S‚Ä‚ÌƒjƒbƒN‚ð•\Ž¦‚µ‚Ü‚·BƒƒC
+	ƒ“ƒjƒbƒN‚É‚Íu*v‚ªæ“ª‚É•t‚«‚Ü‚·BServicesƒIƒyƒŒ[ƒ^‚ÍA
+	ƒjƒbƒN‚ðŽw’è‚·‚é‚±‚Æ‚ÅŽ©•ªˆÈŠO‚ÌƒjƒbƒN‚ÌƒŠƒ“ƒN‚à•\Ž¦‚Å‚«‚Ü‚·B
+
+NICK_OPER_HELP_ACCESS
+	
+	ServicesƒAƒhƒ~ƒ“‚ÍAƒjƒbƒN‚ðŽw’è‚·‚é‚±‚Æ‚ÅŽ©•ªˆÈŠO‚ÌƒjƒbƒN‚Ì
+	—˜—p‹–‰ÂƒŠƒXƒg‚ð•\Ž¦‚Å‚«‚Ü‚·B
+
+NICK_OPER_HELP_INFO
+	
+	ServicesƒAƒhƒ~ƒ“‚ÍA‚Ç‚ÌƒjƒbƒN‚É‘Î‚µ‚Ä‚àALL‚ðŽw’è‚Å‚«‚Ü‚·B
+
+NICK_OPER_HELP_LISTCHANS
+	
+	ServicesƒAƒhƒ~ƒ“‚ÍAƒjƒbƒN‚ð’Ç‰Á‚·‚é‚±‚Æ‚ÅŽ©•ªˆÈŠO‚ÌƒjƒbƒN‚Ì
+	“o˜^ƒ`ƒƒƒ“ƒlƒ‹‚ð•\Ž¦‚Å‚«‚Ü‚·B
+	i—áF/msg %S LISTCHANS OtherNickj
+
+NICK_OPER_HELP_LIST
+	—p–@FLIST [+ŠJŽnˆÊ’u] ƒpƒ^[ƒ“ [FORBIDDEN] [NOEXPIRE] [SUSPENDED]
+	
+	ƒjƒbƒN‚Æ‘O‰ñƒ†[ƒUƒAƒhƒŒƒX‚Ì‚Ç‚¿‚ç‚©‚ªŽw’è‚³‚ê‚½ƒpƒ^[ƒ“‚Éˆê
+	’v‚·‚éƒjƒbƒN‚Ìˆê——‚ð•\Ž¦‚µ‚Ü‚·BPRIVATEÝ’è‚ª—LŒø‚É‚È‚Á‚Ä‚¢
+	‚éƒjƒbƒN‚ÍServicesƒAƒhƒ~ƒ“‚É‚µ‚©•\Ž¦‚³‚ê‚Ü‚¹‚ñB
+	
+	ServicesƒAƒhƒ~ƒ“‚ªŽg‚¤ê‡‚ÍAƒjƒbƒN‚Ìæ“ª‚ÉANOEXPIREÝ’è‚ª
+	—LŒø‚ÈƒjƒbƒN‚Íu!v‚ªAŽg—p’âŽ~‚É‚È‚Á‚Ä‚¢‚éƒjƒbƒN‚Íu*v‚ª•t
+	‚«‚Ü‚·B
+	
+	uFORBIDDENvuSUSPENDEDvuNOEXPIREv‚ÌŠeƒIƒvƒVƒ‡ƒ“‚ðŽw’è‚µ
+	‚½ê‡A•\Ž¦‚³‚ê‚éƒjƒbƒN‚Í‚»‚ê‚¼‚êŽg—p‹ÖŽ~AŽg—p’âŽ~A
+	NOEXPIREÝ’è—LŒø‚È‚à‚Ì‚ÉŒÀ‚ç‚ê‚Ü‚·B•¡”•¹‚¹‚ÄŽg‚¤‚±‚Æ‚ào—ˆ
+	‚Ü‚·B‚±‚ê‚ç‚ÌƒIƒvƒVƒ‡ƒ“‚ðŽg‚¦‚é‚Ì‚ÍServicesƒAƒhƒ~ƒ“‚Ì‚Ý‚Å‚·B
+NICK_OPER_HELP_LIST_AUTH
+	—p–@FLIST [+ŠJŽnˆÊ’u] ƒpƒ^[ƒ“ [FORBIDDEN] [NOEXPIRE] [SUSPENDED] [NOAUTH]
+	
+	ƒjƒbƒN‚Æ‘O‰ñƒ†[ƒUƒAƒhƒŒƒX‚Ì‚Ç‚¿‚ç‚©‚ªŽw’è‚³‚ê‚½ƒpƒ^[ƒ“‚Éˆê
+	’v‚·‚éƒjƒbƒN‚Ìˆê——‚ð•\Ž¦‚µ‚Ü‚·BPRIVATEÝ’è‚ª—LŒø‚É‚È‚Á‚Ä‚¢
+	‚éƒjƒbƒN‚ÍServicesƒAƒhƒ~ƒ“‚É‚µ‚©•\Ž¦‚³‚ê‚Ü‚¹‚ñB
+	
+	ServicesƒAƒhƒ~ƒ“‚ªŽg‚¤ê‡‚ÍAƒjƒbƒN‚Ìæ“ª‚ÉANOEXPIREÝ’è‚ª
+	—LŒø‚ÈƒjƒbƒN‚Íu!v‚ªAŽg—p’âŽ~‚É‚È‚Á‚Ä‚¢‚éƒjƒbƒN‚Íu*v‚ªA
+	ƒ[ƒ‹ƒAƒhƒŒƒXŠm”FiAUTHƒRƒ}ƒ“ƒhj‚ªÏ‚ñ‚Å‚¢‚È‚¢ƒjƒbƒN‚Íu?v
+	‚ª•t‚«‚Ü‚·B
+	
+	uFORBIDDENvuSUSPENDEDvuNOEXPIREvuNOAUTHv‚ÌŠeƒIƒvƒVƒ‡
+	ƒ“‚ðŽw’è‚µ‚½ê‡A•\Ž¦‚³‚ê‚éƒjƒbƒN‚Í‚»‚ê‚¼‚êŽg—p‹ÖŽ~AŽg—p’â
+	Ž~ANOEXPIREÝ’è—LŒøAƒ[ƒ‹ƒAƒhƒŒƒX–¢Šm”F‚Ì‚à‚Ì‚ÉŒÀ‚ç‚ê‚Ü‚·B
+	•¡”•¹‚¹‚ÄŽg‚¤‚±‚Æ‚ào—ˆ‚Ü‚·B‚±‚ê‚ç‚ÌƒIƒvƒVƒ‡ƒ“‚ðŽg‚¦‚é‚Ì‚Í
+	ServicesƒAƒhƒ~ƒ“‚Ì‚Ý‚Å‚·B
+NICK_OPER_HELP_LIST_END
+	
+	ŠJŽnˆÊ’u‚ÅAÅ‰‚É•\Ž¦‚·‚éƒŒƒR[ƒh‚ðŽw’è‚Å‚«‚Ü‚·i—á‚¦‚ÎA
+	u+50v‚ðŽw’è‚·‚é‚ÆÅ‰‚Ì50ŒÂ‚ÌŠY“–ƒŒƒR[ƒh‚ð”ò‚Î‚µA51ŒÂ–Ú
+	‚©‚ç•\Ž¦‚µ‚Ü‚·jB
 	
 	—áF
-	    LIST *!joeuser@foo.com
-	        joeuser@foo.com‚ª•Û—L‚µ‚Ä‚¢‚éƒjƒbƒN‚ð•\‚µ‚Ü‚·B
+	    LIST joeuser@foo.com
+	        ‘O‰ñ‚Ìƒ†[ƒUƒAƒhƒŒƒX‚ªjoeuser@foo.com‚Å‚ ‚éƒjƒbƒN‚ð
+	        •\Ž¦‚µ‚Ü‚·B
 	    LIST *Bot*!*@*
-	        uBotv‚ðŠÜ‚ÞƒjƒbƒN‚ð•\‚µ‚Ü‚·B
+	        uBotv‚ðŠÜ‚ÞƒjƒbƒN‚ð•\Ž¦‚µ‚Ü‚·Bi‘å•¶ŽšE¬•¶Žš‚Í
+	        ‹æ•Ê‚¹‚¸j
 	    LIST * NOEXPIRE
-	        “o˜^‚ÌØ‚ê‚È‚¢ƒjƒbƒN‚ð‘S‚Ä•\‚µ‚Ü‚·B
+	        NOEXPIREÝ’è‚ª—LŒø‚É‚È‚Á‚Ä‚¢‚éƒjƒbƒN‚ð‘S‚Ä•\Ž¦‚µ‚Ü‚·B
 
-NICK_SERVADMIN_HELP_GETPASS
-	ƒVƒ“ƒ^ƒNƒXFGETPASS nickname
+NICK_OPER_HELP_GETPASS
+	—p–@FGETPASS ƒjƒbƒN
 	
-	nickname‚Æ‚¢‚¤ƒjƒbƒN‚ÌƒpƒXƒ[ƒh‚ð•\Ž¦‚µ‚Ü‚·B‚±‚ÌƒRƒ}ƒ“ƒh
-	‚ðŽg‚¤‚ÆAƒRƒ}ƒ“ƒh‚ð“ü—Í‚µ‚½ƒ†[ƒU[‚ÌƒjƒbƒN‚ÆƒpƒXƒ[ƒh‚ð
-	o‚µ‚½ƒjƒbƒN‚ðŠÜ‚ÞƒƒbƒZ[ƒW‚ÍƒƒbƒO‚³‚êAWALLOPS‚©GLOBOPS
-	‚ÅƒIƒyƒŒ[ƒ^[‚É•ú‘—‚³‚ê‚Ü‚·B
+	Žw’è‚³‚ê‚½ƒjƒbƒN‚ÌƒpƒXƒ[ƒh‚ð•\Ž¦‚µ‚Ü‚·B‚½‚¾‚µAˆÃ†‰»‚ª—˜
+	—p‚³‚ê‚Ä‚¢‚éê‡‚ÍA‚±‚ÌƒRƒ}ƒ“ƒh‚ðŽg‚¦‚Ü‚¹‚ñB
 	
-	‚±‚ÌƒRƒ}ƒ“ƒh‚ÌŽg—p‚ÍServices‚ÌƒAƒhƒ~ƒ“‚ÉŒÀ‚Á‚Ä‚¢‚Ü‚·B
+	‚±‚ÌƒRƒ}ƒ“ƒh‚ªŽg‚í‚ê‚½ŽžAŽg—p‚µ‚½ƒ†[ƒU‚ÌƒjƒbƒN‚ÆƒpƒXƒ[ƒh
+	‚ð•\Ž¦‚³‚ê‚½ƒjƒbƒN‚ªWALLOPS/GLOBOPS‚Å‘SƒIƒyƒŒ[ƒ^‚ÉŽü’m‚³‚êA
+	ƒƒO‚³‚ê‚Ü‚·B
 	
-	ˆÃ†‰»‚ªŽg‚í‚ê‚Ä‚¢‚éê‡‚ÍA‚±‚ÌƒRƒ}ƒ“ƒh‚ðŽg‚¦‚Ü‚¹‚ñB
+	‚±‚ÌƒRƒ}ƒ“ƒh‚ÌŽg—p‚ÍServicesƒAƒhƒ~ƒ“‚É§ŒÀ‚³‚ê‚Ä‚¢‚Ü‚·B
 
-NICK_SERVADMIN_HELP_FORBID
-	ƒVƒ“ƒ^ƒNƒXFFORBID nickname
+NICK_OPER_HELP_FORBID
+	—p–@FFORBID ƒjƒbƒN
 	
-	ƒjƒbƒN‚ðŽg—p•s‰Â”\‚É‚µ‚Ü‚·BƒLƒƒƒ“ƒZƒ‹‚É‚ÍDROP‚ÌƒRƒ}ƒ“ƒh‚ª
-	Žg‚¦‚Ü‚·B
+	ƒjƒbƒN‚ðŽg—p‹ÖŽ~‚É‚µ‚Ü‚·B‰ðœ‚É‚ÍDROPNICKƒRƒ}ƒ“ƒh‚ðŽg‚¢‚Ü‚·B
 	
-	‚±‚ÌƒRƒ}ƒ“ƒh‚ÌŽg—p‚ÍServices‚ÌƒAƒhƒ~ƒ“‚ÉŒÀ‚Á‚Ä‚¢‚Ü‚·B
+	‚±‚ÌƒRƒ}ƒ“ƒh‚ÌŽg—p‚ÍServicesƒAƒhƒ~ƒ“‚É§ŒÀ‚³‚ê‚Ä‚¢‚Ü‚·B
+
+NICK_OPER_HELP_SUSPEND
+	—p–@FSUSPEND [+ŠúŒÀ] ƒjƒbƒN ——R
+	
+	Žw’è‚³‚ê‚½ƒjƒbƒN‚Æ‚»‚ê‚ÉƒŠƒ“ƒN‚³‚ê‚Ä‚¢‚éƒjƒbƒN‚ðŽg—p’âŽ~‚É‚µ
+	‚Ü‚·BŽg—p’âŽ~’†‚ÍAƒjƒbƒN‚ÌÝ’è‚Í•Û‘¶‚³‚ê‚Ü‚·‚ªAŽg—p‚·‚é‚±
+	‚Æ‚Í‚Å‚«‚Ü‚¹‚ñBŽg—p’âŽ~‚ÍUNSUSPENDƒRƒ}ƒ“ƒh‚Å‰ðœ‚Å‚«‚Ü‚·B
+	ŠúŒÀ‚Í%s‚ÌAKILLƒRƒ}ƒ“ƒh‚Æ“¯—l‚É‰ðŽß‚³‚ê‚Ü‚·B
+	
+	‚±‚ÌƒRƒ}ƒ“ƒh‚ÌŽg—p‚ÍServicesƒAƒhƒ~ƒ“‚É§ŒÀ‚³‚ê‚Ä‚¢‚Ü‚·B
+
+NICK_OPER_HELP_UNSUSPEND
+	—p–@FUNSUSPEND ƒjƒbƒN
+	
+	SUSPENDƒRƒ}ƒ“ƒh‚ÅŽg—p’âŽ~‚É‚µ‚½ƒjƒbƒN‚ð’Êí‚Ìó‘Ô‚É–ß‚µAŽg
+	—p‚ð‹–‰Â‚µ‚Ü‚·B
+	
+	‚±‚ÌƒRƒ}ƒ“ƒh‚ÌŽg—p‚ÍServicesƒAƒhƒ~ƒ“‚É§ŒÀ‚³‚ê‚Ä‚¢‚Ü‚·B
+
+NICK_OPER_HELP_AJOIN
+	
+	ServicesƒAƒhƒ~ƒ“‚ÍAƒjƒbƒN‚ð’Ç‰Á‚·‚é‚±‚Æ‚ÅŽ©•ªˆÈŠO‚ÌƒjƒbƒN‚Ì
+	Ž©“®ŽQ‰ÁƒŠƒXƒg‚ð•\Ž¦‚Å‚«‚Ü‚·B
+	i—áF/msg %S AJOIN LIST OtherNickj
+
+NICK_OPER_HELP_SETAUTH
+	—p–@FSETAUTH ƒjƒbƒN
+	
+	Žw’è‚³‚ê‚½ƒjƒbƒN‚Éƒ[ƒ‹ƒAƒhƒŒƒXŠm”FƒR[ƒh‚ðV‚½‚ÉÝ’è‚µ‚Ü‚·B
+	ƒjƒbƒN‚ÌŠ—LŽÒ‚ªAUTHƒRƒ}ƒ“ƒh‚Åƒ[ƒ‹ƒAƒhƒŒƒXŠm”F‚ðs‚¤‚Ü‚Åƒj
+	ƒbƒN”FØ‚ª‚Å‚«‚È‚­‚È‚è‚Ü‚·BƒjƒbƒN‚ªŽg—p’†‚Ìê‡A—˜—pŽÒ‚ÉƒR
+	[ƒh‚ªÝ’è‚³‚ê‚½‚±‚Æ‚ð’Ê’m‚µA”FØó‹µ‚ðŽæ‚èÁ‚µ‚Ü‚·B
+	
+	‚±‚ÌƒRƒ}ƒ“ƒh‚ÌŽg—p‚ÍServicesƒAƒhƒ~ƒ“‚É§ŒÀ‚³‚ê‚Ä‚¢‚Ü‚·B
+
+NICK_OPER_HELP_GETAUTH
+	—p–@FGETAUTH ƒjƒbƒN
+	
+	Žw’è‚³‚ê‚½ƒjƒbƒN‚Ìƒ[ƒ‹ƒAƒhƒŒƒXŠm”FƒR[ƒh‚ð•\Ž¦‚µ‚Ü‚·B
+	
+	‚±‚ÌƒRƒ}ƒ“ƒh‚ÌŽg—p‚ÍServicesƒAƒhƒ~ƒ“‚É§ŒÀ‚³‚ê‚Ä‚¢‚Ü‚·B
+
+NICK_OPER_HELP_CLEARAUTH
+	—p–@FCLEARAUTH ƒjƒbƒN
+	
+	Žw’è‚³‚ê‚½ƒjƒbƒN‚Ìƒ[ƒ‹ƒAƒhƒŒƒXŠm”FƒR[ƒh‚ðƒNƒŠƒA‚µAƒjƒbƒN
+	”FØ‚ð‹–‰Â‚µ‚Ü‚·B
+	
+	‚±‚ÌƒRƒ}ƒ“ƒh‚ÌŽg—p‚ÍServicesƒAƒhƒ~ƒ“‚É§ŒÀ‚³‚ê‚Ä‚¢‚Ü‚·B
 
 ###########################################################################
 #
@@ -1776,465 +3134,825 @@ NICK_SERVADMIN_HELP_FORBID
 #
 ###########################################################################
 
-CHAN_HELP
-	%S‚ÍAƒ`ƒƒƒ“ƒlƒ‹‚Ì“o˜^ƒT[ƒrƒX‚Å‚·B‚±‚ÌƒT[ƒrƒX‚ðŽg
-	‚Á‚Äƒ`ƒƒƒ“ƒlƒ‹‚ð“o˜^‚·‚ê‚ÎAƒ`ƒƒƒ“ƒlƒ‹‚ÌƒAƒNƒZƒX‚ð§Œäo—ˆ
-	‚é‚µAFX‚ÈƒIƒvƒVƒ‡ƒ“‚àÝ’è‚Å‚«‚Ü‚·Bƒ`ƒƒƒ“ƒlƒ‹‚Ì“o˜^‚â§
-	Œä‚ÌƒRƒ}ƒ“ƒh‚ÍŽŸ‚Ì’Ê‚è‚Å‚·BƒRƒ}ƒ“ƒh‚ðŽg‚¤ê‡‚ÍAu/msg
-	%S commandv‚ð“ü—Í‚µ‚Ä‰º‚³‚¢B‚Ü‚½AƒRƒ}ƒ“ƒh‚Ìƒwƒ‹ƒv
-	‚ð“Ç‚Þê‡‚Íu/msg %S HELP commandv‚ð“ü—Í‚µ‚Ä‰º‚³‚¢B
-	
-	    REGISTER   ƒ`ƒƒƒ“ƒlƒ‹‚Ì“o˜^
-	    IDENTIFY   ƒ`ƒƒƒ“ƒlƒ‹‚ÌƒpƒXƒ[ƒh‚Ì“ü—Í
-	    SET        ƒ`ƒƒƒ“ƒlƒ‹‚ÌƒIƒvƒVƒ‡ƒ“‚Ì•ÏX
-	    ACCESS     “ÁŒ ‚Ìƒ†[ƒU[•\‚Ì•ÏX
-#@@@ u’Ç•úv
-	    AKICK      ’Ç•ú‚µ‚½ƒ†[ƒU[•\‚Ì•ÏX
-	    DROP       ƒ`ƒƒƒ“ƒlƒ‹‚Ì“o˜^‚ÌÁ‹Ž
-	
-	‘¼‚ÌƒRƒ}ƒ“ƒhFINFOELISTEINVITEEOPEDEOPEUNBANECLEAR
+# OP/VOICE“™‚ÅŽg‚í‚ê‚é•¶Žš—ñ
+CHAN_HELP_REQSOP_LEVXOP
+	ƒŒƒxƒ‹100iSOPj
+CHAN_HELP_REQSOP_LEV
+	ƒŒƒxƒ‹100
+CHAN_HELP_REQSOP_XOP
+	SOP
+CHAN_HELP_REQAOP_LEVXOP
+	ƒŒƒxƒ‹50iAOPj
+CHAN_HELP_REQAOP_LEV
+	ƒŒƒxƒ‹50
+CHAN_HELP_REQAOP_XOP
+	AOP
+CHAN_HELP_REQHOP_LEVXOP
+	ƒŒƒxƒ‹40iHOPj
+CHAN_HELP_REQHOP_LEV
+	ƒŒƒxƒ‹40
+CHAN_HELP_REQHOP_XOP
+	HOP
+CHAN_HELP_REQVOP_LEVXOP
+	ƒŒƒxƒ‹30iVOPj
+CHAN_HELP_REQVOP_LEV
+	ƒŒƒxƒ‹30
+CHAN_HELP_REQVOP_XOP
+	VOP
 
+CHAN_HELP
+	%S‚ÍAƒ`ƒƒƒ“ƒlƒ‹“o˜^ƒT[ƒrƒX‚Å‚·B‚±‚ÌƒT[ƒrƒX‚ðŽg‚Á‚Ä
+	ƒ`ƒƒƒ“ƒlƒ‹‚ð“o˜^‚·‚ê‚ÎAƒ`ƒƒƒ“ƒlƒ‹‚Ìó‘Ô‚ð§Œä‚µ‚½‚èAŽ©“®“I
+	‚ÉƒIƒyƒŒ[ƒ^Œ ‚ð—^‚¦‚½‚è‚Å‚«‚é‚æ‚¤‚É‚È‚è‚Ü‚·B%S‚ð§Œä
+	‚·‚é‚É‚ÍAu/msg %S ƒRƒ}ƒ“ƒh–¼v‚Ì‚æ‚¤‚ÉƒRƒ}ƒ“ƒh‚ðŽg‚¢
+	‚Ü‚·BŽg—p‚Å‚«‚éƒRƒ}ƒ“ƒh‚Ìˆê——‚Íu/msg %S HELP COMMANDSv
+	‚Å•\Ž¦‚Å‚«‚Ü‚·B‚Ü‚½A“Á’è‚ÌƒRƒ}ƒ“ƒh‚É‚Â‚¢‚Ä‚Í
+	u/msg %S HELP ƒRƒ}ƒ“ƒh–¼v‚Åƒwƒ‹ƒvî•ñ‚ð•\Ž¦‚Å‚«‚Ü‚·B
 CHAN_HELP_EXPIRES
 	
-	’ˆÓF“o˜^‚µ‚½ƒ`ƒƒƒ“ƒlƒ‹‚Í%d“úŠÔŽg—p‚³‚ê‚È‚¢‚ÆA“o˜^‚ÍØ
-	‚ê‚Ü‚·B
+	’ˆÓF“o˜^‚³‚ê‚½ƒ`ƒƒƒ“ƒlƒ‹‚ÍA%sŠÔŽg—p‚³‚ê‚È‚¢‚ÆA“o˜^‚ª
+	@@@‰ðœ‚³‚ê‚Ü‚·B
+
+CHAN_HELP_COMMANDS
+	%S‚Å‚ÍA‰º‹LƒRƒ}ƒ“ƒh‚ªŽg‚¦‚Ü‚·B
+	
+	    REGISTER   ƒ`ƒƒƒ“ƒlƒ‹‚ð“o˜^‚·‚é
+	    IDENTIFY   ƒpƒXƒ[ƒh”FØ‚ðs‚¤
+	    DROP       ƒ`ƒƒƒ“ƒlƒ‹‚Ì“o˜^‚ð‰ðœ‚·‚é
+	    SET        ƒ`ƒƒƒ“ƒlƒ‹Ý’è‚âî•ñ‚ð•ÏX‚·‚é
+	    UNSET      ƒ`ƒƒƒ“ƒlƒ‹ŠÖ˜Aî•ñ‚ðÁ‹Ž‚·‚é
+	    INFO       ƒ`ƒƒƒ“ƒlƒ‹î•ñ‚ð•\Ž¦‚·‚é
+CHAN_HELP_COMMANDS_LIST
+	    LIST       ƒpƒ^[ƒ“‚Éˆê’v‚·‚éƒ`ƒƒƒ“ƒlƒ‹ˆê——‚ð•\Ž¦‚·‚é
+CHAN_HELP_COMMANDS_AKICK
+	    AKICK      Ž©“®ƒLƒbƒNƒŠƒXƒg‚ð•ÒW‚·‚é
+CHAN_HELP_COMMANDS_LEVELS
+	    ACCESS     ƒAƒNƒZƒXƒŠƒXƒg‚ð•ÒW‚·‚é
+	    LEVELS     ƒ`ƒƒƒ“ƒlƒ‹Œ ŒÀ‚ÌÝ’è‚ðs‚¤
+CHAN_HELP_COMMANDS_XOP
+	    SOP        SOPƒŠƒXƒg‚ð•ÒW‚·‚é
+	    AOP        AOPƒŠƒXƒg‚ð•ÒW‚·‚é
+CHAN_HELP_COMMANDS_HOP
+	    HOP        HOPƒŠƒXƒg‚ð•ÒW‚·‚é
+CHAN_HELP_COMMANDS_XOP_2
+	    VOP        VOPƒŠƒXƒg‚ð•ÒW‚·‚é
+	    NOP        NOPƒŠƒXƒg‚ð•ÒW‚·‚é
+CHAN_HELP_COMMANDS_OPVOICE
+	    OP         ƒIƒyƒŒ[ƒ^Œ ‚ð—^‚¦‚é
+	    DEOP       ƒIƒyƒŒ[ƒ^Œ ‚ð‰ðœ‚·‚é
+	    VOICE      ”­Œ¾Œ ‚ð—^‚¦‚é
+	    DEVOICE    ”­Œ¾Œ ‚ð‰ðœ‚·‚é
+CHAN_HELP_COMMANDS_HALFOP
+	    HALFOP     ”¼ƒIƒyƒŒ[ƒ^Œ ‚ð—^‚¦‚é
+	    DEHALFOP   ”¼ƒIƒyƒŒ[ƒ^Œ ‚ð‰ðœ‚·‚é
+CHAN_HELP_COMMANDS_PROTECT
+	    PROTECT    ƒ†[ƒU‚ðƒvƒƒeƒNƒgó‘Ô‚É‚·‚é
+	    DEPROTECT  ƒ†[ƒU‚ð”ñƒvƒƒeƒNƒgó‘Ô‚É‚·‚é
+CHAN_HELP_COMMANDS_INVITE
+	    INVITE     µ‘Òê—pƒ`ƒƒƒ“ƒlƒ‹‚É“ü‚é
+	    UNBAN      Ž©•ª‚É‘Î‚·‚é’Ç•úƒ}ƒXƒN‚ð‰ðœ‚·‚é
+	    KICK       ƒ†[ƒU‚ðƒ`ƒƒƒ“ƒlƒ‹‚©‚çƒLƒbƒN‚·‚é
+	    TOPIC      ƒ`ƒƒƒ“ƒlƒ‹‚ÌƒgƒsƒbƒN‚ð•ÏX‚·‚é
+	    CLEAR      ƒ`ƒƒƒ“ƒlƒ‹ƒ‚[ƒh‚ðƒNƒŠƒAA‘Sƒ†[ƒU‚ÌƒLƒbƒN‚ðs‚¤
+	    STATUS     ƒ†[ƒU‚ÌƒAƒNƒZƒXƒŒƒxƒ‹‚ð•\Ž¦‚·‚é
 
 CHAN_HELP_REGISTER
-	ƒVƒ“ƒ^ƒNƒXFREGISTER channel password description
+	—p–@FREGISTER ƒ`ƒƒƒ“ƒlƒ‹ ƒpƒXƒ[ƒh à–¾
 	
-	%S‚Ìƒf[ƒ^ƒx[ƒX‚Åƒ`ƒƒƒ“ƒlƒ‹‚ð“o˜^‚µ‚Ü‚·B‚±‚ÌƒRƒ}ƒ“
-	ƒh‚ðŽg‚¤‚Ì‚ÍAƒ`ƒƒƒ“ƒlƒ‹‚ÌƒIƒyƒŒ[ƒ^[‚Ì‚Ý‚Å‚·Bpassword‚Í
-	ƒ`ƒƒƒ“ƒlƒ‹‚ÌƒIƒvƒVƒ‡ƒ“‚ð•ÏX‚·‚éˆ×‚ÌƒpƒXƒ[ƒh‚Å‚·BÅŒã‚Ì
-	ƒpƒ‰ƒ[ƒ^[‚Íƒ`ƒƒƒ“ƒlƒ‹‚Ì–¼ó‚Å‚·B
+	ƒ`ƒƒƒ“ƒlƒ‹‚ð%S‚Ìƒf[ƒ^ƒx[ƒX‚É“o˜^‚µ‚Ü‚·B“o˜^‚·‚é‚É‚ÍA
+	ƒ`ƒƒƒ“ƒlƒ‹‚ÌƒIƒyƒŒ[ƒ^Œ ‚ðŽ‚Á‚Ä‚¢‚È‚¯‚ê‚Î‚È‚è‚Ü‚¹‚ñBƒpƒXƒ
+	[ƒh‚ÍÝ’è•ÏX‚È‚Ç‚Ì‚½‚ß‚É•K—v‚Å‚·Buà–¾v‚ÍAƒ`ƒƒƒ“ƒlƒ‹‚ª
+	‰½‚Ì‚½‚ß‚ÉŽg‚í‚ê‚é‚©A‚Ç‚¤‚¢‚¤‰ï˜b‚ð‚·‚é‚©‚È‚Ç‚Ìà–¾‚ÅA•K{
+	‚Å‚·B
 	
-	ƒ`ƒƒƒ“ƒlƒ‹‚ð“o˜^‚·‚é‚ÆA“o˜^‚µ‚½ƒ†[ƒU[‚Í‚»‚Ìƒ`ƒƒƒ“ƒlƒ‹‚Ì
-	uƒtƒ@ƒEƒ“ƒ_[v‚É‚È‚è‚Ü‚·Bƒ`ƒƒƒ“ƒlƒ‹‚Ìƒtƒ@ƒEƒ“ƒ_[‚Í‘S‚Ä
-	‚Ìƒ`ƒƒƒ“ƒlƒ‹‚ÌƒIƒvƒVƒ‡ƒ“‚ð•ÏXo—ˆ‚é‚µAƒ`ƒƒƒ“ƒlƒ‹‚É“ü‚é‚Æ
-	%S‚ÍŽ©“®“I‚Éƒtƒ@ƒEƒ“ƒ_[‚ð+oƒ‚[ƒh‚É‚µ‚Ü‚·B‚±‚Ì“ÁŒ 
-	‚Ìˆê•”‚ð‘¼‚Ìƒ†[ƒU[‚Éã‚°‚½‚¢ê‡‚Íu/msg %S HELP
-	ACCESSv‚ð“ü—Í‚µ‚Ä‰º‚³‚¢B
+	ƒ`ƒƒƒ“ƒlƒ‹‚ð“o˜^‚µ‚½l‚ÍA‚»‚Ìƒ`ƒƒƒ“ƒlƒ‹‚Ìu‘nÝŽÒv‚Æ‚È‚è‚Ü
+	‚·Bƒ`ƒƒƒ“ƒlƒ‹‚Ì‘nÝŽÒ‚Íƒ`ƒƒƒ“ƒlƒ‹‚Ì‘S‚Ä‚ÌÝ’è‚ð•ÏX‚Å‚«‚é‚Ù
+	‚©Aƒ`ƒƒƒ“ƒlƒ‹‚ÉŽQ‰Á‚·‚éŽž‚ÍŽ©“®“I‚ÉƒIƒyƒŒ[ƒ^Œ ‚ð—^‚¦‚ç‚ê‚Ü
+	‚·B
 	
-	’ˆÓFƒ`ƒƒƒ“ƒlƒ‹‚ð“o˜^‚·‚é‚Ì‚É‚ÍAƒjƒbƒN‚ð“o˜^‚·‚é•K—v‚ª‚ 
-	‚è‚Ü‚·BƒjƒbƒN‚ð“o˜^‚µ‚Ä‚¢‚È‚¢ƒ†[ƒU[‚Íu/msg %s HELPv
-	‚ð“ü—Í‚µ‚Ä‰º‚³‚¢B
+	’ˆÓFƒ`ƒƒƒ“ƒlƒ‹‚ð“o˜^‚·‚é‚É‚ÍA‚Ü‚¸ƒjƒbƒN‚ð“o˜^‚·‚é•K—v‚ª‚ 
+	@@@‚è‚Ü‚·B“o˜^Žè‘±‚«‚É‚Â‚¢‚Ä‚Íu/msg %s HELPv‚ð“ü
+	@@@—Í‚µ‚Ä‚­‚¾‚³‚¢B
+CHAN_HELP_REGISTER_ADMINONLY
+	
+	‚±‚ÌƒRƒ}ƒ“ƒh‚ÌŽg—p‚ÍServicesƒAƒhƒ~ƒ“‚É§ŒÀ‚³‚ê‚Ä‚¢‚Ü‚·B
 
 CHAN_HELP_IDENTIFY
-	ƒVƒ“ƒ^ƒNƒXFIDENTIFY channel password
+	—p–@FIDENTIFY ƒ`ƒƒƒ“ƒlƒ‹ ƒpƒXƒ[ƒh
 	
-	%S‚Éƒ`ƒƒƒ“ƒlƒ‹‚Ì•Û—LŽÒ‚Å‚ ‚éØ‹’‚ðŽ¦‚µ‚Ü‚·B‚±‚ÌƒRƒ}
-	ƒ“ƒh‚ðŽg‚í‚È‚¯‚ê‚ÎALEVELSESET FOUNDERESET PASSWORDEDROP
-	‚ÌƒRƒ}ƒ“ƒh‚ªŽg‚¦‚Ü‚¹‚ñB‚È‚¨Aƒtƒ@ƒEƒ“ƒ_[‚ÌƒjƒbƒN‚ðŽg—p‚µ
-	‚Ä‚¢‚È‚¢‚Æ‚«‚ÍA‚±‚ÌƒRƒ}ƒ“ƒh‚ð“ü—Í‚·‚ê‚Îƒtƒ@ƒEƒ“ƒ_[‚Ì“ÁŒ 
-	‚ð“¾‚Ü‚·Bpassword‚ÍREGISTER‚ÌƒRƒ}ƒ“ƒh‚ð“ü—Í‚µ‚½‚Æ‚«‚Ì‚Æ
-	“¯‚¶ƒpƒXƒ[ƒh‚Å‚·B
+	%S‚É‘Î‚µ‚ÄƒpƒXƒ[ƒh”FØ‚ðs‚¢‚Ü‚·B“o˜^Žž‚Ü‚½‚Í
+	SET PASSWORDƒRƒ}ƒ“ƒh‚ÅÝ’è‚µ‚½ƒpƒXƒ[ƒh‚ð“ü—Í‚·‚é‚±‚Æ‚ÅAƒ`
+	‚Ì‘nÝŽÒ‚Å‚ ‚é‚±‚Æ‚ð%S‚ÉØ–¾‚Å‚«ASET‚âDROPƒRƒ}ƒ“ƒh‚ðŽg‚¦‚é
+	‚æ‚¤‚É‚È‚è‚Ü‚·B‚È‚¨A‘nÝŽÒ‚ÌƒjƒbƒN‚ðŽg—p‚µ‚Ä‚¢‚È‚¢Žž‚ÍA‚±
+	‚ÌƒRƒ}ƒ“ƒh‚ðŽg‚¦‚Î‘nÝŽÒ‚ÌŒ —˜‚ª“¾‚ç‚ê‚Ü‚·B
 
 CHAN_HELP_DROP
-	ƒVƒ“ƒ^ƒNƒXFDROP channel
+	—p–@FDROP ƒ`ƒƒƒ“ƒlƒ‹ ƒpƒXƒ[ƒh
 	
-	channel‚Æ‚¢‚¤ƒ`ƒƒƒ“ƒlƒ‹‚ð%S‚Ìƒf[ƒ^ƒx[ƒX‚©‚çÁ‹Ž‚µ‚Ü‚·B
-	‚±‚ÌƒRƒ}ƒ“ƒh‚ÌŽg—p‚Íƒtƒ@ƒEƒ“ƒ_[‚ÉŒÀ‚Á‚Ä‚¢‚ÄAƒpƒXƒ[ƒh
-	‚ð“ü—Í‚·‚é•K—v‚à‚ ‚è‚Ü‚·B
+	ƒ`ƒƒƒ“ƒlƒ‹‚Ì“o˜^‚ð‰ðœ‚µ‚Ü‚·B‚±‚ÌƒRƒ}ƒ“ƒh‚ÌŽg—p‚Íƒ`ƒƒƒ“ƒlƒ‹
+	‚Ì‘nÝŽÒ‚ÉŒÀ‚ç‚ê‚Ä‚¨‚èAŒë—p‚ð–h‚®‚½‚ßAƒpƒXƒ[ƒh‚à“ü—Í‚µ‚È
+	‚¯‚ê‚Î‚È‚è‚Ü‚¹‚ñB
 
 CHAN_HELP_SET
-	ƒVƒ“ƒ^ƒNƒXFSET channel option parameters
+	—p–@FSET ƒ`ƒƒƒ“ƒlƒ‹ Ý’è–¼ ’l
 	
-	ƒ`ƒƒƒ“ƒlƒ‹‚ÌƒIƒvƒVƒ‡ƒ“‚âî•ñ‚ð•ÏX‚µ‚Ü‚·Bƒtƒ@ƒEƒ“ƒ_[‚Æƒp
-	ƒXƒ[ƒh‚ð•ÏX‚·‚é‚Ì‚É‚ÍAƒ`ƒƒƒ“ƒlƒ‹‚ÌƒpƒXƒ[ƒh‚ðIDENTIFY
-	‚ÌƒRƒ}ƒ“ƒh‚Å“ü—Í‚·‚é•K—v‚ª‚ ‚è‚Ü‚·BƒIƒvƒVƒ‡ƒ“‚ÍŽŸ‚Ì’Ê‚è‚Å
-	‚·B
+	ƒ`ƒƒƒ“ƒlƒ‹‚ÌÝ’è‚ð•ÏX‚µ‚Ü‚·BuÝ’è–¼v‚É‚ÍˆÈ‰º‚Ì‚à‚Ì‚ª‚ ‚è
+	‚Ü‚·B
 	
-	    FOUNDER     ƒtƒ@ƒEƒ“ƒ_[‚Ì•ÏX
-	    SUCCESSOR   ŽŸŠúƒtƒ@ƒEƒ“ƒ_[‚Ì•ÏX
-	    PASSWORD    ƒpƒXƒ[ƒh‚Ì•ÏX
-	    DESC        ƒ`ƒƒƒ“ƒlƒ‹‚Ì–¼ó‚Ì•ÏX
-	    URL         ƒz[ƒƒy[ƒW‚ÌƒAƒhƒŒƒX‚Ì“ü—Í
-	    EMAIL       “dŽqƒ[ƒ‹‚ÌƒAƒhƒŒƒX‚Ì“ü—Í
-	    ENTRYMSG    ƒ`ƒƒƒ“ƒlƒ‹‚É“ü‚é‚Æ‚«‚Éo‚éƒƒbƒZ[ƒW‚Ì“ü—Í
-	    TOPIC       Œ»Ý‚Ìƒ`ƒƒƒ“ƒlƒ‹‚ÌƒgƒsƒbƒN‚Ì•ÏX
-#@@@  uŠo‚¦‚évE‰º‚Ìu‚±‚ÆvAu‚Æ‚¢‚¤ƒIƒvƒVƒ‡ƒ“v
-	    KEEPTOPIC   ƒ`ƒƒƒ“ƒlƒ‹‚ªŽg—p‚³‚ê‚Ä‚¢‚È‚¢ŠÔ‚É‚àƒgƒsƒbƒN
-	                @@‚ðŠo‚¦‚é‚±‚Æ‚Ì“üØ
-	    TOPICLOCK   SET TOPICƒRƒ}ƒ“ƒh‚Å‚µ‚©ƒgƒsƒbƒN‚ð•ÏX‚³‚¹
-	                @@‚È‚¢‚Æ‚¢‚¤ƒIƒvƒVƒ‡ƒ“‚Ì“üØ
-	    MLOCK       ƒ`ƒƒƒ“ƒlƒ‹‚Ìƒ‚[ƒh‚ðƒIƒ“EƒIƒt‚ÉƒƒbƒN‚·‚é
-	    PRIVATE     LISTƒRƒ}ƒ“ƒh‚©‚çƒ`ƒƒƒ“ƒlƒ‹‚ð‰B‚·
-	    RESTRICTED  “ÁŒ ‚ðŽ‚Á‚Ä‚¢‚È‚¢ƒ†[ƒU[‚ðƒ`ƒƒƒ“ƒlƒ‹‚É“ü
-	                @@‚ê‚È‚¢‚Æ‚¢‚¤ƒIƒvƒVƒ‡ƒ“‚Ì“üØ
-	    SECURE      ƒZƒLƒ…ƒAƒIƒvƒVƒ‡ƒ“‚Ì“üØ
-	    SECUREOPS   +oƒ‚[ƒh‚Ì§Œä‚ðŒµ‚µ‚­‚·‚é
-	    LEAVEOPS	DEOPƒRƒ}ƒ“ƒh‚Å‚µ‚©-oƒ‚[ƒh‚ðŠ|‚¯‚È‚¢
-	    OPNOTICE	OPEDEOPƒRƒ}ƒ“ƒh‚ªŽg‚í‚ê‚é“x‚É•ñ
+	    FOUNDER     ƒ`ƒƒƒ“ƒlƒ‹‚Ì‘nÝŽÒ‚ð•ÏX‚·‚é
+	    SUCCESSOR   ƒ`ƒƒƒ“ƒlƒ‹‚ÌŒãŒpŽÒ‚ð“o˜^E•ÏX‚·‚é
+	    PASSWORD    ƒ`ƒƒƒ“ƒlƒ‹‚Ì”FØ—pƒpƒXƒ[ƒh‚ð•ÏX‚·‚é
+	    DESC        ƒ`ƒƒƒ“ƒlƒ‹‚Ìà–¾‚ð•ÏX‚·‚é
+	    URL         ƒ`ƒƒƒ“ƒlƒ‹‚Éƒz[ƒ€ƒy[ƒWƒAƒhƒŒƒX‚ð“o˜^‚·‚é
+	    EMAIL       ƒ`ƒƒƒ“ƒlƒ‹‚Éƒ[ƒ‹ƒAƒhƒŒƒX‚ð“o˜^‚·‚é
+	    ENTRYMSG    ƒ`ƒƒƒ“ƒlƒ‹‚ÌŽQ‰ÁŽžƒƒbƒZ[ƒW‚ðÝ’è‚·‚é
+	    KEEPTOPIC   ƒgƒsƒbƒN‹L˜^Ý’è‚ð•ÏX‚·‚é
+	    TOPICLOCK   ƒgƒsƒbƒN•ÏX‹ÖŽ~Ý’è‚ð•ÏX‚·‚é
+	    MLOCK       ƒ`ƒƒƒ“ƒlƒ‹ƒ‚[ƒh‚ðON/OFF‚ÉƒƒbƒN‚·‚é
+	    PRIVATE     ƒ`ƒƒƒ“ƒlƒ‹‚ðLISTƒRƒ}ƒ“ƒh‚©‚ç‰B‚·
+	    RESTRICTED  ƒ`ƒƒƒ“ƒlƒ‹‚Ö‚ÌƒAƒNƒZƒX‚ð§ŒÀ‚·‚é
+	    SECURE      ƒZƒLƒ…ƒAÝ’è‚ð•ÏX‚·‚é
+	    SECUREOPS   ƒIƒyƒŒ[ƒ^Œ ‚ÌŠÇ—ƒŒƒxƒ‹‚ðÝ’è‚·‚é
+	    LEAVEOPS    Å‰ŽQ‰Áƒ†[ƒU‚ÌƒIƒyƒŒ[ƒ^Œ ‚ð‰ðœ‚µ‚È‚¢
+	    OPNOTICE    OP/VOICE“™‚ÌƒRƒ}ƒ“ƒhŽg—p‚ðƒ`ƒƒƒ“ƒlƒ‹‚ÉŽü’m‚·‚é
+	    ENFORCE     Ž©“®ƒIƒyƒŒ[ƒ^Œ EŽ©“®”­Œ¾Œ ŠÇ—Ý’è‚ð•ÏX‚·‚é
+	    MEMO-RESTRICTED
+	                ƒ`ƒƒƒ“ƒlƒ‹ƒƒ‚‘—M‚ð§ŒÀ‚·‚é
 	
-	ƒIƒvƒVƒ‡ƒ“‚Ìî•ñ‚ð“Ç‚Þ‚Ì‚É‚ÍAu/msg %S HELP optionv
-	‚ð“ü—Í‚µ‚Ä‰º‚³‚¢B
+	ŠeƒIƒvƒVƒ‡ƒ“‚ÌÚ×‚É‚Â‚¢‚Ä‚ÍAu/msg %S HELP SET
+	ƒRƒ}ƒ“ƒh–¼v‚Åƒwƒ‹ƒvî•ñ‚ð•\Ž¦‚Å‚«‚Ü‚·B
+	
+	‚±‚ÌƒRƒ}ƒ“ƒh‚ÌŽg—p‚ÍƒfƒtƒHƒ‹ƒg‚Åƒ`ƒƒƒ“ƒlƒ‹‚Ì‘nÝŽÒ‚ÉŒÀ‚ç‚ê‚Ä
+	‚¨‚èAŽg—p‚Ì‘O‚É%S‚ÌIDENTIFYƒRƒ}ƒ“ƒh‚Åƒ`ƒƒƒ“ƒlƒ‹”FØ‚ð
+	s‚í‚È‚¯‚ê‚Î‚È‚è‚Ü‚¹‚ñB
 
 CHAN_HELP_SET_FOUNDER
-	ƒVƒ“ƒ^ƒNƒXFSET channel FOUNDER nick
+	—p–@FSET ƒ`ƒƒƒ“ƒlƒ‹ FOUNDER ƒjƒbƒN
 	
-	ƒtƒ@ƒEƒ“ƒ_[‚ð•ÏX‚µ‚Ü‚·B‚½‚¾‚µAnick‚Æ‚¢‚¤ƒjƒbƒN‚ª“o˜^
-	‚³‚ê‚Ä‚¢‚È‚¢‚Æ•ÏXo—ˆ‚Ü‚¹‚ñB
+	ƒ`ƒƒƒ“ƒlƒ‹‚Ì‘nÝŽÒ‚ð•ÏX‚µ‚Ü‚·B‘nÝŽÒ‚Æ‚µ‚ÄŽw’è‚·‚éƒjƒbƒN‚Í
+	“o˜^‚³‚ê‚Ä‚¢‚È‚¯‚ê‚Î‚È‚è‚Ü‚¹‚ñB
 
 CHAN_HELP_SET_SUCCESSOR
-	ƒVƒ“ƒ^ƒNƒXFSET channel SUCCESSOR nick
+	—p–@FSET ƒ`ƒƒƒ“ƒlƒ‹ SUCCESSOR ƒjƒbƒN
 	
-	ŽŸŠúƒtƒ@ƒEƒ“ƒ_[‚ð•ÏX‚µ‚Ü‚·BŽŸŠúƒtƒ@ƒEƒ“ƒ_[‚Æ‚ÍAŒ»Ý‚Ì
-	ƒtƒ@ƒEƒ“ƒ_[‚ÌƒjƒbƒN‚Ì“o˜^‚ªØ‚ê‚½‚èÁ‹Ž‚³‚ê‚½‚è‚·‚é‚Æƒtƒ@ƒE
-	ƒ“ƒ_[‚É‚È‚éƒ†[ƒU[‚Å‚·BŽŸŠúƒtƒ@ƒEƒ“ƒ_[‚ªÝ’è‚³‚ê‚Ä‚¢‚È‚¢
-	ê‡‚ÍAƒtƒ@ƒEƒ“ƒ_[‚ÌƒjƒbƒN‚Ì“o˜^‚ªØ‚ê‚é‚ÆAƒ`ƒƒƒ“ƒlƒ‹‚Ì“o
-	˜^‚àÁ‹Ž‚³‚ê‚Ä‚µ‚Ü‚¢‚Ü‚·B‚½‚¾‚µAƒtƒ@ƒEƒ“ƒ_[‚ÌƒjƒbƒN‚Ì“o˜^
-	‚ªØ‚ê‚éŽž“_‚ÅŽŸŠúƒtƒ@ƒEƒ“ƒ_[‚Íƒ`ƒƒƒ“ƒlƒ‹‚ÌŒÀ‚èi%dj‚ð‰z‚¦
-	‚Ä‚¢‚ê‚ÎAŽŸŠúƒtƒ@ƒEƒ“ƒ_[‚ªÝ’è‚³‚ê‚Ä‚¢‚È‚¢‚æ‚¤‚Éƒ`ƒƒƒ“ƒlƒ‹
-	‚Ì“o˜^‚ÍÁ‚¦‚Ä‚µ‚Ü‚¢‚Ü‚·B
+	ƒ`ƒƒƒ“ƒlƒ‹‚ÌŒãŒpŽÒ‚ðÝ’è‚Ü‚½‚Í•ÏX‚µ‚Ü‚·BŒãŒpŽÒ‚ÍA‘nÝŽÒ‚Ìƒj
+	ƒbƒN‚Ì“o˜^‚ª‰ðœ‚³‚ê‚½ê‡‚Éƒ`ƒƒƒ“ƒlƒ‹‚ðŽó‚¯Œp‚¢‚Å‘nÝŽÒ‚É‚È‚è
+	‚Ü‚·iŒãŒpŽÒ‚ªÝ’è‚³‚ê‚Ä‚¢‚È‚¢ó‘Ô‚Å‘nÝŽÒ‚ÌƒjƒbƒN‚Ì“o˜^‚ª‰ðœ
+	‚³‚ê‚é‚ÆAƒ`ƒƒƒ“ƒlƒ‹‚Ì“o˜^‚à“¯Žž‚É‰ðœ‚³‚ê‚Ä‚µ‚Ü‚¢‚Ü‚·jB’A‚µA
+	Žó‚¯Œp‚®‚×‚«Žž“_‚ÅŒãŒpŽÒ‚Ìƒ`ƒƒƒ“ƒlƒ‹“o˜^”‚ªãŒÀi%dj‚ð’´‚¦‚Ä
+	‚¢‚éê‡‚ÍAƒ`ƒƒƒ“ƒlƒ‹‚ðŽó‚¯Œp‚®‚±‚Æ‚ª‚Å‚«‚¸Aƒ`ƒƒƒ“ƒlƒ‹‚Ì“o˜^
+	‚ª‰ðœ‚³‚ê‚Ü‚·B
 	
-	ŽŸŠúƒtƒ@ƒEƒ“ƒ_[‚É‚·‚éƒjƒbƒNinickj‚Í“o˜^‚µ‚Ä‚¢‚È‚¯‚ê‚Î‚È‚è
-	‚Ü‚¹‚ñB
+	ŒãŒpŽÒ‚ÉÝ’è‚·‚éƒjƒbƒN‚Í“o˜^‚³‚ê‚Ä‚¢‚È‚¯‚ê‚Î‚È‚è‚Ü‚¹‚ñB
 
 CHAN_HELP_SET_PASSWORD
-	ƒVƒ“ƒ^ƒNƒXFSET channel PASSWORD password
+	—p–@FSET ƒ`ƒƒƒ“ƒlƒ‹ PASSWORD ƒpƒXƒ[ƒh
 	
-	ƒtƒ@ƒEƒ“ƒ_[‚ÌƒpƒXƒ[ƒh‚ð•ÏX‚µ‚Ü‚·B
+	ƒ`ƒƒƒ“ƒlƒ‹”FØ—pƒpƒXƒ[ƒh‚ð•ÏX‚µ‚Ü‚·B
 
 CHAN_HELP_SET_DESC
-	ƒVƒ“ƒ^ƒNƒXFSET channel DESC description
+	—p–@FSET ƒ`ƒƒƒ“ƒlƒ‹ DESC à–¾
 	
-	ƒ`ƒƒƒ“ƒlƒ‹‚Ì–¼ó‚ð•ÏX‚µ‚Ü‚·B–¼ó‚ÍLISTEINFO‚ÌƒRƒ}ƒ“ƒh‚Ì
-	î•ñ‚Å•\‚ê‚Ü‚·B
+	ƒ`ƒƒƒ“ƒlƒ‹‚Ìà–¾‚ð•ÏX‚µ‚Ü‚·Bà–¾‚ÍLISTEINFOƒRƒ}ƒ“ƒh‚Å•\Ž¦
+	‚³‚ê‚Ü‚·B
 
 CHAN_HELP_SET_URL
-	ƒVƒ“ƒ^ƒNƒXFSET channel URL [url]
+	—p–@FSET ƒ`ƒƒƒ“ƒlƒ‹ URL ƒAƒhƒŒƒX
 	
-	url‚Æ‚¢‚¤ƒz[ƒƒy[ƒW‚ÌƒAƒhƒŒƒX‚ðƒ`ƒƒƒ“ƒlƒ‹‚Ìî•ñ‚É’Ç‰Á‚µ‚Ü
-	‚·B‚±‚ÌƒAƒhƒŒƒX‚ÍINFO‚ÌƒRƒ}ƒ“ƒh‚Ìî•ñ‚Å•\‚ê‚Ü‚·Bƒpƒ‰ƒ[
-	ƒ^[‚ð“ü—Í‚µ‚È‚¢ê‡‚ÍAƒz[ƒƒy[ƒW‚ÌƒAƒhƒŒƒX‚ÍÁ‹Ž‚³‚ê‚Ü
-	‚·B
+	ƒz[ƒ€ƒy[ƒWƒAƒhƒŒƒX‚ðƒ`ƒƒƒ“ƒlƒ‹î•ñ‚É’Ç‰Á‚µ‚Ü‚·B‚±‚ÌƒAƒhƒŒ
+	ƒX‚ÍINFOƒRƒ}ƒ“ƒh‚Å•\Ž¦‚³‚ê‚Ü‚·B
 
 CHAN_HELP_SET_EMAIL
-	ƒVƒ“ƒ^ƒNƒXFSET channel EMAIL [address]
+	—p–@FSET ƒ`ƒƒƒ“ƒlƒ‹ EMAIL ƒAƒhƒŒƒX
 	
-	address‚Æ‚¢‚¤“dŽqƒ[ƒ‹‚ÌƒAƒhƒŒƒX‚ðƒ`ƒƒƒ“ƒlƒ‹‚Ìî•ñ‚É’Ç‰Á‚µ
-	‚Ü‚·B‚±‚ÌƒAƒhƒŒƒX‚ÍINFO‚ÌƒRƒ}ƒ“ƒh‚Ìî•ñ‚Å•\‚ê‚Ü‚·Bƒpƒ‰
-	ƒ[ƒ^[‚ð“ü—Í‚µ‚È‚¢ê‡‚ÍA“dŽqƒ[ƒ‹‚ÌƒAƒhƒŒƒX‚ÍÁ‹Ž‚³‚ê
-	‚Ü‚·B
+	“dŽqƒ[ƒ‹ƒAƒhƒŒƒX‚ðƒ`ƒƒƒ“ƒlƒ‹î•ñ‚É’Ç‰Á‚µ‚Ü‚·B‚±‚ÌƒAƒhƒŒƒX
+	‚ÍINFOƒRƒ}ƒ“ƒh‚Å•\Ž¦‚³‚ê‚Ü‚·B
 
 CHAN_HELP_SET_ENTRYMSG
-	ƒVƒ“ƒ^ƒNƒXFSET channel ENTRYMSG [message]
+	—p–@FSET ƒ`ƒƒƒ“ƒlƒ‹ ENTRYMSG ƒƒbƒZ[ƒW
 	
-	message‚Æ‚¢‚¤ƒeƒLƒXƒg‚ðƒ`ƒƒƒ“ƒlƒ‹‚É“ü‚éƒ†[ƒU[‚Éo‚µ‚Ü‚·B
-	ƒpƒ‰ƒ[ƒ^[‚ð“ü—Í‚µ‚È‚¢ê‡‚ÍAƒƒbƒZ[ƒW‚ÍÁ‹Ž‚³‚ê‚Ü‚·B
-
-CHAN_HELP_SET_TOPIC
-	ƒVƒ“ƒ^ƒNƒXFSET channel TOPIC topic
-	
-	%S‚Éƒ`ƒƒƒ“ƒlƒ‹‚ÌƒgƒsƒbƒN‚ð•ÏX‚³‚¹‚Ü‚·B‚¾‚¢‚½‚¢A
-	SET LOCKTOPIC‚ÌƒRƒ}ƒ“ƒh‚Æˆê‚ÉŽg‚í‚ê‚Ü‚·B
-
-CHAN_HELP_SET_KEEPTOPIC
-	ƒVƒ“ƒ^ƒNƒXFSET channel KEEPTOPIC {ON | OFF}
-	
-	uƒgƒsƒbƒN‹L˜^v‚Æ‚¢‚¤ƒIƒvƒVƒ‡ƒ“‚ðÝ’è‚µ‚Ü‚·BƒgƒsƒbƒN‹L˜^
-	‚ÍAƒ`ƒƒƒ“ƒlƒ‹‚ÌŒ»Ý‚ÌƒgƒsƒbƒN‚ð‹L˜^‚µAƒ`ƒƒƒ“ƒlƒ‹‚ªÁ‚¦‚Ä
-	‚à‚»‚ÌƒgƒsƒbƒN‚ðŠo‚¦Aƒ`ƒƒƒ“ƒlƒ‹‚ª‚Ü‚½ì‚ç‚ê‚é‚Æ‚«‚Éƒgƒsƒb
-	ƒN‚ð–ß‚·‚Æ‚¢‚¤ƒIƒvƒVƒ‡ƒ“‚Å‚·B
-
-CHAN_HELP_SET_TOPICLOCK
-	ƒVƒ“ƒ^ƒNƒXFSET channel TOPICLOCK {ON | OFF}
-	
-	uƒgƒsƒbƒNƒƒbƒNv‚Æ‚¢‚¤ƒIƒvƒVƒ‡ƒ“‚ðÝ’è‚µ‚Ü‚·BON‚É‚·‚é‚ÆA
-	ƒgƒsƒbƒN‚Í%S‚ÌSET TOPIC‚ÌƒRƒ}ƒ“ƒh‚Å‚µ‚©•Ï‚¦‚ç‚ê‚È‚­‚È‚è‚Ü
+	ƒ`ƒƒƒ“ƒlƒ‹‚ÌŽQ‰ÁŽžƒƒbƒZ[ƒW‚ðÝ’è‚µ‚Ü‚·B‚±‚ÌƒƒbƒZ[ƒW‚ÍA
+	ƒ†[ƒU‚ªƒ`ƒƒƒ“ƒlƒ‹‚ÉŽQ‰Á‚µ‚½Žž‚ÉA%S‚©‚çŽ©“®‘—M‚³‚ê‚Ü
 	‚·B
 
+CHAN_HELP_SET_KEEPTOPIC
+	—p–@FSET ƒ`ƒƒƒ“ƒlƒ‹ KEEPTOPIC {ON | OFF}
+	
+	ƒgƒsƒbƒN‹L˜^Ý’è‚ð•ÏX‚µ‚Ü‚·BON‚É‚·‚é‚ÆAƒ`ƒƒƒ“ƒlƒ‹‚ªŽg—p
+	‚³‚ê‚Ä‚¢‚È‚¢Žž‚Å‚àƒgƒsƒbƒN‚ª‹L˜^‚³‚êAÄ‚Ñƒ†[ƒU‚ªŽQ‰Á‚µ‚½
+	Žž‚É•œŒ³‚³‚ê‚Ü‚·B
+
+CHAN_HELP_SET_TOPICLOCK
+	—p–@FSET ƒ`ƒƒƒ“ƒlƒ‹ TOPICLOCK {ON | OFF}
+	
+	ƒgƒsƒbƒN•ÏX‹ÖŽ~Ý’è‚ð•ÏX‚µ‚Ü‚·BON‚É‚·‚é‚ÆATOPICƒRƒ}ƒ“ƒh
+	ˆÈŠO‚Å‚ÌƒgƒsƒbƒN‚Ì•ÏX‚ª‹ÖŽ~‚³‚êA•ÏX‚³‚ê‚½ê‡‚ÍŒ³‚Ìƒgƒsƒb
+	ƒN‚É–ß‚µ‚Ü‚·B
+
 CHAN_HELP_SET_MLOCK
-	ƒVƒ“ƒ^ƒNƒXFSET channel MLOCK modes
+	—p–@FSET ƒ`ƒƒƒ“ƒlƒ‹ MLOCK ƒ‚[ƒh
 	
-	ƒ‚[ƒhƒƒbƒN‚ðÝ’è‚µ‚Ü‚·B%S‚É‚æ‚Á‚ÄAƒ`ƒƒƒ“ƒlƒ‹‚Ì“ü
-	Øƒ‚[ƒhiiEkElEmEnEpEsEtj‚ðƒIƒ“‚©ƒIƒt‚ÉƒƒbƒN‚Å‚«
-	‚Ü‚·Bmodes‚Æ‚¢‚¤ƒpƒ‰ƒ[ƒ^[‚ÍIRC‚Ìu/MODEv‚Æ‚¢‚¤ƒRƒ}ƒ“ƒh
-	‚Æ“¯‚¶Œ`‚ÅAu+v‚ÌŒã‚Ìƒ‚[ƒh‚ÍƒIƒ“‚ÉƒƒbƒN‚³‚êAu-v‚ÌŒã
-	‚Ìƒ‚[ƒh‚ÍƒIƒt‚ÉƒƒbƒN‚³‚ê‚Ü‚·B
+	ƒ`ƒƒƒ“ƒlƒ‹‚Ìƒ‚[ƒhƒƒbƒN‚ðÝ’è‚µ‚Ü‚·Bƒ‚[ƒhƒƒbƒN‚ÍAƒ`ƒƒƒ“
+	ƒlƒ‹‚ÌƒoƒCƒiƒŠƒ‚[ƒhim,n,s,t“™j‚ð—LŒøi+j‚Ü‚½‚Í–³Œøi-j
+	‚ÉƒƒbƒN‚·‚é‚±‚Æ‚ª‚Å‚«‚Ü‚·Buƒ‚[ƒhv‚ÍIRC‚Ìu/MODEvƒRƒ}ƒ“
+	ƒh‚Æ“¯‚¶Œ`Ž®‚ÅŽw’è‚µ‚Ü‚·iu+v‚É‘±‚­ƒ‚[ƒh‚Í—LŒø‚ÉAu-v‚É
+	‘±‚­ƒ‚[ƒh‚Í–³Œø‚ÉƒƒbƒN‚³‚ê‚Ü‚·jB
 	
-	’ˆÓF‰º‚Ì“ñ”Ô–Ú‚Ì—á‚Ì‚æ‚¤‚Éƒ`ƒƒƒ“ƒlƒ‹ƒL[‚ðƒƒbƒN‚·‚ê‚ÎA
-	RESTRICTED‚Æ‚¢‚¤ƒIƒvƒVƒ‡ƒ“‚ðƒIƒ“‚É‚µ‚È‚¯‚ê‚Î’N‚É‚Å‚àƒL[‚ª
-	Œ©‚¦‚Ü‚·B
+	’ˆÓFƒL[i+kj‚ðƒƒbƒN‚·‚éê‡ARESTRICTEDÝ’è‚ð—LŒø‚É‚·‚é
+	@@@‚±‚Æ‚ð‚¨Š©‚ß‚µ‚Ü‚·BRESTRICTED‚ð—LŒø‚É‚µ‚È‚¢‚ÆAƒ`ƒƒƒ“
+	@@@ƒlƒ‹–¢Žg—pŽž‚Éƒ†[ƒU‚ª“ü‚é‚ÆAƒL[‚ªŒ©‚¦‚Ä‚µ‚Ü‚¢‚Ü‚·B
+	@@@ƒCƒ“ƒoƒCƒgê—pi+ij‚àAÅ‰‚ÉŽQ‰Á‚·‚éƒ†[ƒU‚É‘Î‚µ‚Ä‚Í
+	@@@Œø‰Ê‚ð”­Šö‚µ‚Ü‚¹‚ñ‚Ì‚ÅA“¯—l‚ÉRESTRICTED‚ÌŽg—p‚ð„§‚µ
+	@@@‚Ü‚·B
 	
 	—áF
 	    SET #channel MLOCK +nt-iklps
-	       nEtƒ‚[ƒh‚ðƒIƒ“‚ÉƒƒbƒN‚µAiEkElEpEsƒ‚[ƒh‚ðƒI
-	       ƒt‚ÉƒƒbƒN‚µ‚Ü‚·Bmƒ‚[ƒh‚ÍƒƒbƒN‚³‚ê‚Ü‚¹‚ñB
+	       n‚Æt‚Ì—¼ƒ‚[ƒh‚ð—LŒø‚ÉAi,k,l,p,s‚ÌŠeƒ‚[ƒh‚ð–³Œø‚Éƒ
+	       ƒbƒN‚µ‚Ü‚·Bmƒ‚[ƒh‚ÍƒƒbƒN‚³‚ê‚Ü‚¹‚ñB
 	
-	    SET #channel MLOCK +knst-ilmp my-key
-	       kEnEsEtƒ‚[ƒh‚ðƒIƒ“‚ÉƒƒbƒN‚µAiElEmEpƒ‚[ƒh‚ð
-	       ƒIƒt‚ÉƒƒbƒN‚µ‚Ü‚·BƒL[‚ðumy-keyv‚ÉƒƒbƒN‚µ‚Ü‚·B
+	    SET #channel MLOCK +knst my-key
+	       k,n,s,t‚ÌŠeƒ‚[ƒh‚ð—LŒø‚ÉƒƒbƒN‚µ‚Ü‚·BƒL[‚Íumy-keyv
+	       ‚ÉƒƒbƒN‚µ‚Ü‚·B
 	
 	    SET #channel MLOCK +
-	       ƒ‚[ƒhƒƒbƒN‚ð‰ð‚«‚Ü‚·B
+	       ƒ‚[ƒhƒƒbƒN‚ð‰ðœ‚µ‚Ü‚·B
+
+CHAN_HELP_SET_HIDE
+	—p–@FSET ƒ`ƒƒƒ“ƒlƒ‹ HIDE {EMAIL | TOPIC | MLOCK} {ON | OFF}
+	
+	ƒ`ƒƒƒ“ƒlƒ‹‚Ìî•ñ‚ðINFOƒRƒ}ƒ“ƒh‚©‚ç‰B‚µ‚Ü‚·B‰B‚¹‚é‚Ì‚ÍA“dŽq
+	ƒ[ƒ‹ƒAƒhƒŒƒXiEMAILjAƒgƒsƒbƒNiTOPICjAƒ‚[ƒhƒƒbƒN
+	iMLOCKj‚Ì‚R€–Ú‚Å‚·B‚Q”Ô–Ú‚Ìƒpƒ‰ƒ[ƒ^‚ÍAON‚É‚·‚é‚Æî•ñ
+	‚ð‰B‚µAOFF‚É‚·‚é‚Æî•ñ‚ð•\Ž¦‚µ‚Ü‚·B
+	
+	ƒ`ƒƒƒ“ƒlƒ‹‚Ìƒ‚[ƒhƒƒbƒN‚Å+p‚Ü‚½‚Í+s‚ªƒƒbƒN‚³‚ê‚Ä‚¢‚éê‡A
+	‚±‚ÌÝ’è‚ÉŠÖ‚í‚ç‚¸ƒgƒsƒbƒN‚Í•\Ž¦‚³‚ê‚Ü‚¹‚ñB
 
 CHAN_HELP_SET_PRIVATE
-	ƒVƒ“ƒ^ƒNƒXFSET channel PRIVATE {ON | OFF}
+	—p–@FSET ƒ`ƒƒƒ“ƒlƒ‹ PRIVATE {ON | OFF}
 	
-	uŽ„“Iv‚Æ‚¢‚¤ƒIƒvƒVƒ‡ƒ“‚ðÝ’è‚µ‚Ü‚·BON‚É‚·‚é‚ÆAƒ`ƒƒƒ“ƒl
-	ƒ‹‚Íu/msg %S LISTv‚ÌƒŠƒXƒg‚Å•\‚ê‚Ü‚¹‚ñB
+	ƒvƒ‰ƒCƒx[ƒgÝ’è‚ð•ÏX‚µ‚Ü‚·BON‚É‚·‚é‚ÆAƒ`ƒƒƒ“ƒlƒ‹‚ÍLISTƒR
+	ƒ}ƒ“ƒh‚ÌŒ‹‰Ê‚É‚Í•\Ž¦‚³‚ê‚Ü‚¹‚ñBi‚½‚¾AINFOƒRƒ}ƒ“ƒh‚Í’Êí’Ê
+	‚èî•ñ‚ð•\Ž¦‚µ‚Ü‚·j
 
 CHAN_HELP_SET_RESTRICTED
-	ƒVƒ“ƒ^ƒNƒXFSET channel RESTRICTED {ON | OFF}
+	—p–@FSET ƒ`ƒƒƒ“ƒlƒ‹ RESTRICTED {ON | OFF}
 	
-	ƒAƒNƒZƒX§ŒäƒIƒvƒVƒ‡ƒ“‚ðÝ’è‚µ‚Ü‚·BON‚É‚·‚é‚ÆA+oƒ‚[ƒh‚ð
-	“¾‚ç‚ê‚È‚¢ƒ†[ƒU[i•‰”‚ÌƒŒƒxƒ‹‚Ìƒ†[ƒU[A‚»‚µ‚ÄƒZƒLƒ…ƒA
-	ƒIƒvƒVƒ‡ƒ“‚ðON‚É‚·‚é‚ÆƒAƒNƒZƒX•\‚É‚È‚¢ƒ†[ƒU[j‚Íƒ`ƒƒƒ“ƒl
-	ƒ‹‚©‚ç‚É“ü‚ê‚È‚­‚È‚è‚Ü‚·B
+	ƒAƒNƒZƒX§ŒÀÝ’è‚ð•ÏX‚µ‚Ü‚·BON‚É‚·‚é‚ÆAƒAƒNƒZƒXƒŠƒXƒg‚É“o
+	˜^‚³‚ê‚Ä‚¢‚È‚¢ƒ†[ƒU‹y‚ÑƒIƒyƒŒ[ƒ^Œ ‚ð‹ÖŽ~‚³‚ê‚Ä‚¢‚éƒ†[ƒU‚Í
+	ƒ`ƒƒƒ“ƒlƒ‹‚ÉŽQ‰Á‚Å‚«‚È‚­‚È‚è‚Ü‚·BiŽQ‰Á‚µ‚æ‚¤‚Æ‚µ‚½Žž‚ÍA
+	%S‚É‚æ‚èƒLƒbƒNE’Ç•ú‚³‚ê‚Ü‚·j
 
 CHAN_HELP_SET_SECURE
-	ƒVƒ“ƒ^ƒNƒXFSET channel SECURE {ON | OFF}
+	—p–@FSET ƒ`ƒƒƒ“ƒlƒ‹ SECURE {ON | OFF}
 	
-	ƒZƒLƒ…ƒAƒIƒvƒVƒ‡ƒ“‚ðÝ’è‚µ‚Ü‚·BON‚É‚·‚é‚ÆAƒjƒbƒN‚ÌƒpƒX
-	ƒ[ƒh‚ð“ü—Í‚µ‚Ä‚¢‚È‚¢ƒ†[ƒU[‚Í“ÁŒ ‚ð“¾‚Ü‚¹‚ñBƒAƒNƒZƒX§
-	ŒäƒIƒvƒVƒ‡ƒ“‚Æˆê‚ÉŽg‚¦‚ÎAƒpƒXƒ[ƒh‚ð“ü—Í‚µ‚Ä‚¢‚È‚¢ƒ†[
-	ƒU[‚Íƒ`ƒƒƒ“ƒlƒ‹‚É“ü‚ê‚È‚­‚È‚è‚Ü‚·B
+	ƒZƒLƒ…ƒAÝ’è‚ð•ÏX‚µ‚Ü‚·BON‚É‚·‚é‚ÆA%s‚É‘Î‚µ‚ÄƒjƒbƒN”FØ‚ð
+	s‚Á‚Ä‚¢‚È‚¢ƒ†[ƒU‚ÍŽ©“®ƒIƒyƒŒ[ƒ^Œ ‚È‚Ç‚ÌŒ ŒÀ‚ð—^‚¦‚ç‚ê‚¸A
+	ƒAƒNƒZƒX§ŒÀiRESTRICTEDjÝ’è‚ª—LŒø‚É‚È‚Á‚Ä‚¢‚éê‡‚ÍAƒ`ƒƒ
+	ƒ“ƒlƒ‹‚ÉŽQ‰Á‚·‚é‚±‚Æ‚ào—ˆ‚È‚­‚È‚è‚Ü‚·B
 
 CHAN_HELP_SET_SECUREOPS
-	ƒVƒ“ƒ^ƒNƒXFSET channel SECUREOPS {ON | OFF}
+	—p–@FSET ƒ`ƒƒƒ“ƒlƒ‹ SECUREOPS {ON | OFF}
 	
-	+oƒ‚[ƒh‚Ì§Œä‚ðŒµ‚µ‚­‚·‚é‚±‚Æ‚ðÝ’è‚µ‚Ü‚·BON‚É‚·‚é‚ÆAƒA
-	ƒNƒZƒX•\‚É‚È‚¢ƒ†[ƒU[‚Í+oƒ‚[ƒh‚ð“¾‚ç‚ê‚È‚­‚È‚è‚Ü‚·B
+	ƒIƒyƒŒ[ƒ^Œ §ŒÀÝ’è‚ð•ÏX‚µ‚Ü‚·BON‚É‚·‚é‚ÆAƒAƒNƒZƒXƒŠƒXƒg
+	‚É“o˜^‚³‚ê‚Ä‚¢‚È‚¢ƒ†[ƒU‚ÍƒIƒyƒŒ[ƒ^Œ ‚ð“¾‚ç‚ê‚È‚­‚È‚èA‘¼‚Ì
+	ƒIƒyƒŒ[ƒ^‚©‚çƒIƒyƒŒ[ƒ^Œ ‚ð—^‚¦‚ç‚ê‚Ä‚àA%S‚É‚æ‚è‰ðœ
+	‚³‚ê‚Ü‚·B
 
 CHAN_HELP_SET_LEAVEOPS
-	ƒVƒ“ƒ^ƒNƒXFSET channel LEAVEOPS {ON | OFF}
+	—p–@FSET ƒ`ƒƒƒ“ƒlƒ‹ LEAVEOPS {ON | OFF}
 	
-	+oƒ‚[ƒh‚Ì§Œä‚ð‚â‚³‚µ‚­‚·‚é‚±‚Æ‚ðÝ’è‚µ‚Ü‚·BON‚É‚·‚é‚ÆA
-	%S‚ÍŽ©“®“I‚É-oƒ‚[ƒh‚ð‚©‚¯‚Ü‚¹‚ñB
+	ƒIƒyƒŒ[ƒ^Œ •ú’uÝ’è‚ð•ÏX‚µ‚Ü‚·BIRC‚Å‚ÍAÅ‰‚ÉŽQ‰Á‚µ‚½ƒ†
+	[ƒU‚ªŽ©“®“I‚ÉƒIƒyƒŒ[ƒ^Œ ‚ð—^‚¦‚ç‚ê‚Ü‚·‚ªAServices‚Ìƒ`ƒƒƒ“
+	ƒlƒ‹ŠÇ—‚ð³‚µ‚­s‚¤‚½‚ßA‚±‚ÌƒIƒyƒŒ[ƒ^Œ ‚ð’ÊíA%S‚ª
+	‰ðœ‚µ‚Ü‚·B‚±‚ÌÝ’è‚ðON‚É‚·‚é‚ÆAƒIƒyƒŒ[ƒ^Œ ‚ð‚»‚Ì‚Ü‚Ü•ú’u
+	‚µ‚Ü‚·i‚½‚¾‚µSECUREOPSÝ’è‚Í—Dæ‚³‚ê‚Ü‚·jB
 
 CHAN_HELP_SET_OPNOTICE
-	ƒVƒ“ƒ^ƒNƒXFSET channel LEAVEOPS {ON | OFF}
+	—p–@FSET ƒ`ƒƒƒ“ƒlƒ‹ OPNOTICE {ON | OFF}
 	
-	OPEDEOP•ñƒIƒvƒVƒ‡ƒ“‚ðÝ’è‚µ‚Ü‚·BON‚É‚·‚é‚ÆAOP‚ÆDEOPƒRƒ}
-	ƒ“ƒh‚ªŽg—p‚³‚ê‚é“x‚ÉA%S‚Íƒ`ƒƒƒ“ƒlƒ‹‚ÉƒƒbƒZ[ƒWi/NOTICEj
-	‚ðo‚µ‚Ü‚·B
+	OP‚âDEOP‚Ìƒ`ƒƒƒ“ƒlƒ‹Œ ŒÀ—^’DƒRƒ}ƒ“ƒh‚ÌŽg—pŽü’mÝ’è‚ð•ÏX‚µ‚Ü
+	‚·BON‚É‚·‚é‚ÆA‚±‚ê‚ç‚ÌƒRƒ}ƒ“ƒh‚ªŽg—p‚³‚ê‚½ŽžA%S‚ª
+	/NOTICEŒ`Ž®‚Åƒ`ƒƒƒ“ƒlƒ‹‚ÉŽü’m‚µ‚Ü‚·B
+
+CHAN_HELP_SET_ENFORCE
+	—p–@FSET ƒ`ƒƒƒ“ƒlƒ‹ ENFORCE {ON | OFF}
+	
+	Ž©“®ƒIƒyƒŒ[ƒ^Œ EŽ©“®”­Œ¾Œ ‚È‚Ç‚ÌŠÇ—Ý’è‚ð•ÏX‚µ‚Ü‚·BON‚É
+	‚·‚é‚ÆAŽ©“®ƒIƒyƒŒ[ƒ^Œ EŽ©“®”­Œ¾Œ ‚ðŽ‚Âƒ†[ƒU‚É‘Î‚µ‚ÄDEOP
+	‚âDEVOICEƒRƒ}ƒ“ƒh‚ðŽg—p‚Å‚«‚È‚­‚È‚èA/MODEƒRƒ}ƒ“ƒh‚Å‰ðœ‚³‚ê
+	‚½ê‡‚Å‚à%S‚ªÄ“xŒ ŒÀ‚ð—^‚¦‚Ü‚·B
+
+CHAN_HELP_SET_MEMO_RESTRICTED
+	—p–@FSET ƒ`ƒƒƒ“ƒlƒ‹ MEMO-RESTRICTED {ON | OFF}
+	
+	ƒƒ‚‘—M§ŒÀÝ’è‚ð•ÏX‚µ‚Ü‚·BON‚É‚·‚é‚ÆAƒ`ƒƒƒ“ƒlƒ‹ƒƒ‚ŽóM
+	Œ ŒÀ‚ðŽ‚½‚È‚¢ƒ†[ƒU‚Íƒ`ƒƒƒ“ƒlƒ‹‚Éƒƒ‚‚ð‘—‚ê‚È‚­‚È‚è‚Ü‚·B
+
+CHAN_HELP_UNSET
+	—p–@FUNSET ƒ`ƒƒƒ“ƒlƒ‹ {SUCCESSOR | URL | EMAIL | ENTRYMSG}
+	
+	Žw’è‚³‚ê‚½ƒ`ƒƒƒ“ƒlƒ‹Ý’è‚ðÁ‹Ž‚µ‚Ü‚·Bƒpƒ‰ƒ[ƒ^‚ÌˆÓ–¡‚ÍSET
+	“¯—l‚ÅAˆÈ‰º‚Ì’Ê‚è‚Å‚·B
+	
+	    SUCCESSOR   ƒ`ƒƒƒ“ƒlƒ‹ŒãŒpŽÒ
+	    URL         ƒz[ƒ€ƒy[ƒWƒAƒhƒŒƒX
+	    EMAIL       “dŽqƒ[ƒ‹ƒAƒhƒŒƒX
+	    ENTRYMSG    ŽQ‰ÁŽžƒƒbƒZ[ƒW
+
+CHAN_HELP_SOP
+	—p–@FSOP ƒ`ƒƒƒ“ƒlƒ‹ ADD ƒjƒbƒN
+	@@@SOP ƒ`ƒƒƒ“ƒlƒ‹ DEL ƒjƒbƒN
+	@@@SOP ƒ`ƒƒƒ“ƒlƒ‹ LIST [+ŠJŽnˆÊ’u] [ƒpƒ^[ƒ“]
+	@@@SOP ƒ`ƒƒƒ“ƒlƒ‹ COUNT
+	
+CHAN_HELP_SOP_MID1
+	SOPiƒX[ƒp[ƒIƒyƒŒ[ƒ^jƒŠƒXƒg‚ð•ÒW‚Ü‚½‚Í•\Ž¦‚µ‚Ü‚·BSOPƒŠ
+	ƒXƒg‚É“o˜^‚³‚ê‚½ƒ†[ƒU‚Íƒ`ƒƒƒ“ƒlƒ‹ŽQ‰ÁŽž‚ÉŽ©“®“I‚ÉƒIƒyƒŒ[ƒ^
+	Œ ‚ð—^‚¦‚ç‚ê‚Ü‚·B
+CHAN_HELP_SOP_MID1_CHANPROT
+	SOPiƒX[ƒp[ƒIƒyƒŒ[ƒ^jƒŠƒXƒg‚ð•ÒW‚Ü‚½‚Í•\Ž¦‚µ‚Ü‚·BSOPƒŠ
+	ƒXƒg‚É“o˜^‚³‚ê‚½ƒ†[ƒU‚Íƒ`ƒƒƒ“ƒlƒ‹ŽQ‰ÁŽž‚ÉŽ©“®“I‚ÉƒIƒyƒŒ[ƒ^
+	Œ ‚ÆƒvƒƒeƒNƒgƒXƒe[ƒ^ƒX‚ð—^‚¦‚ç‚ê‚Ü‚·B
+CHAN_HELP_SOP_MID2
+	
+	SOPƒ†[ƒU‚ÍAOPAVOPANOP‚ÌŠeƒŠƒXƒg‚ð•ÒW‚Å‚«‚Ü‚·BSOPƒŠƒXƒg
+	‚ð•ÒW‚Å‚«‚é‚Ì‚Íƒ`ƒƒƒ“ƒlƒ‹‘nÝŽÒ‚Ì‚Ý‚Å‚·B
+CHAN_HELP_SOP_MID2_HALFOP
+	
+	SOPƒ†[ƒU‚ÍAOPAHOPAVOPANOP‚ÌŠeƒŠƒXƒg‚ð•ÒW‚Å‚«‚Ü‚·BSOPƒŠ
+	ƒXƒg‚ð•ÒW‚Å‚«‚é‚Ì‚Íƒ`ƒƒƒ“ƒlƒ‹‘nÝŽÒ‚Ì‚Ý‚Å‚·B
+CHAN_HELP_SOP_END
+	
+	ADDADELALISTACOUNT‚ÌŠeƒTƒuƒRƒ}ƒ“ƒh‚ÍAOPƒRƒ}ƒ“ƒh‚Æ“¯—l‚É“®
+	ì‚µ‚Ü‚·B
+
+CHAN_HELP_AOP
+	—p–@FAOP ƒ`ƒƒƒ“ƒlƒ‹ ADD ƒjƒbƒN
+	@@@AOP ƒ`ƒƒƒ“ƒlƒ‹ DEL ƒjƒbƒN
+	@@@AOP ƒ`ƒƒƒ“ƒlƒ‹ LIST [+ŠJŽnˆÊ’u] [ƒpƒ^[ƒ“]
+	@@@AOP ƒ`ƒƒƒ“ƒlƒ‹ COUNT
+	
+	AOPiƒI[ƒgƒIƒyƒŒ[ƒ^jƒŠƒXƒg‚ð•ÒW‚Ü‚½‚Í•\Ž¦‚µ‚Ü‚·BAOPƒŠƒX
+	ƒg‚É“o˜^‚³‚ê‚½ƒ†[ƒU‚Íƒ`ƒƒƒ“ƒlƒ‹ŽQ‰ÁŽž‚ÉŽ©“®“I‚ÉƒIƒyƒŒ[ƒ^Œ 
+	‚ð—^‚¦‚ç‚ê‚Ü‚·B
+CHAN_HELP_AOP_MID
+	
+	AOPƒ†[ƒU‚ÍVOP‚ÆNOPƒŠƒXƒg‚ð•ÒW‚Å‚«‚Ü‚·BAOPƒŠƒXƒg‚ð•ÒW‚Å‚«
+	‚é‚Ì‚ÍASOPƒ†[ƒU‚Æƒ`ƒƒƒ“ƒlƒ‹‘nÝŽÒ‚Å‚·B
+CHAN_HELP_AOP_MID_HALFOP
+	
+	AOPƒ†[ƒU‚ÍHOPAVOPANOP‚ÌŠeƒŠƒXƒg‚ð•ÒW‚Å‚«‚Ü‚·BAOPƒŠƒXƒg
+	‚ð•ÒW‚Å‚«‚é‚Ì‚ÍASOPƒ†[ƒU‚Æƒ`ƒƒƒ“ƒlƒ‹‘nÝŽÒ‚Å‚·B
+CHAN_HELP_AOP_END
+	
+	ADD‚ÆDELƒRƒ}ƒ“ƒh‚Í‚»‚ê‚¼‚êƒ†[ƒU‚ð“o˜^EÁ‹Ž‚µ‚Ü‚·B‚½‚¾‚µA
+	“Á’è‚Ìƒ†[ƒU‚ð•¡”‚ÌƒŠƒXƒg‚É“o˜^‚·‚é‚±‚Æ‚Í‚Å‚«‚Ü‚¹‚ñBADDƒR
+	ƒ}ƒ“ƒh‚ÅŽw’è‚³‚ê‚½ƒ†[ƒU‚ª‚·‚Å‚É‘¼‚ÌƒŠƒXƒgiVOPƒŠƒXƒg‚È‚Çj
+	‚É“o˜^‚³‚ê‚Ä‚¢‚éê‡A‚»‚ÌƒŠƒXƒg‚©‚çÁ‹Ž‚µ‚½ã‚ÅAAOPƒŠƒXƒg
+	‚É“o˜^‚µ‚Ü‚·B‚È‚¨A“–ŠYƒŠƒXƒg‚Ì•ÒWŒ ‚ðŽ‚Á‚Ä‚¢‚È‚¢ê‡‚ÍA
+	AOP ADDƒRƒ}ƒ“ƒh‚à‚»‚Ìƒ†[ƒU‚É‘Î‚µ‚ÄŽg‚¦‚Ü‚¹‚ñB
+	
+	LISTƒRƒ}ƒ“ƒh‚ÍAOPƒŠƒXƒg‚ð•\Ž¦‚µ‚Ü‚·Bƒpƒ^[ƒ“‚ðŽw’è‚·‚é‚ÆA
+	‚»‚Ìƒpƒ^[ƒ“‚Éˆê’v‚·‚éƒGƒ“ƒgƒŠ‚Ì‚Ý‚ª•\Ž¦‚³‚ê‚Ü‚·B‚Ü‚½AŠJŽn
+	ˆÊ’u‚ÅÅ‰‚É•\Ž¦‚·‚éƒŒƒR[ƒh‚ðŽw’è‚Å‚«‚éi—áFu+50v‚Å51ŒÂ
+	–Ú‚ÌŠY“–ƒŒƒR[ƒh‚©‚ç•\Ž¦j
+	
+	COUNTƒRƒ}ƒ“ƒh‚ÍAOPƒŠƒXƒg‚ÌƒGƒ“ƒgƒŠ”‚ð•\Ž¦‚µ‚Ü‚·B
+
+CHAN_HELP_HOP
+	—p–@FHOP ƒ`ƒƒƒ“ƒlƒ‹ ADD ƒjƒbƒN
+	@@@HOP ƒ`ƒƒƒ“ƒlƒ‹ DEL ƒjƒbƒN
+	@@@HOP ƒ`ƒƒƒ“ƒlƒ‹ LIST [+ŠJŽnˆÊ’u] [ƒpƒ^[ƒ“]
+	@@@HOP ƒ`ƒƒƒ“ƒlƒ‹ COUNT
+	
+	HOPiƒn[ƒtƒIƒyƒŒ[ƒ^jƒŠƒXƒg‚ð•ÒW‚Ü‚½‚Í•\Ž¦‚µ‚Ü‚·BHOPƒŠƒX
+	ƒg‚É“o˜^‚³‚ê‚½ƒ†[ƒU‚Íƒ`ƒƒƒ“ƒlƒ‹ŽQ‰ÁŽž‚ÉŽ©“®“I‚É”¼ƒIƒyƒŒ[ƒ^
+	Œ ‚ð—^‚¦‚ç‚ê‚Ü‚·B
+	
+	HOPƒ†[ƒU‚ÍVOP‚ÆNOPƒŠƒXƒg‚ð•ÒW‚Å‚«‚Ü‚·BHOPƒŠƒXƒg‚ð•ÒW‚Å‚«
+	‚é‚Ì‚ÍAAOPESOPƒ†[ƒU‚Æƒ`ƒƒƒ“ƒlƒ‹‘nÝŽÒ‚Å‚·B
+	
+	ADDADELALISTACOUNT‚ÌŠeƒTƒuƒRƒ}ƒ“ƒh‚ÍAOPƒRƒ}ƒ“ƒh‚Æ“¯—l‚É“®
+	ì‚µ‚Ü‚·B
+
+CHAN_HELP_VOP
+	—p–@FVOP ƒ`ƒƒƒ“ƒlƒ‹ ADD ƒjƒbƒN
+	@@@VOP ƒ`ƒƒƒ“ƒlƒ‹ DEL ƒjƒbƒN
+	@@@VOP ƒ`ƒƒƒ“ƒlƒ‹ LIST [+ŠJŽnˆÊ’u] [ƒpƒ^[ƒ“]
+	@@@VOP ƒ`ƒƒƒ“ƒlƒ‹ COUNT
+	
+	VOPiƒ{ƒCƒXƒIƒyƒŒ[ƒ^jƒŠƒXƒg‚ð•ÒW‚Ü‚½‚Í•\Ž¦‚µ‚Ü‚·BVOPƒŠƒX
+	ƒg‚É“o˜^‚³‚ê‚½ƒ†[ƒU‚Íƒ`ƒƒƒ“ƒlƒ‹ŽQ‰ÁŽž‚ÉŽ©“®“I‚É”­Œ¾Œ ‚ð—^‚¦
+	‚ç‚ê‚Ü‚·B
+	
+	ADDADELALISTACOUNT‚ÌŠeƒTƒuƒRƒ}ƒ“ƒh‚ÍAOPƒRƒ}ƒ“ƒh‚Æ“¯—l‚É“®
+	ì‚µ‚Ü‚·B
+
+CHAN_HELP_NOP
+	—p–@FNOP ƒ`ƒƒƒ“ƒlƒ‹ ADD ƒjƒbƒN
+	@@@NOP ƒ`ƒƒƒ“ƒlƒ‹ DEL ƒjƒbƒN
+	@@@NOP ƒ`ƒƒƒ“ƒlƒ‹ LIST [+ŠJŽnˆÊ’u] [ƒpƒ^[ƒ“]
+	@@@NOP ƒ`ƒƒƒ“ƒlƒ‹ COUNT
+	
+	NOPiNeverOpFƒIƒyƒŒ[ƒ^•s‹–‰ÂjƒŠƒXƒg‚ð•ÒW‚Ü‚½‚Í•\Ž¦‚µ‚Ü‚·B
+	NOPƒŠƒXƒg‚É“o˜^‚³‚ê‚½ƒ†[ƒU‚ÍƒIƒyƒŒ[ƒ^Œ ‚ðŽæ“¾‚Å‚«‚¸A‘¼‚Ì
+	ƒ†[ƒU‚©‚ç—^‚¦‚ç‚ê‚½ê‡‚à%S‚É‚æ‚è‘¦Žž”’D‚³‚ê‚Ü‚·B
+	
+	ADDADELALISTACOUNT‚ÌŠeƒTƒuƒRƒ}ƒ“ƒh‚ÍAOPƒRƒ}ƒ“ƒh‚Æ“¯—l‚É“®
+	ì‚µ‚Ü‚·B
 
 CHAN_HELP_ACCESS
-	ƒVƒ“ƒ^ƒNƒXFACCESS channel ADD nick level
-	@@@@@@ACCESS channel DEL {nick | entry-num | list}
-	@@@@@@ACCESS channel LIST [mask | list]
+	—p–@FACCESS ƒ`ƒƒƒ“ƒlƒ‹ ADD ƒjƒbƒN ƒŒƒxƒ‹
+	@@@ACCESS ƒ`ƒƒƒ“ƒlƒ‹ DEL ƒjƒbƒN
+	@@@ACCESS ƒ`ƒƒƒ“ƒlƒ‹ LIST [+ŠJŽnˆÊ’u] [ƒpƒ^[ƒ“]
+	@@@ACCESS ƒ`ƒƒƒ“ƒlƒ‹ LISTLEVEL [+ŠJŽnˆÊ’u] ƒŒƒxƒ‹
+	      ACCESS ƒ`ƒƒƒ“ƒlƒ‹ COUNT
 	
-	ƒ`ƒƒƒ“ƒlƒ‹‚ÌƒAƒNƒZƒX•\‚Ì•ÏX‚Æ•\Ž¦‚ÌƒRƒ}ƒ“ƒh‚Å‚·BƒAƒNƒZƒX
-	•\‚ÍA“ÁŒ ‚Ì‚ ‚éƒ†[ƒU[‚ÌƒŠƒXƒg‚ÅA‚Ç‚Ìƒ†[ƒU[‚ª+oƒ‚[ƒh
-	‚ð“¾‚ç‚ê‚é‚©‚Ç‚Ìƒ†[ƒU[‚ª%S‚ÌƒRƒ}ƒ“ƒh‚ðŽg‚¦‚é‚©ŠÜ‚Ý
-	‚Ü‚·BleveliƒŒƒxƒ‹j‚Ì”’l‚É‚æ‚Á‚Ä‚Ç‚Ì“ÁŒ ‚ð“¾‚é‚©•Ï‚í‚è
-	‚Ü‚·BÚ‚µ‚¢Ž–‚È‚çAu/msg %S HELP ACCESS LEVELSv‚ð
-	“ü—Í‚µ‚Ä‰º‚³‚¢B
+	ƒ`ƒƒƒ“ƒlƒ‹‚ÌƒAƒNƒZƒXƒŠƒXƒg‚ð•ÒW‚Ü‚½‚Í•\Ž¦‚µ‚Ü‚·BƒAƒNƒZƒXƒŠ
+	ƒXƒg‚ÍA‚Ç‚Ìƒ†[ƒU‚ª‚Ç‚Ìƒ`ƒƒƒ“ƒlƒ‹Œ ŒÀ‚ðŽ‚Á‚Ä‚¢‚é‚©‚ðŠÇ—‚·
+	‚éƒŠƒXƒg‚ÅA“o˜^‚µ‚½ƒAƒNƒZƒXƒŒƒxƒ‹‚É‚æ‚Á‚Äƒ†[ƒU‚ÌŒ ŒÀ‚ªŒˆ‚Ü
+	‚è‚Ü‚·i“o˜^‚³‚ê‚Ä‚¢‚È‚¢ƒ†[ƒU‚ÍƒAƒNƒZƒXƒŒƒxƒ‹‚ªu‚Ov‚Æ‚È‚è
+	‚Ü‚·jBƒAƒNƒZƒXƒŒƒxƒ‹‚Æ—^‚¦‚ç‚ê‚éŒ ŒÀ‚Æ‚ÌŠÖŒW‚É‚Â‚¢‚Ä‚ÍA
+	u/msg %S HELP ACCESS LEVELSv‚ð“ü—Í‚µ‚Ä‚­‚¾‚³‚¢B
 	
-	ACCESS ADD‚Æ‚¢‚¤Œ`‚Åƒ†[ƒU[‚ðƒAƒNƒZƒX•\‚É’Ç‰Á‚Å‚«‚Ü‚·‚ªA
-	‚·‚Å‚ÉƒAƒNƒZƒX•\‚É‘¶Ý‚µ‚Ä‚¢‚éƒ†[ƒU[‚ÌƒŒƒxƒ‹‚ð•ÏX‚·‚é‚±
-	‚Æ‚ào—ˆ‚Ü‚·B’Ç‰Á‚Æ•ÏXo—ˆ‚é‚Ì‚ÍAƒRƒ}ƒ“ƒh‚ð“ü—Í‚·‚éƒ†[
-	ƒU[‚ÌŒ»Ý‚ÌƒŒƒxƒ‹‚ðŠÜ‚Ü‚¸A‚»‚ÌƒŒƒxƒ‹ˆÈ‰º‚Ì‚Ý‚Å‚·B‚Ü‚½A
-	ƒ†[ƒU[‚ÌƒŒƒxƒ‹‚ð•ÏX‚·‚éê‡‚ÍA‚»‚Ìƒ†[ƒU[‚ÌŒ»Ý‚ÌƒŒƒx
-	ƒ‹‚Í“ü—Í‚·‚éƒ†[ƒU[‚ÌƒŒƒxƒ‹ˆÈã‚È‚ç•ÏXo—ˆ‚Ü‚¹‚ñBƒtƒ@ƒE
-	ƒ“ƒ_[‚È‚ç‚Ç‚ÌƒŒƒxƒ‹‚Å‚à’Ç‰Á‚Å‚«‚Ü‚·B
+	ADDƒRƒ}ƒ“ƒh‚Åƒ†[ƒU‚ðƒAƒNƒZƒXƒŠƒXƒg‚É“o˜^‚Å‚«‚Ü‚·Bƒ†[ƒU‚Ì
+	ƒjƒbƒN‚ÆAƒ†[ƒU‚É—^‚¦‚½‚¢ƒAƒNƒZƒXƒŒƒxƒ‹‚ðŽw’è‚µ‚Ü‚·BŽ©•ª‚Ì
+	ƒAƒNƒZƒXƒŒƒxƒ‹ˆÈã‚ÌƒŒƒxƒ‹‚ðŽw’è‚·‚é‚±‚Æ‚Ío—ˆ‚Ü‚¹‚ñi—á‚¦‚Î
+	ƒŒƒxƒ‹50‚Ìƒ†[ƒU‚ÍƒŒƒxƒ‹49ˆÈ‰º‚µ‚©Žw’è‚Å‚«‚Ü‚¹‚ñjB‚Ü‚½AŽw
+	’è‚µ‚½ƒjƒbƒN‚ª‚·‚Å‚ÉƒAƒNƒZƒXƒŠƒXƒg‚É“o˜^‚³‚ê‚Ä‚¢‚éê‡‚ÍƒAƒN
+	ƒZƒXƒŒƒxƒ‹‚ð•ÏX‚µ‚Ü‚·‚ªA‚à‚Æ‚ÌƒŒƒxƒ‹‚ªŽ©•ª‚ÌƒŒƒxƒ‹ˆÈã‚Ìƒ†
+	[ƒU‚ÌƒAƒNƒZƒXƒŒƒxƒ‹‚ð•ÏX‚Å‚«‚Ü‚¹‚ñB
 	
-	ACCESS DEL‚Æ‚¢‚¤Œ`‚Åƒ†[ƒU[‚ðƒAƒNƒZƒX•\‚©‚çÁ‹Ž‚Å‚«‚Ü‚·B
-	Á‹Žo—ˆ‚é‚Ì‚ÍA“ü—Í‚·‚éƒ†[ƒU[‚ÌƒŒƒxƒ‹‚ðŠÜ‚Ü‚¸A‚»‚ÌƒŒƒx
-	ƒ‹ˆÈ‰º‚Ìƒ†[ƒU[‚Ì‚Ý‚Å‚·B”Ô†—ñ‚ð“ü—Í‚·‚é‚±‚Æ‚ào—ˆ‚Ü‚·
-	i‰º‹L‚ÌLIST‚Ì—á‚ÖŽQÆjB
+	DELƒRƒ}ƒ“ƒh‚Åƒ†[ƒU‚ðƒAƒNƒZƒXƒŠƒXƒg‚©‚çÁ‹Ž‚Å‚«‚Ü‚·BÁ‹Ž‚Å
+	‚«‚é‚Ì‚ÍAŽ©•ª‚ÌƒAƒNƒZƒXƒŒƒxƒ‹‚æ‚è‰º‚Ìƒ†[ƒU‚Ì‚Ý‚Å‚·B
 	
-	ACCESS LIST‚Æ‚¢‚¤Œ`‚ÅƒAƒNƒZƒX•\‚ðŒ©‚é‚±‚Æ‚ªo—ˆ‚Ü‚·Bƒ}ƒXƒN
-	‚ð“ü—Í‚·‚ê‚ÎA‚»‚Ìƒ}ƒXƒN‚É‡‚¤ƒ†[ƒU[‚µ‚©•\‚ê‚Ü‚¹‚ñB‰º‹L‚Ì
-	—á‚Ì’Ê‚èA”Ô†—ñ‚ð“ü—Í‚·‚é‚±‚Æ‚ào—ˆ‚Ü‚·F
+	LISTƒRƒ}ƒ“ƒh‚ÍƒAƒNƒZƒXƒŠƒXƒg‚ð•\Ž¦‚µ‚Ü‚·Bƒpƒ^[ƒ“‚ðŽw’è‚·‚é
+	‚ÆA‚»‚Ìƒpƒ^[ƒ“‚Éˆê’v‚·‚éƒjƒbƒN‚Ì‚Ý‚ª•\Ž¦‚³‚ê‚Ü‚·B‚Ü‚½AŠJ
+	ŽnˆÊ’u‚ÅÅ‰‚É•\Ž¦‚·‚éƒŒƒR[ƒh‚ðŽw’è‚Å‚«‚éi—áFu+50v‚Å51
+	ŒÂ–Ú‚ÌŠY“–ƒŒƒR[ƒh‚©‚ç•\Ž¦j
 	
-	    ACCESS #channel LIST 2-5,7-9
-	       ‚Q`‚TA‚V`‚X”Ô–Ú‚ÌƒAƒNƒZƒX•\‚ÌƒGƒ“ƒgƒŠ[‚ð•\‚µ‚Ü‚·B
+	LISTLEVELƒRƒ}ƒ“ƒh‚àƒAƒNƒZƒXƒŠƒXƒg‚ð•\Ž¦‚µ‚Ü‚·‚ªAƒjƒbƒN‚Å‚Í
+	‚È‚­AƒAƒNƒZƒXƒŒƒxƒ‹‚ÅŒŸõ‚µ‚Ü‚·B—á‚¦‚ÎAƒŒƒxƒ‹‚ðu50v‚ÆŽw
+	’è‚µ‚½‚Æ‚«‚ÍƒAƒNƒZƒXƒŒƒxƒ‹50‚Ìƒ†[ƒU‚ðAu50-100v‚Ìê‡‚ÍA
+	ƒŒƒxƒ‹50ˆÈãA100ˆÈ‰º‚Ìƒ†[ƒU‚ð•\Ž¦‚µ‚Ü‚·B
+	
+	COUNTƒRƒ}ƒ“ƒh‚ÍƒAƒNƒZƒXƒŠƒXƒg‚ÌƒGƒ“ƒgƒŠ”‚ð•\Ž¦‚µ‚Ü‚·B
+CHAN_HELP_ACCESS_XOP
+	
+	‚È‚¨A%S‚ÌSOP/AOP/VOP/NOPƒRƒ}ƒ“ƒh‚Å‚àƒAƒNƒZƒXƒŠƒXƒg‚ð
+	•ÒW‚Å‚«‚Ü‚·B‚±‚Ìê‡ASOP‚ÍƒŒƒxƒ‹%dAAOP‚ÍƒŒƒxƒ‹%dAVOP‚Í
+	ƒŒƒxƒ‹%dANOP‚ÍƒŒƒxƒ‹%d‚É‘Š“–‚µ‚Ü‚·B
+CHAN_HELP_ACCESS_XOP_HALFOP
+	
+	‚È‚¨A%S‚ÌSOP/AOP/VOP/HOP/NOPƒRƒ}ƒ“ƒh‚Å‚àƒAƒNƒZƒXƒŠƒX
+	ƒg‚ð•ÒW‚Å‚«‚Ü‚·B‚±‚Ìê‡ASOP‚ÍƒŒƒxƒ‹%dAAOP‚ÍƒŒƒxƒ‹%dA
+	HOP‚ÍƒŒƒxƒ‹%dAVOP‚ÍƒŒƒxƒ‹%dANOP‚ÍƒŒƒxƒ‹%d‚É‘Š“–‚µ‚Ü‚·B
 
 CHAN_HELP_ACCESS_LEVELS
-	ƒ`ƒƒƒ“ƒlƒ‹‚ÌƒAƒNƒZƒXƒŒƒxƒ‹
+	ƒAƒNƒZƒXƒŒƒxƒ‹‚Æƒ`ƒƒƒ“ƒlƒ‹Œ ŒÀ
 	
-	Šù’è“I‚ÈƒŒƒxƒ‹‚ÍŽŸ‚Ì’Ê‚è‚Å‚·B
+	ƒfƒtƒHƒ‹ƒg‚Å‚ÍAƒAƒNƒZƒXƒŒƒxƒ‹‚Æƒ`ƒƒƒ“ƒlƒ‹Œ ŒÀ‚ÌŠÖŒW‚ÍˆÈ‰º‚Ì
+	’Ê‚è‚Å‚·B
 	
-	ƒtƒ@ƒEƒ“ƒ_[@@‘S‚Ä‚Ì%S‚ÌƒRƒ}ƒ“ƒh‚ðŽg‚¦‚é
-	@@@@@@@@ƒ`ƒƒƒ“ƒlƒ‹‚É“ü‚é‚ÆŽ©“®“I‚É+oƒ‚[ƒh
-	@@@10@@@@Ž©“®“I‚É+oƒ‚[ƒh
-	@@@@@@@@AKICK‚ÌƒRƒ}ƒ“ƒh‚àŽg‚¦‚é
-	       5@@@@Ž©“®“I‚É+oƒ‚[ƒh
-	       3@@@@Ž©“®“I‚É+vƒ‚[ƒh
-	       0@@@@“ÁŒ –³‚µ
-	@@@@@@@@ƒIƒyƒŒ[ƒ^[‚©‚ç+oƒ‚[ƒh‚ð“¾‚ç‚ê‚é
-	      -1ˆÈ‰º@@+oƒ‚[ƒh‚ð“¾‚ç‚ê‚È‚¢
+	‘nÝŽÒ   ‘S‚Ä‚Ì%SƒRƒ}ƒ“ƒh‚ðŽg‚¦‚éBŽ©“®ƒIƒyƒŒ[ƒ^Œ 
+	  %4d   AKICKƒRƒ}ƒ“ƒh‚ªŽg‚¦‚éBŽ©“®ƒIƒyƒŒ[ƒ^Œ 
+	  %4d   Ž©“®ƒIƒyƒŒ[ƒ^Œ 
+CHAN_HELP_ACCESS_LEVELS_HALFOP
+	  %4d   Ž©“®”¼ƒIƒyƒŒ[ƒ^Œ 
+CHAN_HELP_ACCESS_LEVELS_END
+	  %4d   Ž©“®”­Œ¾Œ 
+	     0   Œ ŒÀ‚È‚µBƒIƒyƒŒ[ƒ^Œ ‚Í‹–‰Â‚³‚ê‚éiSECUREOPS–³ŒøŽžj
+	    -1   ƒIƒyƒŒ[ƒ^Œ ‚Í‹–‰Â‚³‚ê‚È‚¢
+	  -100   ƒ`ƒƒƒ“ƒlƒ‹ŽQ‰Á‹ÖŽ~
 	
-	‚±‚ÌƒŒƒxƒ‹‚ð•Ï‚¦‚½‚èV‚µ‚¢ƒŒƒxƒ‹‚ð‚Â‚­‚Á‚½‚è‚·‚é‚±‚Æ‚ª
-	LEVELS‚ÌƒRƒ}ƒ“ƒh‚Åo—ˆ‚Ü‚·B
-
-CHAN_HELP_AKICK
-	ƒVƒ“ƒ^ƒNƒXFAKICK channel ADD mask [reason]
-	@@@@@@AKICK channel DEL mask
-	@@@@@@AKICK channel LIST [mask]
-	
-	uŽ©“®R•\viƒI[ƒgƒLƒbƒN•\j‚ð•ÏX‚Æ•\Ž¦‚ÌƒRƒ}ƒ“ƒh‚Å‚·B
-	Ž©“®R•\‚É‚ ‚éƒ†[ƒU[‚ªƒ`ƒƒƒ“ƒlƒ‹‚É“ü‚é‚ÆA%S‚Í‚»‚Ì
-	ƒ†[ƒU[‚ðR‚è’Ç•úƒ}ƒXƒN‚ð•t‚¯‚Ü‚·B
-	
-	AKICK ADD‚Æ‚¢‚¤Œ`‚ÅŽ©“®R•\‚Éƒ}ƒXƒN‚ÆƒjƒbƒN‚ð’Ç‰Á‚Å‚«‚Ü‚·B
-	ƒ}ƒXƒN‚È‚çAuser@host‚Æ‚¢‚¤Œ`‚Å“ü—Í‚µ‚Ä‰º‚³‚¢Breasoni——Rj
-	‚ÍƒLƒbƒNƒƒbƒZ[ƒW‚Å•\‚ê‚Ü‚·B——R‚ð“ü—Í‚µ‚È‚¢ê‡‚ÍAuYou
-	have been banned from the channelviƒ`ƒƒƒ“ƒlƒ‹‚©‚ç’Ç•ú‚³‚ê
-	‚Ü‚µ‚½j‚É‚È‚è‚Ü‚·B
-	
-	AKICK DEL‚Æ‚¢‚¤Œ`‚ÅŽ©“®R•\‚©‚çƒ}ƒXƒN‚ÆƒjƒbƒN‚ðÁ‹Ž‚Å‚«‚Ü
-	‚·B‚½‚¾‚µA’Ç•úƒ}ƒXƒN‚ªƒ`ƒƒƒ“ƒlƒ‹‚É•t‚¢‚Ä‚¢‚éê‡‚ÍA‚»‚Ì
-	ƒ}ƒXƒN‚ÍŽ©“®‚É‰ð‚©‚ê‚Ü‚¹‚ñB
-	
-	AKICK LIST‚Æ‚¢‚¤Œ`‚ÅŽ©“®R•\‚ðŒ©‚é‚±‚Æ‚ªo—ˆ‚Ü‚·Bƒ}ƒXƒN‚ð
-	“ü—Í‚·‚ê‚ÎA‚»‚Ìƒ}ƒXƒN‚É‡‚¤ƒGƒ“ƒgƒŠ[‚µ‚©•\‚ê‚Ü‚¹‚ñB
+	LEVELSƒRƒ}ƒ“ƒh‚ðŽg‚¦‚ÎAã‹L‚ÌƒŒƒxƒ‹iÅŒã‚Ì‚Q‚Â‚ðœ‚­j‚ð•Ï
+	X‚µ‚½‚èAV‚µ‚¢Œ ŒÀƒŒƒxƒ‹‚ðÝ’è‚µ‚½‚è‚Å‚«‚Ü‚·BÚ‚µ‚­‚Í
+	u/msg %S HELP LEVELSv‚ð“ü—Í‚µ‚Ä‚­‚¾‚³‚¢B
 
 CHAN_HELP_LEVELS
-	ƒVƒ“ƒ^ƒNƒXFLEVELS channel SET type level
-	@@@@@@LEVELS channel {DIS | DISABLE} type
-	@@@@@@LEVELS channel LIST
-	@@@@@@LEVELS channel RESET
+	—p–@FLEVELS ƒ`ƒƒƒ“ƒlƒ‹ SET Œ ŒÀ ƒŒƒxƒ‹
+	@@@LEVELS ƒ`ƒƒƒ“ƒlƒ‹ {DIS | DISABLE} Œ ŒÀ
+	@@@LEVELS ƒ`ƒƒƒ“ƒlƒ‹ LIST
+	@@@LEVELS ƒ`ƒƒƒ“ƒlƒ‹ RESET
 	
-	ƒ`ƒƒƒ“ƒlƒ‹‚ÌƒAƒNƒZƒXƒŒƒxƒ‹‚Ì”Ô†‚ÌˆÓ–¡‚ð•ÏX‚µ‚Ü‚·B‚±‚ÌƒR
-	ƒ}ƒ“ƒh‚Å%S‚ÌŽ©“®“I‚Èì—p‚Æ‚Ù‚Æ‚ñ‚Ç‚Ì%S‚ÌƒRƒ}ƒ“
-	ƒh‚ªŽg‚¦‚éƒŒƒxƒ‹‚Ì‚ðÝ’è‚Å‚«‚Ü‚·B‚½‚¾‚µASET FOUNDERESET
-	PASSWORDELEVELS‚ÌƒRƒ}ƒ“ƒh‚ÍAƒtƒ@ƒEƒ“ƒ_[‚µ‚©Žg‚¦‚Ü‚¹‚ñB
+	ƒ`ƒƒƒ“ƒlƒ‹‚ÌƒAƒNƒZƒXƒŒƒxƒ‹‚ÆŒ ŒÀ‚ÌŠÖŒW‚ð•ÏX‚µ‚Ü‚·B‚±‚ÌƒRƒ}
+	ƒ“ƒh‚ÅA%S‚Ì–w‚Ç‚Ì‹@”\‚É•K—v‚ÈƒŒƒxƒ‹‚ðÝ’è‚·‚é‚±‚Æ‚ª‚Å‚«‚Ü‚·B
+	i’A‚µASET FOUNDERESET PASSWORDELEVELS‚ÌŠeƒRƒ}ƒ“ƒh‚Í‘nÝ
+	ŽÒ‚µ‚©Žg‚¦‚Ü‚¹‚ñBjuŒ ŒÀv‚ÉŽg‚¦‚éŒ ŒÀ–¼‚ÍHELP LEVELS DESC
+	‚Å‚²——‚É‚È‚ê‚Ü‚·B
+CHAN_HELP_LEVELS_XOP
 	
-	LEVELS SET‚Æ‚¢‚¤Œ`‚Åì—p‚âƒRƒ}ƒ“ƒh‚ÌƒŒƒxƒ‹‚ð•ÏX‚Å‚«‚Ü‚·B
-	LEVELS DISABLE‚Æ‚¢‚¤Œ`i‚»‚ê‚ÆLEVELS DIS‚Æ‚¢‚¤È—ªj‚ÅŽ©“®
-	“I‚Èì—p‚ð’âŽ~‚·‚é‚±‚Æ‚ÆAƒRƒ}ƒ“ƒh‚ðƒtƒ@ƒEƒ“ƒ_[ˆÈŠO‚É‹Ö§
-	‚·‚é‚±‚Æ‚ªo—ˆ‚Ü‚·BLEVELS LIST‚Æ‚¢‚¤Œ`‚ÅŽ©“®“I‚Èì—p‚ÆƒRƒ}
-	ƒ“ƒh‚ÌƒŒƒxƒ‹‚ð•\Ž¦‚Å‚«‚Ü‚·BLEVELS RESET‚Æ‚¢‚¤Œ`‚ÅƒŒƒxƒ‹‚ð
-	Šù’è’l‚É–ß‚¹‚Ü‚·B
+	’ˆÓFŒ ŒÀ‚ÌƒAƒNƒZƒXƒŒƒxƒ‹‚ð•ÏX‚·‚é‚ÆASOP/AOP/VOP/NOPƒRƒ}
+	@@@ƒ“ƒh‚ª³‚µ‚­“®ì‚µ‚È‚­‚È‚éê‡‚ª‚ ‚è‚Ü‚·B
+CHAN_HELP_LEVELS_XOP_HOP
 	
-	typeiì—p‚Ì–¼‘Oj‚Ì‘I‘ð‚ðŒ©‚éê‡‚ÍAu/msg %S HELP
-	LEVELS DESCv‚ð“ü—Í‚µ‚Ä‰º‚³‚¢B
+	’ˆÓFŒ ŒÀ‚ÌƒAƒNƒZƒXƒŒƒxƒ‹‚ð•ÏX‚·‚é‚ÆASOP/AOP/HOP/VOP/NOP
+	@@@ƒRƒ}ƒ“ƒh‚ª³‚µ‚­“®ì‚µ‚È‚­‚È‚éê‡‚ª‚ ‚è‚Ü‚·B
+CHAN_HELP_LEVELS_END
+	
+	SETƒRƒ}ƒ“ƒh‚ÅA“Á’è‚Ìƒ`ƒƒƒ“ƒlƒ‹Œ ŒÀ‚ð“¾‚½‚èA“Á’è‚ÌƒRƒ}ƒ“ƒh
+	‚ðŽg—p‚·‚é‚Ì‚É•K—v‚ÈƒAƒNƒZƒXƒŒƒxƒ‹‚ðÝ’è‚Å‚«‚Ü‚·B
+	
+	DISABLEƒRƒ}ƒ“ƒhiÈ—ª‚ÌDIS‚à‰Âj‚ÅŒ ŒÀ‚ð–³Œø‚É‚·‚é‚±‚Æ‚ª‚Å‚«
+	‚Ü‚·BŽ©“®ƒIƒyƒŒ[ƒ^Œ ‚È‚Ç‚ÌŒ ŒÀ‚ð–³Œø‚É‚·‚é‚ÆAƒ`ƒƒƒ“ƒlƒ‹‘n
+	ÝŽÒ‚ðŠÜ‚ß‚Ç‚Ìƒ†[ƒU‚É‚à“K—p‚³‚ê‚Ü‚¹‚ñ‚ªAƒRƒ}ƒ“ƒhŒ ŒÀ‚ð–³Œø
+	‚É‚µ‚½ê‡‚ÍA‘nÝŽÒ‚ÉŒÀ‚Á‚Äˆø‚«‘±‚«ƒRƒ}ƒ“ƒh‚ðŽg‚¤‚±‚Æ‚ª‚Å‚«
+	‚Ü‚·B
+	
+	LISTƒRƒ}ƒ“ƒh‚ÅAŒ»Ý‚ÌŒ ŒÀƒŒƒxƒ‹‚ðŠm”F‚Å‚«‚Ü‚·B
+	
+	RESETƒRƒ}ƒ“ƒh‚ÅA‘S‚Ä‚ÌŒ ŒÀƒŒƒxƒ‹‚ð‰Šú’liƒfƒtƒHƒ‹ƒgj‚É–ß
+	‚·‚±‚Æ‚ª‚Å‚«‚Ü‚·B
 
 CHAN_HELP_LEVELS_DESC
-	LEVELS‚Ìì—p‚ÆƒRƒ}ƒ“ƒh‚Ì–¼‘O‚ÍŽŸ‚Ì’Ê‚è‚Å‚·B
-	’ˆÓFAUTODEOP‚ÆNOJOIN‚ÍÅ‘å’l‚ÅA‘¼‚Ì‚ÍÅ¬’l‚Å‚·B
+	LEVELSƒRƒ}ƒ“ƒh‚ÅŽg‚¤Œ ŒÀ–¼‚ÍˆÈ‰º‚Ì’Ê‚è‚Å‚·B
 
-CHAN_HELP_LEVELS_DESC_FORMAT
-	    %-*s  %s
+CHAN_HELP_AKICK
+	—p–@FAKICK ƒ`ƒƒƒ“ƒlƒ‹ ADD ƒ}ƒXƒN [——R]
+	@@@AKICK ƒ`ƒƒƒ“ƒlƒ‹ DEL ƒ}ƒXƒN
+	@@@AKICK ƒ`ƒƒƒ“ƒlƒ‹ LIST [ŠJŽnˆÊ’u] [ƒpƒ^[ƒ“]
+	@@@AKICK ƒ`ƒƒƒ“ƒlƒ‹ VIEW [ŠJŽnˆÊ’u] [ƒpƒ^[ƒ“]
+	@@@AKICK ƒ`ƒƒƒ“ƒlƒ‹ COUNT
+	@@@AKICK ƒ`ƒƒƒ“ƒlƒ‹ ENFORCE
+	
+	ƒ`ƒƒƒ“ƒlƒ‹‚ÌŽ©“®ƒLƒbƒNƒŠƒXƒg‚ð•ÒW‚Ü‚½‚Í•\Ž¦‚µ‚Ü‚·B‚±‚ÌƒŠƒX
+	ƒg‚É“o˜^‚³‚ê‚½ƒ†[ƒU‚ªƒ`ƒƒƒ“ƒlƒ‹‚É“ü‚é‚ÆA%S‚Í‚»‚Ìƒ†[
+	ƒU‚É‘Î‚µ‚Ä’Ç•úi+bjƒ}ƒXƒN‚ðƒ`ƒƒƒ“ƒlƒ‹‚É’Ç‰Á‚µAƒ†[ƒU‚ð‹­§
+	“I‚Éƒ`ƒƒƒ“ƒlƒ‹‚©‚ç”rœiƒLƒbƒNj‚µ‚Ü‚·B
+	
+	ADDƒRƒ}ƒ“ƒh‚ÍŽw’è‚³‚ê‚½ƒ}ƒXƒNiuƒ†[ƒU–¼@ƒzƒXƒg–¼v‚Ü‚½‚Í
+	uƒjƒbƒN!ƒ†[ƒU–¼@ƒzƒXƒg–¼vŒ`Ž®j‚ðŽ©“®ƒLƒbƒNƒŠƒXƒg‚É’Ç‰Á‚µ‚Ü
+	‚·B——R‚ðŽw’è‚µ‚½ê‡‚ÍAƒ†[ƒU‚ªƒLƒbƒN‚³‚ê‚éŽž‚ÉƒLƒbƒNƒƒb
+	ƒZ[ƒW‚Ì’†‚Å•\Ž¦‚³‚ê‚Ü‚·B
+	
+	DELƒRƒ}ƒ“ƒh‚ÍŽw’è‚³‚ê‚½ƒ}ƒXƒN‚ðŽ©“®ƒLƒbƒNƒŠƒXƒg‚©‚çÁ‹Ž‚µ‚Ü
+	‚·B‚½‚¾AŽ©“®ƒLƒbƒN‚É‚æ‚èÝ’è‚³‚ê‚½ƒ`ƒƒƒ“ƒlƒ‹’Ç•úƒ}ƒXƒN‚Í‰ð
+	œ‚³‚ê‚Ü‚¹‚ñ‚Ì‚ÅŽè“®‚Å‰ðœ‚µ‚Ä‚­‚¾‚³‚¢B
+	
+	LIST‚ÆVIEWƒRƒ}ƒ“ƒh‚ÍŽ©“®ƒLƒbƒNƒŠƒXƒg‚ð•\Ž¦‚µ‚Ü‚·BACCESSƒRƒ}
+	ƒ“ƒh“¯—lAŒŸõƒpƒ^[ƒ“‚âŠJŽnˆÊ’u‚ðŽw’è‚µ‚ÄŒ‹‰Ê‚ði‚èž‚Þ‚±‚Æ
+	‚à‚Å‚«‚Ü‚·BLIST‚ÆVIEW‚Ìˆá‚¢‚ÍAVIEW‚Ì•û‚ª‚æ‚èÚ×‚Èî•ñ‚ð•\
+	Ž¦‚·‚é‚±‚Æ‚Å‚·B
+	
+	COUNTƒRƒ}ƒ“ƒh‚ÍAŽ©“®ƒLƒbƒNƒŠƒXƒg‚ÌƒGƒ“ƒgƒŠ”‚ð•\Ž¦‚µ‚Ü‚·B
+	
+	ENFORCEƒRƒ}ƒ“ƒh‚ÍAŒ»Ýƒ`ƒƒƒ“ƒlƒ‹‚ÉŽQ‰Á‚µ‚Ä‚¢‚éƒ†[ƒU‚ðŽ©“®
+	ƒLƒbƒNƒŠƒXƒg‚ÉÆ‚ç‚µ‡‚í‚¹AƒLƒbƒN‚·‚×‚«ƒ†[ƒU‚ðƒLƒbƒN‚µ‚Ü‚·B
+	‚·‚Å‚ÉŽQ‰Á‚µ‚Ä‚¢‚éƒ†[ƒU‚ðŽ©“®ƒLƒbƒNƒŠƒXƒg‚É’Ç‰Á‚µ‚½Žž‚É•Ö—˜
+	‚Å‚·B
+	
+	‚±‚ÌƒRƒ}ƒ“ƒh‚ÌŽg—p‚ÍAƒfƒtƒHƒ‹ƒg‚Å‚Í%sˆÈã‚ÌƒAƒN
+	ƒZƒX‚ðŽ‚Âƒ†[ƒU‚É§ŒÀ‚³‚ê‚Ä‚¢‚Ü‚·B
 
 CHAN_HELP_INFO
-	ƒVƒ“ƒ^ƒNƒXFINFO channel
+	—p–@FINFO ƒ`ƒƒƒ“ƒlƒ‹ [ALL]
 	
-	ƒ`ƒƒƒ“ƒlƒ‹‚Ìî•ñiƒtƒ@ƒEƒ“ƒ_[A–¼óA“o˜^‚Ì“úŽžAƒ‚[ƒh
-	ƒƒbƒN“™j‚ð•\‚µ‚Ü‚·B
+	ƒ`ƒƒƒ“ƒlƒ‹‚Ìî•ñi‘nÝŽÒAà–¾A“o˜^‚³‚ê‚½“úŽžAÝ’è‚È‚Çj‚ð
+	•\Ž¦‚µ‚Ü‚·B‘nÝŽÒ‚Å‚ ‚èA‚Ü‚½‚ÍƒpƒXƒ[ƒh”FØ‚ðs‚Á‚½ƒ`ƒƒƒ“
+	ƒlƒ‹‚É‚Â‚¢‚Ä‚ÍAuALLv‚ð’Ç‰Á‚·‚ê‚ÎŽQ‰ÁŽžƒƒbƒZ[ƒW‚ÆŒãŒpŽÒ
+	‚à•\Ž¦‚³‚ê‚Ü‚·B
 
 CHAN_HELP_LIST
-	ƒVƒ“ƒ^ƒNƒXFLIST pattern
+	—p–@FLIST [ŠJŽnˆÊ’u] ƒpƒ^[ƒ“
 	
-	pattern‚É‡‚¤ƒ`ƒƒƒ“ƒlƒ‹‚ð•\‚µ‚Ü‚·B‚½‚¾‚µAŽ„“IƒIƒvƒVƒ‡ƒ“
-	‚ª ON ‚Ìƒ`ƒƒƒ“ƒlƒ‹‚Í•\‚ê‚Ü‚¹‚ñB
+	ƒpƒ^[ƒ“‚Éˆê’v‚·‚éƒ`ƒƒƒ“ƒlƒ‹‚Ìˆê——‚ð•\Ž¦‚µ‚Ü‚·B’A‚µAƒvƒ‰ƒC
+	ƒx[ƒgÝ’è‚ª—LŒø‚É‚È‚Á‚Ä‚¢‚éƒ`ƒƒƒ“ƒlƒ‹‚Í•\Ž¦‚³‚ê‚Ü‚¹‚ñBŠJŽn
+	ˆÊ’u‚ÅAÅ‰‚É•\Ž¦‚·‚éƒŒƒR[ƒh‚ðŽw’è‚Å‚«‚Ü‚·i—á‚¦‚ÎAu+50v
+	‚ðŽw’è‚·‚é‚ÆÅ‰‚Ì50ŒÂ‚ÌŠY“–ƒŒƒR[ƒh‚ð”ò‚Î‚µA51ŒÂ–Ú‚©‚ç•\Ž¦
+	‚µ‚Ü‚·jB
+CHAN_HELP_LIST_OPERSONLY
+	
+	‚±‚ÌƒRƒ}ƒ“ƒh‚ÌŽg—p‚ÍIRCƒIƒyƒŒ[ƒ^‚É§ŒÀ‚³‚ê‚Ä‚¢‚Ü‚·B
 
 CHAN_HELP_OP
-	ƒVƒ“ƒ^ƒNƒXFOP #channel nick
+	—p–@FOP ƒ`ƒƒƒ“ƒlƒ‹ [ƒjƒbƒN]
 	
-	ƒ`ƒƒƒ“ƒlƒ‹‚Ìƒ†[ƒU[‚ÉƒIƒyƒŒ[ƒ^[‚É‚µ‚Ü‚·BŽg—p‚ÍŠù’è“I‚É
-	ƒŒƒxƒ‹5ˆÈã‚ÉŒÀ‚Á‚Ä‚¢‚Ü‚·B
+	ƒ`ƒƒƒ“ƒlƒ‹‚Ìƒ†[ƒU‚ÉƒIƒyƒŒ[ƒ^Œ ‚ð—^‚¦‚Ü‚·BƒjƒbƒN‚ðŽw’è‚µ‚È
+	‚¢ê‡‚ÍAƒRƒ}ƒ“ƒhŽg—pŽÒ‚ª‘ÎÛ‚Æ‚È‚è‚Ü‚·BŽg—p‚ÍƒfƒtƒHƒ‹ƒg‚Å
+	%sˆÈã‚ÌŒ ŒÀ‚ðŽ‚Âƒ†[ƒU‚É§ŒÀ‚³‚ê‚Ä‚¢‚Ü‚·B
 
 CHAN_HELP_DEOP
-	ƒVƒ“ƒ^ƒNƒXFDEOP #channel nick
+	—p–@FDEOP ƒ`ƒƒƒ“ƒlƒ‹ [ƒjƒbƒN]
 	
-	ƒ`ƒƒƒ“ƒlƒ‹‚Ìƒ†[ƒU[‚ð-oƒ‚[ƒh‚É‚µ‚Ü‚·BŽg—p‚ÍŠù’è“I‚ÉƒŒƒx
-	ƒ‹5ˆÈã‚ÉŒÀ‚Á‚Ä‚¢‚Ü‚·B
+	ƒ`ƒƒƒ“ƒlƒ‹‚Ìƒ†[ƒU‚ÌƒIƒyƒŒ[ƒ^Œ ‚ð‰ðœ‚µ‚Ü‚·BƒjƒbƒN‚ðŽw’è‚µ
+	‚È‚¢ê‡‚ÍAƒRƒ}ƒ“ƒhŽg—pŽÒ‚ª‘ÎÛ‚Æ‚È‚è‚Ü‚·BŽg—p‚ÍƒfƒtƒHƒ‹ƒg
+	‚Å%sˆÈã‚ÌŒ ŒÀ‚ðŽ‚Âƒ†[ƒU‚É§ŒÀ‚³‚ê‚Ä‚¢‚Ü‚·B
+
+CHAN_HELP_VOICE
+	—p–@FVOICE ƒ`ƒƒƒ“ƒlƒ‹ [ƒjƒbƒN]
+	
+	ƒ`ƒƒƒ“ƒlƒ‹‚Ìƒ†[ƒU‚É”­Œ¾Œ ‚ð—^‚¦‚Ü‚·BƒjƒbƒN‚ðŽw’è‚µ‚È‚¢ê‡
+	‚ÍAƒRƒ}ƒ“ƒhŽg—pŽÒ‚ª‘ÎÛ‚Æ‚È‚è‚Ü‚·BŽg—p‚ÍƒfƒtƒHƒ‹ƒg‚Å
+	%sˆÈã‚ÌŒ ŒÀ‚ðŽ‚Âƒ†[ƒU‚É§ŒÀ‚³‚ê‚Ä‚¢‚Ü‚·B
+
+CHAN_HELP_DEVOICE
+	—p–@FDEVOICE ƒ`ƒƒƒ“ƒlƒ‹ [ƒjƒbƒN]
+	
+	ƒ`ƒƒƒ“ƒlƒ‹‚Ìƒ†[ƒU‚Ì”­Œ¾Œ ‚ð‰ðœ‚µ‚Ü‚·BƒjƒbƒN‚ðŽw’è‚µ‚È‚¢ê
+	‡‚ÍAƒRƒ}ƒ“ƒhŽg—pŽÒ‚ª‘ÎÛ‚Æ‚È‚è‚Ü‚·BŽg—p‚ÍƒfƒtƒHƒ‹ƒg‚Å
+	%sˆÈã‚ÌŒ ŒÀ‚ðŽ‚Âƒ†[ƒU‚É§ŒÀ‚³‚ê‚Ä‚¢‚Ü‚·B
+
+CHAN_HELP_HALFOP
+	—p–@FHALFOP ƒ`ƒƒƒ“ƒlƒ‹ [ƒjƒbƒN]
+	
+	ƒ`ƒƒƒ“ƒlƒ‹‚Ìƒ†[ƒU‚É”¼ƒIƒyƒŒ[ƒ^Œ ‚ð—^‚¦‚Ü‚·BƒjƒbƒN‚ðŽw’è‚µ
+	‚È‚¢ê‡‚ÍAƒRƒ}ƒ“ƒhŽg—pŽÒ‚ª‘ÎÛ‚Æ‚È‚è‚Ü‚·BŽg—p‚ÍƒfƒtƒHƒ‹ƒg
+	‚Å%sˆÈã‚ÌŒ ŒÀ‚ðŽ‚Âƒ†[ƒU‚É§ŒÀ‚³‚ê‚Ä‚¢‚Ü‚·B
+
+CHAN_HELP_DEHALFOP
+	—p–@FDEHALFOP ƒ`ƒƒƒ“ƒlƒ‹ [ƒjƒbƒN]
+	
+	ƒ`ƒƒƒ“ƒlƒ‹‚Ìƒ†[ƒU‚Ì”¼ƒIƒyƒŒ[ƒ^Œ ‚ð‰ðœ‚µ‚Ü‚·BƒjƒbƒN‚ðŽw’è
+	‚µ‚È‚¢ê‡‚ÍAƒRƒ}ƒ“ƒhŽg—pŽÒ‚ª‘ÎÛ‚Æ‚È‚è‚Ü‚·BŽg—p‚ÍƒfƒtƒHƒ‹
+	ƒg‚Å%sˆÈã‚ÌŒ ŒÀ‚ðŽ‚Âƒ†[ƒU‚É§ŒÀ‚³‚ê‚Ä‚¢‚Ü‚·B
+
+CHAN_HELP_PROTECT
+	—p–@FPROTECT ƒ`ƒƒƒ“ƒlƒ‹ [ƒjƒbƒN]
+	
+	ƒ`ƒƒƒ“ƒlƒ‹‚Ìƒ†[ƒU‚ðƒvƒƒeƒNƒgó‘Ô‚É‚µ‚Ü‚·BƒjƒbƒN‚ðŽw’è‚µ‚È
+	‚¢ê‡‚ÍAƒRƒ}ƒ“ƒhŽg—pŽÒ‚ª‘ÎÛ‚Æ‚È‚è‚Ü‚·BŽg—p‚ÍƒfƒtƒHƒ‹ƒg‚Å
+	%sˆÈã‚ÌŒ ŒÀ‚ðŽ‚Âƒ†[ƒU‚É§ŒÀ‚³‚ê‚Ä‚¢‚Ü‚·B
+
+CHAN_HELP_DEPROTECT
+	—p–@FDEPROTECT ƒ`ƒƒƒ“ƒlƒ‹ [ƒjƒbƒN]
+	
+	ƒ`ƒƒƒ“ƒlƒ‹‚Ìƒ†[ƒU‚ð”ñƒvƒƒeƒNƒgó‘Ô‚É‚µ‚Ü‚·BƒjƒbƒN‚ðŽw’è‚µ
+	‚È‚¢ê‡‚ÍAƒRƒ}ƒ“ƒhŽg—pŽÒ‚ª‘ÎÛ‚Æ‚È‚è‚Ü‚·BŽg—p‚ÍƒfƒtƒHƒ‹ƒg
+	‚Å%sˆÈã‚ÌŒ ŒÀ‚ðŽ‚Âƒ†[ƒU‚É§ŒÀ‚³‚ê‚Ä‚¢‚Ü‚·B
 
 CHAN_HELP_INVITE
-	ƒVƒ“ƒ^ƒNƒXFINVITE channel
+	—p–@FINVITE ƒ`ƒƒƒ“ƒlƒ‹
 	
-	%S‚ÉŽ©•ª‚ð—U‚í‚¹‚Ü‚·BŽg—p‚ÍŠù’è“I‚ÉƒŒƒxƒ‹1ˆÈã‚ÉŒÀ‚Á
-	‚Ä‚¢‚Ü‚·B
+	Žw’è‚³‚ê‚½ƒ`ƒƒƒ“ƒlƒ‹‚ÉA%S‚ÉŽ©•ª‚ð—U‚í‚¹‚Ü‚·BŽg—p‚ÍƒfƒtƒHƒ‹
+	ƒg‚Å%sˆÈã‚ÌŒ ŒÀ‚ðŽ‚Âƒ†[ƒU‚É§ŒÀ‚³‚ê‚Ä‚¢‚Ü‚·B
+	
+	’ˆÓFuƒ`ƒƒƒ“ƒlƒ‹‚ªŽg—p‚³‚ê‚Ä‚¢‚È‚¢v‚Æ‚Ì‰ž“š‚ª•Ô‚Á‚Ä‚­‚éê
+	@@@‡‚ÍA‚±‚ÌƒRƒ}ƒ“ƒh‚ðŽg‚í‚¸A‚»‚Ì‚Ü‚Üƒ`ƒƒƒ“ƒlƒ‹‚ÉŽQ‰Á‚Å
+	@@@‚«‚Ü‚·B
 
 CHAN_HELP_UNBAN
-	ƒVƒ“ƒ^ƒNƒXFUNBAN channel
+	—p–@FUNBAN ƒ`ƒƒƒ“ƒlƒ‹
 	
-	Œ»Ý‚Ìƒ†[ƒU[ƒAƒhƒŒƒX‚É‡‚¤’Ç•úƒ}ƒXƒN‚ð‰ð‚«‚Ü‚·BŽg—p‚ÍŠù
-	’è“I‚ÉƒŒƒxƒ‹1ˆÈã‚ÉŒÀ‚Á‚Ä‚¢‚Ü‚·B
+	‚ ‚È‚½‚ÌŒ»Ý‚Ìƒ†[ƒUƒAƒhƒŒƒX‚ªˆê’v‚·‚éƒ`ƒƒƒ“ƒlƒ‹‚Ì’Ç•úƒ}ƒXƒN
+	‚ð‰ðœ‚µAƒ`ƒƒƒ“ƒlƒ‹‚ÉŽQ‰Á‚Å‚«‚é‚æ‚¤‚É‚µ‚Ü‚·BŽg—p‚ÍƒfƒtƒHƒ‹
+	ƒg‚Å%sˆÈã‚ÌŒ ŒÀ‚ðŽ‚Âƒ†[ƒU‚É§ŒÀ‚³‚ê‚Ä‚¢‚Ü‚·B
+
+CHAN_HELP_KICK
+	—p–@FKICK ƒ`ƒƒƒ“ƒlƒ‹ ƒjƒbƒN [——R]
+	
+	%S‚ÉAŽw’è‚³‚ê‚½ƒjƒbƒN‚ðŽw’è‚³‚ê‚½ƒ`ƒƒƒ“ƒlƒ‹‚©‚çƒLƒbƒN
+	‚³‚¹‚Ü‚·BƒLƒbƒNƒƒbƒZ[ƒW‚É‚ÍAKICKƒRƒ}ƒ“ƒh‚ð—˜—p‚µ‚½l‚ÆA
+	Žw’è‚³‚ê‚½ê‡‚Í——R‚à•\Ž¦‚³‚ê‚Ü‚·BŽg—p‚ÍƒfƒtƒHƒ‹ƒg‚Å
+	%sˆÈã‚ÌŒ ŒÀ‚ðŽ‚Âƒ†[ƒU‚É§ŒÀ‚³‚ê‚Ä‚¢‚Ü‚·B
+CHAN_HELP_KICK_PROTECTED
+	
+	ƒvƒƒeƒNƒgó‘Ô‚Ìƒ†[ƒU‚ÍA‰¼‚ÉŽg—pŽÒ‚ªƒ`ƒƒƒ“ƒlƒ‹‘n—§ŽÒ‚Å‚àA
+	‚±‚ÌƒRƒ}ƒ“ƒh‚Å‚ÍƒLƒbƒN‚Å‚«‚Ü‚¹‚ñB
+
+CHAN_HELP_TOPIC
+	—p–@FTOPIC ƒ`ƒƒƒ“ƒlƒ‹ topic
+	
+	%S‚Éƒ`ƒƒƒ“ƒlƒ‹‚ÌƒgƒsƒbƒN‚ð•ÏX‚³‚¹‚Ü‚·BTOPICLOCKiƒgƒsƒbƒN
+	•ÏX‹ÖŽ~jÝ’è‚Æˆê‚ÉŽg‚¤‚Æ“Á‚É•Ö—˜‚Å‚·BŽg—p‚ÍƒfƒtƒHƒ‹ƒg‚Å
+	%sˆÈã‚ÌŒ ŒÀ‚ðŽ‚Âƒ†[ƒU‚É§ŒÀ‚³‚ê‚Ä‚¢‚Ü‚·B
 
 CHAN_HELP_CLEAR
-	ƒVƒ“ƒ^ƒNƒXFCLEAR channel what
+	—p–@FCLEAR ƒ`ƒƒƒ“ƒlƒ‹ €–Ú
 	
-	ƒ`ƒƒƒ“ƒlƒ‹‚Ì‚ ‚éƒ‚[ƒh‚ðƒNƒŠƒA‚µ‚½‚èAƒ†[ƒU[‚ð‘S‚ÄR‚Á‚½
-	‚è‚µ‚Ü‚·Bwhat‚Ì‘I‘ð‚ÍŽŸ‚Ì’Ê‚è‚Å‚·B
+	ƒ`ƒƒƒ“ƒlƒ‹‚Ìƒ‚[ƒh‚ðƒNƒŠƒA‚µ‚½‚èAƒ†[ƒU‚ð‘S‚ÄƒLƒbƒN‚µ‚½‚è‚µ
+	‚Ü‚·Bu€–Úv‚É‚ÍˆÈ‰º‚Ì‚à‚Ì‚ªŽg‚¦‚Ü‚·B
 	
-	     modes   ƒ`ƒƒƒ“ƒlƒ‹‚Ì“üØƒ‚[ƒhiiEkElEmEnEpEsEtj
-	             @@‚ðƒNƒŠƒA‚·‚é
-	     bans    ’Ç•úƒ}ƒXƒN‚ð‘S‚Ä‰ð‚­
-	     ops     ‘S‚Ä‚Ìƒ†[ƒU[‚©‚ç+oƒ‚[ƒh‚ðƒNƒŠƒA‚·‚é
-	     voices  ‘S‚Ä‚Ìƒ†[ƒU[‚©‚ç+vƒ‚[ƒh‚ðƒNƒŠƒA‚·‚é
-	     users   ‘S‚Ä‚Ìƒ†[ƒU[‚ðƒ`ƒƒƒ“ƒlƒ‹‚©‚çR‚é
+	    MODES       ƒ`ƒƒƒ“ƒlƒ‹‚ÌƒoƒCƒiƒŠƒ‚[ƒhim,n,p,s,t“™j‚ð
+	            @@    ƒ‚[ƒhƒƒbƒNó‘Ô‚É–ß‚·
+	    BANS        ’Ç•úƒ}ƒXƒN‚ð‘S‚Ä‰ðœ‚·‚é
+CHAN_HELP_CLEAR_EXCEPTIONS
+	    EXCEPTIONS  ’Ç•ú—áŠOƒ}ƒXƒN‚ð‘S‚Ä‰ðœ‚·‚é
+CHAN_HELP_CLEAR_INVITES
+	    INVITES     —U‚¢iinvitejƒ}ƒXƒN‚ð‘S‚Ä‰ðœ‚·‚é
+CHAN_HELP_CLEAR_MID
+	    OPS         ‘S‚Ä‚Ìƒ†[ƒU‚ÌƒIƒyƒŒ[ƒ^Œ ‚ð‰ðœ‚·‚é
+CHAN_HELP_CLEAR_HALFOPS
+	    HALFOPS     ‘S‚Ä‚Ìƒ†[ƒU‚Ì”¼ƒIƒyƒŒ[ƒ^Œ ‚ð‰ðœ‚·‚é
+CHAN_HELP_CLEAR_END
+	    VOICES      ‘S‚Ä‚Ìƒ†[ƒU‚Ì”­Œ¾Œ ‚ð‰ðœ‚·‚é
+	    USERS       ‘S‚Ä‚Ìƒ†[ƒU‚ðƒ`ƒƒƒ“ƒlƒ‹‚©‚çƒLƒbƒN‚·‚é
 	
-	Žg—p‚ÍŠù’è“I‚ÉƒŒƒxƒ‹ 10 ˆÈã‚ÉŒÀ‚Á‚Ä‚¢‚Ü‚·B
+	Žg—p‚ÍƒfƒtƒHƒ‹ƒg‚Å%sˆÈã‚ÌŒ ŒÀ‚ðŽ‚Âƒ†[ƒU‚É§ŒÀ‚³‚ê‚Ä‚¢‚Ü‚·B
 
-CHAN_SERVADMIN_HELP
+CHAN_HELP_STATUS
+	—p–@FSTATUS ƒ`ƒƒƒ“ƒlƒ‹ ƒjƒbƒN
 	
-	Services‚ÌƒAƒhƒ~ƒ“‚ÍŽŸ‚ÌƒRƒ}ƒ“ƒh‚àŽg‚¦‚Ü‚·B
+	Žw’è‚³‚ê‚½ƒjƒbƒN‚ÌAŽw’è‚³‚ê‚½ƒ`ƒƒƒ“ƒlƒ‹‚Å‚ÌŒ»Ý‚ÌƒAƒNƒZƒXƒŒ
+	ƒxƒ‹‚ð•\Ž¦‚µ‚Ü‚·BŒ‹‰Ê‚ÌŒ`Ž®‚Í‰º‹L‚Ì’Ê‚è‚Å‚·B
 	
-	    GETPASS    ƒ`ƒƒƒ“ƒlƒ‹‚ÌƒpƒXƒ[ƒh‚ðŒ©‚é
+	    STATUS ƒ`ƒƒƒ“ƒlƒ‹ ƒjƒbƒN ƒŒƒxƒ‹
+	
+	ƒGƒ‰[‚ª¶‚¶‚½ê‡‚ÍAuƒŒƒxƒ‹v‚Ì•Ï‚í‚è‚ÉuERROR ƒƒbƒZ[ƒWv
+	‚ª•\Ž¦‚³‚ê‚Ü‚·B
+	
+	Žg—p‚ÍƒfƒtƒHƒ‹ƒg‚Å%sˆÈã‚ÌŒ ŒÀ‚ðŽ‚Âƒ†[ƒU‚É§ŒÀ‚³‚ê‚Ä‚¢‚Ü‚·B
+
+CHAN_OPER_HELP_COMMANDS
+	
+	ServicesƒAƒhƒ~ƒ“‚ÍŽŸ‚ÌƒRƒ}ƒ“ƒh‚àŽg‚¦‚Ü‚·B
+	
+	    DROPCHAN   ”CˆÓ‚Ìƒ`ƒƒƒ“ƒlƒ‹‚Ì“o˜^‚ð‰ðœ‚·‚é
+CHAN_OPER_HELP_COMMANDS_GETPASS
+	    GETPASS    ƒ`ƒƒƒ“ƒlƒ‹‚ÌƒpƒXƒ[ƒh‚ð•\Ž¦‚·‚é
 	               @@iˆÃ†‰»‚ªŽg‚í‚ê‚Ä‚¢‚È‚¢ê‡‚Ì‚Ýj
-	    FORBID     ƒ`ƒƒƒ“ƒlƒ‹‚ðŽg—p•s‰Â”\‚É‚·‚é
-	    STATUS     ƒ†[ƒU[‚Ìƒ`ƒƒƒ“ƒlƒ‹‚Å‚ÌƒAƒNƒZƒXƒŒƒxƒ‹
+CHAN_OPER_HELP_COMMANDS_FORBID
+	    FORBID     ƒ`ƒƒƒ“ƒlƒ‹‚ðŽg—p‹ÖŽ~‚É‚·‚é
+	    SUSPEND    ƒ`ƒƒƒ“ƒlƒ‹‚ðŽg—p’âŽ~‚É‚·‚é
+	    UNSUSPEND  ƒ`ƒƒƒ“ƒlƒ‹‚ÌŽg—p’âŽ~‚ð‰ðœ‚·‚é
+CHAN_OPER_HELP_COMMANDS_END
 	
-	‚È‚¨AServices‚ÌƒAƒhƒ~ƒ“‚ÍƒpƒXƒ[ƒh‚ð“ü—Í‚¹‚¸‚Éƒ`ƒƒƒ“ƒlƒ‹
-	‚Ì“o˜^‚ðÁ‹Ž‚·‚é‚±‚Æ‚àAƒAƒNƒZƒX•\EŽ©“®R•\EƒŒƒxƒ‹•\‚ðŒ©
-	‚é‚±‚Æ‚ào—ˆ‚Ü‚·B
+	‚È‚¨AServicesƒAƒhƒ~ƒ“‚Í”CˆÓ‚Ìƒ`ƒƒƒ“ƒlƒ‹‚É‘Î‚µ‚ÄAƒpƒXƒ[ƒh
+	”FØ‚ðs‚í‚¸‚ÉAƒAƒNƒZƒXƒŠƒXƒg‚âŽ©“®ƒLƒbƒNƒŠƒXƒg‚Ì•\Ž¦‚Æ
+	STATUSƒRƒ}ƒ“ƒh‚ÌŽg—p‚ª‚Å‚«‚Ü‚·B
 
-CHAN_SERVADMIN_HELP_DROP
-	ƒVƒ“ƒ^ƒNƒXFDROP channel
+CHAN_OPER_HELP_DROPCHAN
+	—p–@FDROPCHAN ƒ`ƒƒƒ“ƒlƒ‹
 	
-	channel‚Æ‚¢‚¤ƒ`ƒƒƒ“ƒlƒ‹‚ð%S‚Ìƒf[ƒ^ƒx[ƒX‚©‚çÁ‹Ž‚µ‚Ü‚·B
-	‚±‚ÌƒRƒ}ƒ“ƒh‚ÌŽg—p‚Íƒtƒ@ƒEƒ“ƒ_[‚ÆServices‚ÌƒAƒhƒ~ƒ“‚É
-	ŒÀ‚Á‚Ä‚¢‚ÄAServices‚ÌƒAƒhƒ~ƒ“‚Å‚È‚¯‚ê‚ÎƒpƒXƒ[ƒh‚ð“ü—Í‚·
-	‚é•K—v‚à‚ ‚è‚Ü‚·B
+	Žw’è‚³‚ê‚½ƒ`ƒƒƒ“ƒlƒ‹‚Ì“o˜^‚ð‰ðœ‚µ‚Ü‚·B
+	
+	‚±‚ÌƒRƒ}ƒ“ƒh‚ÌŽg—p‚ÍServicesƒAƒhƒ~ƒ“‚É§ŒÀ‚³‚ê‚Ä‚¢‚Ü‚·B
 
-CHAN_SERVADMIN_HELP_SET
+CHAN_OPER_HELP_SET
 	
-	Services‚ÌƒAƒhƒ~ƒ“‚ÍNOEXPIRE‚Æ‚¢‚¤ƒIƒvƒVƒ‡ƒ“‚ðÝ’è‚Å‚«‚Ü‚·B
-	‚±‚ÌƒIƒvƒVƒ‡ƒ“‚Åƒ`ƒƒƒ“ƒlƒ‹‚Ì“o˜^‚ðØ‚ê‚È‚­‚·‚é‚±‚Æ‚ªo—ˆ‚Ü
-	‚·B‚È‚¨AServices‚ÌƒAƒhƒ~ƒ“‚ÍƒpƒXƒ[ƒh‚ð“ü—Í‚¹‚¸‚Éƒ`ƒƒƒ“
-	ƒlƒ‹‚ÌƒIƒvƒVƒ‡ƒ“‚ðÝ’è‚Å‚«‚Ü‚·B
+	ServicesƒAƒhƒ~ƒ“‚ÍANOEXPIREiŽ©“®“o˜^‰ðœ‚Ì—L–³jÝ’è‚ð•ÏX
+	‚µ‚½‚èA‚»‚Ì‚½‚ÌÝ’è‚ðƒpƒXƒ[ƒh”FØ‚ðs‚í‚¸‚É•ÏX‚Å‚«‚Ü‚·B
 
-CHAN_SERVADMIN_HELP_SET_NOEXPIRE
-	ƒVƒ“ƒ^ƒNƒXFSET channel NOEXPIRE {ON | OFF}
+CHAN_OPER_HELP_SET_NOEXPIRE
+	—p–@FSET ƒ`ƒƒƒ“ƒlƒ‹ NOEXPIRE {ON | OFF}
 	
-	channel‚Æ‚¢‚¤ƒ`ƒƒƒ“ƒlƒ‹‚Ì“o˜^‚ÍØ‚ê‚é‚©‚ðÝ’è‚µ‚Ü‚·BON‚É‚·
-	‚é‚ÆA“o˜^‚ÍØ‚ê‚Ü‚¹‚ñB
+	Žw’è‚³‚ê‚½ƒ`ƒƒƒ“ƒlƒ‹‚Ì“o˜^‚ªŽ©“®“I‚É‰ðœ‚³‚ê‚é‚©‚Ç‚¤‚©‚ðÝ’è
+	‚µ‚Ü‚·B
 	
-	‚±‚ÌƒRƒ}ƒ“ƒh‚ÌŽg—p‚ÍServices‚ÌƒAƒhƒ~ƒ“‚ÉŒÀ‚Á‚Ä‚¢‚Ü‚·B
+	‚±‚ÌƒRƒ}ƒ“ƒh‚ÌŽg—p‚ÍServicesƒAƒhƒ~ƒ“‚É§ŒÀ‚³‚ê‚Ä‚¢‚Ü‚·B
 
-CHAN_SERVADMIN_HELP_LIST
-	ƒVƒ“ƒ^ƒNƒXFLIST pattern
+CHAN_OPER_HELP_UNSET
 	
-	pattern‚É‡‚¤ƒ`ƒƒƒ“ƒlƒ‹‚ð•\‚µ‚Ü‚·B‚½‚¾‚µAŽ„“IƒIƒvƒVƒ‡ƒ“
-	‚ð“ü‚µ‚½ƒ`ƒƒƒ“ƒlƒ‹‚ÍServices‚ÌƒAƒhƒ~ƒ“‚É‚µ‚©•\‚ê‚Ü‚¹‚ñB
+	SETƒRƒ}ƒ“ƒh“¯—lAServicesƒAƒhƒ~ƒ“‚ÍƒpƒXƒ[ƒh”FØ‚ðs‚í‚¸‚É
+	ƒ`ƒƒƒ“ƒlƒ‹‚ÌÝ’è•ÏX‚ª‚Å‚«‚Ü‚·B
 
-CHAN_SERVADMIN_HELP_GETPASS
-	ƒVƒ“ƒ^ƒNƒXFGETPASS channel
+CHAN_OPER_HELP_INFO
 	
-	channel‚Æ‚¢‚¤ƒ`ƒƒƒ“ƒlƒ‹‚ÌƒpƒXƒ[ƒh‚ð•\Ž¦‚µ‚Ü‚·B‚±‚ÌƒRƒ}
-	ƒ“ƒh‚ðŽg‚¤‚ÆAƒRƒ}ƒ“ƒh‚ð“ü—Í‚µ‚½ƒ†[ƒU[‚ÌƒjƒbƒN‚ÆƒpƒXƒ[
-	ƒh‚ðo‚µ‚½ƒ`ƒƒƒ“ƒlƒ‹‚ðŠÜ‚ÞƒƒbƒZ[ƒW‚ÍƒƒbƒO‚³‚êAWALLOPS‚©
-	GLOBOPS‚ÅƒIƒyƒŒ[ƒ^[‚É•ú‘—‚³‚ê‚Ü‚·B
-	
-	‚±‚ÌƒRƒ}ƒ“ƒh‚ÌŽg—p‚ÍServices‚ÌƒAƒhƒ~ƒ“‚ÉŒÀ‚Á‚Ä‚¢‚Ü‚·B
-	
-	ˆÃ†‰»‚ªŽg‚í‚ê‚Ä‚¢‚éê‡‚ÍA‚±‚ÌƒRƒ}ƒ“ƒh‚ðŽg‚¦‚Ü‚¹‚ñB
+	ServicesƒAƒhƒ~ƒ“‚ÍA‚Ç‚Ìƒ`ƒƒƒ“ƒlƒ‹‚É‘Î‚µ‚Ä‚àALL‚ðŽw’è‚Å‚«‚Ü
+	‚·B
 
-CHAN_SERVADMIN_HELP_FORBID
-	ƒVƒ“ƒ^ƒNƒXFFORBID channel
+CHAN_OPER_HELP_LIST
+	—p–@FLIST ƒpƒ^[ƒ“ [FORBIDDEN] [NOEXPIRE] [SUSPENDED]
 	
-	ƒjƒbƒN‚ðŽg—p•s‰Â”\‚É‚µ‚Ü‚·BƒLƒƒƒ“ƒZƒ‹‚É‚ÍDROP‚ÌƒRƒ}ƒ“ƒh‚ª
-	Žg‚¦‚Ü‚·B
+	ƒpƒ^[ƒ“‚Éˆê’v‚·‚éƒ`ƒƒƒ“ƒlƒ‹‚ð•\Ž¦‚µ‚Ü‚·B’A‚µAƒvƒ‰ƒCƒx[ƒg
+	Ý’è‚ª—LŒø‚É‚È‚Á‚Ä‚¢‚éƒ`ƒƒƒ“ƒlƒ‹‚ÍAServicesƒAƒhƒ~ƒ“‚É‚µ‚©•\
+	Ž¦‚³‚ê‚Ü‚¹‚ñB‚Ü‚½AServicesƒAƒhƒ~ƒ“‚ªŽg‚Á‚½ê‡‚ÍANOEXPIRE
+	Ý’è‚ª—LŒø‚È‚¿‚á‚ñ‚Ë‚é‚Ìæ“ª‚Éu!vˆó‚ª•t‰Á‚³‚ê‚Ü‚·B
 	
-	‚±‚ÌƒRƒ}ƒ“ƒh‚ÌŽg—p‚ÍServices‚ÌƒAƒhƒ~ƒ“‚ÉŒÀ‚Á‚Ä‚¢‚Ü‚·B
+	ŠJŽnˆÊ’u‚ÅAÅ‰‚É•\Ž¦‚·‚éƒŒƒR[ƒh‚ðŽw’è‚Å‚«‚Ü‚·i—á‚¦‚ÎA
+	u+50v‚ðŽw’è‚·‚é‚ÆÅ‰‚Ì50ŒÂ‚ÌŠY“–ƒŒƒR[ƒh‚ð”ò‚Î‚µA51ŒÂ–Ú
+	‚©‚ç•\Ž¦‚µ‚Ü‚·jB
+	
+	uFORBIDDENvuSUSPENDEDvuNOEXPIREv‚ÌŠeƒIƒvƒVƒ‡ƒ“‚ðŽw’è‚·
+	‚é‚ÆAŒ‹‰Ê‚ð‚»‚ê‚¼‚êŽg—p‹ÖŽ~ƒ`ƒƒƒ“ƒlƒ‹AŽg—p’âŽ~ƒ`ƒƒƒ“ƒlƒ‹A
+	NOEXPIREÝ’è—LŒø‚Èƒ`ƒƒƒ“ƒlƒ‹‚ÉŒÀ’è‚µ‚Ü‚·B’A‚µA‚±‚ê‚ç‚ÌƒIƒv
+	ƒVƒ‡ƒ“‚ÌŽg—p‚ÍServicesƒAƒhƒ~ƒ“‚ÉŒÀ‚ç‚ê‚Ä‚¢‚Ü‚·B
 
-CHAN_SERVADMIN_HELP_STATUS
-	ƒVƒ“ƒ^ƒNƒXFSTATUS channel nickname
+CHAN_OPER_HELP_GETPASS
+	—p–@FGETPASS ƒ`ƒƒƒ“ƒlƒ‹
 	
-	nickname‚Æ‚¢‚¤ƒjƒbƒN‚Ìchannel‚Æ‚¢‚¤ƒ`ƒƒƒ“ƒlƒ‹‚Å‚ÌƒAƒNƒZ
-	ƒXƒŒƒxƒ‹‚ð•\Ž¦‚µ‚Ü‚·B”½‰ž‚Í‚±‚ÌŒ`‚Å‚·F
+	Žw’è‚³‚ê‚½ƒ`ƒƒƒ“ƒlƒ‹‚ÌƒpƒXƒ[ƒh‚ð•\Ž¦‚µ‚Ü‚·B‚½‚¾‚µAˆÃ†‰»
+	‚ª—˜—p‚³‚ê‚Ä‚¢‚éê‡‚ÍA‚±‚ÌƒRƒ}ƒ“ƒh‚ðŽg‚¦‚Ü‚¹‚ñB
 	
-	    STATUS channel nickname access-level
+	‚±‚ÌƒRƒ}ƒ“ƒh‚ªŽg‚í‚ê‚½ŽžAŽg—p‚µ‚½ƒ†[ƒU‚ÌƒjƒbƒN‚ÆƒpƒXƒ[ƒh
+	‚ð•\Ž¦‚³‚ê‚½ƒ`ƒƒƒ“ƒlƒ‹‚ªWALLOPS/GLOBOPS‚Å‘SƒIƒyƒŒ[ƒ^‚ÉŽü’m
+	‚³‚êAƒƒO‚³‚ê‚Ü‚·B
 	
-	ƒGƒ‰[‚ª”­¶‚µ‚½ê‡‚ÍA”½‰ž‚ÍŽŸ‚ÌŒ`‚Å‚·F
+	‚±‚ÌƒRƒ}ƒ“ƒh‚ÌŽg—p‚ÍServicesƒAƒhƒ~ƒ“‚É§ŒÀ‚³‚ê‚Ä‚¢‚Ü‚·B
+
+CHAN_OPER_HELP_FORBID
+	—p–@FFORBID ƒ`ƒƒƒ“ƒlƒ‹
 	
-	    STATUS ERROR error-message
+	ƒ`ƒƒƒ“ƒlƒ‹‚ðŽg—p‹ÖŽ~‚É‚µ‚Ü‚·B‰ðœ‚É‚ÍDROPƒRƒ}ƒ“ƒh‚ðŽg‚¢‚Ü‚·B
 	
-	‚±‚ÌƒRƒ}ƒ“ƒh‚ÌŽg—p‚ÍServices‚ÌƒAƒhƒ~ƒ“‚ÉŒÀ‚Á‚Ä‚¢‚Ü‚·B
+	‚±‚ÌƒRƒ}ƒ“ƒh‚ÌŽg—p‚ÍServicesƒAƒhƒ~ƒ“‚É§ŒÀ‚³‚ê‚Ä‚¢‚Ü‚·B
+
+CHAN_OPER_HELP_SUSPEND
+	—p–@FSUSPEND [+ŠúŒÀ] ƒ`ƒƒƒ“ƒlƒ‹ ——R
+	
+	ƒ`ƒƒƒ“ƒlƒ‹‚ðŽg—p’âŽ~‚É‚µ‚Ü‚·Bƒ†[ƒU‚ª—˜—p‚Å‚«‚È‚­‚È‚é‚Ù‚©A
+	ƒpƒXƒ[ƒh”FØ‚à’âŽ~‚³‚ê‚Ü‚·B‰ðœ‚É‚ÍUNSUSPEND‚ðŽg‚¢‚Ü‚·B
+	ŠúŒÀ‚Í%s‚ÌAKILLƒRƒ}ƒ“ƒh‚Æ“¯—l‚É‰ðŽß‚³‚ê‚Ü‚·B
+	
+	‚±‚ÌƒRƒ}ƒ“ƒh‚ÌŽg—p‚ÍServicesƒAƒhƒ~ƒ“‚É§ŒÀ‚³‚ê‚Ä‚¢‚Ü‚·B
+
+CHAN_OPER_HELP_UNSUSPEND
+	—p–@FUNSUSPEND ƒ`ƒƒƒ“ƒlƒ‹
+	
+	ƒ`ƒƒƒ“ƒlƒ‹‚ÌŽg—p’âŽ~‚ð‰ðœ‚µ‚Ü‚·Aƒ†[ƒU‚ª•’i’Ê‚èƒ`ƒƒƒ“ƒlƒ‹
+	‚ðŽg—p‚Å‚«‚é‚æ‚¤‚É‚È‚è‚Ü‚·B
+	
+	‚±‚ÌƒRƒ}ƒ“ƒh‚ÌŽg—p‚ÍServicesƒAƒhƒ~ƒ“‚É§ŒÀ‚³‚ê‚Ä‚¢‚Ü‚·B
 
 ###########################################################################
 #
@@ -2243,128 +3961,206 @@ CHAN_SERVADMIN_HELP_STATUS
 ###########################################################################
 
 MEMO_HELP
-	%S‚ÍAƒ†[ƒU[‚Æƒ`ƒƒƒ“ƒlƒ‹‚Éƒƒ‚‚ð‘—‚é‚½‚ß‚ÌƒT[ƒrƒX
-	‚Å‚·Bƒƒ‚‚ÍServices‚É‚æ‚è•Û‘¶‚³‚êAŽóMƒjƒbƒN‚©ƒ`ƒƒƒ“ƒlƒ‹
-	‚ÌƒIƒyƒŒ[ƒ^[‚Í“Ç‚Ý‚½‚¢Žž‚É“Ç‚ß‚Ü‚·B‚½‚¾‚µA·ol‚Ìƒjƒb
-	ƒN‚àŽóMƒjƒbƒN‚©ƒ`ƒƒƒ“ƒlƒ‹‚à“o˜^‚µ‚È‚¯‚ê‚Î%S‚ðŽg‚¦‚Ü‚¹‚ñB
+	%S‚ÍAƒƒbƒZ[ƒW‘—ŽóMƒT[ƒrƒX‚Å‚·BŒ»ÝIRC‚ÉÚ‘±‚µ‚Ä
+	‚¢‚È‚¢ƒ†[ƒU‚Å‚àA‚»‚Ìƒ†[ƒU‚Ö‚ÌƒƒbƒZ[ƒW‚ð‚±‚ÌƒT[ƒrƒX‚É—a
+	‚¯‚é‚ÆA‚»‚Ìƒ†[ƒU‚ªŽŸ‰ñÚ‘±‚µ‚½Žž‚ÉƒƒbƒZ[ƒW‚ðŽó‚¯Žæ‚é‚±‚Æ
+	‚É‚È‚è‚Ü‚·B‚±‚ÌƒƒbƒZ[ƒW‚Ì‚±‚Æ‚ðuƒƒ‚v‚ÆŒÄ‚Ñ‚Ü‚·Bƒ`ƒƒƒ“
+	ƒlƒ‹‚É‘Î‚µ‚Ä‚àƒƒ‚‚ð‘—M‚Å‚«‚Ü‚·(¦)B
 	
-	%S‚ÌƒRƒ}ƒ“ƒh‚ÍŽŸ‚Ì’Ê‚è‚Å‚·B
+	ƒƒ‚‚ð—˜—p‚·‚é‚É‚ÍAˆ¶æƒjƒbƒN‚âƒ`ƒƒƒ“ƒlƒ‹‚¾‚¯‚Å‚È‚­A‘—M‚·
+	‚éƒ†[ƒU‚ÌƒjƒbƒN‚à“o˜^‚³‚ê‚Ä‚¢‚È‚¯‚ê‚Î‚È‚è‚Ü‚¹‚ñB
 	
-	    SEND   ƒ†[ƒU[‚©ƒ`ƒƒƒ“ƒlƒ‹‚Éƒƒ‚‚ð‘—‚é
-	    LIST   ŽóMƒƒ‚•\‚ð•\‚·
-	    READ   ƒƒ‚‚ð“Ç‚Þ
-	    DEL    ƒƒ‚‚ðÁ‹Ž‚·‚é
-	    SET    ƒƒ‚‚ÌƒIƒvƒVƒ‡ƒ“‚ðÝ’è‚·‚é
+	%S‚ÅŽg‚¦‚éƒRƒ}ƒ“ƒh‚Íu/msg %S HELP COMMANDSv‚Å
+	•\Ž¦‚Å‚«‚Ü‚·B‚Ü‚½A“Á’è‚ÌƒRƒ}ƒ“ƒh‚Ìî•ñ‚ðŒ©‚éê‡‚Í
+	u/msg %S HELP ƒRƒ}ƒ“ƒhv‚Å•\Ž¦‚Å‚«‚Ü‚·B
+MEMO_HELP_EXPIRES
 	
-	ƒRƒ}ƒ“ƒh‚Ìƒwƒ‹ƒv‚ð“Ç‚Þê‡‚ÍAu/msg %S HELP commandv
-	‚ð“ü—Í‚µ‚Ä‰º‚³‚¢B
+	’ˆÓFƒƒ‚‚ÍASAVEƒRƒ}ƒ“ƒh‚Å•Û‘¶‚µ‚½‚à‚Ì‚ðœ‚«A‘—MŒã%s‚ª
+	@@@Œo‚Â‚ÆŽ©“®“I‚Éíœ‚³‚ê‚Ü‚·B
+MEMO_HELP_END_LEVELS
 	
-	¦ƒ`ƒƒƒ“ƒlƒ‹‚Ìƒƒ‚‚ª“Ç‚ß‚é‚Ì‚ÍŠù’è“I‚ÉƒŒƒxƒ‹10ˆÈã‚Ìƒ†[ƒU[
-	@‚Ì‚Ý‚Å‚·‚ªA%s‚ÌuLEVELSv‚Æ‚¢‚¤ƒRƒ}ƒ“ƒh‚Å‚»‚ÌƒŒƒxƒ‹‚ð•Ï
-	@X‚Å‚«‚Ü‚·B
+	¦ƒ`ƒƒƒ“ƒlƒ‹‚Ö‚Ìƒƒ‚‚ÍAƒ`ƒƒƒ“ƒlƒ‹‘nÝŽÒ‹y‚Ñ%sˆÈã
+	@‚ÌƒAƒNƒZƒX‚ðŽ‚Âƒ†[ƒU‚É‘—‚ç‚ê‚Ü‚·Bƒƒ‚‚ðŽóM‚·‚éƒAƒNƒZƒX
+	@ƒŒƒxƒ‹‚Í%s‚ÌLEVELSƒRƒ}ƒ“ƒh‚Å•ÏX‚Å‚«‚Ü‚·B
+MEMO_HELP_END_XOP
+	
+	¦ƒ`ƒƒƒ“ƒlƒ‹‚Ö‚Ìƒƒ‚‚ÍAƒ`ƒƒƒ“ƒlƒ‹‘nÝŽÒ‹y‚ÑSOPƒŠƒXƒg‚É“o˜^
+	@‚³‚ê‚Ä‚¢‚éƒ†[ƒU‚É‘—‚ç‚ê‚Ü‚·B
+
+MEMO_HELP_COMMANDS
+	%S‚Å‚ÍA‰º‹LƒRƒ}ƒ“ƒh‚ªŽg‚¦‚Ü‚·B
+	
+	    SEND      ƒjƒbƒN‚Ü‚½‚Íƒ`ƒƒƒ“ƒlƒ‹‚Öƒƒ‚‚ð‘—M‚·‚é
+	    LIST      ŽóMƒƒ‚ˆê——‚ð•\Ž¦‚·‚é
+	    READ      ŽóMƒƒ‚‚Ì“à—e‚ð•\Ž¦‚·‚é
+MEMO_HELP_COMMANDS_FORWARD
+	    FORWARD   ŽóMƒƒ‚‚ðƒjƒbƒN‚Ìƒ[ƒ‹ƒAƒhƒŒƒX‚É“]‘—‚·‚é
+MEMO_HELP_COMMANDS_SAVE
+	    SAVE      ŽóMƒƒ‚‚ð•Û‘¶‚·‚é
+MEMO_HELP_COMMANDS_DEL
+	    DEL       ŽóMƒƒ‚‚ðíœ‚·‚é
+	    RENUMBER  ƒƒ‚”Ô†‚ðU‚è’¼‚·
+	    SET       ƒƒ‚ŠÖ˜A‚ÌÝ’è‚ð•ÏX‚·‚é
+	    INFO      ƒƒ‚ŠÖ˜Aî•ñ‚ð•\Ž¦‚·‚é
+MEMO_HELP_COMMANDS_IGNORE
+	    IGNORE    ƒƒ‚ŽóM‹‘”ÛƒŠƒXƒg‚ð•ÒW‚·‚é
 
 MEMO_HELP_SEND
-	ƒVƒ“ƒ^ƒNƒXFSEND {nick | channel} memo-text
+	—p–@FSEND {ƒjƒbƒN | ƒ`ƒƒƒ“ƒlƒ‹} ƒeƒLƒXƒg
 	
-	nick‚©channel‚Émemo-text‚ðŠÜ‚Þƒƒ‚‚ð‘—‚è‚Ü‚·BƒjƒbƒN‚Éo‚·
-	ê‡‚É‚ÍAŽóMŽÒ‚ÌƒjƒbƒNƒIƒvƒVƒ‡ƒ“‚É‚æ‚Á‚ÄA%S‚ÍŽóM
-	ŽÒ‚ÉV‚½‚Èƒƒ‚‚ª“Í‚¢‚½‚Æ‚Ì‚±‚Æ‚ð•ñ‚µ‚Ü‚·B
+	Žw’è‚³‚ê‚½ƒjƒbƒN‚Ü‚½‚Íƒ`ƒƒƒ“ƒlƒ‹‚Öƒƒ‚‚ð‘—M‚µ‚Ü‚·Bˆ¶æiƒ`
+	ƒƒƒ“ƒlƒ‹‚Ìê‡‚Íƒ`ƒƒƒ“ƒlƒ‹‚ÌŠÇ—ŽÒj‚ªIRC‚ÉÚ‘±‚µ‚Ä‚¢‚éê‡
+	‚ÍAƒ†[ƒU‚ÉV’…’Ê’m‚ð‘—‚è‚Ü‚·B
 
 MEMO_HELP_LIST
-	ƒVƒ“ƒ^ƒNƒXFLIST [channel] [list | NEW]
+	—p–@FLIST [”Ô† | ƒŠƒXƒg | NEW]
 	
-	ŽóMƒƒ‚•\‚ð•\‚µ‚Ü‚·BNEW‚ð“ü—Í‚·‚ê‚ÎA“Ç‚ñ‚Å‚¢‚È‚¢ƒƒ‚‚Ì‚Ý
-	‚ª•\‚ê‚Ü‚·B“Ç‚ñ‚Å‚¢‚È‚¢ƒƒ‚‚ÍAƒƒ‚‚Ì”Ô†‚Ì¶‘¤‚É–ˆó‚ª•\
-	Ž¦‚³‚ê‚Ü‚·B‰º‹L‚Ì—á‚Ì’Ê‚èA”Ô†—ñ‚à“ü—Í‰Â”\F
+	ŽóMƒƒ‚ˆê——‚ð•\Ž¦‚µ‚Ü‚·B”Ô†‚ÌƒŠƒXƒg‚ðŽw’è‚·‚é‚ÆŠY“–‚·‚éƒ
+	ƒ‚‚¾‚¯‚ªANEW‚ðŽw’è‚·‚é‚Æ–¢“Çƒƒ‚‚ª•\Ž¦‚³‚ê‚Ü‚·B‚Ç‚ÌŒ`Ž®‚Å
+	‚àA–¢“Çƒƒ‚‚Í”Ô†‚Ì¶‘¤‚Éu*vˆó‚ªAƒ`ƒƒƒ“ƒlƒ‹ˆ¶‚Ä‚Ìƒƒ‚‚É
+	u#vˆó‚ª•t‚«‚Ü‚·B
 	
+	”Ô†ƒŠƒXƒgŽg—p—áF
+	    LIST 2-5,7-9
+	       ‚Q`‚TA‚V`‚X”Ô–Ú‚Ìƒƒ‚‚ðƒŠƒXƒg‚µ‚Ü‚·B
+
+MEMO_HELP_LIST_EXPIRE
+	—p–@FLIST [”Ô† | ƒŠƒXƒg | NEW]
+	
+	ŽóMƒƒ‚ˆê——‚ð•\Ž¦‚µ‚Ü‚·B”Ô†‚ÌƒŠƒXƒg‚ðŽw’è‚·‚é‚ÆŠY“–‚·‚éƒ
+	ƒ‚‚¾‚¯‚ªANEW‚ðŽw’è‚·‚é‚Æ–¢“Çƒƒ‚‚ª•\Ž¦‚³‚ê‚Ü‚·B‚Ç‚ÌŒ`Ž®‚Å
+	‚àA–¢“Çƒƒ‚‚Í”Ô†‚Ì¶‘¤‚Éu*vˆó‚ªAƒ`ƒƒƒ“ƒlƒ‹ˆ¶‚Ä‚Ìƒƒ‚‚É
+	u#vˆó‚ªASAVEƒRƒ}ƒ“ƒh‚Å•Û‘¶‚³‚ê‚½ƒƒ‚‚Éu+vˆó‚ª•t‚«‚Ü‚·B
+	
+	”Ô†ƒŠƒXƒgŽg—p—áF
 	    LIST 2-5,7-9
 	       ‚Q`‚TA‚V`‚X”Ô–Ú‚Ìƒƒ‚‚ðƒŠƒXƒg‚µ‚Ü‚·B
 
 MEMO_HELP_READ
-	ƒVƒ“ƒ^ƒNƒXFREAD [channel] {num | list | LAST | NEW}
+	—p–@FREAD {”Ô† | ƒŠƒXƒg | LAST | NEW}
 	
-	ƒƒ‚‚ð“Ç‚Ý‚Ü‚·B”Ô†‚ð“ü—Í‚·‚é‚Æ‚»‚Ì”Ô†‚Ìƒƒ‚‚ª•\‚êALAST‚ð
-	“ü—Í‚·‚é‚ÆÅV‚Ìƒƒ‚‚ª•\‚êANEW‚ð“ü—Í‚·‚é‚Æ“Ç‚ñ‚Å‚¢‚È‚¢ƒƒ‚
-	‚ª‘S‚Ä•\‚ê‚Ü‚·B‰º‹L‚Ì—á‚Ì’Ê‚èA”Ô†—ñ‚à“ü—Í‰Â”\F
+	ƒƒ‚‚ð“Ç‚Ý‚Ü‚·B”Ô†‚Ü‚½‚Í”Ô†‚ÌƒŠƒXƒg‚ðŽw’è‚·‚é‚ÆŠY“–‚·‚éƒ
+	ƒ‚‚ªALAST‚ðŽw’è‚·‚é‚ÆÅ‚àÅ‹ß“Í‚¢‚½ƒƒ‚‚ªANEW‚ðŽw’è‚·‚é‚Æ
+	–¢“Çƒƒ‚‘S‚Ä‚ª•\Ž¦‚³‚ê‚Ü‚·B
+
+MEMO_HELP_SAVE
+	—p–@FSAVE {”Ô† | ƒŠƒXƒg}
 	
-	    LIST 2-5,7-9
-	       ‚Q`‚TA‚V`‚X”Ô–Ú‚Ìƒƒ‚‚ðƒŠƒXƒg‚µ‚Ü‚·B
+	ƒƒ‚‚ð•Û‘¶‚µ‚Ü‚·BŽw’è‚³‚ê‚½”Ô†‚Ü‚½‚Í”Ô†ƒŠƒXƒg‚ÉŠY“–‚·‚éƒ
+	ƒ‚‚ÍŽ©“®íœ‚³‚ê‚È‚­‚È‚è‚Ü‚·B
 
 MEMO_HELP_DEL
-	ƒVƒ“ƒ^ƒNƒXFDEL [channel] {num | list | ALL}
+	—p–@FDEL {”Ô† | ƒŠƒXƒg | ALL}
 	
-	ƒƒ‚‚ðÁ‹Ž‚µ‚Ü‚·B”Ô†‚ð“ü—Í‚·‚é‚Æ‚»‚Ì”Ô†‚Ìƒƒ‚‚ªÁ‹Ž‚³‚êA
-	ALL‚ð“ü—Í‚·‚é‚Æ‘S‚Ä‚Ìƒƒ‚‚ªÁ‹Ž‚³‚ê‚Ü‚·B
+	ƒƒ‚‚ðíœ‚µ‚Ü‚·B”Ô†‚Ü‚½‚Í”Ô†ƒŠƒXƒg‚ðŽw’è‚·‚é‚ÆŠY“–‚·‚éƒ
+	ƒ‚‚ªAALL‚ðŽw’è‚·‚é‚Æ‘S‚Ä‚Ìƒƒ‚‚ªíœ‚³‚ê‚Ü‚·Bƒƒ‚‚ðíœ‚·
+	‚é‚ÆAŒ³‚É–ß‚·‚±‚Æ‚Í‚Å‚«‚Ü‚¹‚ñ‚Ì‚Å‚²’ˆÓ‚­‚¾‚³‚¢B
+
+MEMO_HELP_RENUMBER
+	—p–@FRENUMBER
 	
-	—áF
-	   DEL 1
-	      ‚P”Ô–Ú‚Ìƒƒ‚‚ðÁ‹Ž‚µ‚Ü‚·B
-	   DEL 2-5,7-9
-	      ‚Q”Ô–Ú`‚T”Ô–Ú‚Æ‚V”Ô–Ú`‚X”Ô–Ú‚Ìƒƒ‚‚ðÁ‹Ž‚µ‚Ü‚·B
+	ƒƒ‚”Ô†‚ðU‚è’¼‚µAƒƒ‚‚Ìíœ‚É‚æ‚éŒ‡”Ô‚ð‰ðÁ‚µ‚Ü‚·B
 
 MEMO_HELP_SET
-	ƒVƒ“ƒ^ƒNƒXFSET option parameters
+	—p–@FSET Ý’è–¼ ’l
 	
-	ƒƒ‚‚ÌƒIƒvƒVƒ‡ƒ“‚ðÝ’è‚µ‚Ü‚·Boption‚Ì‘I‘ð‚ÍŽŸ‚Ì’Ê‚è‚Å‚·B
+	ƒƒ‚ŠÖ˜AÝ’è‚ð•ÏX‚µ‚Ü‚·BuÝ’è–¼v‚É‚ÍˆÈ‰º‚Ì‚à‚Ì‚ªŽg‚¦‚Ü‚·B
 	
-	    NOTIFY      ‚Ç‚Ìê‡‚É%S‚ªVƒƒ‚‚Ì•ñ‚·‚é‚©‚ÌÝ’è
-	                @iƒjƒbƒN‚Ì‚Ýj
-	    LIMIT       ƒƒ‚‚Ì”‚ÌŒÀ‚è‚ÌÝ’è
+	    NOTIFY      V’…’Ê’mÝ’è‚ð•ÏX‚·‚é
+	    LIMIT       ŽóMƒƒ‚Œ”ãŒÀ‚ð•ÏX‚·‚é
+MEMO_HELP_SET_OPTION_FORWARD
+	    FORWARD     ƒƒ‚‚ÌŽ©“®“]‘—Ý’è‚ð•ÏX‚·‚é
+MEMO_HELP_SET_END
 	
-	ƒIƒvƒVƒ‡ƒ“‚Ìî•ñ‚ð“Ç‚Þê‡‚ÍAu/msg %S HELP SET optionv
-	‚ð“ü—Í‚µ‚Ä‰º‚³‚¢B
+	‚»‚ê‚¼‚ê‚ÌÝ’è‚ÌÚ‚µ‚¢î•ñ‚ðŒ©‚éê‡‚Í
+	u/msg %S HELP SET Ý’è–¼v‚ð“ü—Í‚µ‚Ä‚­‚¾‚³‚¢B
 
 MEMO_HELP_SET_NOTIFY
-	ƒVƒ“ƒ^ƒNƒXFSET NOTIFY {ON | LOGON | NEW | OFF}
+	—p–@FSET NOTIFY {ON | LOGON | NEW | OFF}
 	
-	‚Ç‚Ìê‡‚É%S‚ªVƒƒ‚‚Ì•ñ‚·‚é‚©‚ÌÝ’è‚ÌƒRƒ}ƒ“ƒh‚Å‚·B
-	Ý’è‚Ì‘I‘ð‚ÍŽŸ‚Ì’Ê‚è‚Å‚·B
+	V’…ƒƒ‚‚Ì’Ê’mÝ’è‚ð•ÏX‚µ‚Ü‚·BŠe’l‚ÌˆÓ–¡‚ÍŽŸ‚Ì’Ê‚è‚Å‚·B
 	
-	    ON      ƒƒOƒIƒ“‚·‚é‚Æ‚«AIRC‚É–ß‚é‚Æ‚«Aƒƒ‚‚ª“Í‚­‚Æ‚«
-	    LOGON   ƒƒOƒIƒ“‚·‚é‚Æ‚«AIRC‚É–ß‚é‚Æ‚«
-	    NEW     ƒƒ‚‚ª“Í‚­‚Æ‚«
-	    OFF     •ñ‚Í–³‚µ
+	    ON      Ú‘±ŽžA/AWAY‰ðœŽžAŽóMŽž
+	    LOGON   Ú‘±ŽžA/AWAY‰ðœŽž‚Ì‚Ý
+	    NEW     ŽóMŽž‚Ì‚Ý
+	    OFF     ’Ê’m‚È‚µ
 	
-	ON‚ÌŒ‹‰Ê‚ÍLOGON‚ÆNEW‚ÌŒ‹‰Ê‚ð‡‚í‚¹‚é‚±‚Æ‚ÆŽv‚¦‚Ü‚·B
+	ƒjƒbƒN‚ÌƒZƒLƒ…ƒAÝ’èi%s‚ÌSET SECUREƒRƒ}ƒ“ƒhj‚ª—LŒø‚É
+	‚È‚Á‚Ä‚¢‚éê‡‚ÍAV’…’Ê’mÝ’è‚ðON‚Ü‚½‚ÍLOGON‚É‚µ‚Ä‚àAƒjƒb
+	ƒN‚ÌƒpƒXƒ[ƒh”FØ‚ðs‚¤‚Ü‚Å‚ÍV’…ƒƒ‚‚Ì’Ê’m‚Í‚³‚ê‚Ü‚¹‚ñB
 
 MEMO_HELP_SET_LIMIT
-	ƒVƒ“ƒ^ƒNƒXFSET LIMIT [channel] limit
+	—p–@FSET LIMIT ãŒÀ
 	
-	ƒƒ‚‚Ì”‚ÌŒÀ‚è‚ðÝ’è‚µ‚Ü‚·Bƒ[ƒ‚É‚·‚é‚ÆAƒƒ‚‚ðŽó‚¯‚ç‚ê‚È
-	‚­‚È‚è‚Ü‚·B‚½‚¾‚µA³”‚Ìê‡‚Í%dˆÈ‰º‚Ì”’l‚µ‚©“ü—Í‚Å‚«‚Ü
-	‚¹‚ñB
+	ŽóM‚Å‚«‚éƒƒ‚‚ÌÅ‘åŒ”‚ðÝ’è‚µ‚Ü‚·B‚O‚ÉÝ’è‚·‚é‚ÆAƒƒ‚‚ð
+	ŽóM‚Å‚«‚È‚­‚È‚è‚Ü‚·B’A‚µA%d‚æ‚è‘å‚«‚¢”’l‚ÍŽw’è‚Å‚«‚Ü‚¹‚ñB
 
 MEMO_HELP_INFO
-	ƒVƒ“ƒ^ƒNƒXFINFO [channel]
+	—p–@FINFO
 	
-	ƒƒ‚‚Ìî•ñ‚ðŒ©‚Ü‚·B‚±‚ÌƒRƒ}ƒ“ƒh‚Å•\‚ê‚é‚Ì‚ÍAŒ»Ý‚Ìƒƒ‚‚Ì
-	”‚Æ“Ç‚ñ‚Å‚¢‚È‚¢ƒƒ‚‚Ì”‚Æƒƒ‚‚Ì”‚ÌŒÀ‚è‚Å‚·Bƒpƒ‰ƒ[ƒ^[
-	‚ð“ü—Í‚·‚ê‚Î‚»‚Ìƒ`ƒƒƒ“ƒlƒ‹‚Ìî•ñ‚ª•\‚ê‚Ü‚·B
+	ŽóMƒƒ‚Œ”‚Æ‚»‚ÌãŒÀA–¢“ÇŒ”A‚»‚µ‚ÄV’…’Ê’mÝ’è‚ð•\Ž¦‚µ
+	‚Ü‚·B
 
-MEMO_SERVADMIN_HELP_SET_LIMIT
-	ƒVƒ“ƒ^ƒNƒXFSET LIMIT [user | channel] {limit | NONE} [HARD]
+MEMO_OPER_HELP_COMMANDS
 	
-	ƒ†[ƒU[‚©ƒ`ƒƒƒ“ƒlƒ‹‚Ìƒƒ‚‚Ì”‚ÌŒÀ‚è‚ðÝ’è‚µ‚Ü‚·Bƒ[ƒ‚É‚·
-	‚é‚Æƒ†[ƒU[‚Íƒƒ‚‚ðŽó‚¯‚ç‚ê‚È‚­‚È‚èANONE‚É‚·‚é‚ÆŒÀ‚è‚Í–³
-	‚­‚È‚è‚Ü‚·BƒjƒbƒN‚ð“ü—Í‚µ‚È‚¢ê‡‚ÍAƒRƒ}ƒ“ƒh‚ðo‚·ƒ†[ƒU
-	[‚ÌƒjƒbƒN‚Ìƒƒ‚‚ÌŒÀ‚è‚ªÝ’è‚³‚ê‚Ü‚·BHARD‚ð“ü—Í‚·‚ê‚ÎAƒ†[
-	ƒU[‚ÍŒÀ‚è‚ð•ÏX‚Å‚«‚È‚­‚È‚èA“ü—Í‚µ‚È‚¯‚ê‚Îƒ†[ƒU[‚ÍŒÀ‚è
-	‚ð•ÏX‚Å‚«‚Ü‚·B
-	
-	‚±‚ÌŽg‚¢•û‚ªŽg‚¦‚é‚Ì‚ÍServices‚ÌƒAƒhƒ~ƒ“‚Ì‚Ý‚Å‚·Bˆê”Ê‚Ì
-	ƒ†[ƒU[‚ÍA‘¼‚Ìƒ†[ƒU[‚ÌŒÀ‚è‚ðÝ’è‚Å‚«‚È‚¢‚µAŒÀ‚è‚ð‚Ì‚¯
-	‚ç‚ê‚È‚¢‚µAHARD‚à“ü—Í‚Å‚«‚Ü‚¹‚ñB
+	ServicesƒAƒhƒ~ƒ“‚ÍŽ©•ªˆÈŠO‚ÌƒjƒbƒN‚É‘Î‚µ‚Ä‚àSET LIMIT‹y‚Ñ
+	INFOƒRƒ}ƒ“ƒh‚ðŽg‚¦‚Ü‚·B
 
-MEMO_SERVADMIN_HELP_INFO
-	ƒVƒ“ƒ^ƒNƒXFINFO [nick | channel]
+MEMO_OPER_HELP_SET_LIMIT
+	—p–@FSET LIMIT [ƒjƒbƒN] {ãŒÀ | NONE | DEFAULT} [HARD]
 	
-	ƒƒ‚‚Ìî•ñ‚ðŒ©‚Ü‚·B‚±‚ÌƒRƒ}ƒ“ƒh‚Å•\‚ê‚é‚Ì‚ÍAŒ»Ý‚Ìƒƒ‚‚Ì
-	”‚Æ“Ç‚ñ‚Å‚¢‚È‚¢ƒƒ‚‚Ì”‚Æƒƒ‚‚Ì”‚ÌŒÀ‚è‚Å‚·Bƒpƒ‰ƒ[ƒ^[
-	‚ª‚ ‚éê‡‚É‚»‚Ìƒ†[ƒU[‚©ƒ`ƒƒƒ“ƒlƒ‹‚Ìî•ñ‚ª•\‚êAƒpƒ‰ƒ[
-	ƒ^[‚ª–³‚¢ê‡‚ÉŽ©•ª‚Ìî•ñ‚ª•\‚ê‚Ü‚·B
+	ŽóM‚Å‚«‚éƒƒ‚‚ÌÅ‘åŒ”‚ðÝ’è‚µ‚Ü‚·B‚O‚ÉÝ’è‚·‚é‚ÆAƒƒ‚‚ð
+	ŽóM‚Å‚«‚È‚­‚È‚è‚Ü‚·B’A‚µAServicesƒAƒhƒ~ƒ“ˆÈŠO‚Ìƒ†[ƒU‚Í%d
+	‚æ‚è‘å‚«‚¢”’l‚ÍŽw’è‚Å‚«‚Ü‚¹‚ñB
 	
-	ƒjƒbƒN‚Ìƒpƒ‰ƒ[ƒ^[‚ð“ü—Í‚Å‚«‚é‚Ì‚ÍServices‚ÌƒAƒhƒ~ƒ“‚Ì‚Ý
-	‚Å‚·B
+	ServicesƒAƒhƒ~ƒ“‚ÉŒÀ‚Á‚ÄA‘¼‚ÌƒjƒbƒN‚Ìƒƒ‚Œ”ãŒÀ‚ð•ÏX‚Å‚«
+	‚Ü‚·B”’l‚Ì‚Ù‚©ADEFAULTiƒfƒtƒHƒ‹ƒg’lj‚ÆNONEi–³§ŒÀj‚à
+	Žw’è‚Å‚«‚Ü‚·B‚È‚¨AãŒÀ‚ÌŒã‚ÉHARD‚ð’Ç‰Á‚·‚é‚ÆA‚»‚Ìƒ†[ƒU‚Í
+	Œ”ãŒÀ‚Ì•ÏX‚ª‚Å‚«‚È‚­‚È‚è‚Ü‚·BHARD‚ðŽw’è‚µ‚È‚¢ê‡‚Í‹t‚É
+	•ÏX‰Â”\‚É‚È‚è‚Ü‚·B
+
+MEMO_OPER_HELP_INFO
+	—p–@FINFO [ƒjƒbƒN]
+	
+	ŽóMƒƒ‚Œ”‚Æ‚»‚ÌãŒÀA–¢“ÇŒ”A‚»‚µ‚ÄV’…’Ê’mÝ’è‚ð•\Ž¦‚µ
+	‚Ü‚·BƒjƒbƒN‚ðŽw’è‚µ‚½ê‡‚Í‚»‚ÌƒjƒbƒN‚Ìƒƒ‚î•ñ‚ð•\Ž¦‚µ‚Ü‚·B
+	iƒjƒbƒNŽw’è‚ÍServicesƒAƒhƒ~ƒ“‚É§ŒÀ‚³‚ê‚Ä‚¢‚Ü‚·Bj
+
+MEMO_HELP_FORWARD
+	—p–@FFORWARD {”Ô† | ƒŠƒXƒg | ALL}
+	
+	ŽóMƒƒ‚‚ðAƒjƒbƒN‚É“o˜^‚³‚ê‚Ä‚¢‚éƒ[ƒ‹ƒAƒhƒŒƒX‚É“]‘—‚µ‚Ü‚·B
+	”Ô†‚â”Ô†ƒŠƒXƒg‚ðŽw’è‚µ‚½Žž‚ÍŠY“–‚·‚éƒƒ‚‚ªAALL‚ðŽw’è‚µ‚½
+	Žž‚Í‘S‚Ä‚Ìƒƒ‚‚ª“]‘—‚³‚ê‚Ü‚·Bƒ`ƒƒƒ“ƒlƒ‹‚Ìƒƒ‚‚ð“]‘—‚·‚é‚±‚Æ
+	‚Í‚Å‚«‚Ü‚¹‚ñB
+
+MEMO_HELP_SET_FORWARD
+	—p–@FSET FORWARD {ON | COPY | OFF}
+	
+	ŽóMƒƒ‚‚ÌŽ©“®“]‘—Ý’è‚ð•ÏX‚µ‚Ü‚·BON‚É‚·‚é‚ÆAƒƒ‚‚Í•Û‘¶‚³
+	‚ê‚¸AƒjƒbƒN‚É“o˜^‚³‚ê‚½ƒ[ƒ‹ƒAƒhƒŒƒX‚ÉŽ©“®“I‚É“]‘—‚³‚ê‚Ü‚·B
+	COPY‚É‚·‚é‚ÆA“¯—l‚É“]‘—‚·‚é‚Æ“¯Žž‚É%S‚Ìƒf[ƒ^ƒx[ƒX‚É‚àƒƒ‚
+	‚ð•Û‘¶‚µ‚Ü‚·BOFF‚É‚·‚é‚ÆA’Êí’Ê‚èƒf[ƒ^ƒx[ƒX‚Éƒƒ‚‚ð•Û‘¶
+	‚µ‚Ü‚·B’A‚µAON‚ÉÝ’è‚µ‚½ê‡‚Å‚àA‰½‚ç‚©‚Ì——R‚Åƒ[ƒ‹‘—M
+	‚ªo—ˆ‚È‚¢ê‡‚ÍOFF“¯—l‚Éƒƒ‚‚ð•Û‘¶‚µ‚Ü‚·B
+	
+	COPY‚ÉÝ’è‚µ‚½ê‡‚ÅAŽóMƒƒ‚Œ”‚ªãŒÀ‚É’B‚µ‚½ê‡‚ÍAƒ[
+	ƒ‹‚Å‚àƒƒ‚‚ðŽóM‚Å‚«‚È‚­‚È‚è‚Ü‚·‚Ì‚Å‚²’ˆÓ‚­‚¾‚³‚¢B
+
+MEMO_HELP_IGNORE
+	Syntax: IGNORE {ADD | DEL | LIST} [ƒjƒbƒN | ƒ}ƒXƒN]
+	
+	ƒƒ‚ŽóM‹‘”ÛƒŠƒXƒg‚ð•ÒW‚Ü‚½‚Í•\Ž¦‚µ‚Ü‚·B‚±‚ÌƒŠƒXƒg‚É“o˜^‚µ
+	‚½ƒjƒbƒN‚Ü‚½‚Íuƒ†[ƒU@ƒzƒXƒgvŒ`Ž®‚Ìƒ}ƒXƒN‚ðŽ‚Âƒ†
+	[ƒU‚©‚çƒƒ‚‚ðŽó‚¯Žæ‚ç‚È‚­‚È‚è‚Ü‚·BADDƒRƒ}ƒ“ƒh‚ÅƒjƒbƒN‚Ü‚½
+	‚Íƒ}ƒXƒN‚ð’Ç‰ÁADELƒRƒ}ƒ“ƒh‚ÅÁ‹Ž‚µ‚Ü‚·BLISTƒRƒ}ƒ“ƒh‚ÅŽóM
+	‹‘”ÛƒŠƒXƒg‚ð•\Ž¦‚µ‚Ü‚·B
+	
+	ŽóM‹‘”ÛƒŠƒXƒg‚É’Ç‰Á‚·‚éƒjƒbƒN‚âƒ}ƒXƒN‚ÉƒƒCƒ‹ƒhƒJ[ƒh•¶Žš
+	u*v‚Æu?v‚ðŽg—p‚Å‚«‚Ü‚·B‚Ü‚½A‘å•¶Žš‚Æ¬•¶Žš‚Ì‹æ•Ê‚Í‚³‚ê
+	‚Ü‚¹‚ñ‚Ì‚ÅAu*Waru*v‚Ì‚æ‚¤‚Èƒ}ƒXƒN‚É‚Íuwarumonov‚à
+	uIJIWARUv‚à“–‚Ä‚Í‚Ü‚è‚Ü‚·B
+
 
 ###########################################################################
 #
@@ -2373,231 +4169,650 @@ MEMO_SERVADMIN_HELP_INFO
 ###########################################################################
 
 OPER_HELP
-	%S‚ÌƒRƒ}ƒ“ƒh‚ÍŽŸ‚Ì’Ê‚è‚Å‚·B
-	
-	ˆê”Ê‚ÌIRC‚ÌƒIƒyƒŒ[ƒ^[‚ªŽg‚¦‚éƒRƒ}ƒ“ƒhF
-	    GLOBAL      ‘S‚Ä‚Ìƒ†[ƒU[‚ÉƒƒbƒZ[ƒW‚ð‘—‚é
-	    STATS       Services‚Æƒlƒbƒg‚ÌƒXƒe[ƒ^ƒX‚ð•\‚·
-	    OPER LIST   Services‚ÌƒIƒyƒŒ[ƒ^[•\‚ð•\‚·
-	    ADMIN LIST  Services‚ÌƒAƒhƒ~ƒ“•\‚ð•\‚·
-	
-	Services‚ÌƒIƒyƒŒ[ƒ^[‚ÆƒAƒhƒ~ƒ“‚¾‚¯‚ªŽg‚¦‚éƒRƒ}ƒ“ƒhF
-	    MODE        ƒ`ƒƒƒ“ƒlƒ‹‚Ìƒ‚[ƒh‚ð•ÏX‚·‚é
-	    KICK        ƒ`ƒƒƒ“ƒlƒ‹‚©‚çƒ†[ƒU[‚ðƒLƒbƒN‚·‚é
-	    AKILL       Ž©“®Ø’f•\‚ð•ÏX‚·‚é
-	
-	Services‚ÌƒAƒhƒ~ƒ“‚¾‚¯‚ªŽg‚¦‚éƒRƒ}ƒ“ƒhF
-	    OPER        Services‚ÌƒIƒyƒŒ[ƒ^[•\‚ð•ÏX‚·‚é
-	    LOGONNEWS   ƒ†[ƒU[‚ªÚ‘±‚·‚éŽž‚Éo‚³‚ê‚éƒƒbƒZ[ƒW‚ð
-	                @@ì‚é
-	    OPERNEWS    ƒ†[ƒU[‚ªƒIƒyƒŒ[ƒ^[i+oƒ‚[ƒhj‚É‚È‚éŽž
-	                @@‚Éo‚³‚ê‚éƒƒbƒZ[ƒW‚ðì‚é
-	    JUPE        ƒT[ƒo[‚ðuƒWƒ…ƒsƒ^[viÚ‘±‹‘”Ûj‚·‚é
-	    RAW         Services‚ÌÚ‘±ƒT[ƒo[‚ÉƒeƒLƒXƒg‚ðo‚·
-	    SET         Services‚ÌƒIƒvƒVƒ‡ƒ“‚ÌÝ’è
-	    UPDATE      ƒf[ƒ^ƒx[ƒX‚ð’¼Ú•Û‘¶‚³‚¹‚é
-	    QUIT        Services‚ðŽ~‚ß‚é
-	    RESTART     Services‚ðÄ‹N“®‚³‚¹‚é
-	
-	Services rootiƒX[ƒp[ƒ†[ƒU[j‚¾‚¯‚ªŽg‚¦‚éƒRƒ}ƒ“ƒhF
-	    ADMIN       Services‚ÌƒAƒhƒ~ƒ“•\‚ð•ÏX‚·‚é
-	
-	’ˆÓF%S‚Éo‚³‚ê‚½ƒRƒ}ƒ“ƒh‚Í‘S‚ÄƒƒbƒO‚³‚ê‚Ü‚·B
-
-OPER_HELP_GLOBAL
-	ƒVƒ“ƒ^ƒNƒXFGLOBAL message
-	
-	‘S‚Ä‚Ìƒlƒbƒg‚ÉÚ‘±‚µ‚Ä‚¢‚éƒ†[ƒU[‚ÉƒƒbƒZ[ƒW‚ðo‚µ‚Ü‚·B
-	ƒƒbƒZ[ƒW‚ÌŽwoƒjƒbƒN‚Í%s‚Å‚·B
-
-OPER_HELP_STATS
-	ƒVƒ“ƒ^ƒNƒXFSTATS [AKILL | ALL]
-	
-	ƒpƒ‰ƒ[ƒ^[‚ª‚È‚¢ê‡‚ÍAŒ»Ý‚Ìƒ†[ƒU[”‚ÆƒIƒyƒŒ[ƒ^[”A
-	Å‘åƒ†[ƒU[”A‹N“®‚©‚ç‚ÌŽžŠÔ‚ð•\‚µ‚Ü‚·B
-	
-	AKILL‚Æ‚¢‚¤ƒpƒ‰ƒ[ƒ^[‚ª‚ ‚éê‡‚ÍAŒ»Ý‚ÌŽ©“®Ø’fƒ}ƒXƒN‚Ì
-	”‚ÆŠù’è“I‚ÈŽõ–½‚ð•\‚µ‚Ü‚·B
-	
-	ALL‚Æ‚¢‚¤ƒIƒvƒVƒ‡ƒ“‚ªŽg‚¦‚é‚Ì‚ÍServices‚ÌƒAƒhƒ~ƒ“‚Ì‚Ý‚Å‚·B
-	‚±‚ÌƒIƒvƒVƒ‡ƒ“‚ð•t‚¯‚é‚ÆA•’Ê‚Ìî•ñiƒ†[ƒU[”‚Æ‹N“®‚©‚ç
-#@@@ umemory usagev‚Ì–|–ó
-	‚ÌŽžŠÔj‚Ì‰º‚ÅServices‚ÌŽg—p‚µ‚Ä‚¢‚éƒƒ‚ƒŠ[—Ê‚à•\‚ê‚Ü‚·B
-	‚±‚ÌŒ`‚ðŽg‚¤‚ÆServices‚Í­‚µ‚ÌŠÔƒtƒŠ[ƒY‚µ‚Ä‚µ‚Ü‚¢‚Ü‚·‚Ì‚ÅA
-	‚²’ˆÓ‰º‚³‚¢B
-	
-	uSTATSv‚Ì‘ã‚í‚è‚ÉuUPTIMEv‚àŽg‚¦‚Ü‚·B
-
-OPER_HELP_OPER
-	ƒVƒ“ƒ^ƒNƒXFOPER ADD nick
-	@@@@@@OPER DEL nick
-	@@@@@@OPER LIST
-	
-	Services‚ÌƒIƒyƒŒ[ƒ^[•\‚Ì•ÏX‚Æ•\Ž¦‚ÌƒRƒ}ƒ“ƒh‚Å‚·B‚±‚ÌƒŠ
-	ƒXƒg‚É‚ ‚éƒ†[ƒU[‚ÍA%s‚ÌIDENTIFY‚ÌƒRƒ}ƒ“ƒh‚ÅƒpƒXƒ[
-	ƒh‚ð“ü—Í‚·‚ê‚ÎServices‚ÌƒIƒyƒŒ[ƒ^[‚ÌƒRƒ}ƒ“ƒh‚ªŽg‚¦‚Ü‚·B
-	
-	’N‚Å‚àOPER LIST‚Æ‚¢‚¤Œ`‚ªŽg‚¦‚Ü‚·B‘¼‚ÌŽg—p‚ÍServices‚ÌƒAƒh
-	ƒ~ƒ“‚ÉŒÀ‚Á‚Ä‚¢‚Ü‚·B
-
-OPER_HELP_ADMIN
-	ƒVƒ“ƒ^ƒNƒXFADMIN ADD nick
-	@@@@@@ADMIN DEL nick
-	@@@@@@ADMIN LIST
-	
-	Services‚ÌƒAƒhƒ~ƒ“•\‚Ì•ÏX‚Æ•\Ž¦‚ÌƒRƒ}ƒ“ƒh‚Å‚·B‚±‚ÌƒŠƒXƒg
-	‚É‚ ‚éƒ†[ƒU[‚ÍA%s‚ÌIDENTIFY‚ÌƒRƒ}ƒ“ƒh‚ÅƒpƒXƒ[ƒh
-	‚ð“ü—Í‚·‚ê‚ÎServices‚ÌƒAƒhƒ~ƒ“‚ÌƒRƒ}ƒ“ƒh‚ªŽg‚¦‚Ü‚·B
-	
-	’N‚Å‚àADMIN LIST‚Æ‚¢‚¤Œ`‚ªŽg‚¦‚Ü‚·B‘¼‚ÌŽg—p‚ÍServices root
-	‚ÉŒÀ‚Á‚Ä‚¢‚Ü‚·B
-
-OPER_HELP_MODE
-	ƒVƒ“ƒ^ƒNƒXFMODE channel modes
-	
-	ƒ`ƒƒƒ“ƒlƒ‹‚Ìƒ‚[ƒh‚ð•ÏX‚µ‚Ü‚·Bƒpƒ‰ƒ[ƒ^[‚ÍIRC‚Ìu/MODEv
-	‚ÌƒRƒ}ƒ“ƒh‚Æ“¯‚¶‚Å‚·B
-	
-	‚±‚ÌƒRƒ}ƒ“ƒh‚ÌŽg—p‚ÍServices‚ÌƒIƒyƒŒ[ƒ^[‚ÉŒÀ‚Á‚Ä‚¢‚Ü‚·B
-
-OPER_HELP_CLEARMODES
-	ƒVƒ“ƒ^ƒNƒXFCLEARMODES channel [ALL]
-	
-	ƒ`ƒƒƒ“ƒlƒ‹‚Ì“üØƒ‚[ƒhiiEkElEmEnEpEsEtj‚Æ’Ç•úƒ}ƒX
-	ƒN‚ð‘S‚ÄƒNƒŠƒA‚µ‚Ü‚·BALL‚Æ‚¢‚¤ƒpƒ‰ƒ[ƒ^[‚ð“ü—Í‚·‚é‚ÆA
-	oEvƒ‚[ƒh‚àƒNƒŠƒA‚³‚ê‚Ü‚·B
-	
-	‚±‚ÌƒRƒ}ƒ“ƒh‚ÌŽg—p‚ÍServices‚ÌƒIƒyƒŒ[ƒ^[‚ÉŒÀ‚Á‚Ä‚¢‚Ü‚·B
-
-OPER_HELP_KICK
-	ƒVƒ“ƒ^ƒNƒXFKICK channel user reason
-	
-	ƒ`ƒƒƒ“ƒlƒ‹‚©‚çƒ†[ƒU[‚ðƒLƒbƒN‚µ‚Ü‚·Bƒpƒ‰ƒ[ƒ^[‚ÍIRC‚Ì
-	/KICK‚Æ‚¢‚¤ƒRƒ}ƒ“ƒh‚Æ“¯‚¶‚Å‚·‚ªAƒLƒbƒNƒƒbƒZ[ƒW‚Ì‘O‚É‚±‚Ì
-	ƒRƒ}ƒ“ƒh‚ðŽg‚Á‚½ƒ†[ƒU[‚ÌƒjƒbƒN‚ª•\‚ê‚Ü‚·B
-#@@@ —á‚ª•K—v
-	
-	‚±‚ÌƒRƒ}ƒ“ƒh‚ÌŽg—p‚ÍServices‚ÌƒIƒyƒŒ[ƒ^[‚ÉŒÀ‚Á‚Ä‚¢‚Ü‚·B
-
-OPER_HELP_AKILL
-	ƒVƒ“ƒ^ƒNƒXFAKILL ADD [+expiry] mask reason
-	@@@@@@AKILL DEL mask
-	@@@@@@AKILL LIST [mask]
-	@@@@@@AKILL VIEW [mask]
-	
-	uŽ©“®Ø’f•\viƒI[ƒgƒLƒ‹•\j‚Ì•ÏX‚Æ•\Ž¦‚ÌƒRƒ}ƒ“ƒh‚Å‚·B
-	Ž©“®Ø’fƒ}ƒXƒN‚É‡‚¤ƒ†[ƒU[‚ªÚ‘±‚·‚é‚ÆAServices‚Í‚»‚Ì
-	ƒ†[ƒU[‚ðØ’f‚µAƒT[ƒo[‚ÌƒvƒƒgƒRƒ‹‚É‚æ‚Á‚Ä‚»‚Ìƒ}ƒXƒN‚ð
-	uK:ƒ‰ƒCƒ“v‚É‚µ‚Ü‚·B
-	
-	AKILL ADD‚Æ‚¢‚¤Œ`‚Åƒ}ƒXƒN‚ðŽ©“®Ø’f•\‚É’Ç‰Á‚Å‚«‚Ü‚·B
-	reasoni——Rj‚Í•K—v‚Å‚·‚ªAƒIƒyƒŒ[ƒ^[‚Ìˆ×‚¾‚¯‚Å‚·‚Ì‚ÅA
-	Ø’f‚³‚ê‚½ƒ†[ƒU[‚ÌØ’fƒƒbƒZ[ƒW‚É•\‚ê‚Ü‚¹‚ñB
-	expiry‚ð“ü—Í‚·‚ê‚ÎAŽ©“®Ø’fƒGƒ“ƒgƒŠ[‚ÌŽõ–½‚ðŽw’è‚Å‚«‚Ü‚·B
-	Œ`‚Í³”‚ÉŽžŠÔ‚Ì’PˆÊ‚ðŽwŽ¦‚·‚é•¶Žš‚ð•t‚¯‚Ü‚·B’PˆÊ‚Ì•¶Žš‚Í
-	udvi“újAuhviŽžŠÔjAumvi•ªj‚ÅA•¶Žš‚ð•t‚¯‚È‚¢‚Æ
-	“ú‚É‚È‚è‚Ü‚·B‚½‚¾‚µA•¶Žš‚ð‡‚í‚¹‚é‚±‚Æiu1h30mv‚È‚Çj‚Í
-	o—ˆ‚Ü‚¹‚ñBu+0v‚É‚·‚ê‚ÎAŽ©“®Ø’fƒGƒ“ƒgƒŠ[‚ÍØ‚ê‚Ü‚¹‚ñB
-	Žõ–½‚ð“ü—Í‚µ‚È‚¢ê‡‚ÍAŠù’èŽõ–½‚É‚È‚è‚Ü‚·BSTATS AKILL‚Æ‚¢
-	‚¤ƒRƒ}ƒ“ƒh‚Å‚»‚ÌŠù’è’l‚ð•\‚·‚±‚Æ‚ªo—ˆ‚Ü‚·B
-	@¦ƒ}ƒXƒN‚Íu+v‚ÅŽn‚Ü‚éê‡‚ÍAŽõ–½‚ð“ü—Í‚µ‚È‚¯‚ê‚Î‚È‚è‚Ü
-	@@‚¹‚ñB
-	
-	AKILL DEL‚Æ‚¢‚¤Œ`‚Åƒ}ƒXƒN‚ðŽ©“®Ø’f•\‚©‚çÁ‹Ž‚Å‚«‚Ü‚·B
-	
-	AKILL LIST‚Æ‚¢‚¤Œ`‚ÅŽ©“®Ø’f•\‚ð•\‚¹‚Ü‚·Bƒpƒ‰ƒ[ƒ^[‚ð“ü
-	—Í‚·‚ê‚ÎA‚»‚Ìƒ}ƒXƒN‚É‡‚¤ƒGƒ“ƒgƒŠ[‚µ‚©•\‚ê‚Ü‚¹‚ñB
-	
-	AKILL VIEW‚Æ‚¢‚¤Œ`‚ÅAKILL LIST‚Ì‚æ‚¤‚ÉŽ©“®Ø’f•\‚ð•\‚·‚±‚Æ
-	‚ªo—ˆ‚Ü‚·‚ªALIST‚æ‚è‘½‚­‚Ìî•ñi“ü—Í‚µ‚½ƒ†[ƒU[‚Æ“úŽžA
-	Ø‚ê‚é“úŽžj‚ªo‚Ü‚·B
-	
-	‚±‚ÌƒRƒ}ƒ“ƒh‚ÌŽg—p‚ÍServices‚ÌƒIƒyƒŒ[ƒ^[‚ÉŒÀ‚Á‚Ä‚¢‚Ü‚·B
-
-OPER_HELP_JUPE
-	ƒVƒ“ƒ^ƒNƒXFJUPE server [reason]
-	
-	ƒT[ƒo[‚ðuƒWƒ…ƒsƒ^[v‚µ‚Ü‚·BƒWƒ…ƒsƒ^[ijupiterj‚Æ‚ÍA
-	ƒT[ƒo[‚ðƒlƒbƒg‚ÉÚ‘±‚³‚¹‚È‚¢ˆ×‚É‰¼ƒT[ƒo[‚ðìƒŠƒlƒbƒg‚É‚Â
-	‚È‚°‚é‚±‚Æ‚Å‚·B‰¼ƒT[ƒo[‚Íu/SQUITv‚Æ‚¢‚¤IRC‚ÌƒRƒ}ƒ“ƒh‚Å
-	Á‚·‚±‚Æ‚ªo—ˆ‚Ü‚·Breasoni——Rj‚ð“ü—Í‚·‚ê‚ÎA‚»‚Ì•¶Žš
-	—ñ‚Í‰¼ƒT[ƒo[‚Ì/LINKS‚È‚Ç‚ÅƒT[ƒo[î•ñ‚Æ‚µ‚Ä•\‚ê‚Ü‚·B——R
-	‚ð“ü—Í‚µ‚È‚¢ê‡‚ÍAƒT[ƒo[–¼‚ªƒT[ƒo[î•ñ‚Æ‚µ‚ÄŽg—p‚³‚ê‚Ü
+	%S‚ÍAIRCƒIƒyƒŒ[ƒ^ê—p‚Ìƒlƒbƒgƒ[ƒNŠÇ—E§ŒäƒT[ƒr
+	ƒX‚Å‚·Bu/msg %S HELP COMMANDSv‚ÅƒRƒ}ƒ“ƒhˆê——‚ð•\Ž¦‚Å‚«‚Ü
 	‚·B
 	
-	‚±‚ÌƒRƒ}ƒ“ƒh‚ÌŽg—p‚ÍServices‚ÌƒAƒhƒ~ƒ“‚ÉŒÀ‚Á‚Ä‚¢‚Ü‚·B
+	’ˆÓF%S‚É‘—M‚³‚ê‚½‘S‚Ä‚ÌƒRƒ}ƒ“ƒh‚ÍƒƒO‚³‚ê‚Ü‚·B
 
-OPER_HELP_RAW
-	ƒVƒ“ƒ^ƒNƒXFRAW text
+OPER_HELP_COMMANDS
+	%S‚Å‚ÍA‰º‹LƒRƒ}ƒ“ƒh‚ªŽg‚¦‚Ü‚·B
 	
-	Services‚ªÚ‘±‚µ‚Ä‚¢‚éƒT[ƒo[‚ÉƒeƒLƒXƒg‚ðo‚µ‚Ü‚·BIRC‚Ìƒv
-	ƒƒgƒRƒ‹‚ª‚Í‚Á‚«‚è•ª‚©‚ç‚¸‚É‚±‚ÌƒRƒ}ƒ“ƒh‚ðŽg‚Á‚½‚èA“ü—Í‚Å
-	ŠÔˆá‚¢‚ð‚µ‚Ä‚±‚ÌƒRƒ}ƒ“ƒh‚ðo‚µ‚½‚è‚µ‚Ä‚µ‚Ü‚¦‚ÎAƒlƒbƒg‚ð‹¶
-	‚í‚¹‚é‚±‚Æ‚ª‚ ‚è‚Ü‚·‚Ì‚ÅA[•ª‚²’ˆÓ‰º‚³‚¢B
+	‘S‚Ä‚ÌIRCƒIƒyƒŒ[ƒ^‚ªŽg‚¦‚éƒRƒ}ƒ“ƒhF
+	    GLOBAL      ‘Sƒ†[ƒU‚ÉƒƒbƒZ[ƒW‚ð‘—M‚·‚é
+	    STATS       Services‚Æƒlƒbƒgƒ[ƒN‚Ìó‹µ“™‚ð•\Ž¦‚·‚é
+	    SERVERMAP   ƒlƒbƒgƒ[ƒN\¬}‚ð•\Ž¦‚·‚é
+	    OPER LIST   ServicesƒIƒyƒŒ[ƒ^ƒŠƒXƒg‚ð•\Ž¦‚·‚é
+	    ADMIN LIST  ServicesƒAƒhƒ~ƒ“ƒŠƒXƒg‚ð•\Ž¦‚·‚é
+OPER_HELP_COMMANDS_SERVOPER
 	
-	‚±‚ÌƒRƒ}ƒ“ƒh‚ÌŽg—p‚ÍServices‚ÌƒAƒhƒ~ƒ“‚ÉŒÀ‚Á‚Ä‚¢‚Ü‚·B
+	ServicesƒIƒyƒŒ[ƒ^ê—pƒRƒ}ƒ“ƒhF
+	    MODE        ƒ`ƒƒƒ“ƒlƒ‹‚Ìƒ‚[ƒh‚ð•ÏX‚·‚é
+	    KICK        ƒ`ƒƒƒ“ƒlƒ‹‚©‚çƒ†[ƒU‚ðƒLƒbƒN‚·‚é
+	    CLEARMODES  ƒ`ƒƒƒ“ƒlƒ‹‚Ìƒ‚[ƒh‚ðƒNƒŠƒA‚·‚é
+	    CLEARCHAN   ƒ`ƒƒƒ“ƒlƒ‹‚Ì‘Sƒ†[ƒU‚ðƒLƒbƒN‚·‚é
+	    KILLCLONES  “¯‚¶ƒzƒXƒg‚©‚çÚ‘±‚µ‚Ä‚¢‚éƒ†[ƒU‚ð‘S‚ÄØ’f‚·‚é
+OPER_HELP_COMMANDS_AKILL
+	    AKILL       Ž©“®Ø’fƒŠƒXƒg‚ð•ÒW‚·‚é
+	    AKILLCHAN   ƒ`ƒƒƒ“ƒlƒ‹‚Ì‘Sƒ†[ƒU‚ðŽ©“®Ø’fƒŠƒXƒg‚É’Ç‰Á‚·‚é
+OPER_HELP_COMMANDS_EXCLUDE
+	    EXCLUDE     Ž©“®Ø’fœŠOƒŠƒXƒg‚ð•ÒW‚·‚é
+OPER_HELP_COMMANDS_SLINE
+	    SGLINE      SGLINEƒŠƒXƒg‚ð•ÒW‚·‚é
+	    SQLINE      SQLINEƒŠƒXƒg‚ð•ÒW‚·‚é
+	    SZLINE      SZLINEƒŠƒXƒg‚ð•ÒW‚·‚é
+OPER_HELP_COMMANDS_SESSION
+	    SESSION     ƒZƒbƒVƒ‡ƒ“ƒŠƒXƒg‚ð•\Ž¦‚·‚é
+	    EXCEPTION   ƒZƒbƒVƒ‡ƒ“Ú‘±”§ŒÀ‚Ì—áŠOƒŠƒXƒg‚ð•ÒW‚·‚é
+OPER_HELP_COMMANDS_NEWS
+	    LOGONNEWS   Ú‘±Žž‚É•\Ž¦‚³‚ê‚éƒjƒ…[ƒX€–Ú‚ð“o˜^‚·‚é
+	    OPERNEWS    IRCƒIƒyƒŒ[ƒ^Œ Žæ“¾Žžƒjƒ…[ƒX€–Ú‚ð“o˜^‚·‚é
+OPER_HELP_COMMANDS_SERVADMIN
+	
+	ServicesƒAƒhƒ~ƒ“ê—pƒRƒ}ƒ“ƒhF
+	    OPER        ServicesƒIƒyƒŒ[ƒ^ƒŠƒXƒg‚ð•ÒW‚·‚é
+	    JUPE        ƒT[ƒo‚ðuƒWƒ…ƒsƒ^[viÚ‘±‹‘”Ûj‚·‚é
+	    SET         Services‘S‘Ì‚ÌÝ’è‚ð•ÏX‚·‚é
+	    UPDATE      ƒfƒBƒXƒNã‚Ìƒf[ƒ^ƒx[ƒX‚ð‚·‚®XV‚³‚¹‚é
+	    SHUTDOWN    ƒf[ƒ^ƒx[ƒX‚ð•Û‘¶‚µAServices‚ðI—¹‚³‚¹‚é
+	    QUIT        ƒf[ƒ^ƒx[ƒX‚ð•Û‘¶‚¹‚¸‚ÉServices‚ðI—¹‚³‚¹‚é
+	    RESTART     ƒf[ƒ^ƒx[ƒX‚ð•Û‘¶‚µAServices‚ðÄ‹N“®‚·‚é
+	    REHASH      ŠÂ‹«Ý’èƒtƒ@ƒCƒ‹‚ðÄ“Ç‚Ýž‚Ý‚·‚é
+	    SU          ServicesƒX[ƒp[ƒ†[ƒUŒ ‚ðŽæ“¾‚·‚é
+OPER_HELP_COMMANDS_SERVROOT
+	
+	ServicesƒX[ƒp[ƒ†[ƒUê—pƒRƒ}ƒ“ƒhF
+	    ADMIN       ServicesƒAƒhƒ~ƒ“ƒŠƒXƒg‚ð•ÒW‚·‚é
+OPER_HELP_COMMANDS_RAW
+	    RAW         IRCƒlƒbƒgƒ[ƒN‚É•¶Žš—ñ‚ð’¼Ú‘—M‚·‚é
+
+OPER_HELP_GLOBAL
+	—p–@FGLOBAL ƒƒbƒZ[ƒW
+	
+	IRCƒlƒbƒgƒ[ƒN‚Ì‘Sƒ†[ƒU‚ÉƒƒbƒZ[ƒW‚ð‘—M‚µ‚Ü‚·BƒƒbƒZ[
+	ƒW‚ÍƒjƒbƒNu%sv‚©‚ç‘—M‚³‚ê‚Ü‚·B
+
+OPER_HELP_STATS
+	—p–@FSTATS [RESET | NETWORK | ALL]
+	
+	ƒpƒ‰ƒ[ƒ^‚ª‚È‚¢ŽžAƒlƒbƒgƒ[ƒN‚ÉÚ‘±‚µ‚Ä‚¢‚éƒ†[ƒU”‚ÆIRC
+	ƒIƒyƒŒ[ƒ^”iServices‚Ì‹^Ž—ƒ†[ƒU‚ÍŠÜ‚Ü‚¸jAŒ»Ý‚Ü‚Å‚ÌÅ‘å
+	ƒ†[ƒU”A‚»‚µ‚Ä‹N“®‚©‚çŒo‚Á‚Ä‚¢‚éŽžŠÔ‚ð•\Ž¦‚µ‚Ü‚·B
+	
+	RESET‚ðŽw’è‚µ‚½ŽžAÅ‘åƒ†[ƒU”‚ðŒ»Ý‚Ìƒ†[ƒU”‚ÉƒŠƒZƒbƒg‚µ
+	‚Ü‚·B
+	
+	NETWORK‚ðŽw’è‚µ‚½ŽžAServices‚ªƒlƒbƒgƒ[ƒN‚É‘—M‚µ‚½ƒf[ƒ^
+	—Ê‚Æƒlƒbƒgƒ[ƒN‚©‚çŽóM‚µ‚½ƒf[ƒ^—Ê‚ÆA‘—ŽóMƒoƒbƒtƒ@‚Ì‡Œv
+	ƒƒ‚ƒŠŽg—p—Ê‚ð•\Ž¦‚µ‚Ü‚·Bƒoƒbƒtƒ@ƒTƒCƒY§ŒÀ‚ªÝ’è‚³‚ê‚Ä‚¢‚é
+	ê‡‚ÍA‚»‚Ì§ŒÀ‚É‘Î‚·‚éŽg—p—¦‚àƒp[ƒZƒ“ƒg‚Å•\Ž¦‚³‚ê‚Ü‚·B
+	
+	ALL‚ÍServicesƒAƒhƒ~ƒ“‚É§ŒÀ‚³‚ê‚Ä‚¢‚éƒIƒvƒVƒ‡ƒ“‚ÅAServices
+	‚ÌŠe‹@”\‚Ìƒƒ‚ƒŠŽg—p—Ê‚ð•\Ž¦‚µ‚Ü‚·B‚±‚ÌŽg—p—Ê‚ðŒvŽZ‚µ‚Ä‚¢‚é
+	ŠÔ‚Í‘¼‚ÌƒRƒ}ƒ“ƒh‚É‰ž“š‚Å‚«‚¸A‘å‹K–Í‚Èƒlƒbƒgƒ[ƒN‚Å‚ÍŽžŠÔ‚ª
+	‚©‚©‚é‚±‚Æ‚à‚ ‚è‚Ü‚·‚Ì‚ÅAŽg—p‚É’ˆÓ‚µ‚Ä‚­‚¾‚³‚¢B
+	
+	uSTATSv‚Ì‘ã‚í‚è‚ÉuUPTIMEv‚ðŽg‚¤‚±‚Æ‚ào—ˆ‚Ü‚·B
+
+OPER_HELP_SERVERMAP
+	—p–@FSERVERMAP
+	
+	Services‚ÌŠÏ“_‚©‚çƒlƒbƒgƒ[ƒN‚Ì\¬}‚ð•\Ž¦‚µ‚Ü‚·B‹^Ž—ƒT[
+	ƒoiServicesŽ©‘Ì‚ÆAJUPEƒRƒ}ƒ“ƒh‚ÅÚ‘±‹‘”Û‚³‚ê‚½ƒT[ƒoj‚Í
+	u(*)v‚ÅŽ¦‚³‚ê‚Ü‚·B
+
+OPER_HELP_OPER
+	—p–@FOPER ADD ƒjƒbƒN
+	@@@OPER DEL ƒjƒbƒN
+	@@@OPER LIST
+	
+	ServicesƒIƒyƒŒ[ƒ^ƒŠƒXƒg‚ð•ÒW‚Ü‚½‚Í•\Ž¦‚µ‚Ü‚·B‚±‚ÌƒŠƒXƒg‚É
+	“o˜^‚³‚ê‚Ä‚¢‚éƒ†[ƒU‚ÍA%s‚É‘Î‚µ‚ÄƒpƒXƒ[ƒh”FØ‚ðs‚¦‚ÎA
+	ServicesƒIƒyƒŒ[ƒ^ê—pƒRƒ}ƒ“ƒh‚ðŽg—p‚Å‚«‚é‚æ‚¤‚É‚È‚è‚Ü‚·B
+	
+	LISTi•\Ž¦jƒRƒ}ƒ“ƒh‚ÍA‘S‚Ä‚ÌIRCƒIƒyƒŒ[ƒ^‚ªŽg‚¦‚Ü‚·‚ªAADD
+	i’Ç‰Áj‚ÆDELiíœj‚ÍServicesƒAƒhƒ~ƒ“‚É§ŒÀ‚³‚ê‚Ä‚¢‚Ü‚·B
+
+OPER_HELP_ADMIN
+	—p–@FADMIN ADD ƒjƒbƒN
+	@@@ADMIN DEL ƒjƒbƒN
+	@@@ADMIN LIST
+	
+	ServicesƒIƒyƒŒ[ƒ^ƒŠƒXƒg‚ð•ÒW‚Ü‚½‚Í•\Ž¦‚µ‚Ü‚·B‚±‚ÌƒŠƒXƒg‚É
+	“o˜^‚³‚ê‚Ä‚¢‚éƒ†[ƒU‚ÍA%s‚É‘Î‚µ‚ÄƒpƒXƒ[ƒh”FØ‚ðs‚¦‚ÎA
+	ServicesƒIƒyƒŒ[ƒ^EServicesƒAƒhƒ~ƒ“ê—pƒRƒ}ƒ“ƒh‚ðŽg—p‚Å‚«‚é
+	‚æ‚¤‚É‚È‚è‚Ü‚·B
+	
+	LISTi•\Ž¦jƒRƒ}ƒ“ƒh‚ÍA‘S‚Ä‚ÌIRCƒIƒyƒŒ[ƒ^‚ªŽg‚¦‚Ü‚·‚ªAADD
+	i’Ç‰Áj‚ÆDELiíœj‚ÍServicesƒX[ƒp[ƒ†[ƒU‚É§ŒÀ‚³‚ê‚Ä‚¢
+	‚Ü‚·B
+
+OPER_HELP_GETKEY
+	—p–@FGETKEY ƒ`ƒƒƒ“ƒlƒ‹
+	
+	ƒ`ƒƒƒ“ƒlƒ‹‚ÉÝ’è‚³‚ê‚½ƒL[ƒ[ƒh‚ð•\Ž¦‚µ‚Ü‚·B
+	
+	‚±‚ÌƒRƒ}ƒ“ƒh‚ÌŽg—p‚ÍServicesƒIƒyƒŒ[ƒ^‚É§ŒÀ‚³‚ê‚Ä‚¢‚Ü‚·B
+
+OPER_HELP_MODE
+	—p–@FMODE ƒ`ƒƒƒ“ƒlƒ‹ ƒ‚[ƒh
+	
+	ƒ`ƒƒƒ“ƒlƒ‹‚Ìƒ‚[ƒh‚ð•ÏX‚µ‚Ü‚·Bƒpƒ‰ƒ[ƒ^‚ÍIRC‚Ì/MODEƒRƒ}ƒ“
+	ƒh‚Æ“¯—l‚Å‚·B
+	
+	‚±‚ÌƒRƒ}ƒ“ƒh‚ÌŽg—p‚ÍServicesƒIƒyƒŒ[ƒ^‚É§ŒÀ‚³‚ê‚Ä‚¢‚Ü‚·B
+
+OPER_HELP_CLEARMODES
+	—p–@FCLEARMODES ƒ`ƒƒƒ“ƒlƒ‹ [ALL]
+	
+	ƒ`ƒƒƒ“ƒlƒ‹ƒ‚[ƒhin,s,t,k,l,b“™j‚ð‘S‚ÄƒNƒŠƒA‚µ‚Ü‚·BALL‚ðŽw
+	’è‚·‚é‚ÆAƒIƒyƒŒ[ƒ^Œ i+ojE”­Œ¾Œ i+vj“™‚Ìƒ†[ƒUƒ‚[ƒh‚à
+	ƒNƒŠƒA‚³‚ê‚Ü‚·B‚½‚¾‚µAƒ`ƒƒƒ“ƒlƒ‹‚ª“o˜^‚³‚êAƒ‚[ƒhƒƒbƒN‚ª
+	Ý’è‚³‚ê‚Ä‚¢‚éê‡‚ÍAƒƒbƒN‚³‚ê‚½ƒ‚[ƒh‚Í‚»‚Ì‚Ü‚ÜŽc‚è‚Ü‚·B
+	
+	‚±‚ÌƒRƒ}ƒ“ƒh‚ÌŽg—p‚ÍServicesƒIƒyƒŒ[ƒ^‚É§ŒÀ‚³‚ê‚Ä‚¢‚Ü‚·B
+
+OPER_HELP_CLEARCHAN
+	—p–@FCLEARCHAN ƒ`ƒƒƒ“ƒlƒ‹
+	
+	ƒ`ƒƒƒ“ƒlƒ‹‚Ì‘Sƒ†[ƒU‚ð‚»‚Ìƒ`ƒƒƒ“ƒlƒ‹‚©‚çƒLƒbƒN‚µ‚Ü‚·B
+
+OPER_HELP_KICK
+	—p–@FKICK ƒ`ƒƒƒ“ƒlƒ‹ ƒjƒbƒN ——R
+	
+	ƒ`ƒƒƒ“ƒlƒ‹‚©‚çƒ†[ƒU‚ðƒLƒbƒN‚µ‚Ü‚·Bƒpƒ‰ƒ[ƒ^‚ÍIRC‚Ì/KICKƒR
+	ƒ}ƒ“ƒh‚Æ“¯—l‚Å‚·‚ªA——R‚Ìæ“ª‚É‚±‚ÌƒRƒ}ƒ“ƒh‚ðŽg‚Á‚½ƒ†[ƒU‚Ì
+	ƒjƒbƒN‚ª’Ç‰Á‚³‚ê‚Ü‚·B
+	
+	‚±‚ÌƒRƒ}ƒ“ƒh‚ÌŽg—p‚ÍServicesƒIƒyƒŒ[ƒ^‚É§ŒÀ‚³‚ê‚Ä‚¢‚Ü‚·B
+
+OPER_HELP_AKILL
+	—p–@FAKILL ADD [+—LŒøŠúŒÀ] ƒ}ƒXƒN ——R
+	@@@AKILL DEL ƒ}ƒXƒN
+	@@@AKILL CLEAR ALL
+	@@@AKILL LIST [+ŠJŽnˆÊ’u] [ƒpƒ^[ƒ“] [NOEXPIRE]
+	@@@AKILL VIEW [+ŠJŽnˆÊ’u] [ƒpƒ^[ƒ“] [NOEXPIRE]
+	@@@AKILL CHECK ƒ}ƒXƒN
+	      AKILL COUNT
+	
+	Ž©“®Ø’fiƒI[ƒgƒLƒ‹jƒŠƒXƒg‚ð•ÒW‚Ü‚½‚Í•\Ž¦‚µ‚Ü‚·B‚±‚ÌƒŠƒX
+	ƒg‚É“o˜^‚³‚ê‚½uƒ†[ƒU@ƒzƒXƒgvŒ`Ž®‚Ìƒ}ƒXƒN‚Éˆê’v‚·
+	‚éƒ†[ƒU‚ªIRCƒlƒbƒgƒ[ƒN‚ÉÚ‘±‚µ‚½ê‡AServices‚Í‚»‚Ìƒ†[
+	ƒU‚ðØ’fi/KILLj‚µAƒlƒbƒgƒ[ƒN‚ÌŠeƒT[ƒo‚ÉØ’fƒ}ƒXƒN
+	iKlinej‚ð’Ç‰Á‚µ‚Ü‚·B
+	
+	ƒTƒuƒRƒ}ƒ“ƒh‚ÍˆÈ‰º‚Ì’Ê‚è‚Å‚·B
+	@EADDFƒ}ƒXƒN‚ð“o˜^‚·‚éi——R‚à•K{j
+	@EDELFƒ}ƒXƒN‚ðÁ‹Ž‚·‚é
+	@ECLEARF‘Sƒ}ƒXƒN‚ðÁ‹Ž‚·‚éiuALLv‚ÍAŒë—p–hŽ~‚Ì‚½‚ß•K{j
+	@ELISTF“o˜^‚³‚ê‚½ƒ}ƒXƒN‚ð•\Ž¦‚·‚éiƒpƒ^[ƒ“Žw’è‚Åi‚èž‚Ý
+	@@‰Â”\jBNOEXPIRE‚ðŽw’è‚·‚é‚ÆA•\Ž¦‘ÎÛ‚ð—LŒøŠúŒÀ‚Ì‚È‚¢‚à
+	@@‚Ì‚ÉŒÀ’è‚·‚éB‚Ü‚½AŠJŽnˆÊ’u‚ÅÅ‰‚É•\Ž¦‚·‚éƒŒƒR[ƒh‚ðŽw
+	@@’è‚Å‚«‚éi—áFu+50v‚Å51ŒÂ–Ú‚ÌŠY“–ƒŒƒR[ƒh‚©‚ç•\Ž¦j
+	@EVIEWFLIST“¯—l‚ÌŒŸõ‚ð‚µAŠeƒGƒ“ƒgƒŠ‚ÌÚ×î•ñ‚ð•\Ž¦‚·‚é
+	@ECHECKFŽw’è‚³‚ê‚½ƒ}ƒXƒN‚ª“–‚Ä‚Í‚Ü‚éƒGƒ“ƒgƒŠ‚ð•\Ž¦‚·‚é
+	@ECOUNTF“o˜^ƒGƒ“ƒgƒŠ”‚ð•\Ž¦‚·‚é
+	
+	ADDƒRƒ}ƒ“ƒh‚Å‚ÍAƒGƒ“ƒgƒŠ‚Ì—LŒøŠúŒÀ‚ðŽw’è‚·‚é‚±‚Æ‚à‚Å‚«‚Ü‚·B
+	ƒ}ƒXƒN‚Ì‘O‚ÉA”’l‚Æ’PˆÊ‚Ì‘g‡‚í‚¹‚ÅŒ»Ý‚©‚ç‚Ì—LŒøŠúŠÔ‚ðŽw’è
+	‚µ‚Ü‚·B’PˆÊ‚Íudv(“ú)Auhv(ŽžŠÔ)Aumv(•ª) ‚Ì‚¢‚¸‚ê‚©‚ÅA
+	—á‚¦‚Îu+90mv‚Ü‚½‚Íu+1h30mv‚ðŽw’è‚·‚é‚ÆAƒGƒ“ƒgƒŠ‚ª‚PŽžŠÔ
+	30•ªŒã‚ÉŽ©“®“I‚ÉÁ‹Ž‚³‚ê‚Ü‚·B’PˆÊ‚ðŽw’è‚µ‚È‚¢ê‡‚Í“ú”‚Æ‰ð
+	Žß‚³‚ê‚Ü‚·B‚È‚¨Au+v‚ÅŽn‚Ü‚éƒ}ƒXƒN‚ð’Ç‰Á‚·‚éŽž‚ÍA—LŒøŠú
+	ŒÀ‚Æ‰ðŽß‚³‚ê‚Ä‚µ‚Ü‚¤‚½‚ßA•K‚¸—LŒøŠúŒÀ‚ðŽw’è‚µ‚È‚¯‚ê‚Î‚È‚è‚Ü
+	‚¹‚ñB
+	
+	ADDƒRƒ}ƒ“ƒh‚ÅŽg‚¤u——Rv‚ÍAServices‚ÌÝ’è‚É‚æ‚Á‚Ä‚ÍA/KILL
+	ƒƒbƒZ[ƒW‚Å•\Ž¦‚³‚ê‚éê‡‚ª‚ ‚è‚Ü‚·B
+OPER_HELP_AKILL_OPERMAXEXPIRY
+	
+	ServicesƒIƒyƒŒ[ƒ^‚ª—LŒøŠúŒÀ‚Æ‚µ‚ÄŽw’è‚Å‚«‚éŠúŠÔ‚Í%sˆÈ‰º
+	‚Å‚·BServicesƒAƒhƒ~ƒ“‚ªŽw’è‚Å‚«‚éŠúŠÔ‚É§ŒÀ‚Í‚ ‚è‚Ü‚¹‚ñB
+OPER_HELP_AKILL_END
+	
+	‚±‚ÌƒRƒ}ƒ“ƒh‚ÌŽg—p‚ÍServicesƒIƒyƒŒ[ƒ^‚É§ŒÀ‚³‚ê‚Ä‚¢‚Ü‚·B
+
+OPER_HELP_AKILLCHAN
+	—p–@FAKILLCHAN [KILL] [+—LŒøŠúŒÀ] ƒ`ƒƒƒ“ƒlƒ‹ ——R
+	
+	Žw’è‚³‚ê‚½ƒ`ƒƒƒ“ƒlƒ‹‚ÉŽQ‰Á‚µ‚Ä‚¢‚éAIRCƒIƒyƒŒ[ƒ^‚ðœ‚­‘Sƒ†
+	[ƒU‚ðAŽ©“®Ø’fƒŠƒXƒg‚É’Ç‰Á‚µAKILL‚ðŽw’è‚µ‚½ê‡‚Í‹­§Ø’f
+	‚µ‚Ü‚·B——R‚ÍŠeŽ©“®Ø’fƒ}ƒXƒN‚Æˆê‚É•Û‘¶‚³‚êAServices‚ÌÝ
+	’è‚É‚æ‚Á‚Ä‚ÍØ’fƒƒbƒZ[ƒW‚É•\Ž¦‚³‚ê‚Ü‚·B—LŒøŠúŒÀ‚ÍAKILL
+	ADDƒRƒ}ƒ“ƒh‚Æ“¯—l‚ÉŽw’è‚·‚é‚±‚Æ‚ª‚Å‚«AŽw’è‚µ‚È‚¢ê‡‚Í%s
+	‚Æ‚È‚è‚Ü‚·B
+	
+	‚±‚ÌƒRƒ}ƒ“ƒh‚Å’Ç‰Á‚³‚ê‚éŽ©“®Ø’fƒ}ƒXƒN‚Íu*@ƒzƒXƒg–¼vŒ`Ž®‚Å
+	¶¬‚³‚ê‚Ü‚·B‚·‚Å‚É“¯ˆê‚Ìƒ}ƒXƒN‚ª‘¶Ý‚·‚éê‡‚ÍA‚»‚Ì“o˜^“à
+	—e‚ð•ÏX‚µ‚Ü‚¹‚ñ‚Ì‚ÅAŽÀÛ‚É’Ç‰Á‚³‚ê‚éƒ}ƒXƒN‚Ì”‚ÍAƒ`ƒƒƒ“ƒl
+	ƒ‹‚Ìƒ†[ƒU”‚æ‚è­‚È‚¢‚±‚Æ‚à‚ ‚è‚Ü‚·B
+	
+	‚±‚ÌƒRƒ}ƒ“ƒh‚ÌŽg—p‚ÍServicesƒIƒyƒŒ[ƒ^‚É§ŒÀ‚³‚ê‚Ä‚¢‚Ü‚·B
+
+OPER_HELP_EXCLUDE
+	—p–@FEXCLUDE ADD [+—LŒøŠúŒÀ] ƒ}ƒXƒN ——R
+	@@@EXCLUDE DEL ƒ}ƒXƒN
+	@@@EXCLUDE CLEAR ALL
+	@@@EXCLUDE LIST [+ŠJŽnˆÊ’u] [ƒpƒ^[ƒ“] [NOEXPIRE]
+	@@@EXCLUDE VIEW [+ŠJŽnˆÊ’u] [ƒpƒ^[ƒ“] [NOEXPIRE]
+	@@@EXCLUDE CHECK ƒ}ƒXƒN
+	      EXCLUDE COUNT
+	
+	Ž©“®Ø’fœŠOƒŠƒXƒg‚ð•ÒW‚Ü‚½‚Í•\Ž¦‚µ‚Ü‚·B‚±‚ÌƒŠƒXƒg‚É“o˜^‚³
+	‚ê‚½ƒ}ƒXƒN‚Éˆê’v‚·‚éƒ†[ƒU‚ªIRC‚ÉÚ‘±‚µ‚½ê‡AŽ©“®Ø’fƒ}ƒX
+	ƒN‚Éˆê’v‚µ‚Ä‚¢‚éê‡‚Å‚àØ’f‚³‚ê‚Ü‚¹‚ñBƒvƒƒoƒCƒ_‘S‘Ì‚ðŽÕ’f
+	‚µ‚½Ž©“®Ø’fƒ}ƒXƒN‚ª‚ ‚Á‚ÄA‚»‚ÌƒvƒƒoƒCƒ_‚©‚ç“Á’è‚Ìƒ†[ƒU‚É
+	Ú‘±‚ð‹–‰Â‚µ‚½‚¢ê‡‚È‚Ç‚É•Ö—˜‚Å‚·B
+	
+	ŠeƒTƒuƒRƒ}ƒ“ƒh‚ÍAKILLƒRƒ}ƒ“ƒh‚Æ“¯—l‚É“®ì‚µ‚Ü‚·BÚ‚µ‚­‚Í
+	AKILLƒRƒ}ƒ“ƒh‚Ìƒwƒ‹ƒv‚ð‚²——‚­‚¾‚³‚¢B
+	
+	‚±‚ÌƒRƒ}ƒ“ƒh‚ÌŽg—p‚ÍServicesƒIƒyƒŒ[ƒ^‚É§ŒÀ‚³‚ê‚Ä‚¢‚Ü‚·B
+
+OPER_HELP_SGLINE
+	—p–@FSGLINE ADD [+—LŒøŠúŒÀ] ƒ}ƒXƒN ——R
+	@@@SGLINE DEL ƒ}ƒXƒN
+	@@@SGLINE CLEAR ALL
+	@@@SGLINE LIST [+ŠJŽnˆÊ’u] [ƒpƒ^[ƒ“] [NOEXPIRE]
+	@@@SGLINE VIEW [+ŠJŽnˆÊ’u] [ƒpƒ^[ƒ“] [NOEXPIRE]
+	@@@SGLINE CHECK ƒ}ƒXƒN
+	      SGLINE COUNT
+	
+	SGLINEƒŠƒXƒg‚ð•ÒW‚Ü‚½‚Í•\Ž¦‚µ‚Ü‚·B‚±‚ÌƒŠƒXƒg‚É“o˜^‚³‚ê‚½ƒ}
+	ƒXƒN‚ÉuƒŠƒAƒ‹ƒl[ƒ€vi‚¢‚í‚ä‚égecosj‚ªˆê’v‚·‚éƒ†[ƒU‚ªIRC
+	‚ÉÚ‘±‚µ‚½ê‡‚ÍA‚»‚Ìƒ†[ƒU‚ðØ’f‚µAIRCƒT[ƒo‚Ì‹@”\‚É‚æ‚Á
+	‚Ä‚ÍSGLINE’Ç•úƒ}ƒXƒN‚ðŠeƒT[ƒo‚É’Ç‰Á‚³‚¹‚Ü‚·B
+	
+	ƒTƒuƒRƒ}ƒ“ƒh‚ÍˆÈ‰º‚Ì’Ê‚è‚Å‚·B
+	@EADDFƒ}ƒXƒN‚ð“o˜^‚·‚éi——R‚à•K{j
+	@EDELFƒ}ƒXƒN‚ðÁ‹Ž‚·‚é
+	@ECLEARF‘Sƒ}ƒXƒN‚ðÁ‹Ž‚·‚éiuALLv‚ÍAŒë—p–hŽ~‚Ì‚½‚ß•K{j
+	@ELISTF“o˜^‚³‚ê‚½ƒ}ƒXƒN‚ð•\Ž¦‚·‚éiƒpƒ^[ƒ“Žw’è‚Åi‚èž‚Ý
+	@@‰Â”\jBNOEXPIRE‚ðŽw’è‚·‚é‚ÆA•\Ž¦‘ÎÛ‚ð—LŒøŠúŒÀ‚Ì‚È‚¢‚à
+	@@‚Ì‚ÉŒÀ’è‚·‚éB‚Ü‚½AŠJŽnˆÊ’u‚ÅÅ‰‚É•\Ž¦‚·‚éƒŒƒR[ƒh‚ðŽw
+	@@’è‚Å‚«‚éi—áFu+50v‚Å51ŒÂ–Ú‚ÌŠY“–ƒŒƒR[ƒh‚©‚ç•\Ž¦j
+	@EVIEWFLIST“¯—l‚ÌŒŸõ‚ð‚µAŠeƒGƒ“ƒgƒŠ‚ÌÚ×î•ñ‚ð•\Ž¦‚·‚é
+	@ECHECKFŽw’è‚³‚ê‚½ƒ}ƒXƒN‚ª“–‚Ä‚Í‚Ü‚éƒGƒ“ƒgƒŠ‚ð•\Ž¦‚·‚é
+	@ECOUNTF“o˜^ƒGƒ“ƒgƒŠ”‚ð•\Ž¦‚·‚é
+	
+	ƒ}ƒXƒN‚ÉƒXƒy[ƒXi‹ó”’•¶Žšj‚ªŠÜ‚Ü‚ê‚Ä‚¢‚éê‡AƒNƒH[ƒg•¶Žš
+	u"v‚ÅˆÍ‚ñ‚Å‚­‚¾‚³‚¢B—áF
+	    /msg %S SGLINE ADD +0 "bad name" ‚¢‚¯‚È‚¢–¼‘O‚Å‚·B
+	
+	ADDƒRƒ}ƒ“ƒh‚Å‚ÍAƒGƒ“ƒgƒŠ‚Ì—LŒøŠúŒÀ‚ðŽw’è‚·‚é‚±‚Æ‚à‚Å‚«‚Ü‚·B
+	ƒ}ƒXƒN‚Ì‘O‚ÉA”’l‚Æ’PˆÊ‚Ì‘g‡‚í‚¹‚ÅŒ»Ý‚©‚ç‚Ì—LŒøŠúŠÔ‚ðŽw’è
+	‚µ‚Ü‚·B’PˆÊ‚Íudv(“ú)Auhv(ŽžŠÔ)Aumv(•ª) ‚Ì‚¢‚¸‚ê‚©‚ÅA
+	—á‚¦‚Îu+90mv‚Ü‚½‚Íu+1h30mv‚ðŽw’è‚·‚é‚ÆAƒGƒ“ƒgƒŠ‚ª‚PŽžŠÔ
+	30•ªŒã‚ÉŽ©“®“I‚ÉÁ‹Ž‚³‚ê‚Ü‚·B’PˆÊ‚ðŽw’è‚µ‚È‚¢ê‡‚Í“ú”‚Æ‰ð
+	Žß‚³‚ê‚Ü‚·B‚È‚¨Au+v‚ÅŽn‚Ü‚éƒ}ƒXƒN‚ð’Ç‰Á‚·‚éŽž‚ÍA—LŒøŠú
+	ŒÀ‚Æ‰ðŽß‚³‚ê‚Ä‚µ‚Ü‚¤‚½‚ßA•K‚¸—LŒøŠúŒÀ‚ðŽw’è‚µ‚È‚¯‚ê‚Î‚È‚è‚Ü
+	‚¹‚ñB
+	
+	ADDƒRƒ}ƒ“ƒh‚ÅŽg‚¤u——Rv‚ÍAServices‚ÌÝ’è‚É‚æ‚Á‚Ä‚ÍA/KILL
+	ƒƒbƒZ[ƒW‚Å•\Ž¦‚³‚ê‚éê‡‚ª‚ ‚è‚Ü‚·B
+	
+	‚±‚ÌƒRƒ}ƒ“ƒh‚ÌŽg—p‚ÍServicesƒIƒyƒŒ[ƒ^‚É§ŒÀ‚³‚ê‚Ä‚¢‚Ü‚·B
+
+OPER_HELP_SQLINE
+	—p–@FSQLINE ADD [+—LŒøŠúŒÀ] ƒ}ƒXƒN ——R
+	@@@SQLINE DEL ƒ}ƒXƒN
+	@@@SQLINE CLEAR ALL
+	@@@SQLINE LIST [+ŠJŽnˆÊ’u] [ƒpƒ^[ƒ“] [NOEXPIRE]
+	@@@SQLINE VIEW [+ŠJŽnˆÊ’u] [ƒpƒ^[ƒ“] [NOEXPIRE]
+	@@@SQLINE CHECK ƒ}ƒXƒN
+	      SQLINE COUNT
+	
+OPER_HELP_SQLINE_KILL
+	SQLINEƒŠƒXƒg‚ð•ÒW‚Ü‚½‚Í•\Ž¦‚µ‚Ü‚·B‚±‚ÌƒŠƒXƒg‚É“o˜^‚³‚ê‚½ƒ}
+	ƒXƒN‚ÉƒjƒbƒN‚ªˆê’v‚·‚éƒ†[ƒU‚ªIRC‚ÉÚ‘±‚µ‚½ê‡A‚Ü‚½‚ÍÚ‘±
+	‚µ‚Ä‚¢‚éƒ†[ƒU‚ª‚»‚Ì‚æ‚¤‚ÈƒjƒbƒN‚É•ÏX‚µ‚æ‚¤‚Æ‚µ‚½ê‡‚ÍA‚»
+	‚Ìƒ†[ƒU‚ðØ’f‚µAIRCƒT[ƒo‚Ì‹@”\‚É‚æ‚Á‚Ä‚ÍSQLINE’Ç•úƒ}ƒXƒN
+	‚ðŠeƒT[ƒo‚É’Ç‰Á‚³‚¹‚Ü‚·B
+OPER_HELP_SQLINE_NOKILL
+	SQLINEƒŠƒXƒg‚ð•ÒW‚Ü‚½‚Í•\Ž¦‚µ‚Ü‚·B‚±‚ÌƒŠƒXƒg‚É“o˜^‚³‚ê‚½ƒ}
+	ƒXƒN‚ÉƒjƒbƒN‚ªˆê’v‚·‚éƒ†[ƒU‚ªIRC‚ÉÚ‘±‚µ‚½ê‡A‚Ü‚½‚ÍÚ‘±
+	‚µ‚Ä‚¢‚éƒ†[ƒU‚ª‚»‚Ì‚æ‚¤‚ÈƒjƒbƒN‚É•ÏX‚µ‚æ‚¤‚Æ‚µ‚½ê‡‚ÍA‚»
+	‚Ìƒ†[ƒU‚ÌƒjƒbƒN‚ðŽ©“®¶¬‚³‚ê‚½uˆêŽžƒjƒbƒNv‚É•ÏX‚µAƒjƒb
+	ƒN‚Ì•ÏX‚ð‘£‚·ƒƒbƒZ[ƒW‚ðƒ†[ƒU‚É‘—‚è‚Ü‚·B‚Ü‚½AIRCƒT[ƒo
+	‚Ì‹@”\‚É‚æ‚Á‚Ä‚ÍSQLINE’Ç•úƒ}ƒXƒN‚ðŠeƒT[ƒo‚É’Ç‰Á‚³‚¹‚Ü‚·B
+OPER_HELP_SQLINE_IGNOREOPERS
+	
+	IRCƒIƒyƒŒ[ƒ^‚ÍASQLINE‚Ì§ŒÀ‚ðŽó‚¯‚Ü‚¹‚ñB
+OPER_HELP_SQLINE_END
+	
+	ŠeƒTƒuƒRƒ}ƒ“ƒh‚ÍSGLINEƒRƒ}ƒ“ƒh‚Æ“¯—l‚É“®ì‚µ‚Ü‚·BÚ‚µ‚­‚Í
+	SGLINEƒRƒ}ƒ“ƒh‚Ìƒwƒ‹ƒv‚ð‚²——‚­‚¾‚³‚¢B
+	
+	‚±‚ÌƒRƒ}ƒ“ƒh‚ÌŽg—p‚ÍServicesƒIƒyƒŒ[ƒ^‚É§ŒÀ‚³‚ê‚Ä‚¢‚Ü‚·B
+
+OPER_HELP_SZLINE
+	—p–@FSZLINE ADD [+—LŒøŠúŒÀ] ƒ}ƒXƒN ——R
+	@@@SZLINE DEL ƒ}ƒXƒN
+	@@@SZLINE CLEAR ALL
+	@@@SZLINE LIST [+ŠJŽnˆÊ’u] [ƒpƒ^[ƒ“] [NOEXPIRE]
+	@@@SZLINE VIEW [+ŠJŽnˆÊ’u] [ƒpƒ^[ƒ“] [NOEXPIRE]
+	@@@SZLINE CHECK ƒ}ƒXƒN
+	      SZLINE COUNT
+	
+	SZLINEƒŠƒXƒg‚ð•ÒW‚Ü‚½‚Í•\Ž¦‚µ‚Ü‚·B‚±‚ÌƒŠƒXƒg‚É“o˜^‚³‚ê‚½ƒ}
+	ƒXƒN‚ÉIPƒAƒhƒŒƒX‚ªˆê’v‚·‚éƒ†[ƒU‚ªIRC‚ÉÚ‘±‚µ‚½ê‡‚ÍA‚»‚Ì
+	ƒ†[ƒU‚ðØ’f‚µAIRCƒT[ƒo‚Ì‹@”\‚É‚æ‚Á‚Ä‚ÍSZLINE’Ç•úƒ}ƒXƒN‚ð
+	ŠeƒT[ƒo‚É’Ç‰Á‚³‚¹‚Ü‚·B
+	
+	ŠeƒTƒuƒRƒ}ƒ“ƒh‚ÍSGLINEƒRƒ}ƒ“ƒh‚Æ“¯—l‚É“®ì‚µ‚Ü‚·BÚ‚µ‚­‚Í
+	SGLINEƒRƒ}ƒ“ƒh‚Ìƒwƒ‹ƒv‚ð‚²——‚­‚¾‚³‚¢B
+	
+	‚±‚ÌƒRƒ}ƒ“ƒh‚ÌŽg—p‚ÍServicesƒIƒyƒŒ[ƒ^‚É§ŒÀ‚³‚ê‚Ä‚¢‚Ü‚·B
+
+OPER_HELP_EXCEPTION
+	—p–@FEXCEPTION ADD [+—LŒøŠúŒÀ] ƒ}ƒXƒN ãŒÀ ——R
+	@@@EXCEPTION DEL {ƒ}ƒXƒN | ƒŠƒXƒg}
+	@@@EXCEPTION CLEAR ALL
+	@@@EXCEPTION MOVE ”Ô† V”Ô†
+	@@@EXCEPTION LIST [[+ŠJŽnˆÊ’u] ƒpƒ^[ƒ“ | ƒŠƒXƒg]
+	@@@EXCEPTION VIEW [[+ŠJŽnˆÊ’u] ƒpƒ^[ƒ“ | ƒŠƒXƒg]
+	@@@EXCEPTION CHECK ƒzƒXƒg–¼
+	@@@EXCEPTION COUNT
+	
+	ƒZƒbƒVƒ‡ƒ“§ŒÀ—áŠOƒŠƒXƒg‚ð•ÒW‚Ü‚½‚Í•\Ž¦‚µ‚Ü‚·BuƒZƒbƒVƒ‡ƒ“v
+	‚Æ‚ÍAˆê‚Â‚ÌƒNƒ‰ƒCƒAƒ“ƒgiƒ†[ƒUj‚ÌIRC‚Ö‚ÌÚ‘±‚Ì‚±‚Æ‚ÅA
+	Services‚ÍuƒZƒbƒVƒ‡ƒ“§ŒÀ‹@”\v‚Åˆê‚Â‚ÌƒzƒXƒg‚©‚ç‚ÌƒZƒbƒVƒ‡
+	ƒ“iÚ‘±j”‚ð§ŒÀ‚·‚é‚±‚Æ‚ª‚Å‚«‚Ü‚·B“¯‚¶ƒzƒXƒg‚©‚çA—\‚ßÝ
+	’è‚³‚ê‚½ƒZƒbƒVƒ‡ƒ“”ãŒÀ‚ð’´‚¦‚½Ú‘±‚ª‚ ‚Á‚½ê‡‚ÍAServices
+	‚ª‚»‚ÌƒNƒ‰ƒCƒAƒ“ƒg‚ð‚·‚®‚ÉØ’f‚µ‚Ü‚·B‚Ü‚½AÝ’è‚É‚æ‚Á‚Ä‚ÍØ
+	’f‚Ì‘O‚É——R‚ð’Ê’m‚·‚éƒƒbƒZ[ƒW‚ð‘—‚é‚±‚Æ‚à‚Å‚«‚Ü‚·B‚»‚µ‚Ä
+	uƒZƒbƒVƒ‡ƒ“§ŒÀ—áŠOƒŠƒXƒgv‚ÍA—\‚ßÝ’è‚³‚ê‚½‚Ì‚Æˆá‚¤ƒZƒbƒV
+	ƒ‡ƒ“”ãŒÀ‚ð“Á’è‚ÌƒzƒXƒg‚É“K—p‚³‚¹‚é‚½‚ß‚Ì‚à‚Ì‚Å‚·B
+	
+	ADDƒRƒ}ƒ“ƒh‚ÅAŽw’è‚³‚ê‚½ƒzƒXƒg–¼‚Ü‚½‚ÍƒzƒXƒgƒ}ƒXƒNiƒ†[ƒU
+	–¼AƒjƒbƒN‚ÍŽg—p•s‰Âj‚ðƒZƒbƒVƒ‡ƒ“§ŒÀ—áŠOƒŠƒXƒg‚É’Ç‰Á‚Å‚«‚Ü
+	‚·Bƒ}ƒXƒN‚Éˆê’v‚·‚é‘S‚Ä‚ÌƒzƒXƒg‚ÉA‚±‚Ì§ŒÀ‚ª“K—p‚³‚ê‚Ü‚·B
+	Žw’è‚³‚ê‚½ãŒÀ‚ªƒ[ƒ‚Ìê‡AƒZƒbƒVƒ‡ƒ“”‚ª§ŒÀ‚³‚ê‚Ü‚¹‚ñi‚»
+	‚ÌƒzƒXƒg‚©‚ç‚¢‚­‚Â‚ÌƒNƒ‰ƒCƒAƒ“ƒg‚Å‚àÚ‘±‚Å‚«‚é‚æ‚¤‚É‚È‚è‚Ü‚·jB
+	
+	ADDƒRƒ}ƒ“ƒh‚Å‚ÍAƒGƒ“ƒgƒŠ‚Ì—LŒøŠúŒÀ‚ðŽw’è‚·‚é‚±‚Æ‚à‚Å‚«‚Ü‚·B
+	ƒ}ƒXƒN‚Ì‘O‚ÉA”’l‚Æ’PˆÊ‚Ì‘g‡‚í‚¹‚ÅŒ»Ý‚©‚ç‚Ì—LŒøŠúŠÔ‚ðŽw’è
+	‚µ‚Ü‚·B’PˆÊ‚Íudv(“ú)Auhv(ŽžŠÔ)Aumv(•ª) ‚Ì‚¢‚¸‚ê‚©‚ÅA
+	—á‚¦‚Îu+90mv‚Ü‚½‚Íu+1h30mv‚ðŽw’è‚·‚é‚ÆAƒGƒ“ƒgƒŠ‚ª‚PŽžŠÔ
+	30•ªŒã‚ÉŽ©“®“I‚ÉÁ‹Ž‚³‚ê‚Ü‚·B’PˆÊ‚ðŽw’è‚µ‚È‚¢ê‡‚Í“ú”‚Æ‰ð
+	Žß‚³‚ê‚Ü‚·B‚È‚¨Au+v‚ÅŽn‚Ü‚éƒ}ƒXƒN‚ð’Ç‰Á‚·‚éŽž‚ÍA—LŒøŠú
+	ŒÀ‚Æ‰ðŽß‚³‚ê‚Ä‚µ‚Ü‚¤‚½‚ßA•K‚¸—LŒøŠúŒÀ‚ðŽw’è‚µ‚È‚¯‚ê‚Î‚È‚è‚Ü
+	‚¹‚ñB
+	
+	DELƒRƒ}ƒ“ƒh‚ÅAŽw’è‚³‚ê‚½ƒ}ƒXƒN‚ðƒŠƒXƒg‚©‚çÁ‹Ž‚Å‚«‚Ü‚·B”Ô
+	†ƒŠƒXƒg‚ðŽw’è‚·‚é‚±‚Æ‚à‚Å‚«‚Ü‚·iƒGƒ“ƒgƒŠ”Ô†‚ÍLIST‚âVIEWƒR
+	ƒ}ƒ“ƒh‚ÅŠm”F‚Å‚«‚Ü‚·jB
+	
+	CLEARƒRƒ}ƒ“ƒh‚ÅAƒŠƒXƒg‚É“o˜^‚³‚ê‚½‘S‚Ä‚Ìƒ}ƒXƒN‚ðˆêŠ‡‚µ‚ÄÁ
+	‹Ž‚Å‚«‚Ü‚·BŒë—p‚ð–h‚®‚½‚ßAuALLvƒpƒ‰ƒ[ƒ^‚Í•K{‚Å‚·B
+	
+	MOVEƒRƒ}ƒ“ƒh‚ÅAŽw’è‚³‚ê‚½ƒGƒ“ƒgƒŠ‚ð•Ê‚ÌˆÊ’u‚ÉˆÚ“®‚Å‚«‚Ü‚·B
+	V‚µ‚¢”Ô†‚ª‚·‚Å‚É‘¼‚ÌƒGƒ“ƒgƒŠ‚ÉŠ„‚è“–‚Ä‚ç‚ê‚Ä‚¢‚éê‡A‚»‚Ì
+	ƒGƒ“ƒgƒŠ‚Ì‘O‚É‘}“ü‚µA”Ô†‚ªd•¡‚µ‚È‚¢‚æ‚¤‚ÉˆÈ~‚ÌƒGƒ“ƒgƒŠ‚Ì
+	”Ô†‚ðŽ©“®“I‚É’²®‚µ‚Ü‚·B
+	
+	LIST‚ÆVIEWƒRƒ}ƒ“ƒh‚ÅAƒŠƒXƒg‚ð•\Ž¦‚Å‚«‚Ü‚·Bƒpƒ^[ƒ“‚ðŽw’è‚µ
+	‚½ê‡‚ÍAˆê’v‚µ‚È‚¢ƒ}ƒXƒN‚Í•\Ž¦‚³‚ê‚Ü‚¹‚ñi‚È‚¨AŠJŽnˆÊ’u‚Å
+	•\Ž¦‚ÌŠJŽnˆÊ’u‚àŽw’è‚Å‚«‚éB—á‚¦‚Î+50‚Å51ŒÂ–Ú‚ÌŠY“–ƒ}ƒXƒN‚©
+	‚ç•\Ž¦‚µ‚Ü‚·jBLIST‚ªƒ}ƒXƒN‚Ì‚Ý‚ð•\Ž¦‚·‚é‚Ì‚É‘Î‚µ‚ÄAVIEW‚Í
+	‚æ‚èÚ×‚Èî•ñiƒ}ƒXƒN’Ç‰Á‚µ‚½ƒ†[ƒU‚ÌƒjƒbƒNA—LŒøŠúŒÀAŽg—p
+	ó‹µ‚È‚Çj‚ð•¹‚¹‚Ä•\Ž¦‚µ‚Ü‚·B
+	
+	CHECKƒRƒ}ƒ“ƒh‚ÅA“Á’è‚ÌƒzƒXƒg–¼‚ª“–‚Ä‚Í‚Ü‚éƒGƒ“ƒgƒŠ‚ðŠm”F‚Å
+	‚«‚Ü‚·B‚ ‚éƒ†[ƒU‚ª‚Ç‚Ì—áŠOƒ}ƒXƒN‚ÉŠY“–‚·‚é‚©‚ð’²‚×‚é‚±‚Æ‚ª
+	‚Å‚«‚Ü‚·B
+	
+	COUNTƒRƒ}ƒ“ƒh‚ÅAƒŠƒXƒg‚É“o˜^‚³‚ê‚Ä‚¢‚éƒGƒ“ƒgƒŠ”‚ð•\Ž¦‚Å‚«
+	‚Ü‚·B
+	
+	‚È‚¨A“¯‚¶ƒzƒXƒg‚É“K—p‚Å‚«‚éƒGƒ“ƒgƒŠ‚ª•¡”‚ ‚éê‡AƒŠƒXƒg‚Ì
+	ˆê”Ôãi”Ô†‚ªˆê”ÔŽá‚¢j‚à‚Ì‚ª“K—p‚³‚ê‚Ü‚·B
+	
+	‚±‚ÌƒRƒ}ƒ“ƒh‚ÌŽg—p‚ÍServicesƒIƒyƒŒ[ƒ^‚É§ŒÀ‚³‚ê‚Ä‚¢‚Ü‚·B
+
+OPER_HELP_SESSION
+	—p–@FSESSION LIST ‰ºŒÀ
+	@@@SESSION VIEW ƒzƒXƒg–¼
+	
+	ƒZƒbƒVƒ‡ƒ“ƒŠƒXƒgi‚Ç‚ÌƒzƒXƒg‚©‚çA‰½l‚Ìƒ†[ƒU‚ªÚ‘±‚µ‚Ä‚¢‚é
+	‚©‚ÌƒŠƒXƒgj‚ð•\Ž¦‚µ‚Ü‚·B
+	
+	LISTƒRƒ}ƒ“ƒh‚ÅAŽw’è‚³‚ê‚½u‰ºŒÀvˆÈã‚Ìƒ†[ƒU‚ªÚ‘±‚µ‚Ä‚¢‚é
+	ƒzƒXƒg‚ð•\Ž¦‚µ‚Ü‚·Bu1v‚ðŽw’è‚·‚é‚ÆA‘S‚Ä‚ÌƒzƒXƒg‚ªŠY“–‚µ
+	‚Ä‘å—Ê‚Ìî•ñ‚ª•\Ž¦‚³‚ê‚Ä‚µ‚Ü‚¤‚½‚ßA2ˆÈã‚Ì”’l‚ðŽw’è‚µ‚È‚¯
+	‚ê‚Î‚È‚è‚Ü‚¹‚ñB
+	
+	VIEWƒRƒ}ƒ“ƒh‚ÅA“Á’è‚ÌƒzƒXƒg‚ÌŒ»Ýƒ†[ƒU”‚ÆãŒÀ‚ð•\Ž¦‚µ‚Ü‚·B
+	uƒzƒXƒg–¼v‚Å‚ÍƒƒCƒ‹ƒhƒJ[ƒh‚ðŽg—p‚Å‚«‚Ü‚¹‚ñB
+	
+	ƒZƒbƒVƒ‡ƒ“§ŒÀ‹@”\‚ÌÚ‚µ‚¢à–¾‚É‚Â‚¢‚Ä‚ÍAEXCEPTIONƒRƒ}ƒ“ƒh
+	‚Ìƒwƒ‹ƒvî•ñ‚ð‚²——‚­‚¾‚³‚¢B
+	
+	‚±‚ÌƒRƒ}ƒ“ƒh‚ÌŽg—p‚ÍServicesƒIƒyƒŒ[ƒ^‚É§ŒÀ‚³‚ê‚Ä‚¢‚Ü‚·B
+
+OPER_HELP_SU
+	—p–@FSU ƒpƒXƒ[ƒh
+	
+	ServicesƒX[ƒp[ƒ†[ƒUŒ ‚ðŽæ“¾‚µ‚Ü‚·BƒpƒXƒ[ƒh‚ÍSET SUPASS
+	ƒRƒ}ƒ“ƒh‚ÅÝ’è‚µ‚½‚à‚Ì‚Å‚·BServicesƒX[ƒp[ƒ†[ƒUŒ ‚ÍAIRC
+	‚©‚çØ’f‚·‚é‚Ü‚Å—LŒø‚Å‚·B
+	
+	ŒxFƒpƒXƒ[ƒh‚ª³‚µ‚­‚È‚¢ê‡A‘SƒIƒyƒŒ[ƒ^‚ÉŒxƒƒbƒZ[
+	@@@ƒW‚ª‘—M‚³‚ê‚Ü‚·B
+	
+	‚±‚ÌƒRƒ}ƒ“ƒh‚ÌŽg—p‚ÍServicesƒAƒhƒ~ƒ“‚É§ŒÀ‚³‚ê‚Ä‚¢‚Ü‚·B
 
 OPER_HELP_SET
-	ƒVƒ“ƒ^ƒNƒXFSET option setting
+	—p–@FSET Ý’è–¼ ’l
 	
-	Services‘S‘Ì‚ÌƒIƒvƒVƒ‡ƒ“‚ðÝ’è‚µ‚Ü‚·BƒIƒvƒVƒ‡ƒ“‚Ì–¼‘O‚ÍŽŸ
-	‚Ì’Ê‚è‚Å‚·B
-	    READONLY   ƒŠ[ƒhƒIƒ“ƒŠ[ƒ‚[ƒh‚Ì“üØ
-	    DEBUG      ƒfƒoƒbƒOƒ‚[ƒh‚Ì“üØ
+	Services‘S‘Ì‚ÌÝ’è‚ð•ÏX‚µ‚Ü‚·BuÝ’è–¼v‚É‚ÍˆÈ‰º‚Ì‚à‚Ì‚ªŽg
+	‚¦‚Ü‚·B
 	
-	‚±‚ÌƒRƒ}ƒ“ƒh‚ÌŽg—p‚ÍServices‚ÌƒAƒhƒ~ƒ“‚ÉŒÀ‚Á‚Ä‚¢‚Ü‚·B
+	    READONLY   “Ç‚ÝŽæ‚èê—pƒ‚[ƒhÝ’è‚ðs‚¤
+	    DEBUG      ƒfƒoƒbƒOƒŒƒxƒ‹‚ð•ÏX‚·‚é
+	    SUPASS     SUƒRƒ}ƒ“ƒh—p‚ÌƒpƒXƒ[ƒh‚ðÝ’è‚·‚é
+	
+	‚±‚ÌƒRƒ}ƒ“ƒh‚ÌŽg—p‚ÍServicesƒAƒhƒ~ƒ“‚É§ŒÀ‚³‚ê‚Ä‚¢‚Ü‚·
+	iSUPASS‚ÍServicesƒX[ƒp[ƒ†[ƒU‚Ì‚Ý‚Å‚·jB
 
 OPER_HELP_SET_READONLY
-	ƒVƒ“ƒ^ƒNƒXFSET READONLY {ON | OFF}
+	—p–@FSET READONLY {ON | OFF}
 	
-	ƒŠ[ƒhƒIƒ“ƒŠ[ƒ‚[ƒh‚ð“üØ‚µ‚Ü‚·BON‚É‚·‚ê‚ÎAƒ†[ƒU[‚Í
-	Services‚Ìƒf[ƒ^‚ð•ÏX‚Å‚«‚È‚­‚È‚èAƒjƒbƒN‚Æƒ`ƒƒƒ“ƒlƒ‹‚Ì“o
-	˜^‚ÆÁ‹Ž‚à•s‰Â”\‚É‚È‚è‚Ü‚·BServices‚ÌƒIƒyƒŒ[ƒ^[‚ÆƒAƒhƒ~
-	ƒ“‚ÍŽ©“®Ø’f•\‚ð•ÏX‚Å‚«AƒAƒhƒ~ƒ“‚È‚çƒjƒbƒN‚Æƒ`ƒƒƒ“ƒlƒ‹‚ð
-	Žg—p‹ÖŽ~‚É‚Å‚«‚Ü‚·‚ªAServices‚ðÁ‚·i‚»‚ê‚ÆÄ‹N“®‚·‚éj‘O
-	‚ÉƒŠ[ƒhƒIƒ“ƒŠ[ƒ‚[ƒh‚ðOFF‚É‚µ‚È‚¯‚ê‚Î‚»‚Ì•ÏX‚Í•Û‘¶‚³‚ê‚Ü
-	‚¹‚ñ‚Ì‚ÅA‚²’ˆÓ‰º‚³‚¢B
+	“Ç‚ÝŽæ‚èê—pƒ‚[ƒh‚ÉˆÚs‚µ‚½‚èA’Êíƒ‚[ƒh‚É–ß‚Á‚½‚è‚µ‚Ü‚·B
+	“Ç‚ÝŽæ‚èê—pƒ‚[ƒh‚Å‚ÍAServicesƒAƒhƒ~ƒ“ˆÈŠO‚Ìƒ†[ƒU‚ÍƒjƒbƒN
+	‚âƒ`ƒƒƒ“ƒlƒ‹‚ÌƒAƒNƒZƒXƒŠƒXƒg‚È‚Ç‚Ìƒf[ƒ^‚ð•ÏX‚Å‚«‚¸iŽ©“®Ø
+	’fƒŠƒXƒg‚ÍServicesƒIƒyƒŒ[ƒ^‚Å‚à•ÏX‰ÂjA•ÏX‚µ‚½ê‡‚Å‚àA
+	SET READONLY OFF‚Å’Êíƒ‚[ƒh‚É–ß‚³‚È‚¢‚Æ•ÏX‚Í•Û‘¶‚³‚ê‚Ü‚¹‚ñB
 	
-	‚±‚ÌƒRƒ}ƒ“ƒh‚Íu-readonlyv‚Æ‚¢‚¤ƒRƒ}ƒ“ƒhƒ‰ƒCƒ“ƒIƒvƒVƒ‡ƒ“‚Æ
-	“¯‚¶Œ‹‰Ê‚ðo‚µ‚Ü‚·B
+	‚±‚ÌƒRƒ}ƒ“ƒh‚ÍƒRƒ}ƒ“ƒhƒ‰ƒCƒ“ƒIƒvƒVƒ‡ƒ“u-readonlyv‚Æ“¯—l‚É
+	“®ì‚µ‚Ü‚·B
 
 OPER_HELP_SET_DEBUG
-	ƒVƒ“ƒ^ƒNƒXFSET DEBUG {ON | OFF | num}
+	—p–@FSET DEBUG {ON | OFF | ƒŒƒxƒ‹}
 	
-	ƒfƒoƒbƒOƒ‚[ƒh‚ð“üØ‚µ‚Ü‚·BON‚É‚·‚ê‚ÎAServices‚ªŽó‚¯‚½‚è
-	o‚µ‚½‚è‚·‚éƒeƒLƒXƒg‚Æ‘¼‚ÌƒfƒoƒbƒOƒƒbƒZ[ƒW‚ÍƒƒbƒO‚³‚ê‚Ü
-	‚·Bnum‚Æ‚¢‚¤³”‚ð“ü—Í‚·‚é‚ÆAƒfƒoƒbƒO‚ÌƒŒƒxƒ‹‚Ínum‚ÉÝ’è
-	‚³‚ê‚Ü‚·B
+	ƒfƒoƒbƒOƒŒƒxƒ‹‚ð•ÏX‚µ‚Ü‚·BON‚Ü‚½‚P‚É‚·‚é‚ÆAServices‚ÆIRC
+	ƒlƒbƒgƒ[ƒN‚Æ‚Ìƒf[ƒ^‘—ŽóM‚â‘¼‚ÌƒfƒoƒbƒOî•ñ‚ªƒƒOƒtƒ@ƒCƒ‹
+	‚Éo—Í‚³‚ê‚Ü‚·BƒŒƒxƒ‹‚ð‚QˆÈã‚ÉÝ’è‚·‚é‚ÆAX‚ÉÚ×‚Èƒfƒoƒb
+	ƒOî•ñ‚ªo—Í‚³‚ê‚Ü‚·i‚±‚Ì‚½‚ßƒƒOƒtƒ@ƒCƒ‹‚ÌƒTƒCƒY‚ª‹}‘‚·‚é
+	‚±‚Æ‚à‚ ‚è‚Ü‚·‚Ì‚Å—v’ˆÓjB
 	
-	‚±‚ÌƒRƒ}ƒ“ƒh‚Íu-debugv‚Æ‚¢‚¤ƒRƒ}ƒ“ƒhƒ‰ƒCƒ“ƒIƒvƒVƒ‡ƒ“‚Æ“¯
-	‚¶Œ‹‰Ê‚ðo‚µ‚Ü‚·B
+	‚±‚ÌƒRƒ}ƒ“ƒh‚ÍƒRƒ}ƒ“ƒhƒ‰ƒCƒ“ƒIƒvƒVƒ‡ƒ“u-debugv‚Æ“¯—l‚É“®ì
+	‚µ‚Ü‚·B
+
+OPER_HELP_SET_SUPASS
+	—p–@FSET SUPASS [ƒpƒXƒ[ƒh]
+	
+	SUƒRƒ}ƒ“ƒh—p‚ÌƒpƒXƒ[ƒh‚ðÝ’è‚µ‚Ü‚·BSUƒRƒ}ƒ“ƒh‚ðŽg‚¤‘O‚ÉA
+	‚±‚ÌƒRƒ}ƒ“ƒh‚ÅƒpƒXƒ[ƒh‚ðÝ’è‚µ‚È‚¯‚ê‚Î‚È‚è‚Ü‚¹‚ñBƒpƒXƒ[
+	ƒh‚ðŽw’è‚µ‚È‚¢ê‡‚ÍSUƒRƒ}ƒ“ƒh‚ªŽg—p‚Å‚«‚È‚­‚È‚è‚Ü‚·B
+	
+	‚±‚ÌƒRƒ}ƒ“ƒh‚ÌŽg—p‚ÍServicesƒX[ƒp[ƒ†[ƒU‚É§ŒÀ‚³‚ê‚Ä‚¢‚Ü‚·B
+
+OPER_HELP_JUPE
+	—p–@FJUPE ƒT[ƒo–¼ [——R]
+	
+	ƒT[ƒo‚ðuƒWƒ…ƒsƒ^[v‚µ‚Ü‚·BƒWƒ…ƒsƒ^[ijupiterj‚Æ‚ÍAƒT
+	[ƒo‚ðƒlƒbƒg‚ÉÚ‘±‚³‚¹‚È‚¢‚æ‚¤‚É‹^Ž—ƒT[ƒo[‚ðƒlƒbƒg‚ÉÚ‘±‚·
+	‚é‚±‚Æ‚ÅAƒnƒbƒLƒ“ƒO‚³‚ê‚½‚èAÝ’è‚ª³‚µ‚­‚È‚¢ƒT[ƒo‚ªƒlƒbƒg
+	ƒ[ƒN‘S‘Ì‚É‰e‹¿‚ð‹y‚Ú‚³‚È‚¢‚½‚ß‚ÉŽg‚í‚ê‚é‚±‚Æ‚ª‘½‚¢‚Å‚·B‹^
+	Ž—ƒT[ƒo‚ÍIRC‚Ì/SQUITƒRƒ}ƒ“ƒh‚ÅØ’fi‰ðœj‚·‚é‚±‚Æ‚ªo—ˆ‚Ü
+	‚·B‹^Ž—ƒT[ƒo‚Ìî•ñƒtƒB[ƒ‹ƒh‚É‚ÍAu——Rv‚ðŽw’è‚·‚ê‚Î‚»‚Ì
+	•¶Žš—ñ‚ªAŽw’è‚µ‚È‚¯‚ê‚ÎƒT[ƒo–¼‚»‚Ì‚Ü‚Ü‚ª“ü‚è‚Ü‚·B
+	
+	“¯‚¶ƒT[ƒo–¼‚ÌƒT[ƒo‚ªIRCƒlƒbƒgƒ[ƒNã‚É‘¶Ý‚·‚éê‡‚ÍAŽ©
+	“®“I‚ÉØ’f‚³‚ê‚Ü‚·B
+	
+	‚±‚ÌƒRƒ}ƒ“ƒh‚ÌŽg—p‚ÍServicesƒAƒhƒ~ƒ“‚É§ŒÀ‚³‚ê‚Ä‚¢‚Ü‚·B
+
+OPER_HELP_RAW
+	—p–@FRAW ƒeƒLƒXƒg
+	
+	Services‚ªÚ‘±‚µ‚Ä‚¢‚éƒT[ƒo‚É•¶Žš—ñ‚ð‘—M‚µ‚Ü‚·B’A‚µA
+	ServicesŽ©‘Ì‚Í‚±‚Ì•¶Žš—ñ‚ðˆ—‚µ‚Ü‚¹‚ñB
+	
+	ŒxF‚±‚ÌƒRƒ}ƒ“ƒh‚ÍAIRCƒT[ƒo‚âServicesŽ©‘Ì‚ÌŽŽŒ±‚Ì‚½‚ß‚É
+	@@@—pˆÓ‚³‚ê‚½‚à‚Ì‚Å‚·BŒë‚Á‚ÄŽg‚¤‚ÆAServices‚ðƒNƒ‰ƒbƒVƒ…
+	@@@‚³‚¹‚½‚èAƒlƒbƒgƒ[ƒN‘S‘Ì‚ð¬—‚ð‚³‚¹‚½‚è‚·‚é‰Â”\«‚ª
+	@@@‚ ‚è‚Ü‚·‚Ì‚ÅAŽg‚¢•û‚É‚Í[•ª‚²’ˆÓ‚­‚¾‚³‚¢B
+	
+	‚±‚ÌƒRƒ}ƒ“ƒh‚ÌŽg—p‚ÍServicesƒX[ƒp[ƒ†[ƒU‚É§ŒÀ‚³‚ê‚Ä‚¢‚Ü‚·B
 
 OPER_HELP_UPDATE
-	ƒVƒ“ƒ^ƒNƒXFUPDATE
+	—p–@FUPDATE [FORCE]
 	
-	Services‚Ìƒf[ƒ^ƒx[ƒX‚ð’¼Ú•Û‘¶‚³‚¹‚Ü‚·B
+	ƒf[ƒ^ƒx[ƒXƒtƒ@ƒCƒ‹‚ÌXVŠÔŠu‚É‚©‚©‚í‚ç‚¸Aƒf[ƒ^ƒx[ƒX‚ð‚·
+	‚®‚ÉƒfƒBƒXƒN‚É‘‚«ž‚Ý‚Ü‚·BuDatabases are locked (ƒf[ƒ^ƒx
+	[ƒX‚ªƒƒbƒN‚³‚ê‚Ä‚¢‚Ü‚·)vƒGƒ‰[‚ª”­¶‚µ‚½ê‡AFORCEƒIƒvƒV
+	ƒ‡ƒ“‚ðŽw’è‚·‚é‚±‚Æ‚ÅƒƒbƒN‚ð‰ðœ‚·‚é‚±‚Æ‚ª‚Å‚«‚Ü‚·B
 	
-	‚±‚ÌƒRƒ}ƒ“ƒh‚ÌŽg—p‚ÍServices‚ÌƒAƒhƒ~ƒ“‚ÉŒÀ‚Á‚Ä‚¢‚Ü‚·B
+	‚±‚ÌƒRƒ}ƒ“ƒh‚ÌŽg—p‚ÍServicesƒAƒhƒ~ƒ“‚É§ŒÀ‚³‚ê‚Ä‚¢‚Ü‚·B
 
 OPER_HELP_QUIT
-	ƒVƒ“ƒ^ƒNƒXFQUIT
+	—p–@FQUIT
 	
-	ƒf[ƒ^ƒx[ƒX‚ð•Û‘¶‚¹‚¸‚ÉServices‚ðÁ‚µ‚Ü‚·B‚±‚ÌƒRƒ}ƒ“ƒh
-	‚ðŽg‚¤‚×‚«ê‡‚ÍAƒf[ƒ^ƒx[ƒX‚Ì‹¶‚¢‚Ì‹°‚ê‚ª‚ ‚éê‡‚Ì‚Ý‚Å
-	‚·B‘¼‚Ìê‡‚ÍASHUTDOWN‚ÌƒRƒ}ƒ“ƒh‚ð‚¨Žg‚¢‰º‚³‚¢B
+	Services‚ð‚·‚®‚ÉI—¹‚³‚¹‚Ü‚·Bƒf[ƒ^ƒx[ƒX‚Í•Û‘¶‚³‚ê‚Ü‚¹‚ñB
+	ƒf[ƒ^ƒx[ƒX‚ð•Û‘¶‚µ‚ÄI—¹‚³‚¹‚éê‡‚ÍSHUTDOWNƒRƒ}ƒ“ƒh‚ðŽg‚Á
+	‚Ä‚­‚¾‚³‚¢B
 	
-	‚±‚ÌƒRƒ}ƒ“ƒh‚ÌŽg—p‚ÍServices‚ÌƒAƒhƒ~ƒ“‚ÉŒÀ‚Á‚Ä‚¢‚Ü‚·B
+	‚±‚ÌƒRƒ}ƒ“ƒh‚ÌŽg—p‚ÍServicesƒAƒhƒ~ƒ“‚É§ŒÀ‚³‚ê‚Ä‚¢‚Ü‚·B
 
 OPER_HELP_SHUTDOWN
-	ƒVƒ“ƒ^ƒNƒXFSHUTDOWN
+	—p–@FSHUTDOWN
 	
-	ƒf[ƒ^ƒx[ƒX‚ð•Û‘¶‚µ‚ÄServices‚ðÁ‚µ‚Ü‚·B
+	ƒf[ƒ^ƒx[ƒX‚ð•Û‘¶‚µ‚ÄServices‚ðI—¹‚³‚¹‚Ü‚·B
 	
-	‚±‚ÌƒRƒ}ƒ“ƒh‚ÌŽg—p‚ÍServices‚ÌƒAƒhƒ~ƒ“‚ÉŒÀ‚Á‚Ä‚¢‚Ü‚·B
+	‚±‚ÌƒRƒ}ƒ“ƒh‚ÌŽg—p‚ÍServicesƒAƒhƒ~ƒ“‚É§ŒÀ‚³‚ê‚Ä‚¢‚Ü‚·B
 
 OPER_HELP_RESTART
-	ƒVƒ“ƒ^ƒNƒXFRESTART
+	—p–@FRESTART
 	
-	ƒf[ƒ^ƒx[ƒX‚ð•Û‘¶‚µ‚ÄServices‚ðÄ‹N“®‚³‚¹‚Ü‚·B
+	ƒf[ƒ^ƒx[ƒX‚ð•Û‘¶‚µ‚ÄServices‚ðÄ‹N“®‚µ‚Ü‚·B
 	
-	‚±‚ÌƒRƒ}ƒ“ƒh‚ÌŽg—p‚ÍServices‚ÌƒAƒhƒ~ƒ“‚ÉŒÀ‚Á‚Ä‚¢‚Ü‚·B
+	‚±‚ÌƒRƒ}ƒ“ƒh‚ÌŽg—p‚ÍServicesƒAƒhƒ~ƒ“‚É§ŒÀ‚³‚ê‚Ä‚¢‚Ü‚·B
+
+OPER_HELP_REHASH
+	—p–@FREHASH
+	
+	ŠÂ‹«Ý’èƒtƒ@ƒCƒ‹‚ðÄ“Ç‚Ýž‚Ý‚µAServices‚ÌÝ’è‚ðXV‚µ‚Ü‚·B
+	’A‚µAÄ“Ç‚Ýž‚Ý‚ÅXV‚Å‚«‚È‚¢Ý’è‚à‚ ‚èiRemoteServer“™jA
+	‚±‚ê‚ç‚ÌÝ’è‚ªÝ’èƒtƒ@ƒCƒ‹‚Å•ÏX‚³‚ê‚Ä‚¢‚éê‡AŒxƒƒbƒZ[
+	ƒW‚ª‘—M‚³‚ê‚Ü‚·B
+	
+	ƒƒCƒ“Ý’èƒtƒ@ƒCƒ‹i%sj“à‚ÅuLoadModulevs‚ª
+	’Ç‰Á‚Ü‚½‚Ííœ‚³‚ê‚Ä‚¢‚éê‡Aƒ‚ƒWƒ…[ƒ‹‚Ìƒ[ƒhEƒAƒ“ƒ[ƒh
+	‚às‚¢‚Ü‚·BƒAƒ“ƒ[ƒh‚Ì‡˜‚Íƒ[ƒh‚Æ‹t‡‚ÅAƒAƒ“ƒ[ƒh‚ªŠ®
+	—¹‚µAŽc‚éƒ‚ƒWƒ…[ƒ‹‚ÌÝ’è‚ªXV‚³‚ê‚½ŒãA’Ç‰Á‚³‚ê‚½ƒ‚ƒWƒ…[
+	ƒ‹‚ªÝ’èƒtƒ@ƒCƒ‹‚É‹Lq‚³‚ê‚½‡‚Éƒ[ƒh‚³‚ê‚Ü‚·B“r’†‚ÅƒGƒ‰[
+	‚ª”­¶‚µ‚½ê‡‚ÍÝ’èXV‚ð’†Ž~‚µ‚Ü‚·B
+	
+	‚È‚¨Aƒ‚ƒWƒ…[ƒ‹ˆË‘¶‚Ì‚½‚ßAREHASHƒRƒ}ƒ“ƒh‚ÅƒAƒ“ƒ[ƒh‚Å‚«‚È
+	‚¢ƒ‚ƒWƒ…[ƒ‹‚à‚ ‚è‚Ü‚·B‚±‚Ì‚æ‚¤‚Èƒ‚ƒWƒ…[ƒ‹‚ðƒAƒ“ƒ[ƒh‚·‚é
+	‚É‚ÍAServices‚ðÄ‹N“®‚·‚é•K—v‚ª‚ ‚è‚Ü‚·B
+	
+	‚±‚ÌƒRƒ}ƒ“ƒh‚ÌŽg—p‚ÍServicesƒAƒhƒ~ƒ“‚É§ŒÀ‚³‚ê‚Ä‚¢‚Ü‚·B
+
+OPER_HELP_KILLCLONES
+	—p–@FKILLCLONES ƒjƒbƒN
+	
+	Žw’è‚³‚ê‚½ƒjƒbƒN‚Æ“¯‚¶ƒzƒXƒg‚©‚çÚ‘±‚µ‚Ä‚¢‚éƒ†[ƒU‚ð‘S‚ÄØ’f
+	‚µ‚Ü‚·B‚·‚®‚ÉÄÚ‘±‚·‚é‚±‚Æ‚ð–h‚®‚½‚ßAˆêŽž“I‚ÈŽ©“®Ø’fƒ}ƒX
+	ƒN‚ªu*@ƒzƒXƒg–¼v‚ÌŒ`‚Å’Ç‰Á‚³‚ê‚Ü‚·B‚Ü‚½AƒRƒ}ƒ“ƒh‚ðŽg
+	—p‚µ‚½ƒ†[ƒU‚ÌƒjƒbƒNA‘ÎÛ‚Æ‚È‚Á‚½ƒjƒbƒNA‚»‚µ‚ÄØ’f‚³‚ê‚½ƒ†
+	[ƒU”‚ðWALLOPS‚ÅIRCƒIƒyƒŒ[ƒ^‚ÉŽü’m‚µ‚Ü‚·B
+	
+	‚±‚ÌƒRƒ}ƒ“ƒh‚ÌŽg—p‚ÍServicesƒIƒyƒŒ[ƒ^‚É§ŒÀ‚³‚ê‚Ä‚¢‚Ü‚·B
+
+
+###########################################################################
+#
+# StatServ help messages
+#
+###########################################################################
+
+STAT_HELP
+	%S‚ÍAƒlƒbƒgƒ[ƒN‚Ì“Œvî•ñ‚ð’ñ‹Ÿ‚·‚éƒT[ƒrƒX‚Å‚·B
+	u/msg %S HELP COMMANDSv‚ÅƒRƒ}ƒ“ƒhˆê——‚ð•\Ž¦‚Å‚«‚Ü‚·B
+
+STAT_HELP_COMMANDS
+	%S‚Å‚ÍA‰º‹LƒRƒ}ƒ“ƒh‚ªŽg‚¦‚Ü‚·B
+	
+	    SERVERS     ƒT[ƒo“Œvî•ñ
+	    USERS       ƒ†[ƒU“Œvî•ñ
+
+STAT_HELP_SERVERS
+	—p–@FSERVERS STATS
+	@@@SERVERS LIST [ƒpƒ^[ƒ“]
+	@@@SERVERS VIEW [ƒpƒ^[ƒ“] [ONLINE | OFFLINE]
+	
+	ƒT[ƒo‚É‚Â‚¢‚Ä‚Ì“Œvî•ñ‚ð•\Ž¦‚µ‚Ü‚·B
+	
+	STATSƒRƒ}ƒ“ƒh‚ÅAƒlƒbƒgƒ[ƒN‚ÉÚ‘±‚µ‚Ä‚¢‚éiƒIƒ“ƒ‰ƒCƒ“jƒT
+	[ƒo‚ÆÚ‘±‚µ‚Ä‚¢‚È‚¢iƒIƒtƒ‰ƒCƒ“jƒT[ƒo‚Ì”‚ÆAÅ‹ßØ’f‚³‚ê
+	‚½ƒT[ƒo‚Ì–¼‘O‚ð•\Ž¦‚µ‚Ü‚·B
+	
+	LISTƒRƒ}ƒ“ƒh‚ÅAƒIƒ“ƒ‰ƒCƒ“ƒT[ƒo‚Ìˆê——‚Æƒ†[ƒUAƒIƒyƒŒ[ƒ^”
+	‚ð•\Ž¦‚µ‚Ü‚·B
+	
+	VIEWƒRƒ}ƒ“ƒh‚ÅA‘S‚Ä‚ÌƒT[ƒo‚ÌÚ×î•ñ‚ð•\Ž¦‚µ‚Ü‚·BONLINE‚Ü
+	‚½‚ÍOFFLINE‚ðŽw’è‚·‚é‚±‚Æ‚ÅA‚»‚ê‚¼‚êƒIƒ“ƒ‰ƒCƒ“‚âƒIƒtƒ‰ƒCƒ“
+	ƒT[ƒo‚É•\Ž¦‚ðŒÀ’è‚³‚¹‚é‚±‚Æ‚ª‚Å‚«‚Ü‚·B
+	
+	ƒpƒ^[ƒ“‚ðŽw’è‚·‚é‚ÆA‚»‚Ìƒpƒ^[ƒ“‚Éˆê’v‚µ‚È‚¢ƒT[ƒo‚Í•\Ž¦‚³
+	‚ê‚Ü‚¹‚ñB
+
+STAT_HELP_USERS
+	—p–@FUSERS STATS
+	
+	ƒ†[ƒU‚É‚Â‚¢‚Ä‚Ì“Œvî•ñ‚ð•\Ž¦‚µ‚Ü‚·B
+
+STAT_OPER_HELP_SERVERS
+	—p–@FSERVERS STATS
+	@@@SERVERS LIST [ƒpƒ^[ƒ“]
+	@@@SERVERS VIEW [ƒpƒ^[ƒ“] [ONLINE | OFFLINE]
+	@@@SERVERS DELETE ƒT[ƒo
+	@@@SERVERS COPY ƒT[ƒo VƒT[ƒo–¼
+	@@@SERVERS RENAME ƒT[ƒo VƒT[ƒo–¼
+	
+	ƒT[ƒo‚É‚Â‚¢‚Ä‚Ì“Œvî•ñ‚ð•\Ž¦‚µ‚Ü‚·B
+	
+	STATSƒRƒ}ƒ“ƒh‚ÅAƒlƒbƒgƒ[ƒN‚ÉÚ‘±‚µ‚Ä‚¢‚éiƒIƒ“ƒ‰ƒCƒ“jƒT
+	[ƒo‚ÆÚ‘±‚µ‚Ä‚¢‚È‚¢iƒIƒtƒ‰ƒCƒ“jƒT[ƒo‚Ì”‚ÆAÅ‹ßØ’f‚³‚ê
+	‚½ƒT[ƒo‚Ì–¼‘O‚ð•\Ž¦‚µ‚Ü‚·B
+	
+	LISTƒRƒ}ƒ“ƒh‚ÅAƒIƒ“ƒ‰ƒCƒ“ƒT[ƒo‚Ìˆê——‚Æƒ†[ƒUAƒIƒyƒŒ[ƒ^”
+	‚ð•\Ž¦‚µ‚Ü‚·B
+	
+	VIEWƒRƒ}ƒ“ƒh‚ÅA‘S‚Ä‚ÌƒT[ƒo‚ÌÚ×î•ñ‚ð•\Ž¦‚µ‚Ü‚·BONLINE‚Ü
+	‚½‚ÍOFFLINE‚ðŽw’è‚·‚é‚±‚Æ‚ÅA‚»‚ê‚¼‚êƒIƒ“ƒ‰ƒCƒ“‚âƒIƒtƒ‰ƒCƒ“
+	ƒT[ƒo‚É•\Ž¦‚ðŒÀ’è‚³‚¹‚é‚±‚Æ‚ª‚Å‚«‚Ü‚·B
+	
+	ƒpƒ^[ƒ“‚ðŽw’è‚·‚é‚ÆA‚»‚Ìƒpƒ^[ƒ“‚Éˆê’v‚µ‚È‚¢ƒT[ƒo‚Í•\Ž¦‚³
+	‚ê‚Ü‚¹‚ñB
+	
+	‚È‚¨ADELETEiƒT[ƒoî•ñ‚ðíœ‚·‚éjACOPYiƒT[ƒoî•ñ‚ð•¡»
+	‚·‚éjARENAMEiƒT[ƒoî•ñ‚Ì–¼‘O‚ð•ÏX‚·‚éj‚Ì‚R‚Â‚ÌƒRƒ}ƒ“ƒh
+	‚ÌŽg—p‚ÍAServicesƒAƒhƒ~ƒ“‚É§ŒÀ‚³‚ê‚Ä‚¢‚Ü‚·B
+
+###########################################################################
+
+# CVS: $Revision: 2.180 $

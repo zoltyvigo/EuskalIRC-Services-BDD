@@ -1,8 +1,9 @@
 /* Time-delay routine include stuff.
  *
- * Services is copyright (c) 1996-1999 Andy Church.
- *     E-mail: <achurch@dragonfire.net>
- * This program is free but copyrighted software; see the file COPYING for
+ * IRC Services is copyright (c) 1996-2009 Andrew Church.
+ *     E-mail: <achurch@achurch.org>
+ * Parts written by Andrew Kempe and others.
+ * This program is free but copyrighted software; see the file GPL.txt for
  * details.
  */
 
@@ -11,26 +12,39 @@
 
 #include <time.h>
 
+/*************************************************************************/
 
-/* Definitions for timeouts: */
+/* Timeout type. */
+
 typedef struct timeout_ Timeout;
+
 struct timeout_ {
+    void *data;                 /* Caller data; can be anything */
+    time_t settime;             /* Time timer was set (from time()) */
+    /* Remainder is PRIVATE DATA! */
+#ifdef IN_TIMEOUT_C
     Timeout *next, *prev;
-    time_t settime, timeout;
-    int repeat;			/* Does this timeout repeat indefinitely? */
-    void (*code)(Timeout *);	/* This structure is passed to the code */
-    void *data;			/* Can be anything */
+    uint32 timeout;             /* In milliseconds (time_msec()) */
+    uint32 repeat;              /* Does this timeout repeat indefinitely?
+                                 *    (if nonzero, new value of `timeout') */
+    void (*code)(Timeout *);    /* This structure is passed to the code */
+#endif
 };
 
+/*************************************************************************/
 
 /* Check the timeout list for any pending actions. */
 extern void check_timeouts(void);
 
-/* Add a timeout to the list to be triggered in `delay' seconds.  Any
- * timeout added from within a timeout routine will not be checked during
- * that run through the timeout list.
- */
+/* Add a timeout to the list to be triggered in `delay' seconds (`delay'
+ * may be zero).  Any timeout added from within a timeout routine will not
+ * be checked during that run through the timeout list.  Always succeeds. */
 extern Timeout *add_timeout(int delay, void (*code)(Timeout *), int repeat);
+
+/* Add a timeout to the list to be triggered in `delay' milliseconds
+ * (`delay' may be zero). */
+extern Timeout *add_timeout_ms(uint32 delay, void (*code)(Timeout *),
+                               int repeat);
 
 /* Remove a timeout from the list (if it's there). */
 extern void del_timeout(Timeout *t);
@@ -40,5 +54,16 @@ extern void del_timeout(Timeout *t);
 extern void send_timeout_list(User *u);
 #endif
 
+/*************************************************************************/
 
-#endif	/* TIMEOUT_H */
+#endif  /* TIMEOUT_H */
+
+/*
+ * Local variables:
+ *   c-file-style: "stroustrup"
+ *   c-file-offsets: ((case-label . *) (statement-case-intro . *))
+ *   indent-tabs-mode: nil
+ * End:
+ *
+ * vim: expandtab shiftwidth=4:
+ */

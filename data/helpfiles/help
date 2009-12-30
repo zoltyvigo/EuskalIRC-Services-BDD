@@ -1,7 +1,6 @@
 HelpServ is a service designed to give out information on
-IRC and Services.  Help files for Services can be accessed
-through HelpServ, but are more commonly accessed via the HELP
-commands of the other Services clients:
+IRC and Services.  Detailed help for Services can be accessed
+via the HELP commands of the other Services clients:
 
    /msg NickServ HELP
         for information on registering nicknames

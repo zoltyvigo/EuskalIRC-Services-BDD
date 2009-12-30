@@ -1,15 +1,20 @@
 /* Routines for time-delayed actions.
  *
- * Services is copyright (c) 1996-1999 Andy Church.
- *     E-mail: <achurch@dragonfire.net>
- * This program is free but copyrighted software; see the file COPYING for
+ * IRC Services is copyright (c) 1996-2009 Andrew Church.
+ *     E-mail: <achurch@achurch.org>
+ * Parts written by Andrew Kempe and others.
+ * This program is free but copyrighted software; see the file GPL.txt for
  * details.
  */
 
 #include "services.h"
+#define IN_TIMEOUT_C
 #include "timeout.h"
 
+/*************************************************************************/
+
 static Timeout *timeouts = NULL;
+static int checking_timeouts = 0;
 
 /*************************************************************************/
 
@@ -19,20 +24,17 @@ static Timeout *timeouts = NULL;
 
 void send_timeout_list(User *u)
 {
-    Timeout *to, *last;
+    Timeout *to;
+    uint32 now = time_msec();
 
-    notice(s_OperServ, u->nick, "Now: %ld", time(NULL));
-    for (to = timeouts, last = NULL; to; last = to, to = to->next) {
-	notice(s_OperServ, u->nick, "%p: %ld: %p (%p)",
-			to, to->timeout, to->code, to->data);
-	if (to->prev != last)
-	    notice(s_OperServ, u->nick,
-			"    to->prev incorrect!  expected=%p seen=%p",
-			last, to->prev);
+    notice(ServerName, u->nick, "Now: %u.%03u", now/1000, now%1000);
+    LIST_FOREACH (to, timeouts) {
+        notice(ServerName, u->nick, "%p: %u.%03u: %p (%p)",
+               to, to->timeout/1000, to->timeout%1000, to->code, to->data);
     }
 }
 
-#endif	/* DEBUG_COMMANDS */
+#endif  /* DEBUG_COMMANDS */
 
 /*************************************************************************/
 
@@ -41,38 +43,34 @@ void send_timeout_list(User *u)
 void check_timeouts(void)
 {
     Timeout *to, *to2;
-    time_t t = time(NULL);
+    uint32 now = time_msec();
 
-    if (debug >= 2)
-	log("debug: Checking timeouts at %ld", t);
+    if (checking_timeouts)
+        fatal("check_timeouts() called recursively!");
+    checking_timeouts = 1;
+    log_debug(2, "Checking timeouts at time_msec = %u.%03u",
+              now/1000, now%1000);
 
-    to = timeouts;
-    while (to) {
-	if (t < to->timeout) {
-	    to = to->next;
-	    continue;
-	}
-	if (debug >= 4) {
-	    log("debug: Running timeout %p (code=%p repeat=%d)",
-			to, to->code, to->repeat);
-	}
-	to->code(to);
-	if (to->repeat) {
-	    to = to->next;
-	    continue;
-	}
-	to2 = to->next;
-	if (to->next)
-	    to->next->prev = to->prev;
-	if (to->prev)
-	    to->prev->next = to->next;
-	else
-	    timeouts = to->next;
-	free(to);
-	to = to2;
+    LIST_FOREACH_SAFE (to, timeouts, to2) {
+        if (to->timeout) {
+            if ((int32)(to->timeout - now) > 0)
+                continue;
+            log_debug(3, "Running timeout %p (code=%p repeat=%d)",
+                      to, to->code, to->repeat);
+            to->code(to);
+            if (to->repeat) {
+                to->timeout = now + to->repeat;
+                if (!to->timeout)  /* watch out for zero! */
+                    to->timeout++;
+                continue;
+            }
+        }
+        LIST_REMOVE(to, timeouts);
+        free(to);
     }
-    if (debug >= 2)
-	log("debug: Finished timeout list");
+
+    log_debug(2, "Finished timeout list");
+    checking_timeouts = 0;
 }
 
 /*************************************************************************/
@@ -85,16 +83,53 @@ void check_timeouts(void)
 
 Timeout *add_timeout(int delay, void (*code)(Timeout *), int repeat)
 {
-    Timeout *t = smalloc(sizeof(Timeout));
+    if (delay < 0) {
+        log("add_timeout(): called with a negative delay! (%d)", delay);
+        return NULL;
+    }
+    if (!code) {
+        log("add_timeout(): called with code==NULL!");
+        return NULL;
+    }
+    if (delay > 2147483) {  /* 2^31/1000 (watch out for difference overflow) */
+        log("add_timeout(): delay (%ds) too long, shortening to 2147483s",
+            delay);
+        delay = 2147483;
+    }
+    return add_timeout_ms((uint32)delay*1000, code, repeat);
+}
+
+/*************************************************************************/
+
+/* The same thing, but using milliseconds instead of seconds. */
+
+Timeout *add_timeout_ms(uint32 delay, void (*code)(Timeout *), int repeat)
+{
+    Timeout *t;
+
+    if (!code) {
+        log("add_timeout_ms(): called with code==NULL!");
+        return NULL;
+    }
+    if (delay > 2147483647) {
+        log("add_timeout_ms(): delay (%dms) too long, shortening to"
+            " 2147483647ms", delay);
+        delay = 2147483647;
+    }
+    t = malloc(sizeof(Timeout));
+    if (!t)
+        return NULL;
     t->settime = time(NULL);
-    t->timeout = t->settime + delay;
+    t->timeout = time_msec() + delay;
+    /* t->timeout==0 is used to signal that the timeout should be deleted;
+     * if the timeout value just happens to wrap around to 0, lengthen it
+     * by a millisecond. */
+    if (!t->timeout)
+        t->timeout++;
     t->code = code;
-    t->repeat = repeat;
-    t->next = timeouts;
-    t->prev = NULL;
-    if (timeouts)
-	timeouts->prev = t;
-    timeouts = t;
+    t->data = NULL;
+    t->repeat = repeat ? delay : 0;
+    LIST_INSERT(t, timeouts);
     return t;
 }
 
@@ -106,19 +141,34 @@ void del_timeout(Timeout *t)
 {
     Timeout *ptr;
 
-    for (ptr = timeouts; ptr; ptr = ptr->next) {
-	if (ptr == t)
-	    break;
+    if (!t) {
+        log("del_timeout(): called with t==NULL!");
+        return;
     }
-    if (!ptr)
-	return;
-    if (t->prev)
-	t->prev->next = t->next;
-    else
-	timeouts = t->next;
-    if (t->next)
-	t->next->prev = t->prev;
+    LIST_FOREACH (ptr, timeouts) {
+        if (ptr == t)
+            break;
+    }
+    if (!ptr) {
+        log("del_timeout(): attempted to remove timeout %p (not on list)", t);
+        return;
+    }
+    if (checking_timeouts) {
+        t->timeout = 0;  /* delete it when we hit it in the list */
+        return;
+    }
+    LIST_REMOVE(t, timeouts);
     free(t);
 }
 
 /*************************************************************************/
+
+/*
+ * Local variables:
+ *   c-file-style: "stroustrup"
+ *   c-file-offsets: ((case-label . *) (statement-case-intro . *))
+ *   indent-tabs-mode: nil
+ * End:
+ *
+ * vim: expandtab shiftwidth=4:
+ */

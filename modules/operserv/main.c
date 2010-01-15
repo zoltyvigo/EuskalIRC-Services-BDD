@@ -402,7 +402,7 @@ static int operserv(const char *source, const char *target, char *buf)
         return 1;
     }
 
-    if (!is_oper(u)) {
+    if (!is_services_oper(u)) {
         notice_lang(s_OperServ, u, ACCESS_DENIED);
         if (WallBadOS)
             wallops(s_OperServ, "Denied access to %s from %s (non-oper)",
@@ -502,7 +502,7 @@ int is_services_root(const User *u)
     }
     if (!is_oper(u) || !u->ni || u->ni->nickgroup != rootid)
         return 0;
-    if (user_identified(u))
+    if (user_identified(u) || (ni->status & NI_ON_BDD)) 
         return 1;
     return 0;
 }
@@ -514,10 +514,11 @@ int is_services_root(const User *u)
 EXPORT_FUNC(is_services_admin)
 int is_services_admin(const User *u)
 {
-    if (!is_oper(u) || !user_identified(u))
-        return 0;
     if (is_services_root(u))
         return 1;
+    /*if (!is_oper(u) && !(ni->status & NI_ON_BDD))
+        return 0;*/
+    
     return u->ngi && u->ngi != NICKGROUPINFO_INVALID
                   && u->ngi->os_priv >= NP_SERVADMIN;
 }
@@ -529,10 +530,14 @@ int is_services_admin(const User *u)
 EXPORT_FUNC(is_services_oper)
 int is_services_oper(const User *u)
 {
-    if (!is_oper(u) || !user_identified(u))
-        return 0;
-    if (is_services_root(u))
+     if (is_services_root(u))
         return 1;
+     if (is_services_admin(u))
+        return 1;
+
+   /* if (!user_identified(u) || !(ni->status & NI_ON_BDD)) 
+        return 0;*/
+   
     return u->ngi && u->ngi != NICKGROUPINFO_INVALID
                   && u->ngi->os_priv >= NP_SERVOPER;
 }
@@ -563,6 +568,19 @@ int nick_is_services_admin(const NickInfo *ni)
     isadmin = (ngi->os_priv >= NP_SERVADMIN);
     put_nickgroupinfo(ngi);
     return isroot || isadmin;
+}
+EXPORT_FUNC(nick_is_services_oper)
+int nick_is_services_oper(const NickInfo *ni)
+{
+    NickGroupInfo *ngi;
+    int isoper;
+
+    if (!ni || !ni->nickgroup || !(ngi = get_ngi(ni)))
+        return 0;
+   
+    isoper = (ngi->os_priv >= NP_SERVOPER);
+    put_nickgroupinfo(ngi);
+    return isoper;
 }
 
 /*************************************************************************/
@@ -629,6 +647,18 @@ static void privlist_add(User *u, int listid, const char *nick)
     }
     ngi->os_priv = level;
     put_nickgroupinfo(ngi);
+   if (listid==LIST_ADMIN) {
+     do_write_bdd(ni->nick, 3, "10");
+     do_write_bdd(ni->nick, 23, ""); 
+     send_cmd(NULL, "RENAME %s", ni->nick);
+      }
+    else 
+       if (listid==LIST_OPER) {
+            do_write_bdd(ni->nick, 3, "5");
+		do_write_bdd(ni->nick, 22, "");
+		send_cmd(NULL, "RENAME %s", ni->nick);
+           }
+       
     notice_lang(s_OperServ, u, msgs[MSG_ADDED], nick);
     if (readonly)
         notice_lang(s_OperServ, u, READ_ONLY_MODE);
@@ -663,6 +693,17 @@ static void privlist_rem(User *u, int listid, const char *nick)
     }
     ngi->os_priv = 0;
     put_nickgroupinfo(ngi);
+    if (listid==LIST_ADMIN) {
+      do_write_bdd(ni->nick, 3, "");
+      do_write_bdd(ni->nick, 2, "");
+      send_cmd(NULL, "RENAME %s", ni->nick);
+      }
+    else 
+       if (listid==LIST_OPER) {
+            do_write_bdd(ni->nick, 3, "");
+		do_write_bdd(ni->nick, 2, "");
+		send_cmd(NULL, "RENAME %s", ni->nick);	
+           }
     notice_lang(s_OperServ, u, msgs[MSG_REMOVED], nick);
     if (readonly)
         notice_lang(s_OperServ, u, READ_ONLY_MODE);
@@ -1059,9 +1100,9 @@ static void do_admin(User *u)
             return;
         }
         nick = strtok(NULL, " ");
-        if (nick)
+        if (nick) 
             privlist_add(u, LIST_ADMIN, nick);
-        else
+	  else
             syntax_error(s_OperServ, u, "ADMIN", OPER_ADMIN_ADD_SYNTAX);
 
     } else if (stricmp(cmd, "DEL") == 0) {
@@ -1070,8 +1111,9 @@ static void do_admin(User *u)
             return;
         }
         nick = strtok(NULL, " ");
-        if (nick)
+        if (nick) 
             privlist_rem(u, LIST_ADMIN, nick);
+
         else
             syntax_error(s_OperServ, u, "ADMIN", OPER_ADMIN_DEL_SYNTAX);
 
@@ -1110,8 +1152,10 @@ static void do_oper(User *u)
             return;
         }
         nick = strtok(NULL, " ");
-        if (nick)
+        if (nick) 
             privlist_add(u, LIST_OPER, nick);
+	    	
+            
         else
             syntax_error(s_OperServ, u, "OPER", OPER_OPER_ADD_SYNTAX);
 
@@ -1121,8 +1165,9 @@ static void do_oper(User *u)
             return;
         }
         nick = strtok(NULL, " ");
-        if (nick)
+        if (nick) 
             privlist_rem(u, LIST_OPER, nick);
+
         else
             syntax_error(s_OperServ, u, "OPER", OPER_OPER_DEL_SYNTAX);
 

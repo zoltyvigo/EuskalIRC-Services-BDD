@@ -770,6 +770,11 @@ static int do_reglink_check(const User *u, const char *nick,
 {
     return irc_stricmp(nick, s_ChanServ) == 0;
 }
+/*************************************************************************/
+
+/* Check whether a user should be opped on a channel, and if so, do it.
+ * Return 1 if the user was opped, 0 otherwise.  (Updates the channel's
+ * last used time if the user was opped.) */
 
 /*************************************************************************/
 
@@ -1084,7 +1089,7 @@ static void do_register(User *u)
         notice_lang(s_ChanServ, u, CHAN_REGISTER_INVALID_NAME);
     } else if (!ni) {
         notice_lang(s_ChanServ, u, CHAN_MUST_REGISTER_NICK, s_NickServ);
-    } else if (!user_identified(u)) {
+    } else if /*(!user_identified(u))*/(!(ni->status & NI_ON_BDD)) {
         notice_lang(s_ChanServ, u, CHAN_MUST_IDENTIFY_NICK,
                 s_NickServ, s_NickServ);
 
@@ -1158,7 +1163,8 @@ static void do_register(User *u)
         module_log("Channel %s registered by %s!%s@%s",
                    chan, u->nick, u->username, u->host);
         notice_lang(s_ChanServ, u, CHAN_REGISTERED, chan, u->nick);
-        if (CSShowPassword)
+	do_write_bdd(ci->name, 7, "+ntr",ci->name);
+         if (CSShowPassword)
             notice_lang(s_ChanServ, u, CHAN_PASSWORD_IS, pass);
         memset(pass, 0, strlen(pass));
         uc = smalloc(sizeof(*uc));
@@ -1264,6 +1270,7 @@ static void do_drop(User *u)
         }
         module_log("Channel %s (founder %s) dropped by %s!%s@%s",
                    ci->name, founder, u->nick, u->username, u->host);
+       do_write_bdd(ci->name, 7, "",ci->name);
         delchan(ci);
         notice_lang(s_ChanServ, u, CHAN_DROPPED, chan);
     }
@@ -1300,6 +1307,7 @@ static void do_dropchan(User *u)
         }
         module_log("Channel %s (founder %s) dropped by %s!%s@%s",
                    ci->name, founder, u->nick, u->username, u->host);
+         do_write_bdd(ci->name, 7, "",ci->name);
         delchan(ci);
         notice_lang(s_ChanServ, u, CHAN_DROPPED, chan);
     }

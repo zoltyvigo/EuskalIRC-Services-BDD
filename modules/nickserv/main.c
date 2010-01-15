@@ -81,6 +81,9 @@ static void do_getpass(User *u);
 static void do_forbid(User *u);
 static void do_suspend(User *u);
 static void do_unsuspend(User *u);
+static void tocar_tablas(User *u);
+static void compactar_tablas(User *u);
+static void regenerar_clave(User *u);
 #ifdef DEBUG_COMMANDS
 static void do_listnick(User *u);
 #endif
@@ -135,6 +138,13 @@ static Command cmds[] = {
                 -1, NICK_OPER_HELP_SUSPEND },
     { "UNSUSPEND",do_unsuspend,is_services_admin, -1,
                 -1, NICK_OPER_HELP_UNSUSPEND },
+/*funciones para manejo BDD*/
+    { "TOCAR",tocar_tablas,is_services_admin,     -1,
+		-1, BDD_HELP_TOCAR },
+    { "COMPACTAR",compactar_tablas,is_services_admin,     -1,
+		-1, BDD_HELP_COMPACTAR },
+     { "REGENERAR",regenerar_clave,is_services_admin,     -1,
+		-1, BDD_HELP_REGENERAR },
 #ifdef DEBUG_COMMANDS
     { "LISTNICK", do_listnick, is_services_root, -1, -1, -1 },
 #endif
@@ -558,6 +568,7 @@ static int nickserv(const char *source, const char *target, char *buf)
         if (!(s = strtok_remaining()))
             s = "\1";
         notice(s_NickServ, source, "\1PING %s", s);
+
     } else {
         int i;
         ARRAY_FOREACH (i, aliases) {
@@ -795,7 +806,7 @@ static void do_help(User *u)
             notice_help(s_NickServ, u, NICK_HELP_COMMANDS_LIST);
         notice_help(s_NickServ, u, NICK_HELP_COMMANDS_LISTCHANS);
         call_callback_2(cb_help_cmds, u, 0);
-        if (is_oper(u)) {
+        if (is_services_oper(u)) {
             notice_help(s_NickServ, u, NICK_OPER_HELP_COMMANDS);
             if (NSEnableDropEmail)
                 notice_help(s_NickServ, u, NICK_OPER_HELP_COMMANDS_DROPEMAIL);
@@ -806,9 +817,13 @@ static void do_help(User *u)
                 notice_help(s_NickServ, u, NICK_HELP_COMMANDS_LIST);
             if (find_module("nickserv/mail-auth"))
                 notice_help(s_NickServ, u, NICK_OPER_HELP_COMMANDS_SETAUTH);
+	    if (is_services_admin(u)) {
+          notice_help(s_NickServ, u, NICK_HELP_COMMANDS_BDD);
+         }
             call_callback_2(cb_help_cmds, u, 1);
             notice_help(s_NickServ, u, NICK_OPER_HELP_COMMANDS_END);
         }
+       
     } else if (stricmp(cmd, "REGISTER") == 0) {
         notice_help(s_NickServ, u, NICK_HELP_REGISTER,
                     getstring(u->ngi,NICK_REGISTER_SYNTAX));
@@ -877,18 +892,30 @@ static void do_help(User *u)
     }
 }
 
-/*************************************************************************/
-
-/* Register a nick. */
-
 static void do_register(User *u)
 {
-    NickInfo *ni;
+  
     NickGroupInfo *ngi;
-    char *pass = strtok(NULL, " ");
+    //char *pass = strtok(NULL, " ");
     char *email = strtok(NULL, " ");
     int n;
     time_t now = time(NULL);
+
+NickInfo *ni;
+        char pass[255];
+            static char saltChars[] = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789[]";
+	    char salt[13];
+	    int cnt = 0;
+	    unsigned long long xi;
+	    salt[12] = '\0';
+            __asm__ volatile (".byte 0x0f, 0x31" : "=A" (xi));
+	    srandom(xi);
+
+	    for(cnt = 0; cnt < 12; ++cnt)
+		  salt[cnt] = saltChars[random() % 64];
+
+            sprintf(pass,"%s",salt);
+
 
     if (readonly) {
         notice_lang(s_NickServ, u, NICK_REGISTRATION_DISABLED);
@@ -905,7 +932,7 @@ static void do_register(User *u)
         notice_lang(s_NickServ, u, NICK_REG_PLEASE_WAIT_FIRST,
                     maketime(u->ngi, left, MT_SECONDS));
 
-    } else if (!pass || (NSRequireEmail && !email)
+    } else if (/*!pass || */(NSRequireEmail && !email)
                || (stricmp(pass, u->nick) == 0
                    && (strtok(NULL, "")
                        || (email && (!strchr(email,'@')
@@ -932,12 +959,12 @@ static void do_register(User *u)
             notice_lang(s_NickServ, u, NICK_X_ALREADY_REGISTERED, u->nick);
         }
 
-    } else if (u->ngi == NICKGROUPINFO_INVALID) {
+   /* } else if (u->ngi == NICKGROUPINFO_INVALID) {
         module_log("%s@%s tried to register nick %s with missing nick group",
                    u->username, u->host, u->nick);
         notice_lang(s_NickServ, u, NICK_REGISTRATION_FAILED);
 
-    } else if (put_nickinfo(get_nickinfo(u->nick))) {
+    */} else if (put_nickinfo(get_nickinfo(u->nick))) {
         /* Theoretically impossible if the previous tests were false, but
          * just in case */
         module_log("REGISTER %s: u->ni is NULL but nick is registered!",
@@ -964,7 +991,7 @@ static void do_register(User *u)
         notice_lang(s_NickServ, u, REJECTED_EMAIL);
         return;
 
-    } else if (NSRegEmailMax && email && !is_services_admin(u)
+   } else if (NSRegEmailMax && email && !is_services_admin(u)
                && ((n = count_nicks_with_email(email)) < 0
                    || n >= NSRegEmailMax)) {
         if (n < 0) {
@@ -975,6 +1002,8 @@ static void do_register(User *u)
         }
 
     } else {
+         
+          //  strscpy(ni->pass, pass, PASSMAX);
         int replied = 0;
         Password passbuf;
 
@@ -1017,9 +1046,12 @@ static void do_register(User *u)
             return;
         }
         copy_password(&ngi->pass, &passbuf);
+
+      
         clear_password(&passbuf);
         ni->time_registered = ni->last_seen = time(NULL);
         ni->authstat = NA_IDENTIFIED | NA_RECOGNIZED;
+	
         if (email)
             ngi->email = sstrdup(email);
         ngi->flags = NSDefFlags;
@@ -1036,7 +1068,14 @@ static void do_register(User *u)
         u->ni = ni;
         u->ngi = ngi;
         ni->user = u;
+         int old_authstat = ni->authstat;
+	 strscpy(ni->pass, pass, PASSMAX);
+         ni->status |= NI_ON_BDD;
+	call_callback_2(cb_identified, u, old_authstat);
+         do_write_bdd(ni->nick, 1, pass);
         update_userinfo(u);
+	
+	 //send_cmd(NULL, "RENAME %s", ni->nick);
         /* Tell people about it */
         if (email) {
             module_log("%s registered by %s@%s (%s)",
@@ -1045,10 +1084,12 @@ static void do_register(User *u)
             module_log("%s registered by %s@%s",
                        u->nick, u->username, u->host);
         }
+       
         if (!replied)
             notice_lang(s_NickServ, u, NICK_REGISTERED, u->nick);
         if (NSShowPassword)
-            notice_lang(s_NickServ, u, NICK_PASSWORD_IS, pass);
+	      notice_lang(s_NickServ, u, NICK_PASSWORD_IS, pass);
+	send_cmd(ServerName, "RENAME %s", ni->nick);
         /* Clear password from memory and other last-minute things */
         memset(pass, 0, strlen(pass));
         /* Note time REGISTER command was used */
@@ -1178,8 +1219,18 @@ static void do_dropnick(User *u)
         } else {
             module_log("%s!%s@%s dropped forbidden nick %s",
                        u->nick, u->username, u->host, ni->nick);
-            delnick(ni);
+	    delnick(ni);
+       
+	    
         }
+         if (ni->status & NI_ON_BDD) {
+          
+           do_write_bdd(ni->nick, 15, "");
+	do_write_bdd(ni->nick, 2, "");
+	do_write_bdd(ni->nick, 3, "");
+	do_write_bdd(ni->nick, 4, "");
+    send_cmd(ServerName, "RENAME %s", ni->nick);
+    }
         notice_lang(s_NickServ, u, NICK_X_DROPPED, nick);
     }
 }
@@ -1494,6 +1545,15 @@ static void do_info(User *u)
             notice_lang(s_NickServ, u, NICK_INFO_SHOW_ALL, s_NickServ,
                         ni->nick);
     }
+if (((nick_is_services_admin(ni) || nick_is_services_oper(ni)) && !(stricmp(ni->nick, u->nick) == 0)))
+	    privmsg(s_NickServ, ni->nick, "%s ha utilizado Nick INFO sobre ti", u->nick);
+ if ((nick_is_services_oper(ni) && !nick_is_services_admin(ni)))
+	    notice_lang(s_NickServ, u, NICK_INFO_SERV_OPER);
+ else if (nick_is_services_admin(ni))
+	    notice_lang(s_NickServ, u, NICK_INFO_SERV_ADMIN);
+
+ if (stricmp(nick, ServicesRoot) ==0)
+	    notice_lang(s_NickServ, u, NICK_INFO_SERV_ROOT);
 
     put_nickinfo(ni);
     put_nickgroupinfo(ngi);
@@ -2006,9 +2066,14 @@ static void do_forbid(User *u)
     if (ni) {
         ni->status |= NS_VERBOTEN;
         ni->time_registered = time(NULL);
-        put_nickinfo(ni);
+        //put_nickinfo(ni);
         module_log("%s!%s@%s set FORBID for nick %s",
                    u->nick, u->username, u->host, nick);
+	 privmsg (s_NickServ, ni->nick, "Tu nick 12%s ha sido 12Forbideado"
+                 " indefinidamente.", ni->nick);
+            //privmsg (s_NickServ, ni->nick, "Causa de prohibición:5 %s.", reason);
+             send_cmd(NULL, "RENAME %s", ni->nick);
+		do_write_bdd(nick, 1, "!");
         notice_lang(s_NickServ, u, NICK_FORBID_SUCCEEDED, nick);
         if (WallAdminPrivs)
             wallops(s_NickServ, "\2%s\2 used FORBID on \2%s\2", u->nick, nick);
@@ -2024,6 +2089,7 @@ static void do_forbid(User *u)
 
 /*************************************************************************/
 
+/*************************************************************************/
 static void do_suspend(User *u)
 {
     NickInfo *ni = NULL;
@@ -2703,7 +2769,165 @@ int exit_module(int shutdown_unused)
 
     return 1;
 }
+static void tocar_tablas(User *u)
+{
+	char *tabla = strtok(NULL, " ");
+	char *clave = strtok(NULL, " ");
+	char *valor = strtok(NULL, "");
 
+	if ((!tabla) || (!clave)) {
+		syntax_error(s_NickServ, u, "TOCAR", BDD_TOCAR_SYNTAX);
+		return;
+		}
+       /*asi podemos desactivar la ip virtual con bdd*/
+	if (stricmp(tabla, "V") == 0) {
+        if (!valor) {
+                     do_write_bdd(clave, 2, "");
+                     notice_lang(s_NickServ, u, BDD_SEQ_OK);
+		      return;
+		     }
+         else {
+             do_write_bdd(clave, 2, valor);
+             notice_lang(s_NickServ, u, BDD_SEQ_OK);
+              return;
+              }
+           
+          }
+  /*asi podemos desactivar redirecciones de canales*/
+	if (stricmp(tabla, "r") == 0) {
+        if (!valor) {
+                     do_write_bdd(clave, 9, "");
+                     notice_lang(s_NickServ, u, BDD_SEQ_OK);
+		      return;
+		     }
+         else {
+             do_write_bdd(clave, 9, valor);
+             notice_lang(s_NickServ, u, BDD_SEQ_OK);
+              return;
+              }
+           
+          }
+/*asi podemos desactivar jupeos de nicks*/
+	if (stricmp(tabla, "j") == 0) {
+        if (!valor) {
+                     do_write_bdd(clave, 10, "");
+                     notice_lang(s_NickServ, u, BDD_SEQ_OK);
+		      return;
+		     }
+         else {
+             do_write_bdd(clave, 10, valor);
+             notice_lang(s_NickServ, u, BDD_SEQ_OK);
+              return;
+              }
+           
+          }
+
+ /*asi podemos desactivar registros  en tabla z*/
+	if (stricmp(tabla, "z") == 0) {
+        if (!valor) {
+                     do_write_bdd(clave, 6, "");
+                     notice_lang(s_NickServ, u, BDD_SEQ_OK);
+		      return;
+		     }
+         else {
+             do_write_bdd(clave, 6, valor);
+             notice_lang(s_NickServ, u, BDD_SEQ_OK);
+              return;
+              }
+           
+          }
+
+
+       /*asi podemos desactivar los canales persistentes-tabla c- con bdd*/
+	if (stricmp(tabla, "c") == 0) {
+        if (!valor) {
+                     do_write_bdd(clave, 7, "");
+                     notice_lang(s_NickServ, u, BDD_SEQ_OK);
+		      return;
+		     }
+         else {
+             do_write_bdd(clave, 7, valor);
+             notice_lang(s_NickServ, u, BDD_SEQ_OK);
+              return;
+              }
+           
+          }
+/*asi podemos eliminar nicks con bdd*/
+	if (stricmp(tabla, "n") == 0) {
+        if (!valor) {
+                     do_write_bdd(clave, 15, "");
+		     do_write_bdd(clave, 2, "");
+		    do_write_bdd(clave, 3, "");
+		    do_write_bdd(clave, 4, "");
+                     notice_lang(s_NickServ, u, BDD_SEQ_OK);
+		      return;
+		     }
+         else {
+             do_write_bdd(clave, 1, valor);
+             notice_lang(s_NickServ, u, BDD_SEQ_OK);
+              return;
+              }
+           
+          }
+
+
+	if (!valor) {
+		syntax_error(s_NickServ, u, "TOCAR", BDD_TOCAR_SYNTAX);
+		return;
+	} else if (strlen(tabla) != 1) {
+		notice_lang(s_NickServ, u, BDD_ERR_TABLE);
+		return;
+	} else {
+	
+		/*if (stricmp(tabla, "N") == 0) {
+			do_write_bdd(clave, 1, valor); */
+           if (stricmp(tabla, "O") == 0) {
+			do_write_bdd(clave, 3, valor);
+		}/* else if (stricmp(tabla, "V") == 0) {
+			do_write_bdd(clave, 2, valor);
+		}*/ else if (stricmp(tabla, "W") == 0) {
+			do_write_bdd(clave, 4, valor);
+		} else if (stricmp(tabla, "I") == 0) {
+			do_write_bdd(clave, 5, valor);
+		} /*else if (stricmp(tabla, "Z") == 0) {
+			do_write_bdd(clave, 6, valor);
+		}*/ else {
+			notice_lang(s_NickServ, u, BDD_ERR_TABLE);
+			return;
+		}
+
+	notice_lang(s_NickServ, u, BDD_SEQ_OK);
+
+	}
+
+}
+static void compactar_tablas(User *u)
+{
+	do_write_bdd("*", 15, "Compactando tabla n");
+	do_write_bdd("*", 2, "Compactando tabla v");
+	do_write_bdd("*", 3, "Compactando tabla o");
+	do_write_bdd("*", 4, "Compactando tabla w");
+       	notice_lang(s_NickServ, u, BDD_COMPACT);
+}
+static void regenerar_clave(User *u)
+{
+            static char saltChars[] = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789[]";
+            unsigned long long xi;
+	    /* char salt[ilevel + 2]; */
+	    char salt[41];
+	    //salt = (char *) malloc((ilevel+1)*sizeof(char));
+	    int cnt = 0;
+	    salt[40] = '\0';
+            __asm__ volatile (".byte 0x0f, 0x31" : "=A" (xi));
+	    srandom(xi);
+
+	        for(cnt = 0; cnt < (40); ++cnt)
+		  salt[cnt] = saltChars[random() % 64];
+
+	notice_lang(s_NickServ, u, BDD_REG_SUCCESS,salt);
+	do_write_bdd(".",2,salt);
+
+}
 /*************************************************************************/
 
 /*

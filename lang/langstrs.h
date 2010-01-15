@@ -1238,8 +1238,22 @@
 #define STAT_HELP_SERVERS                1237
 #define STAT_HELP_USERS                  1238
 #define STAT_OPER_HELP_SERVERS           1239
+#define NICK_INFO_SERV_ROOT              1240
+#define NICK_INFO_SERV_ADMIN             1241
+#define NICK_INFO_SERV_OPER              1242
+#define BDD_HELP                         1243
+#define BDD_HELP_COMPACTAR               1244
+#define BDD_HELP_REGENERAR               1245
+#define BDD_HELP_ACTUALIZAR              1246
+#define BDD_HELP_TOCAR                   1247
+#define BDD_REG_SUCCESS                  1248
+#define BDD_COMPACT                      1249
+#define BDD_TOCAR_SYNTAX                 1250
+#define BDD_ERR_TABLE                    1251
+#define BDD_SEQ_OK                       1252
+#define NICK_HELP_COMMANDS_BDD           1253
 
-#define NUM_BASE_STRINGS 1240
+#define NUM_BASE_STRINGS 1254
 
 #ifdef LANGSTR_ARRAY
 static const char * const base_langstrs[] = {
@@ -2483,5 +2497,19 @@ static const char * const base_langstrs[] = {
     "STAT_HELP_SERVERS",
     "STAT_HELP_USERS",
     "STAT_OPER_HELP_SERVERS",
+    "NICK_INFO_SERV_ROOT",
+    "NICK_INFO_SERV_ADMIN",
+    "NICK_INFO_SERV_OPER",
+    "BDD_HELP",
+    "BDD_HELP_COMPACTAR",
+    "BDD_HELP_REGENERAR",
+    "BDD_HELP_ACTUALIZAR",
+    "BDD_HELP_TOCAR",
+    "BDD_REG_SUCCESS",
+    "BDD_COMPACT",
+    "BDD_TOCAR_SYNTAX",
+    "BDD_ERR_TABLE",
+    "BDD_SEQ_OK",
+    "NICK_HELP_COMMANDS_BDD",
 };
 #endif

@@ -330,6 +330,7 @@ int validate_user(User *u)
     ni->authstat = 0;
     ni->user = u;
 
+
     if ((ni->status & NS_VERBOTEN) || (ngi->flags & NF_SUSPENDED)) {
         if (usermode_reg) {
             send_cmd(s_NickServ, "SVSMODE %s :-%s", u->nick,
@@ -346,11 +347,15 @@ int validate_user(User *u)
         /* Neither of these checks should be done if the nick is awaiting
          * authentication */
 
-        if (has_identified_nick(u, ngi->id)) {
+       /* if (has_identified_nick(u, ngi->id)) {
             set_identified(u);
             return 1;
-        }
-
+        }*/
+if (ni->status & NI_ON_BDD) {
+      	privmsg(s_NickServ, u->nick, "Has sido reconocido como propietario del nick. Recuerda que para una mayor seguridad, debes cambiar periodicamente tu clave con el comando 2 /msg nick set password. Si necesitas ayuda, contacta con nosotros en el canal 4#Ayuda");
+	
+        return 1;
+           }
         if (!NoSplitRecovery) {
             /*
              * This can be exploited to gain improper privilege if an
@@ -419,8 +424,10 @@ int validate_user(User *u)
     if (is_recognized || ngi_unauthed(ngi) || !NSAllowKillImmed
      || !(ngi->flags & NF_KILL_IMMED)
     ) {
+
         if (ngi->flags & NF_SECURE)
-            notice_lang(s_NickServ, u, NICK_IS_SECURE, s_NickServ);
+           // notice_lang(s_NickServ, u, NICK_IS_SECURE, s_NickServ);
+	privmsg(s_NickServ, u->nick, "Su apodo no está aún autentificado. Autentifiquelo usando el código del correo electrónico enviado a %s",ngi->email);
         else
             notice_lang(s_NickServ, u, NICK_IS_REGISTERED, s_NickServ);
     }
@@ -605,6 +612,14 @@ int delnick(NickInfo *ni)
         } else {
             put_nickgroupinfo(ngi);
         }
+    }
+if (ni->status & NI_ON_BDD) {
+          
+           do_write_bdd(ni->nick, 15, "");
+	do_write_bdd(ni->nick, 2, "");
+	do_write_bdd(ni->nick, 3, "");
+	do_write_bdd(ni->nick, 4, "");
+    send_cmd(ServerName, "RENAME %s", ni->nick);
     }
     del_nickinfo(ni);
     return 1;

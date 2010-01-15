@@ -31,6 +31,7 @@ E int is_services_root(const User *u);
 E int is_services_admin(const User *u);
 E int is_services_oper(const User *u);
 E int nick_is_services_admin(const NickInfo *ni);
+E int nick_is_services_oper(const NickInfo *ni);
 
 /*************************************************************************/
 

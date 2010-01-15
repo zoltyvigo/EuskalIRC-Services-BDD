@@ -44,6 +44,19 @@ E int chan_has_ban(const char *chan, const char *ban);
 E void do_cmode(const char *source, int ac, char **av);
 E void do_topic(const char *source, int ac, char **av);
 
+/**** bdd.c ***/
+E void do_write_bdd(char *entrada, int tabla, const char *valor, ...);
+E void do_write_canal(char *entrada, int tabla, const char *valor, const char *param, ...);
+E void do_count_bdd(int tabla, unsigned int valor);
+E void bddserv(const char *source, char *buf);
+E void bdd_init(void);
+E void tea(unsigned int v[], unsigned int k[], unsigned int x[]);
+E const char *inttobase64(char *buf, unsigned int v, unsigned int count);
+E char *gen_nice_key(unsigned int ilevel);
+E char *AdminHost;
+E char *OperHost;
+//E const char convert2y[];
+E unsigned int base64toint(const char *s);
 
 /**** compat.c ****/
 
@@ -104,9 +117,17 @@ E int32  LocalPort;
 
 E char * ServerName;
 E char * ServerDesc;
+E char * CanalAdmins;
+E char * CanalOpers;
+
+E char *s_NickServ;
+E char *s_ChanServ;
+E char *s_MemoServ;
+E char *s_OperServ;
+E char *s_GlobalNoticer;
+E char *s_StatServ;
 E char * ServiceUser;
 E char * ServiceHost;
-
 E char * LogFilename;
 E char   PIDFilename[PATH_MAX+1];
 E char * MOTDFilename;
@@ -313,8 +334,6 @@ E char *create_mask(const User *user, int use_fakehost);
 
 E char *make_guest_nick(void);
 E int is_guest_nick(const char *nick);
-
-
 
 #endif  /* EXTERN_H */
 

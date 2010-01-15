@@ -52,7 +52,10 @@ char * ServerName;
 char * ServerDesc;
 char * ServiceUser;
 char * ServiceHost;
-
+char * CanalAdmins;
+char * CanalOpers;
+char * AdminHost;
+char * OperHost;
 char * LogFilename;
 char   PIDFilename[PATH_MAX+1];
 char * MOTDFilename;
@@ -142,6 +145,10 @@ static ConfigDirective main_directives[] = {
     { "RunGroup",         { { CD_FUNC, 0, do_RunGroup } } },
     { "ServerDesc",       { { CD_STRING, CF_DIRREQ, &ServerDesc } } },
     { "ServerName",       { { CD_STRING, CF_DIRREQ, &ServerName } } },
+     { "CanalAdmins",       { { CD_STRING, CF_DIRREQ, &CanalAdmins } } },
+     { "CanalOpers",       { { CD_STRING, CF_DIRREQ, &CanalOpers } } },
+     { "AdminHost",       { { CD_STRING, CF_DIRREQ, &AdminHost } } },
+     { "OperHost",       { { CD_STRING, CF_DIRREQ, &OperHost } } },
     { "ServiceUser",      { { CD_FUNC, CF_DIRREQ, do_ServiceUser } } },
     { "StrictPasswords",  { { CD_SET, 0, &StrictPasswords } } },
     { "TimeoutCheck",     { { CD_TIMEMSEC, CF_DIRREQ, &TimeoutCheck } } },
@@ -942,13 +949,13 @@ int init(int ac, char **av)
 
     /* Announce ourselves to the logfile. */
     if (debug || readonly || noexpire) {
-        log("IRC Services %s starting up (options:%s%s%s)",
+        log("IRC Services %s +BDD iniciados (options:%s%s%s)",
             version_number,
             debug ? " debug" : "",
             readonly ? " readonly" : "",
             noexpire ? " noexpire" : "");
     } else {
-        log("IRC Services %s starting up", version_number);
+        log("IRC Services %s +BDD iniciados", version_number);
     }
     start_time = time(NULL);
 
@@ -1133,7 +1140,8 @@ int reconfigure(void)
 {
     char *old_RemoteServer, *old_RemotePassword, *old_LocalHost;
     int old_RemotePort, old_LocalPort;
-    char *old_ServerName, *old_ServerDesc, *old_ServiceUser, *old_ServiceHost;
+    char *old_ServerName, *old_ServerDesc, *old_ServiceUser, *old_ServiceHost,*old_CanalAdmins,*old_CanalOpers;
+    char *old_AdminHost,*old_OperHost;
     char *old_LogFilename, *old_PIDFilename;
     char **old_LoadModules;
     int old_LoadModules_count;
@@ -1148,6 +1156,10 @@ int reconfigure(void)
     old_LocalHost = LocalHost ? sstrdup(LocalHost) : NULL;
     old_LocalPort = LocalPort;
     old_ServerName = sstrdup(ServerName);
+    old_CanalAdmins = sstrdup(CanalAdmins);
+    old_CanalOpers = sstrdup(CanalOpers);
+    old_AdminHost = sstrdup(AdminHost);
+    old_OperHost = sstrdup(OperHost);
     old_ServerDesc = sstrdup(ServerDesc);
     old_ServiceUser = sstrdup(ServiceUser);
     old_ServiceHost = sstrdup(ServiceHost);
@@ -1178,6 +1190,18 @@ int reconfigure(void)
             " effect until restart");
     if (strcmp(ServerName, old_ServerName) != 0)
         log("warning: reconfigure: new ServerName value will not take"
+            " effect until restart");
+    if (strcmp(CanalAdmins, old_CanalAdmins) != 0)
+        log("warning: reconfigure: new CanalAdmins value will not take"
+            " effect until restart");
+    if (strcmp(CanalOpers, old_CanalOpers) != 0)
+        log("warning: reconfigure: new CanalOpers value will not take"
+            " effect until restart");
+    if (strcmp(AdminHost, old_AdminHost) != 0)
+        log("warning: reconfigure: new AdminHost value will not take"
+            " effect until restart");
+    if (strcmp(OperHost, old_OperHost) != 0)
+        log("warning: reconfigure: new OperHost value will not take"
             " effect until restart");
     if (strcmp(ServerDesc, old_ServerDesc) != 0)
         log("warning: reconfigure: new ServerDesc value will not take"
@@ -1267,6 +1291,10 @@ int reconfigure(void)
     free(old_RemotePassword);
     free(old_LocalHost);
     free(old_ServerName);
+     free(old_CanalAdmins);
+      free(old_CanalOpers);
+      free(old_AdminHost);
+      free(old_OperHost);
     free(old_ServerDesc);
     free(old_ServiceUser);
     free(old_ServiceHost);

@@ -28,6 +28,11 @@ struct nickinfo_ {
 
     char nick[NICKMAX];
 
+    char pass[PASSMAX];
+    char *url;
+    char *email;
+
+
     int16 status;       /* See NS_* below */
     char *last_usermask; /* Last user@host mask (uses fakehost if avail.) */
     char *last_realmask; /* Last user@realhost (not fakehost) mask seen */
@@ -35,6 +40,8 @@ struct nickinfo_ {
     char *last_quit;
     time_t time_registered;
     time_t last_seen;
+      time_t expira_min;   /*tiempo expiracion minima --donostiarra 2009-*/
+    int16 estado;	/* See NS_* below */
 
     uint32 nickgroup;   /* ID of nick group for this nick */
 
@@ -61,7 +68,7 @@ struct nickgroupinfo_ {
     uint16 mainnick;    /* Index of "main" nick (for chan access lists etc) */
 
     Password pass;
-    char *url;
+       char *url;
     char *email;
     char *last_email;   /* Previous (authenticated) E-mail address */
     char *info;
@@ -104,6 +111,23 @@ struct nickgroupinfo_ {
 };
 
 /*************************************************************************/
+
+
+/* Nickname estado flags: */
+#define NS_ENCRYPTEDPW	0x0001      /* Nickname password is encrypted */
+#define NS_VERBOTEN	0x0002      /* Nick may not be registered or used */
+#define NS_NO_EXPIRE	0x0004      /* Nick never expires */
+#define NS_SUSPENDED	0x0008      /* Nick suspendido */
+#define NI_ON_BDD	0x0010      /* Nick en la BDD */
+
+#define NS_IDENTIFIED	0x8000      /* User has IDENTIFY'd */
+#define NS_RECOGNIZED	0x4000      /* ON_ACCESS true && SECURE flag not set */
+#define NS_ON_ACCESS	0x2000      /* User comes from a known address */
+
+
+
+
+
 
 /* Nickname status flags: */
 #define NS_VERBOTEN     0x0002      /* Nick may not be registered or used */

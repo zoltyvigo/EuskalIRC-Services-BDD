@@ -247,7 +247,7 @@ NICK_IDENTIFY_REQUIRED
 	Identificación con su contraseña se requiere para usar ese comando.
 	Vuelva a intentar después de escribir /msg %s IDENTIFY Contraseña.
 NICK_PLEASE_AUTH
-	Su apodo no está aún autenticado.  Favor de autenticar su apodo usando el código de autenticación incluido en el correo electrónico enviado a: %s
+	Su apodo no está aún autentificado. Autentifiquelo usando el código del correo electrónico enviado a: %s
 NICK_X_NOT_ON_CHAN_X
 	El apodo %s no está actualmente en el canal %s.
 
@@ -331,7 +331,8 @@ NICK_REGISTER_TOO_MANY_NICKS
 NICK_REGISTERED
 	El apodo %s ha sido registrado a usted.
 NICK_PASSWORD_IS
-	Su contraseña es %s -- recuerde esto para uso posterior.
+	Su contraseña temporal es %s -- recuerde esto para uso posterior.
+	Le recomendamos cambiarsela una vez se haya autentificado en su primera vez.
 
 # IDENTIFY responses
 NICK_IDENTIFY_SYNTAX
@@ -661,6 +662,12 @@ NICK_INFO_SUSPEND_REASON
 	Razón: %s
 NICK_INFO_SHOW_ALL
 	Para más información, escriba: /msg %s INFO %s ALL
+NICK_INFO_SERV_OPER
+	Es un  12OPERADOR  de la RED
+NICK_INFO_SERV_ADMIN
+	Es un  4ADMINISTRADOR  de la RED
+NICK_INFO_SERV_ROOT
+	Es el  4ROOT  de la RED
 
 # LISTCHANS responses
 NICK_LISTCHANS_SYNTAX
@@ -2518,6 +2525,13 @@ NICK_HELP_COMMANDS_LIST
 NICK_HELP_COMMANDS_LISTCHANS
 	    LISTCHANS    Alista todos los canales que usted posee
 	    STATUS       Asegurese si se han identificado correctamente por un apodo dado
+NICK_HELP_COMMANDS_BDD
+	2TOCAR permite llevar a cabo tareas varias de mantenimiento
+	y administración del sistema de Base de Datos Distribuida del
+	IRCD
+	2COMPACTAR     Compacta las tablas de la BDD para ahorrar CPU y disco
+	2REGENERAR     Regenera manualmente una clave de cifrado para IPs
+	
 
 NICK_HELP_REGISTER
 	Sintaxis: %s
@@ -5175,6 +5189,59 @@ STAT_OPER_HELP_SERVERS
 	RENAME renombra un grupo de estadísticas del servidor.
 	Estos tres comandos están limitados al Super-Usuario De
 	Servicios.
+BDD_HELP
+	12%S permite llevar a cabo tareas varias de mantenimiento
+	y administración del sistema de Base de Datos Distribuida del
+	IRCD, así como simplificar su manejo. Permite llevar a cabo
+	operaciones no integradas en algún otro service, como
+	pueden ser:
+	
+	12TOCAR         Toca manualmente una tabla.
+	
+	4ATENCIÓN! El uso de cualquiera de estos comandos puede resultar peligroso
+	para la integridad de las tablas en la Base de Datos Distribuida!
+
+BDD_HELP_COMPACTAR
+	Sintaxis: 12COMPACTAR
+	
+	Compacta tablas de la base de datos para ahorrar CPU y espacio en disco.
+	Las tablas de toda la red son reducidas según sea conveniente.
+
+BDD_HELP_REGENERAR
+	Sintaxis: 12REGENERAR
+	
+	Genera una clave de cifrado aleatoria de alta calidad (pero de 64 bits)
+	para el sistema de cifrado de IPs virtuales. Esta clave 4NO debería ser conocida
+	por nadie más que no sea el que la genera.
+	
+BDD_HELP_ACTUALIZAR
+	Sintaxis: 12ACTUALIZAR
+	
+	Actualiza los contadores internos de los services en caso de un posible "desfase"
+	a causa de algún "raw" o algún otro nodo. Normalmente, nunca es necesario usar esto,
+	ya que se producen sincronizaciones cada vez que se accede a la BDD.
+
+BDD_HELP_TOCAR
+	Sintaxis: 12TOCAR <tabla> [clave]
+	
+	'Toca' manualmente una tabla de la Base de Datos Distribuida, tratando
+	la información introducida y actualizando los contadores.
+
+BDD_REG_SUCCESS
+	Clave de cifrado regenerada con éxito, usando: 12%s
+
+BDD_COMPACT
+	Tablas compactadas
+
+BDD_TOCAR_SYNTAX
+	12TOCAR <tabla> <clave> [valor]
+
+BDD_ERR_TABLE
+	Tabla errónea
+
+BDD_SEQ_OK
+	Secuencia completa
+
 
 ###########################################################################
 

@@ -34,7 +34,7 @@
 /* Default language for newly registered nicks; see language.h for
  * available languages (LANG_* constants).  Unless you're running a
  * regional network, you should probably leave this at LANG_EN_US. */
-#define DEF_LANGUAGE    LANG_EN_US
+#define DEF_LANGUAGE    LANG_ES
 
 
 /******* OperServ configuration *******/

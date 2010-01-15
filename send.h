@@ -95,6 +95,11 @@ extern void send_cmd(const char *source, const char *fmt, ...)
         FORMAT(printf,2,3);
 extern void vsend_cmd(const char *source, const char *fmt, va_list args)
         FORMAT(printf,2,0);
+extern void canaladmins(const char *source, const char *fmt, ...)
+        FORMAT(printf,2,3);
+extern void canalopers(const char *source, const char *fmt, ...)
+        FORMAT(printf,2,3);
+
 
 /* Shortcuts for sending miscellaneous messages */
 extern void send_error(const char *fmt, ...) FORMAT(printf,1,2);

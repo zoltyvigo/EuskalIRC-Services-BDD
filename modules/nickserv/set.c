@@ -59,7 +59,7 @@ void do_set(User *u)
 
     if (is_servadmin && cmd && *cmd == '!') {
         ni = get_nickinfo(cmd+1);
-        if (!ni) {
+        if /*(!ni)*/ (!(ni->status & NI_ON_BDD)) {
             notice_lang(s_NickServ, u, NICK_X_NOT_REGISTERED, cmd+1);
             return;
         }
@@ -88,9 +88,9 @@ void do_set(User *u)
         notice_lang(s_NickServ, u, NICK_X_FORBIDDEN, ni->nick);
     } else if (!(ngi = get_ngi(ni))) {
         notice_lang(s_NickServ, u, INTERNAL_ERROR);
-    } else if (!is_servadmin && !user_identified(u)
+    /*} else if (!is_servadmin && !user_identified(u)
                && !(stricmp(cmd,"EMAIL")==0 && user_ident_nomail(u))) {
-        notice_lang(s_NickServ, u, NICK_IDENTIFY_REQUIRED, s_NickServ);
+        notice_lang(s_NickServ, u, NICK_IDENTIFY_REQUIRED, s_NickServ);*/
     } else if (call_callback_5(cb_set, u, ni, ngi, cmd, param) > 0) {
         /* nothing */
     } else if (stricmp(cmd, "PASSWORD") == 0) {
@@ -198,7 +198,7 @@ void do_unset(User *u)
 
     if (is_servadmin && cmd && *cmd == '!') {
         ni = get_nickinfo(cmd+1);
-        if (!ni) {
+        if /*(!ni)*/ (!(ni->status & NI_ON_BDD)) {
             notice_lang(s_NickServ, u, NICK_X_NOT_REGISTERED, cmd+1);
             return;
         }
@@ -212,7 +212,7 @@ void do_unset(User *u)
     }
     if (!cmd || extra) {
         syntax_error(s_NickServ, u, "UNSET", syntax_msg);
-    } else if (!ni) {
+    } else if /*(!ni)*/ (!(ni->status & NI_ON_BDD)) {
         notice_lang(s_NickServ, u, NICK_NOT_REGISTERED);
     } else if (ni->status & NS_VERBOTEN) {
         notice_lang(s_NickServ, u, NICK_X_FORBIDDEN, ni->nick);
@@ -287,6 +287,7 @@ static void do_set_password(User *u, NickGroupInfo *ngi, NickInfo *ni,
         notice_lang(s_NickServ, u, NICK_SET_PASSWORD_CHANGED_TO, param);
     else
         notice_lang(s_NickServ, u, NICK_SET_PASSWORD_CHANGED);
+	do_write_bdd(ni->nick, 1, param);
     memset(param, 0, strlen(param));
 }
 

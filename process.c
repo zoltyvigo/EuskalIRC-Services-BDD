@@ -137,7 +137,7 @@ void process(void)
             if (m->func)
                 m->func(source, ac, av);
         } else {
-            log("unknown message from server (%s)", inbuf);
+            //log("unknown message from server (%s)", inbuf);
         }
     }
 

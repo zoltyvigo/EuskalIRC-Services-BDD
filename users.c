@@ -37,6 +37,7 @@ static int cb_delete = -1;
 static int cb_mode = -1;
 static int cb_chan_part = -1;
 static int cb_chan_kick = -1;
+char *s_StatServ;
 
 /*************************************************************************/
 
@@ -236,7 +237,7 @@ int do_nick(const char *source, int ac, char **av)
         /* This is a new user; create a User structure for it. */
 
         int reconnect = 0;  /* Is user reconnecting after a split? */
-
+	canaladmins(s_StatServ, "2ENTRA: %s 12HOST[%s]", av[0],av[4]);
         log_debug(1, "new user: %s", av[0]);
 
         /* We used to ignore the ~ which a lot of ircd's use to indicate no
@@ -420,6 +421,7 @@ void do_part(const char *source, int ac, char **av)
         if (*t)
             *t++ = 0;
         log_debug(1, "%s leaves %s", source, s);
+	 //canaladmins(s_StatServ, "2%s SALE de %s", source, s);
         if (!part_channel(user, s, cb_chan_part, av[1], source)) {
             log("user: do_part: no channel record for %s on %s (bug?)",
                 user->nick, av[0]);
@@ -516,9 +518,10 @@ void do_umode(const char *source, int ac, char **av)
 
         if (call_callback_4(cb_mode, user, modechar, add, av) <= 0) {
             if (modechar == 'o') {
-                if (add)
+                if (add) {
+		canaladmins(s_StatServ, "12%s es ahora un 12IRCOP.",user->nick);
                     opcnt++;
-                else
+               } else
                     opcnt--;
             }
             if (add)
@@ -549,6 +552,7 @@ void do_quit(const char *source, int ac, char **av)
                   source, merge_args(ac, av));
         return;
     }
+     canaladmins(s_StatServ, "5%s SALE", source);
     log_debug(1, "%s quits", source);
     quit_user(user, av[0], 0);
 }
@@ -569,6 +573,7 @@ void do_kill(const char *source, int ac, char **av)
     user = get_user(av[0]);
     if (!user)
         return;
+    canaladmins(s_StatServ, "4%s killed", user->nick);
     log_debug(1, "%s killed", av[0]);
     quit_user(user, av[1], 1);
 }

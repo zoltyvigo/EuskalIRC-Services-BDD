@@ -911,11 +911,11 @@ static void do_registra(User *u)
         privmsg(s_CregServ, u->nick, "El canal ya existe en %s. Teclee \00312/msg %s ESTADO %s\003 para ver su estado.", s_CregServ, s_CregServ, chan);     
     } else if ((stricmp(seccion, "SOC") != 0) &&  (stricmp(seccion, "INF") != 0) &&  (stricmp(seccion, "CIE") != 0) &&  (stricmp(seccion, "AYU") != 0) && (stricmp(seccion, "ADU") != 0) &&  (stricmp(seccion, "PRO") != 0) &&  (stricmp(seccion, "CUH") != 0) &&  (stricmp(seccion, "DEP") != 0) &&  (stricmp(seccion, "LCT") != 0) &&  (stricmp(seccion, "MUS") != 0) &&  (stricmp(seccion, "OCI") != 0) &&  (stricmp(seccion, "PAI") != 0) &&  (stricmp(seccion, "PRF") != 0)  &&  (stricmp(seccion, "AMO") != 0) &&  (stricmp(seccion, "SEX") != 0) &&  (stricmp(seccion, "RAD") != 0) &&  (stricmp(seccion, "JUE") != 0) &&  (stricmp(seccion, "AND") != 0) &&  (stricmp(seccion, "ARA") != 0) &&  (stricmp(seccion, "AST") != 0) &&  (stricmp(seccion, "BAL") != 0) &&  (stricmp(seccion, "ICA") != 0)&&  (stricmp(seccion, "CAN") != 0) &&  (stricmp(seccion, "CAT") != 0) &&  (stricmp(seccion, "CAM") != 0) &&  (stricmp(seccion, "CAL") != 0) &&  (stricmp(seccion, "CEM") != 0) &&  (stricmp(seccion, "EUS") != 0) &&  (stricmp(seccion, "EXT") != 0) &&  (stricmp(seccion, "GAE") != 0) &&  (stricmp(seccion, "LRI") != 0) &&  (stricmp(seccion, "MAD") != 0) &&  (stricmp(seccion, "MUR") != 0) &&  (stricmp(seccion, "NAV") != 0) && (stricmp(seccion, "JUE") != 0)) {
        privmsg(s_CregServ, u->nick, "Seccion InCorrecta,teclea \00312/msg CREG seccion\003 para ver las disponibles"); 
-       }
-    else if (ni->channelmax > 0 && ni->channelcount >= ni->channelmax) {
+       } /*
+   else if (ni->channelmax > 0 && ni->channelcount >= ni->channelmax) {
         notice_lang(s_CregServ, u, ni->channelcount > ni->channelmax ? CHAN_EXCEEDED_CHANNEL_LIMIT : CHAN_REACHED_CHANNEL_LIMIT, ni->channelmax);
 
-    } else if (!(cr = makecreg(chan))) {
+    } */else if (!(cr = makecreg(chan))) {
         log("%s: makecreg() failed for REGISTER %s", s_CregServ, chan);
         notice_lang(s_CregServ, u, CHAN_REGISTRATION_FAILED);                             
     }  

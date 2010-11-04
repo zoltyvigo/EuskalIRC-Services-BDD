@@ -731,7 +731,8 @@ load_jok_dbase();
     if (debug)
 	log("debug: Cargando la DB de %s (4/7)", s_OperServ);
     load_akill();
-     load_aregistra();
+     //load_aregistra();
+	
     if (debug)
 	log("debug: Cargando la DB de GLINES (5/7)");
     load_news();
@@ -742,6 +743,7 @@ load_jok_dbase();
 	log("debug: Cargando la DB de SPAM (7/7)");
     load_cr_dbase();
     load_ipv();
+    load_achanakick();
     log("Cargadas las bases de datos");
 
     /* Connect to the remote server */

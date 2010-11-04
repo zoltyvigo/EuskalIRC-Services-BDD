@@ -16,6 +16,20 @@
 /*************************************************************************/
 #define canales 6000
 static ChannelInfo *chanlists[canales];
+struct achanakick {
+    char *canal;
+    char *nick;
+    char who[NICKMAX];
+    time_t time;
+    time_t caza_akick;
+    //time_t expires;	/* or 0 for no expiry */
+};
+static int32 nachanakick = 0;
+static int32 achanakick_size = 0;
+static struct achanakick *achanakicks = NULL;
+
+
+
 
 static int def_levels[][2] = {
     { CA_AUTOOP,            300 },
@@ -108,7 +122,7 @@ static void do_set_noexpire(User *u, ChannelInfo *ci, char *param);
 static void do_set_autolimit(User *u, ChannelInfo *ci, char *param);
 static void do_set_memoalert(User *u, ChannelInfo *ci, char *param);
 static void do_access(User *u);
-static void do_akick(User *u);
+//static void do_akick(User *u);
 static void do_info(User *u);
 static void do_list(User *u);
 static void do_invite(User *u);
@@ -184,7 +198,8 @@ static Command cmds[] = {
 		CHAN_SERVADMIN_HELP_SET_NOEXPIRE },
     { "ACCESS",   do_access,   NULL,  CHAN_HELP_ACCESS,         -1,-1,-1,-1 },
     { "ACCESS LEVELS",  NULL,  NULL,  CHAN_HELP_ACCESS_LEVELS,  -1,-1,-1,-1 },
-    { "AKICK",    do_akick,    NULL,  CHAN_HELP_AKICK,          -1,-1,-1,-1 },
+    //{ "AKICK",    do_akick,    NULL,  CHAN_HELP_AKICK,          -1,-1,-1,-1 },
+    { "AKICK",    do_achanakick,    NULL,  CHAN_HELP_AKICK,          -1,-1,-1,-1 },
     { "LEVELS",   do_levels,   NULL,  CHAN_HELP_LEVELS,         -1,-1,-1,-1 },
     { "INFO",     do_info,     NULL,  CHAN_HELP_INFO,           
 		-1, CHAN_SERVADMIN_HELP_INFO, CHAN_SERVADMIN_HELP_INFO, 
@@ -344,13 +359,14 @@ void listchans(int count_only, const char *chan)
 	    }
 	    printf("Candado de modos: ");
 	    if (ci->mlock_on || ci->mlock_key || ci->mlock_limit) {
-		printf("+%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s",
+		printf("+%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s",
 			(ci->mlock_on & CMODE_I) ? "i" : "",
 			(ci->mlock_key         ) ? "k" : "",
 			(ci->mlock_limit       ) ? "l" : "",
 			(ci->mlock_on & CMODE_M) ? "m" : "",
 			(ci->mlock_on & CMODE_N) ? "n" : "",
 			(ci->mlock_on & CMODE_C) ? "C" : "",
+			(ci->mlock_on & CMODE_c) ? "c" : "",
 			(ci->mlock_on & CMODE_u) ? "u" : "",
 			(ci->mlock_on & CMODE_n) ? "N" : "",
 			(ci->mlock_on & CMODE_P) ? "p" : "",
@@ -372,13 +388,14 @@ void listchans(int count_only, const char *chan)
                         );
 	    }
 	    if (ci->mlock_off)
-		printf("-%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s",
+		printf("-%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s",
 			(ci->mlock_off & CMODE_I) ? "i" : "",
 			(ci->mlock_off & CMODE_K) ? "k" : "",
 			(ci->mlock_off & CMODE_L) ? "l" : "",
 			(ci->mlock_off & CMODE_M) ? "m" : "",
 			(ci->mlock_off & CMODE_N) ? "n" : "",
 			(ci->mlock_off & CMODE_C) ? "C" : "",
+			(ci->mlock_off & CMODE_c) ? "c" : "",
 			(ci->mlock_off & CMODE_n) ? "N" : "",
 			(ci->mlock_off & CMODE_u) ? "u" : "",
 			(ci->mlock_off & CMODE_P) ? "p" : "",
@@ -451,6 +468,10 @@ void get_chanserv_stats(long *nrec, long *memuse)
 		    mem += strlen(ci->akick[j].u.mask)+1;
 		if (ci->akick[j].reason)
 		    mem += strlen(ci->akick[j].reason)+1;
+		/*if (ci->akick[j].quien)
+		    mem += strlen(ci->akick[j].quien)+1;*/
+
+		
 	    }
 	    if (ci->mlock_key)
 		mem += strlen(ci->mlock_key)+1;
@@ -581,6 +602,9 @@ static void load_old_cs_dbase(dbFILE *f, int ver)
 	short pad;
 	char *name;
 	char *reason;
+       // char *quien;
+	time_t tiempo_akick;
+     
     } old_autokick;
 
     struct {
@@ -607,7 +631,7 @@ static void load_old_cs_dbase(dbFILE *f, int ver)
 	char *email;
 	struct channel_ *c;
     } old_channelinfo;
-
+   int32 tmp32;
 
     for (i = 33; i < canales && !failed; i++) {
 
@@ -724,6 +748,7 @@ static void load_old_cs_dbase(dbFILE *f, int ver)
 			akick->is_nick = old_autokick.is_nick;
 		    }
 		    akick->reason = old_autokick.reason;
+		    //akick->quien = old_autokick.quien;
 		}
 		akick = ci->akick;
 		for (j = 0; j < ci->akickcount; j++, akick++) {
@@ -738,6 +763,15 @@ static void load_old_cs_dbase(dbFILE *f, int ver)
 		    }
 		    if (akick->reason)
 			SAFE(read_string(&akick->reason, f));
+		     /*if (akick->quien)
+			SAFE(read_string(&akick->quien, f));*/
+		   if (akick->tiempo_akick) {
+			SAFE(read_int32(&tmp32, f));
+		akick->tiempo_akick= tmp32;
+			         }
+
+		
+		
 		    if (!akick->in_use) {
 			if (akick->is_nick) {
 			    akick->u.ni = NULL;
@@ -749,6 +783,11 @@ static void load_old_cs_dbase(dbFILE *f, int ver)
 			    free(akick->reason);
 			    akick->reason = NULL;
 			}
+			/*if (akick->quien) {
+			    free(akick->quien);
+			    akick->quien = NULL;
+			}*/
+		
 		    }
 		}
 	    } else {
@@ -811,7 +850,7 @@ void load_cs_dbase(void)
 	    int16 tmp16;
 	    int32 tmp32;
 	    int n_levels;
-	    char *s;
+	    char *s,*z;
 
 	    last = &chanlists[i];
 	    prev = NULL;
@@ -942,22 +981,28 @@ void load_cs_dbase(void)
 				ci->akick[j].u.mask = s;
 			    }
 			    SAFE(read_string(&s, f));
-			    if (ci->akick[j].in_use)
+			    if (ci->akick[j].in_use) {
 				ci->akick[j].reason = s;
-			    else if (s)
+                               /* SAFE(read_string(&z, f));
+				ci->akick[j].quien = z;*/
+				
+			    } else if (s)
 				free(s);
 			    if (ver >= 8)
 			        SAFE(read_buffer(ci->akick[j].who, f));
 			    else
 			        ci->akick[j].who[0] = '\0';    
-			}
+		  SAFE(read_int32(&tmp32, f));
+                    ci->akick[j].tiempo_akick = tmp32;
+			
+		             	}
 		    }
 		} else {
 		    ci->akick = NULL;
 		}
 
-		SAFE(read_int16(&ci->mlock_on, f));
-		SAFE(read_int16(&ci->mlock_off, f));
+		SAFE(read_int32(&ci->mlock_on, f));
+		SAFE(read_int32(&ci->mlock_off, f));
 		SAFE(read_int32(&ci->mlock_limit, f));
 		SAFE(read_string(&ci->mlock_key, f));
 
@@ -1013,6 +1058,7 @@ void load_cs_dbase(void)
 		log("%s: Carga DB: Borrando canal %s por no tener founder",
 			s_ChanServ, ci->name);
 		delchan(ci);
+		 borra_akick(ci->name);
 	    }
 	}
     }
@@ -1049,7 +1095,7 @@ void save_cs_dbase(void)
 
     for (i = 0; i < canales; i++) {
 	int16 tmp16;
-
+	
 	for (ci = chanlists[i]; ci; ci = ci->next) {
 	    SAFE(write_int8(1, f));
 	    SAFE(write_buffer(ci->name, f));
@@ -1100,13 +1146,21 @@ void save_cs_dbase(void)
 			SAFE(write_string(ci->akick[j].u.ni->nick, f));
 		    else
 			SAFE(write_string(ci->akick[j].u.mask, f));
+
 		    SAFE(write_string(ci->akick[j].reason, f));
+		    //SAFE(write_string(ci->akick[j].quien, f));
 		    SAFE(write_buffer(ci->akick[j].who, f));
+		    SAFE(write_int32(ci->akick[j].tiempo_akick, f));
+		
+		
+   
+
+		   
 		}
 	    }
 
-	    SAFE(write_int16(ci->mlock_on, f));
-	    SAFE(write_int16(ci->mlock_off, f));
+	    SAFE(write_int32(ci->mlock_on, f));
+	    SAFE(write_int32(ci->mlock_off, f));
 	    SAFE(write_int32(ci->mlock_limit, f));
 	    SAFE(write_string(ci->mlock_key, f));
 
@@ -1214,6 +1268,10 @@ void check_modes(const char *chan)
 	*end++ = 'C';
 	c->mode |= CMODE_C;
     }
+   if (modes & CMODE_c) {
+	*end++ = 'c';
+	c->mode |= CMODE_c;
+    }
     if (modes & CMODE_n) {
 	*end++ = 'N';
 	c->mode |= CMODE_n;
@@ -1261,6 +1319,10 @@ void check_modes(const char *chan)
     if (modes & CMODE_S) {
         *end++ = 'C';
         c->mode |= CMODE_C;
+    }
+    if (modes & CMODE_c) {
+        *end++ = 'c';
+        c->mode |= CMODE_c;
     }
    if (modes & CMODE_n) {
         *end++ = 'N';
@@ -1324,6 +1386,10 @@ void check_modes(const char *chan)
      if (modes & CMODE_C) {
 	*end++ = 'C';
 	c->mode &= ~CMODE_C;
+    }
+    if (modes & CMODE_c) {
+	*end++ = 'c';
+	c->mode &= ~CMODE_c;
     }
     if (modes & CMODE_n) {
 	*end++ = 'N';
@@ -1757,29 +1823,17 @@ int check_kick(User *user, const char *chan)
     else
 	ni = NULL;
 
+ 
+
+   mask = create_mask(user);
 
 
-    for (akick = ci->akick, i = 0; i < ci->akickcount; akick++, i++) {
-	if (!akick->in_use)
-	    continue;
-	if ((akick->is_nick && getlink(akick->u.ni) == ni)
-		|| (!akick->is_nick && match_usermask(akick->u.mask, user))
-	) {
-	    if (debug >= 2) {
-		log("debug: %s matched akick %s", user->nick,
-			akick->is_nick ? akick->u.ni->nick : akick->u.mask);
-	    }
-	    //mask = akick->is_nick ? create_mask(user) : sstrdup(akick->u.mask);
-	    mask = create_mask(user);
-	    reason = akick->reason ? akick->reason : CSAutokickReason;
-	    goto kick;
-	}
-    }
 
     if (time(NULL)-start_time >= CSRestrictDelay
 				&& check_access(user, ci, CA_NOJOIN)) {
 	mask = create_mask(user);
 	reason = getstring(user->ni, CHAN_NOT_ALLOWED_TO_JOIN);
+	  
 	goto kick;
     }
 
@@ -1788,10 +1842,16 @@ int check_kick(User *user, const char *chan)
     return 0;
 
 kick:
+
     if (debug) {
 	log("debug: channel: AutoKicking %s!%s@%s",
 		user->nick, user->username, user->host);
     }
+
+	
+
+   
+
     /* Remember that the user has not been added to our channel user list
      * yet, so we check whether the channel does not exist */
     stay = !findchan(chan);
@@ -1803,6 +1863,7 @@ kick:
     av[1] = sstrdup("+b");
     av[2] = mask;
     send_cmd(s_ChanServ, "MODE %s +b %s  %lu", chan, av[2], time(NULL));
+	
     do_cmode(s_ChanServ, 3, av);
     free(av[0]);
     free(av[1]);
@@ -1811,12 +1872,14 @@ kick:
     send_cmd(s_ChanServ, "K %s %s :%s", chan, user->numerico, reason);
 #else
     send_cmd(s_ChanServ, "KICK %s %s :%s", chan, user->nick, reason);
+ 
+
 #endif
     if (stay) {
 	t = add_timeout(CSInhabit, timeout_leave, 0);
 	t->data = sstrdup(chan);
     }
-    return 1;
+
 }
 
 /*************************************************************************/
@@ -1983,6 +2046,7 @@ canaladmins(s_CregServ, "%s\n", mysql_error(conn));
 #endif
 		do_write_bdd(ci->name, 7, "", ci->name);
 		delchan(ci);
+		 borra_akick(ci->name);
 	    }
 	    /* AQUI LOS EXPIRES DE SUSPENDS */
 	}
@@ -2031,6 +2095,7 @@ canaladmins(s_CregServ, "%s\n", mysql_error(conn));
  mysql_close(conn);
 #endif
 			delchan(ci);
+			 borra_akick(ci->name);
 		    } else {
 		        canalopers(s_ChanServ, "Transferiendo el founder de 12%s,"
 		        " del nick borrado  12%s al sucesor 12%s", ci->name, ni->nick, ni2->nick);
@@ -2069,6 +2134,7 @@ canaladmins(s_CregServ, "%s\n", mysql_error(conn));
  mysql_close(conn);
 #endif
 		    delchan(ci);
+		     borra_akick(ci->name);
 		}
 		continue;
 	    }
@@ -2085,6 +2151,7 @@ canaladmins(s_CregServ, "%s\n", mysql_error(conn));
 		    if (akick->reason) {
 			free(akick->reason);
 			akick->reason = NULL;
+		
 		    }
 		}
 	    }
@@ -2357,9 +2424,13 @@ static int delchan(ChannelInfo *ci)
 	    free(ci->akick[i].u.mask);
 	if (ci->akick[i].reason)
 	    free(ci->akick[i].reason);
+	/*if (ci->akick[i].quien)
+	    free(ci->akick[i].quien);*/
+	
     }
     if (ci->akick)
 	free(ci->akick);
+    
     if (ci->levels)
 	free(ci->levels);
     if (ci->memos.memos) {
@@ -2597,6 +2668,7 @@ notice(s_ChanServ, u->nick, "Comando deshabilitado, use 2/msg 12%s ,para los
 		s_ChanServ, chan);
 	notice_lang(s_ChanServ, u, CHAN_REGISTRATION_FAILED);
 	delchan(ci);
+	 borra_akick(ci->name);
 #endif
 
     } else {
@@ -2755,6 +2827,7 @@ int dropado_con_creg(User *u, const char *chan)
 			u->nick, u->username, u->host);
 	do_write_bdd(ci->name, 7, "",chan);
 	delchan(ci);
+	 borra_akick(ci->name);
         part_shadow_chan(chan);
 
 	notice_lang(s_ChanServ, u, CHAN_DROPPED, chan);
@@ -2977,6 +3050,7 @@ static void do_drop(User *u)
 	log("%s: Channel %s dropped by %s!%s@%s", s_ChanServ, ci->name,
 			u->nick, u->username, u->host);
 	delchan(ci);
+	 borra_akick(ci->name);
 #ifdef IRC_TERRA
 	if ((c = findchan(chan))) {
 	    c->mode &= ~CMODE_r;
@@ -3462,6 +3536,15 @@ static void do_set_mlock(User *u, ChannelInfo *ci, char *param)
 		newlock_on &= ~CMODE_C;
 	    }
 	    break;
+	    case 'c':
+	    if (add) {
+		newlock_on |= CMODE_c;
+		newlock_off &= ~CMODE_c;
+	    } else {
+		newlock_off |= CMODE_c;
+		newlock_on &= ~CMODE_c;
+	    }
+	    break;
 	   case 'N':
 	    if (add) {
 		newlock_on |= CMODE_n;
@@ -3561,13 +3644,14 @@ static void do_set_mlock(User *u, ChannelInfo *ci, char *param)
     *end = 0;
     if (ci->mlock_on)
 	end += snprintf(end, sizeof(modebuf)-(end-modebuf), 
-			"+%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s",
+			"+%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s",
 				(ci->mlock_on & CMODE_I) ? "i" : "",
 				(ci->mlock_key         ) ? "k" : "",
 				(ci->mlock_limit       ) ? "l" : "",
 				(ci->mlock_on & CMODE_M) ? "m" : "",
 				(ci->mlock_on & CMODE_N) ? "n" : "",
 				(ci->mlock_on & CMODE_C) ? "C" : "",
+				(ci->mlock_on & CMODE_c) ? "c" : "",
 				(ci->mlock_on & CMODE_n) ? "N" : "",
 			        (ci->mlock_on & CMODE_u) ? "u" : "",
 				(ci->mlock_on & CMODE_P) ? "p" : "",
@@ -3589,13 +3673,14 @@ static void do_set_mlock(User *u, ChannelInfo *ci, char *param)
                                 );
     if (ci->mlock_off)
 	end += snprintf(end, sizeof(modebuf)-(end-modebuf), 
-			"-%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s",
+			"-%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s",
 				(ci->mlock_off & CMODE_I) ? "i" : "",
 				(ci->mlock_off & CMODE_K) ? "k" : "",
 				(ci->mlock_off & CMODE_L) ? "l" : "",
 				(ci->mlock_off & CMODE_M) ? "m" : "",
 				(ci->mlock_off & CMODE_N) ? "n" : "",
 				(ci->mlock_off & CMODE_C) ? "C" : "",
+				(ci->mlock_off & CMODE_c) ? "c" : "",
 				(ci->mlock_off & CMODE_n) ? "N" : "",
 				(ci->mlock_off & CMODE_u) ? "u" : "",
 				(ci->mlock_off & CMODE_P) ? "p" : "",
@@ -4265,6 +4350,7 @@ static int akick_del_callback(User *u, int num, va_list args)
 }
 #endif
 
+
 static int akick_list(User *u, int index, ChannelInfo *ci, int *sent_header)
 {
     AutoKick *akick = &ci->akick[index];
@@ -4306,7 +4392,23 @@ static int akick_list_callback(User *u, int num, va_list args)
     return akick_list(u, num-1, ci, sent_header);
 }
 
+static int del_achanakick(const char *nick)
+{
+    int i;
 
+    for (i = 0; i < nachanakick && strcmp(achanakicks[i].nick, nick) != 0; i++)
+	;
+    if (i < nachanakick) {
+	//free(achanakicks[i].canal);
+	free(achanakicks[i].nick);
+	nachanakick--;
+	if (i < nachanakick)
+	    memmove(achanakicks+i, achanakicks+i+1, sizeof(*achanakicks) * (nachanakick-i));
+	return 1;
+    } else {
+	return 0;
+    }
+}
 static void do_akick(User *u)
 {
     char *chan   = strtok(NULL, " ");
@@ -4774,6 +4876,7 @@ static void do_info(User *u)
     } else if (!ci->founder) {
         /* Paranoia... this shouldn't be able to happen */
         delchan(ci);
+	 borra_akick(ci->name);
         notice_lang(s_ChanServ, u, CHAN_X_NOT_REGISTERED, chan);
     } else {
 
@@ -4793,7 +4896,7 @@ static void do_info(User *u)
                 privmsg(s_ChanServ, u->nick, "Suspendido por: 12%s", ci->suspendby);
    tm = localtime(&ci->time_suspend);                        
    strftime_lang(timebuf, sizeof(timebuf), u, STRFTIME_DATE_TIME_FORMAT, tm);
-                privmsg(s_ChanServ, u->nick, "Fecha de la suspensiï¿½n: 12%s", timebuf);                
+                privmsg(s_ChanServ, u->nick, "Fecha de la suspensión: 12%s", timebuf);                
 /*    
                 if (ci->time_expiresuspend == 0) {
                     snprintf(expirebuf, sizeof(expirebuf),
@@ -4807,7 +4910,7 @@ static void do_info(User *u)
                                 ci->time_expiresuspend - now + 59);
                 }                 
                 */
-                privmsg(s_ChanServ, u->nick, "La suspensiï¿½n expira en: 12%s", expirebuf);
+                privmsg(s_ChanServ, u->nick, "La suspensión expira en: 12%s", expirebuf);
             }
             
         } else {
@@ -4930,12 +5033,13 @@ static void do_info(User *u)
 	end = buf;
 	*end = 0;
 	if (ci->mlock_on || ci->mlock_key || ci->mlock_limit)
-	    end += snprintf(end, sizeof(buf)-(end-buf), "+%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s",
+	    end += snprintf(end, sizeof(buf)-(end-buf), "+%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s",
 				(ci->mlock_on & CMODE_I) ? "i" : "",
 				(ci->mlock_key         ) ? "k" : "",
 				(ci->mlock_limit       ) ? "l" : "",
 				(ci->mlock_on & CMODE_M) ? "m" : "",
 				(ci->mlock_on & CMODE_C) ? "C" : "",
+				(ci->mlock_on & CMODE_c) ? "c" : "",
 				(ci->mlock_on & CMODE_n) ? "N" : "",
 				(ci->mlock_on & CMODE_u) ? "u" : "",
 				(ci->mlock_on & CMODE_N) ? "n" : "",
@@ -4959,12 +5063,13 @@ static void do_info(User *u)
 /* #endif */
                                 );
 	if (ci->mlock_off)
-	    end += snprintf(end, sizeof(buf)-(end-buf), "-%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s",
+	    end += snprintf(end, sizeof(buf)-(end-buf), "-%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s",
 				(ci->mlock_off & CMODE_I) ? "i" : "",
 				(ci->mlock_off & CMODE_K) ? "k" : "",
 				(ci->mlock_off & CMODE_L) ? "l" : "",
 				(ci->mlock_off & CMODE_M) ? "m" : "",
 				(ci->mlock_off & CMODE_C) ? "C" : "",
+				(ci->mlock_off & CMODE_c) ? "c" : "",
 				(ci->mlock_off & CMODE_n) ? "N" : "",
 				(ci->mlock_off & CMODE_u) ? "u" : "",
 				(ci->mlock_off & CMODE_N) ? "n" : "",
@@ -5867,7 +5972,7 @@ static void do_suspend(User *u)
 //            expires = time(NULL) + CSSuspendExpire;
             expires = 0; /* suspension indefinida */                  
         }    
-        log("%s: %s!%s@%s SUSPENDiï¿½ el canal %s, Motivo: %s",
+        log("%s: %s!%s@%s SUSPENDido el canal %s, Motivo: %s",
                  s_ChanServ, u->nick, u->username, u->host, chan, reason);                              
         ci->suspendby = sstrdup(u->nick);
         ci->suspendreason = sstrdup(reason);
@@ -5960,8 +6065,10 @@ static void do_forbid(User *u)
                                         
     if (readonly)
 	notice_lang(s_ChanServ, u, READ_ONLY_MODE);
-    if ((ci = cs_findchan(chan)) != NULL)
+    if ((ci = cs_findchan(chan)) != NULL) {
 	delchan(ci);
+         borra_akick(ci->name);
+	}
     ci = makechan(chan);
     if (ci) {
 	log("%s: %s set FORBID for channel %s", s_ChanServ, u->nick,
@@ -5995,6 +6102,7 @@ static void do_unforbid(User *u)
 
     if ((ci = cs_findchan(chan)) != NULL && (ci->flags & CI_VERBOTEN)) {
         delchan(ci);
+	 borra_akick(ci->name);
         log("%s: %s!%s@%s used UNFORBID on %s",
                       s_ChanServ, u->nick, u->username, u->host, chan);                      
         privmsg(s_ChanServ, u->nick, "Canal 12%s UNFORBIDeado.", chan);

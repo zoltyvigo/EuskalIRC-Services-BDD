@@ -1586,7 +1586,7 @@ static void do_help(User *u)
 void mirar_tablas() {
 //Registrado (Registered), Autor (Autor), Editor (Editor) y Supervisor (Publisher).
 // Mánager, Administrador y Súper-Administrador
-static const char karak[] = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-_";
+static const char karak[] = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-_{}[]";
    MYSQL *conn;
    MYSQL_RES *res,*resid,*residaro;
    MYSQL_ROW row,rowid,rowidaro;

@@ -47,6 +47,19 @@ E void save_alimit(void);
 E int expire_alimits(void);
 E void add_alimit(const char *elcanal,int elnumero,const time_t expiry);
 E void del_alimit(const char *elcanal);
+
+/**** achanakick.c ****/
+E void get_achanakick_stats(long *nrec, long *memuse);
+E int num_achanakicks(void);
+E void load_achanakick(void);
+E void save_achanakick(void);
+//E int check_achanakick(const char *nick, const char *username, const char *host);
+//E void expire_akills(void);
+E void do_achanakick(User *u);
+E void add_achanakick(const char *canal, const char *nick,const char *reason, const char *who);
+E int add_cazakick(const char *canal, const char *nick);
+E int borra_akick(const char *chan);
+
 /**** nicksuspends.c ****/
 E void get_anick_stats(long *nrec, long *memuse);
 E int num_anicks(void);
@@ -257,6 +270,7 @@ E char *JokuDBName;
 E char *AutokillDBName;
 E char *AutoregistraDBName;
 E char *AutolimitDBName;
+E char *AutochanakickDBName;
 E char *NickSuspendsDBName;
 E char *NewsDBName;
 E char *StatDBName;

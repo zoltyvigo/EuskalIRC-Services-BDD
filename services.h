@@ -355,6 +355,9 @@ typedef struct {
 	NickInfo *ni;	/* Same */
     } u;
     char *reason;
+    char *quien;	/*a quien va el akick*/
+    time_t caza_akick;  /*fecha cazado un akick*/
+    time_t tiempo_akick;  /*fecha puesto akick */
     char *who[NICKMAX]; /* Quien ha metido el akick */
 } AutoKick;
 
@@ -398,7 +401,7 @@ struct chaninfo_ {
     int16 akickcount;
     AutoKick *akick;			/* List of users to kickban */
 
-    int16 mlock_on, mlock_off;		/* See channel modes below */
+    int32 mlock_on, mlock_off;		/* See channel modes below */
     int32 mlock_limit;			/* 0 if no limit */
     char *mlock_key;			/* NULL if no key */
 
@@ -409,6 +412,7 @@ struct chaninfo_ {
     struct channel_ *c;			/* Pointer to channel record (if   *
 					 *    channel is currently in use) */
 };
+
 
 /* Retain topic even after last person leaves channel */
 #define CI_KEEPTOPIC	0x00000001

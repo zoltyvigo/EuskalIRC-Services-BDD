@@ -22,18 +22,18 @@ void do_euskal(User *u) /*la colocamos en extern.h y asi la llamamos desde oper*
   
 
     if ((!cmd) || ((!stricmp(cmd, "ACEPTA") == 0) && (!stricmp(cmd, "RECHAZA") == 0))) {
-      	 notice_lang(s_EuskalIRCServ, u, EUSKALIRC_HELP_DUDA);
+      	 notice_lang(s_OperServ, u, EUSKALIRC_HELP_DUDA);
     	return;
     }
    
     if (!nick) {
-    	notice_lang(s_EuskalIRCServ, u, EUSKALIRC_FALTA_NICK);
+    	notice_lang(s_OperServ, u, EUSKALIRC_FALTA_NICK,s_OperServ);
 	 return;
     } else if (!(ni = findnick(nick))) {
-	notice_lang(s_EuskalIRCServ, u, NICK_X_NOT_REGISTERED, nick);
+	notice_lang(s_OperServ, u, NICK_X_NOT_REGISTERED, nick);
 	return;
     } else  if (!(ni->status & NI_ON_BDD)) {
-        notice_lang(s_EuskalIRCServ, u, NICK_MUST_BE_ON_BDD);
+        notice_lang(s_OperServ, u, NICK_MUST_BE_ON_BDD);
 	return;
     }
      
@@ -43,7 +43,7 @@ void do_euskal(User *u) /*la colocamos en extern.h y asi la llamamos desde oper*
    
       if  ((stricmp(cmd, "ACEPTA") == 0) &&  (ni->in_ayu & AYU_PROCESO)) {
 	if (!is_services_oper(u)) {
-	    notice_lang(s_EuskalIRCServ, u, PERMISSION_DENIED);
+	    notice_lang(s_OperServ, u, PERMISSION_DENIED);
 	    return;
 	} else if (ni && (ni->status & NS_IDENTIFIED)) {
          privmsg(s_EuskalIRCServ, nick, "El OPERador/a 5%s se pondrá en contacto contigo en breve.Por favor, abandone el canal una vez atendido. Gracias.",u->nick);
@@ -53,14 +53,14 @@ void do_euskal(User *u) /*la colocamos en extern.h y asi la llamamos desde oper*
 	return;
             } 
             else {
-               privmsg(s_EuskalIRCServ,u->nick, "El Nick 5%s No esta ONLINE.",ni->nick);
+               privmsg(s_OperServ,u->nick, "El Nick 5%s No esta ONLINE.",ni->nick);
 		return;
               }
             }
        
        else if ((stricmp(cmd, "RECHAZA") == 0) && (ni->in_ayu & AYU_PROCESO))  {
 	if (!is_services_oper(u)) {
-	    notice_lang(s_EuskalIRCServ, u, PERMISSION_DENIED);
+	    notice_lang(s_OperServ, u, PERMISSION_DENIED);
 	    return;
 	}  else if (ni && (ni->status & NS_IDENTIFIED)) {
           privmsg(s_EuskalIRCServ, nick , "El OPERador/a 5%s ha rechazado la solicitud de ayuda.",u->nick);
@@ -76,12 +76,12 @@ void do_euskal(User *u) /*la colocamos en extern.h y asi la llamamos desde oper*
           }
 if ((stricmp(cmd, "ACEPTA") == 0) && !(ni->in_ayu & AYU_PROCESO))  { 
     
-       privmsg(s_EuskalIRCServ,u->nick, " 2El Nick 12%s 2Ni Solicita ni Precisa Asistencia!.5 ACEPTACION3 ilógica!",ni->nick);
+       privmsg(s_OperServ,u->nick, " 2El Nick 12%s 2Ni Solicita ni Precisa Asistencia!.5 ACEPTACION3 ilógica!",ni->nick);
 	return;
      }
  else if ((stricmp(cmd, "RECHAZA") == 0) && !(ni->in_ayu & AYU_PROCESO))  { 
     
-       privmsg(s_EuskalIRCServ,u->nick, " 2El Nick 12%s 2Ni Solicita ni Precisa Asistencia!.5 RECHAZO3 ilógico!",ni->nick);
+       privmsg(s_OperServ,u->nick, " 2El Nick 12%s 2Ni Solicita ni Precisa Asistencia!.5 RECHAZO3 ilógico!",ni->nick);
 	return;
      }
        

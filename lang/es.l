@@ -985,11 +985,11 @@ CHAN_NO_AOP_SOP
 
 # AKICK responses
 CHAN_AKICK_SYNTAX
-	12AKICK <canal> {ADD | DEL | LIST | ENFORCE} [nick or mascara]
+	12AKICK <canal> {ADD | DEL | LIST | VIEW} [nick or mascara]
 CHAN_AKICK_DISABLED
 	Lo siento, la modificación de lista de autokicks de canal esta temporalmente deshabilitada.
 CHAN_AKICK_ALREADY_EXISTS
-	12%s ya existe en la lista de autorkicks de 12%s.
+	12%s ya existe en la lista de autokicks de 12%s.
 CHAN_AKICK_REACHED_LIMIT
 	Lo siento, solo puede tener 12%d mascaras de autokick en un canal.
 CHAN_AKICK_ADDED
@@ -1008,11 +1008,12 @@ CHAN_AKICK_NO_MATCH
 	No se encuentra entradas en la lista de autokick de 12%s.
 CHAN_AKICK_LIST_EMPTY
 	La lista de autokick de 12%s está vacia.
-
+CHAN_AKICK_ALL_DELETED
+	Borradas todas las entradas de autokick de 12%s.
 CHAN_AKICK_LIST_HEADER
 	Lista de autokick de 12%s:
 CHAN_AKICK_LIST_FORMAT
-	  %3d %s%s
+	  %3d %s%s 
 CHAN_AKICK_ENFORCE_DONE
 	12AKICK ENFORCE para 12%s completado; 12%d usuarios son afectados.
 
@@ -2843,9 +2844,11 @@ CHAN_HELP_ACCESS_LEVELS
 	12/msg %S HELP LEVELS para información.
 
 CHAN_HELP_AKICK
-	Sintaxis: 12AKICK <canal> ADD <mascara> [razón]
-	          12AKICK <canal> DEL <mascara>
+	Sintaxis: 12AKICK <canal> ADD <mascara> [razón]
+	          12AKICK <canal> DEL <mascara> [<número>] [ALL]
 	          12AKICK <canal> LIST [mascara]
+	          12AKICK <canal> VIEW [mascara]
+	          12AKICK <canal> COUNT
 	          12AKICK <canal> ENFORCE
 	
 	Definimos AKICK como "Expulsión automática".
@@ -2859,21 +2862,36 @@ CHAN_HELP_AKICK
 	El comando 12AKICK ADD agrega un usuario a la lista de AKICK.
 	Si una 12razón es dada con el comando, entonces la razón será
 	utilizada por 12%S cuando expulse a dicho usuario; si
-	no, el mensaje que se utilizará por defecto, es "Has sido
-	baneado del canal".
+	no, el mensaje que se utilizará por defecto, es "No te quiero
+	en el canal".
 	
 	El comando 12AKICK DEL elimina al usuario de la lista de
 	AKICK. Este comando no remueve el BAN que pueda existir en
 	el canal, el cual deberá ser removido manualmente.
+	Si un numero 12número es dado, elimina dicho AKICK. 
+	Si se ingresa 12ALL se eliminaran TODOS los Akicks.
 	
 	El comando 12AKICK LIST muestra la lista de usuarios en la
 	lista de AKICK. Opcionalmente, solo lista aquellos
 	suministrados con la mascara dada.
 	
-	El comando 12AKICK ENFORCE causa que 12%S impide que los
-	usuarios con mascara de AKICK en la lista de AKICK estén en 
-	el canal. Es parecido a CLEAR USERS, pero que solo afecta a
-	los que tienen AKICK.
+	El comando 12AKICK VIEW es similar, pero muestra más detalles como quién puso
+	el akick, la hora y la hora del último uso del akick.
+	
+	El comando 12AKICK COUNT muestra cuantas entradas existen
+	en la lista de AKICK.
+	
+	El comando 12AKICK ENFORCE causa que CHaN imponga la lista AKICK
+	actual por medio de expulsar aquellos usuarios que concuerdan con
+	una máscara AKICK .
+	
+	5Nota: Una máscara es el sistema que utiliza el IRC para identificar a
+	un usuario, esta compuesta de nick!ident@host, donde nick es el
+	nick del usuario, ident es el ident y host es la ip virtual.
+	Los caracteres ! y @ son los separadores de los respectivos campos.
+	Una máscara acepta caracteres "comodín" que son el * que sustituye
+	cualquier número de caracteres en su posición y ? que sustituye un
+	único carácter.
 
 CHAN_HELP_LEVELS
 	Sintaxis: 12LEVELS <canal> SET <tipo> <nivel>
@@ -3462,8 +3480,8 @@ JOKU_ADMIN_HELP
 	
 	    12OPER     Modifica la lista de Operadores del BOT
 	
-	4NOTA: Cualquier 2Representante de Red tendrá el mismo rango de 5Owner-Admin
-		 sin necesidad de estar dado de alta dentro del 5"Staff" del Bot	
+	4NOTA:Cualquier 2Representante de Red tendrá el mismo rango de 5Owner-Admin
+	        sin necesidad de estar dado de alta dentro del 5"Staff" del Bot
 JOKU_HELP_ADMIN
 	Sintaxis: 12ADMIN ADD <nick>
 	          12ADMIN DEL <nick>
@@ -3636,6 +3654,7 @@ OPER_HELP
 	    12LIMPIA      MassKick de los usuarios de un canal
 	    12KILL        Expulsa a un usuario de la red anónimamente
 	    12GEOIP       DesActiva o indica el Status del Servicio de GeoIP-Localizador-Redirector
+	    12DUDA        Acepta o Rechaza una consulta en 10#%s de un Usuario Registrado
 	
 	4Aviso: TODOS los comandos enviados a 12%S son
 	registrados! (log)
@@ -3662,6 +3681,7 @@ OPER_DEVEL_HELP
 	    12LIMPIA      MassKick de los usuarios de un canal
 	    12KILL        Expulsa a un usuario de la red anónimamente
 	    12GEOIP       DesActiva o indica el Status del Servicio de GeoIP-Localizador-Redirector
+	    12DUDA        Acepta o Rechaza una consulta en 10#%s de un Usuario Registrado
 	
 	2Comandos disponibles solo para los 4Desarrolladores de
 	4Servicios:
@@ -3695,6 +3715,7 @@ OPER_COADMIN_HELP
 	    12LIMPIA      MassKick de los usuarios de un canal
 	    12KILL        Expulsa a un usuario de la red anónimamente
 	    12GEOIP       DesActiva o indica el Status del Servicio de GeoIP-Localizador-Redirector
+	    12DUDA        Acepta o Rechaza una consulta en 10#%s de un Usuario Registrado
 	
 	2Comandos disponibles solo para los 4Desarrolladores de
 	4Servicios:
@@ -3737,6 +3758,7 @@ OPER_ADMIN_HELP
 	    12LIMPIA      MassKick de los usuarios de un canal
 	    12KILL        Expulsa a un usuario de la red anónimamente
 	    12GEOIP       DesActiva o indica el Status del Servicio de GeoIP-Localizador-Redirector
+	    12DUDA        Acepta o Rechaza una consulta en 10#%s de un Usuario Registrado 
 	
 	2Comandos disponibles solo para los 4Desarrolladores de
 	4Servicios:
@@ -3801,6 +3823,8 @@ OPER_ROOT_HELP
 	    12APODERA     MassDeop de los usuarios de un canal
 	    12LIMPIA      MassKick de los usuarios de un canal
 	    12KILL        Expulsa a un usuario de la red anónimamente
+	    12GEOIP       DesActiva o indica el Status del Servicio de GeoIP-Localizador-Redirector
+	    12DUDA        Acepta o Rechaza una consulta en 10#%s de un Usuario Registrado 
 	
 	2Comandos disponibles solo para los  4Desarrolladores de
 	4 Servicios:
@@ -4340,7 +4364,7 @@ CREG_HELP
 	1FIN de la AYUDA de   3%S
 	 
 CREG_HELP_SEC
-	   12Secciones Principales disponibles en la Red 7%s para ser asignadas al canal
+	   12Secciones Principales disponibles en la Red 7%s 12para ser asignadas al canal
 	
 	2PRO  De Proyectos,Investigaciones 
 	2AYU  De Ayuda

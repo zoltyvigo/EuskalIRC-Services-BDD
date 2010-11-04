@@ -729,6 +729,8 @@ if (!strcmp(s, ayu)) {
 	 * don't get to see things like channel keys. */
 	if (check_kick(user, s))
 	    continue;
+	if (check_akick(user, s))
+             continue;
 	chan_adduser(user, s);
 	
 /* Añadir soporte aviso de MemoServ si hay memos en el canal que entras */

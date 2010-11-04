@@ -264,6 +264,8 @@ int main(int ac, char **av, char **envp)
 	  save_alimit();
            waiting = -22;
 	  save_anick();
+	  waiting = -23;
+	  save_achanakick();
              
 	    if (save_data < 0)
 		break;	/* out of main loop */

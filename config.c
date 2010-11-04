@@ -129,7 +129,9 @@ char *EuskalIRCDBName;
 char *JokuDBName;
 char *StatDBName;
 char *AutokillDBName;
+char *AutochanakickDBName;
 char *AutoregistraDBName;
+char *AutochanakickDBName;
 char *AutolimitDBName;
 char *NickSuspendsDBName;
 char *NewsDBName;
@@ -257,6 +259,7 @@ typedef struct {
 Directive directives[] = {
     { "AutokillDB",       { { PARAM_STRING, 0, &AutokillDBName } } },
     { "AutoregistraDB",       { { PARAM_STRING, 0, &AutoregistraDBName } } },
+    { "AutochanakickDB",       { { PARAM_STRING, 0, &AutochanakickDBName } } },
      { "AutolimitDB",       { { PARAM_STRING, 0, &AutolimitDBName } } },
       { "NickSuspendsDB",       { { PARAM_STRING, 0, &NickSuspendsDBName } } },
     { "AutokillExpiry",   { { PARAM_TIME, 0, &AutokillExpiry } } },
@@ -718,6 +721,7 @@ int read_config()
     CHEK2(EuskalIRCDBName, EuskalIRCServDB);
     CHEK2(AutokillDBName, AutokillDB);
     CHEK2(AutoregistraDBName, AutoregistraDB);
+    CHEK2(AutochanakickDBName, AutochanakickDB);
     CHEK2(AutolimitDBName, AutolimitDB);
     CHEK2(NickSuspendsDBName, NickSuspendsDB);
     CHEK2(NewsDBName, NewsDB);

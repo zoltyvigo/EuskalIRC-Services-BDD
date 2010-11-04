@@ -788,15 +788,15 @@ static void do_help(User *u)
 	
     if (!cmd) {
 	if (is_services_root(u))
-	notice_help(s_OperServ, u, OPER_ROOT_HELP,Net,SpamUsers);
+	notice_help(s_OperServ, u, OPER_ROOT_HELP,Net,CanalAyuda,SpamUsers);
     	else if  (is_services_admin(u))
-	notice_help(s_OperServ, u, OPER_ADMIN_HELP,Net,SpamUsers);
+	notice_help(s_OperServ, u, OPER_ADMIN_HELP,Net,CanalAyuda,SpamUsers);
 	else if  (is_services_cregadmin(u))
-	notice_help(s_OperServ, u, OPER_COADMIN_HELP,Net,SpamUsers);
+	notice_help(s_OperServ, u, OPER_COADMIN_HELP,Net,CanalAyuda,SpamUsers);
 	else if  (is_services_devel(u))
-	notice_help(s_OperServ, u, OPER_DEVEL_HELP,Net,SpamUsers);
+	notice_help(s_OperServ, u, OPER_DEVEL_HELP,Net,CanalAyuda,SpamUsers);
 	else if  (is_services_oper(u))
-	notice_help(s_OperServ, u, OPER_HELP,Net,SpamUsers);
+	notice_help(s_OperServ, u, OPER_HELP,Net,CanalAyuda,SpamUsers);
 	} else {
 	help_cmd(s_OperServ, u, cmds, cmd);
     }
@@ -1352,13 +1352,19 @@ static void do_limpia(User *u)
     char *chan = strtok(NULL, " ");
     
     Channel *c;
-    
+    ChannelInfo *ci;
     if (!chan) {
         privmsg(s_OperServ, u->nick, "Sintaxis: 12LIMPIA <canal>");
         return;
     } else if (!(c = findchan(chan))) {
         privmsg(s_OperServ, u->nick, "El canal 12%s esta vacio.", chan);
+    } else if (!(ci = cs_findchan(chan))) {
+		notice_lang(s_ChanServ, u, CHAN_X_NOT_REGISTERED, chan);
     } else {
+         if ((ci = cs_findchan(chan)) && (ci->flags & CI_AUTOLIMIT)) {
+   privmsg(s_ChanServ, u->nick, "Debes Desactivar el AutoLimit del Canal %s", ci->name);
+	return;
+        }
         char *av[3];
         struct c_userlist *cu, *next;
         char buf[256];
@@ -2554,7 +2560,7 @@ static void do_set(User *u)
 
 /*************************************************************************/
 
-/*static void do_jupe(User *u)
+static void do_jupe(User *u)
 {
     char *jserver = strtok(NULL, " ");
     char *reason = strtok(NULL, "");
@@ -2583,13 +2589,13 @@ static void do_set(User *u)
                 
 #ifdef IRC_UNDERNET_P09
         send_cmd(NULL, "SQUIT %s 0 :%s", jserver, reason);
-        send_cmd(NULL, "SERVER %s 1 %lu %lu P10 :%s",
+        send_cmd(NULL, "SERVER %s 2 %lu %lu P10 :%s",
                    jserver, time(NULL), time(NULL), reason);               
-        canalopers(s_OperServ, "argv[0] ya! y completado!");        
+        //canalopers(s_OperServ, "argv[0] ya! y completado!");        
      
 #elif defined (IRC_UNDERNET_P10)
         send_cmd(NULL, "%c SQ %s 0 :%s", convert2y[ServerNumerico], jserver, reason);
-        send_cmd(NULL, "%c S %s 1 %lu %lu J10 %s 0 :%s",
+        send_cmd(NULL, "%c S %s 2 %lu %lu J10 %s 0 :%s",
             convert2y[ServerNumerico], jserver, time(NULL), time(NULL), server->numerico, reason);                                
 #else
 	send_cmd(NULL, "SERVER %s 2 :%s", jserver, reason);                        	
@@ -2602,22 +2608,7 @@ static void do_set(User *u)
                                 
     }
 }
-*/
-static void do_jupe(User *u)
-{
- char *jserver = strtok(NULL, " ");
- char *reason = strtok(NULL, "");
- int n=3;
 
- if ((!jserver) || (!reason)) {
-	syntax_error(s_OperServ, u, "JUPE", OPER_RAW_SYNTAX);
-    } else {
-#ifdef IRC_UNDERNET_P10
- send_cmd(NULL, "SERVER %s %d 0 %ld J10 %cD] :%s",
-             ServerName, n++, start_time, convert2y[ServerNumerico], reason); 
-#endif
-}
-}
 
 static void do_raw(User *u)
 {

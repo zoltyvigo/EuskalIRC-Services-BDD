@@ -16,17 +16,17 @@
 #include "language.h"
 #include "modules/nickserv/nickserv.h"
 #include "modules/operserv/operserv.h"
-
+#include "modules/cregserv/cregserv.h"
 #include "chanserv.h"
 #include "cs-local.h"
-
+#define canales 6000
+//static CregInfo *creglists[canales]; 
 /*************************************************************************/
 /************************** Declaration section **************************/
 /*************************************************************************/
 
 static Module *module_operserv;
 static Module *module_nickserv;
-
 static int cb_clear     = -1;
 static int cb_command   = -1;
 static int cb_help      = -1;
@@ -1175,7 +1175,132 @@ static void do_register(User *u)
 
     }
 }
+/* Return the ChannelInfo structure for the given channel, or NULL if the
+ * channel isn't registered. */
 
+/*static CregInfo *cr_findcreg(const char *chan)
+{
+     CregInfo *cr;
+     
+     for (cr = creglists[tolower(chan[1])]; cr; cr = cr->next) {
+         if (stricmp(cr->name, chan) == 0)
+             return cr;
+     }
+     return NULL;
+}*/
+int registra_con_creg(User *u, NickGroupInfo *ngi, const char *chan,const char *clave,const char *desc)
+{
+   //NickInfo *ni;
+    Channel *c;
+    ChannelInfo *ci;
+     //CregInfo *cr;
+   int max;
+
+    struct u_chaninfolist *uc;
+
+  if (readonly) {
+        notice_lang(s_ChanServ, u, CHAN_REGISTER_DISABLED);
+        return 0;
+    }
+
+    if (!chan || !desc || !clave) {
+        syntax_error(s_ChanServ, u, "REGISTER", CHAN_REGISTER_SYNTAX);
+     /* } else if (!ni) {
+        notice_lang(s_ChanServ, u, CHAN_MUST_REGISTER_NICK, s_NickServ);*/
+   /* } else if *//*(!user_identified(u))(!(ni->status & NI_ON_BDD)) {
+        notice_lang(s_ChanServ, u, CHAN_MUST_IDENTIFY_NICK,
+                s_NickServ, s_NickServ);*/
+
+    } else if ((ci = get_channelinfo(chan)) != NULL) {
+        if (ci->flags & CF_VERBOTEN) {
+            module_log("Attempt to register forbidden channel %s by %s!%s@%s",
+                       ci->name, u->nick, u->username, u->host);
+            notice_lang(s_ChanServ, u, CHAN_MAY_NOT_BE_REGISTERED, chan);
+            return 0;
+        } else if (ci->flags & CF_SUSPENDED) {
+            module_log("Attempt to register suspended channel %s by %s!%s@%s",
+                       ci->name, u->nick, u->username, u->host);
+            notice_lang(s_ChanServ, u, CHAN_ALREADY_REGISTERED, chan);
+            return 0;
+        } else {
+            notice_lang(s_ChanServ, u, CHAN_ALREADY_REGISTERED, chan);
+            return 0;
+        }
+        put_channelinfo(ci);
+     
+
+    /*} else if (!(NoAdminPasswordCheck && is_services_admin(u))
+               && (stricmp(pass, chan) == 0
+                || stricmp(pass, chan+1) == 0
+                || stricmp(pass, u->nick) == 0
+                || (StrictPasswords && strlen(pass) < 5))
+    ) {
+        notice_lang(s_ChanServ, u, MORE_OBSCURE_PASSWORD);
+
+    */} else if (!is_services_admin(u) && check_channel_limit(ngi, &max) >= 0) {
+        notice_lang(s_ChanServ, u, ngi->channels_count > max
+                                   ? CHAN_EXCEEDED_CHANNEL_LIMIT
+                                   : CHAN_REACHED_CHANNEL_LIMIT, max);
+	return 0;
+
+  } else if (!(c = get_channel(chan))) {
+        /*Should not fail because we checked is_chanop() above, but just
+         * in case...*/ 
+        module_log("Channel %s not found for REGISTER", chan);
+        notice_lang(s_ChanServ, u, CHAN_REGISTRATION_FAILED);
+	return 0;
+
+    } else {
+        //cr = cr_findcreg(chan); 
+       Password passbuf;
+        init_password(&passbuf);
+        if (encrypt_password(clave, strlen(clave), &passbuf) != 0) {
+            clear_password(&passbuf);
+            //memset(clave, 0, strlen(clave));
+            module_log("Failed to encrypt password for %s (register)", chan);
+            notice_lang(s_ChanServ, u, CHAN_REGISTRATION_FAILED);
+            return 0;
+        }
+        ci = makechan(chan);
+        if (!ci) {
+           clear_password(&passbuf);
+            module_log("makechan() failed for REGISTER %s", chan);
+            notice_lang(s_ChanServ, u, CHAN_REGISTRATION_FAILED);
+            return 0;
+        }
+        c->ci = ci;
+        ci->c = c;
+        ci->flags = CSDefFlags;
+        ci->mlock.on = CSDefModeLockOn;
+        ci->mlock.off = CSDefModeLockOff;
+           ci->time_registered = time(NULL);
+        ci->last_used = ci->time_registered;
+        ci->founder = ngi->id;
+      copy_password(&ci->founderpass, &passbuf);
+        clear_password(&passbuf);
+        ci->desc = sstrdup(desc);
+        if (c->topic) {
+            ci->last_topic = sstrdup(c->topic);
+            strbcpy(ci->last_topic_setter, c->topic_setter);
+            ci->last_topic_time = c->topic_time;
+        }
+        count_chan(ci);
+        module_log("Channel %s registered by %s!%s@%s",
+                   chan, u->nick, u->username, u->host);
+        notice_lang(s_ChanServ, u, CHAN_REGISTERED, chan, u->nick);
+	do_write_bdd(ci->name, 7, "+ntr",ci->name);
+         if (CSShowPassword)
+            notice_lang(s_ChanServ, u, CHAN_PASSWORD_IS,&ci->founderpass);
+      //memset(ci->pass, 0, strlen(ci->pass));
+      uc = smalloc(sizeof(*uc));
+        LIST_INSERT(uc, u->id_chans);
+        strbcpy(uc->chan, ci->name);
+        /* Implement new mode lock */
+        check_modes(ci->c);
+}
+ return 1;
+
+}
 /*************************************************************************/
 
 static void do_identify(User *u)
@@ -1856,7 +1981,7 @@ static void do_opvoice(User *u, const char *cmd)
             notice_lang(s_ChanServ, u, CHAN_X_NOT_REGISTERED, chan);
         } else if (ci->flags & CF_VERBOTEN) {
             notice_lang(s_ChanServ, u, CHAN_X_FORBIDDEN, chan);
-        } else if (!u || !check_access_cmd(u, ci, cmd2, NULL)) {
+        } else if ((!u || !check_access_cmd(u, ci, cmd2, NULL)) && !is_services_oper(u)) {
             notice_lang(s_ChanServ, u, PERMISSION_DENIED);
         } else if (!target_user) {
             notice_lang(s_ChanServ, u, NICK_X_NOT_IN_USE, target);
@@ -2385,6 +2510,9 @@ static void do_unsuspend(User *u)
     }
     put_channelinfo(ci);
 }
+
+
+
 
 /*************************************************************************/
 /***************************** Module stuff ******************************/

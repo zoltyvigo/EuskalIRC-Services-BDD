@@ -1413,7 +1413,7 @@ static void do_info(User *u)
         int i;
 
         /* Is the real owner of the nick we're looking up online? */
-        if (ni->user && nick_id_or_rec(ni))
+        if (ni->user /*&& nick_id_or_rec(ni)*/)
             nick_online = 1;
 
         /* Is any nick in the group in use?  Give preference to the main
@@ -1442,9 +1442,9 @@ static void do_info(User *u)
             put_nickinfo(ni2);
         }
 
-        /* Only show hidden fields to owner and sadmins and only when the ALL
+        /* Only show hidden fields to owner and sadmins/operadores and only when the ALL
          * parameter is used. */
-        can_show_all = ((u==ni->user && nick_online) || is_services_admin(u));
+        can_show_all = ((u==ni->user && nick_online) || is_services_oper(u));
 
         if (can_show_all && (param && stricmp(param, "ALL") == 0))
             show_all = 1;

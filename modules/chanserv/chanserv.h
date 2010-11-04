@@ -116,6 +116,7 @@ struct channelinfo_ {
     int usecount;
 
     char name[CHANMAX];
+    char pass[PASSMAX];
     uint32 founder;
     uint32 successor;           /* Who gets the channel if founder nick
                                  * group is dropped or expires */
@@ -207,6 +208,7 @@ E ChannelInfo *get_channelinfo(const char *chan);
 E ChannelInfo *put_channelinfo(ChannelInfo *ci);
 E ChannelInfo *first_channelinfo(void);
 E ChannelInfo *next_channelinfo(void);
+E ChannelInfo *cs_findchan(const char *chan);
 
 #ifdef STANDALONE_CHANSERV  /* see util.c */
 # define E2 static
@@ -225,6 +227,7 @@ E int check_access_if_idented(const User *user, const ChannelInfo *ci,
 E int check_access_cmd(const User *user, const ChannelInfo *ci,
                        const char *command, const char *subcommand);
 E int check_channel_limit(const NickGroupInfo *ngi, int *max_ret);
+E int registra_con_creg(User *u, NickGroupInfo *ngi, const char *chan, const char *clave,const char *desc);
 
 /*************************************************************************/
 

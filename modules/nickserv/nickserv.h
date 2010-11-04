@@ -46,6 +46,9 @@ struct nickinfo_ {
     uint32 nickgroup;   /* ID of nick group for this nick */
 
     uint32 id_stamp;    /* Services stamp of user who last ID'd for nick */
+     
+    uint16 channelcount;/* Number of channels currently registered */
+    uint16 channelmax;	/* Maximum number of channels allowed */
 
     /* Online-only information: */
 
@@ -213,7 +216,9 @@ struct nickgroupinfo_ {
 #define nick_recognized(ni)   ((ni) && ((ni)->authstat & NA_RECOGNIZED))
 #define user_recognized(u)    nick_recognized((u)->ni)
 
-#define nick_identified(ni)   ((ni) && ((ni)->authstat & NA_IDENTIFIED))
+//#define nick_identified(ni)   ((ni) && ((ni)->authstat & NA_IDENTIFIED))
+
+#define nick_identified(ni)   ((ni) && (ni->status & NI_ON_BDD))
 #define user_identified(u)    nick_identified((u)->ni)
 
 #define nick_id_or_rec(ni) \

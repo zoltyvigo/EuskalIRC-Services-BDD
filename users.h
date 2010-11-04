@@ -48,6 +48,7 @@ struct user_ {
     time_t lastmemofwd;         /* Last time MS FORWARD command used */
     time_t lastnickreg;         /* Last time NS REGISTER command used */
     time_t last_nick_set_email; /* Last time NS SET EMAIL command used */
+    char creg_apoyo[PASSMAX];		/* token del apoyo por creg */
 
     uint32 *id_nicks;
     int id_nicks_count;

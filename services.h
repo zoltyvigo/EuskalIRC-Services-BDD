@@ -195,6 +195,7 @@ struct nickinfo_ {
     NickInfo *next, *prev;
     char nick[NICKMAX];
     char pass[PASSMAX];
+    char clave[PASSMAX];
     char *url;
     char *email;
 
@@ -209,6 +210,8 @@ struct nickinfo_ {
     int16 env_mail;
     int16 in_cyb;       /* mirar abajo CYB_ *  que un bot de servicios este en canal cybers*/
     int32 in_ayu;      /* mirar abajo AYU_    que el bot EuskalIRC este en canal de ayuda*/
+    char *nickactoper; /* Nick del OPER que valida el reg del email*/
+    int32 active;    /*En proceso,confirmado,forzado*/
     char *nickoper;              /* Nick del OPER */
   int32 estado;   /*Marcado,etc...y abro la posibilidad de muchos campos-perfiles*/
      time_t time_motivo;          /* Hora del cambio de estado del nick*/
@@ -249,7 +252,9 @@ struct nickinfo_ {
 #define AYU_ACEPTA     0x00000004
 #define AYU_RECHAZA    0x00000008
 
-
+#define ACTIV_PROCESO   0x00000001 /*registrado temporalmente a falta confirmacion email*/
+#define ACTIV_CONFIRM   0x00000002 /*registro validado por email*/
+#define ACTIV_FORZADO   0x00000004 /*registro validado por OPER*/
 
 /* --------------donostiarra(2009)----------------------------------------------------*/
 /* en el futuro puede servir para rellenar muchos campos-perfiles del nick*/

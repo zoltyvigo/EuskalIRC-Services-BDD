@@ -164,6 +164,8 @@ ACCESS_DENIED
 	4Acceso denegado.
 PERMISSION_DENIED
 	4Permiso denegado.
+PERMISSION_DENIED_DIRECTOR
+	4Permiso denegado para conocer PASS de otro Director.
 PASSWORD_INCORRECT
 	4Contraseña incorrecta.
 
@@ -262,12 +264,19 @@ NICK_REGISTERED
 	El nick 12%s esta registrado bajo tu cuenta: 12%s
 NICK_PASSWORD_IS
 	Tu contraseña es 12%s, recuerdala para uso posterior.
+NICK_PASSWORD_TEMP
+	Recuerda que tienes 3 %d días para confirmar el correo.Tu contraseña temporal es 12%s.
+	Para identificarte haz lo siguiente: /NiCK 2%s:12%s.
+	No Cambies la palabra 4NiCK,que es el bot que te registra.
 NICK_IN_MAIL
 	Revisa tu correo en unos minutos, te llegará una password temporal.
-
+NICK_DONE
+	Revisa tu correo, en unos minutos, te llegará instrucciones para completar el registro.
 # IDENTIFY responses
 NICK_IDENTIFY_SYNTAX
 	12IDENTIFY <password>
+NICK_CONFIRM_SYNTAX
+	12CONFIRM <Clave>
 NICK_IDENTIFY_FAILED
 	4Contraseña incorrecta.
 NICK_IDENTIFY_SUCCEEDED
@@ -277,18 +286,25 @@ NICK_IDENTIFY_X_MODE_R
 NICK_IS_IDENTIFIED
 	3Ya estabas identificad@ ;)
 
-# DROP responses
+# DROP/VALIDAR responses
 NICK_DROP_SYNTAX
 	12DROP [nick]
+NICK_VALIDAR_SYNTAX
+	12VALIDAR [nick]
 NICK_DROP_DISABLED
 	La cancelación de nicks esta temporalmente deshabilitada.
 NICK_DROP_FORBIDDEN
 	No se puede dropar un nick forbideado
+NICK_ACTIVADO
+	El nick 12%s ya se encuentra activado.No hace falta validar
 NICK_DROPPED
 	Tu nick ha sido cancelado.
 NICK_X_DROPPED
 	El nick 12%s ha sido cancelado.
-
+NICK_X_ACTIVADO
+	El nick 12%s ha sido activado
+NICK_ACTIVE
+	Tu nick ha sido activado.
 # SET responses
 NICK_SET_SYNTAX
 	12SET <opción> <parámetros>
@@ -409,15 +425,17 @@ NICK_SET_NOEXPIRE_OFF
 NICK_INFO_SERV_OPER
 	Es un 12OPER1ador de los servicios de RED
 NICK_INFO_SERV_ADMIN
-	Es un  4ADMIN1istrador de los servicios de RED
+	Es un  4ADMINistrador de los servicios de RED
 NICK_INFO_SERV_CREGADMIN
-	Es un  4COADMIN1istrador de los servicios de RED
+	Es un  4COADMINistrador de los servicios de RED
 NICK_INFO_SERV_DEVEL
-	Es un  4PROGRAMA1dor  4DEVEL 1de los servicios de RED
+	Es un  4PROGRAMAdor  4DEVEL 1de los servicios de RED
 NICK_INFO_SERV_PATROCINA
-	Es un  3PATROCINA1dor 3SPONSOR 1de los servicios de RED
+	Es un  3PATROCINAdor 3SPONSOR 1de los servicios de RED
 NICK_INFO_SERV_ROOT
-	Es el  4ROOT 1de la RED
+	Es el  4ROOT de la RED
+NICK_INFO_SERV_DIRECTOR
+	Es un  4DIRECTOR de 7%s
 
 NICK_DO_INFO_OVER_OPER
 	12%s ha utilizado %s INFO sobre ti
@@ -502,6 +520,10 @@ NICK_INFO_URL
 	URL: 12%s
 NICK_INFO_EMAIL
 	E-mail: 12%s
+NICK_INFO_EMAIL_INVALID
+	E-mail: 12%s4,15(No Validado)
+NICK_INFO_EMAIL_FORZADO
+	E-mail: 12%s4,15(validado por 3,15%s4,15)
 NICK_INFO_OPTIONS
 	Opciones: %s
 # These strings MUST NOT be empty
@@ -592,9 +614,14 @@ NICK_STATUS_ID_BDD
 # SENDPASS responses
 NICK_SENDPASS_SYNTAX
 	12SENDPASS <nick>
+NICK_SENDCLAVE_SYNTAX
+	12SENDCLAVE <nick>
 NICK_SENDPASS_SUCCEEDED
 	El password de 12%s ha sido enviado al mail: 12%s.
 	Que revise su correo, en unos minutos le llegara el password.
+NICK_SENDCLAVE_SUCCEEDED
+	La Clave de confirmación de 12%s ha sido enviado al mail: 12%s.
+	Que revise su correo, en unos minutos le llegara la clave.
 
 # GETPASS responses
 NICK_GETPASS_SYNTAX
@@ -603,7 +630,12 @@ NICK_GETPASS_UNAVAILABLE
 	Comando 12GETPASS no disponible cuando encripción esta en uso.
 NICK_GETPASS_PASSWORD_IS
 	La contraseña de 12%s es 12%s.
-
+NICK_GETCLAVE_CLAVE_IS
+	La clave de confirmación de 12%s es 12%s.
+NICK_CONFIRM_CORRECT
+	La clave de confirmación es correcta.su cuenta ha sido activada
+NICK_CONFIRM_INCORRECT
+	La clave de confirmación es incorrecta.
 NICK_IS_A_SERVICE
 	12%s es un 12SERVICE de la red
 
@@ -1153,9 +1185,11 @@ CHAN_CLEARED_MODES
 CHAN_CLEARED_OPS
 	Modo +o de operadores han sido desactivados del canal 12%s.
 CHAN_CLEARED_VOICES
-	Modo +v de algunos usuarios han sido desactivados del canal 12%s.
+	Modo +v de usuarios con voz han sido desactivados del canal 12%s.
 CHAN_CLEARED_USERS
 	Todos los usuarios del han sido kickeados del canal 12%s.
+CHAN_CLEARED_TOPIC
+	 Se Resetea el topic al último puesto del canal 12%s.
 
 # RESET responses
 CHAN_RESET_SYNTAX
@@ -1487,7 +1521,9 @@ OPER_CLEARMODES_ALL_DONE
 # KICK responses
 OPER_KICK_SYNTAX
 	12KICK <canal> <nick> <motivo>
-
+# DIRECTOR responses
+OPER_DIRECTOR_SYNTAX
+	12DIRECTOR {LIST}
 # ADMIN responses
 OPER_ADMIN_SYNTAX
 	12ADMIN {ADD | DEL | LIST} [nick]
@@ -1510,6 +1546,8 @@ OPER_ADMIN_NOT_FOUND
 	12%s no fue encontrado en la lista de Administradores de Services.
 OPER_ADMIN_LIST_HEADER
 	Lista de Administradores de Services:
+OPER_DIRECTOR_LIST_HEADER
+	Lista de Directores de %s:
 #CREGADMIN responses
 OPER_CREGADMIN_SYNTAX
 	12COADMIN {ADD | DEL | LIST} [nick]
@@ -1928,7 +1966,6 @@ NICK_HELP
 	
 	1Administración de opciones
 	 12SET        Para ajustar opciones
-	 12DROP       Cancela el registro de un nick
 	 12GHOST      Desconectar el nick con una conexion fantasma
 	 12RECOVER    Desconecta a otro usuario que está utilizando tu nick
 	 12RELEASE    Toma custodia de tu nick después de utilizar el
@@ -1965,7 +2002,6 @@ NICK_HELP_EXPIRE_ZERO
 	    12STATUS     Muestra el estado de un nick
 	    12LIST       Lista los nicks registrados
 	    12SET        Para ajustar opciones, incluyendo protección de kill
-	    12DROP       Cancela el registro de un nick
 	    12GHOST      Desconectar el nick con una conexion fantasma
 	    12RECOVER    Desconecta a otro usuario que eestá utilizando tu nick
 	    12RELEASE    Toma custodia de tu nick después de utilizar el
@@ -1995,8 +2031,8 @@ NICK_HELP_REGISTER
 	
 	Una vez identificado siguiendo los pasos indicados
 	en el mensaje que te enviaremos, podras utilizar los
-	comandos 12SET y 12ACCESS para configurar los
-	parámetros de tu nick como desees.
+	comandos 12SET  para configurar los parámetros de
+	tu nick como desees.
 
 NICK_HELP_IDENTIFY
 	Sintaxis: 12IDENTIFY <contraseña>
@@ -2017,6 +2053,20 @@ NICK_HELP_DROP
 	Para utilizar este comando , tienes que identificarte
 	con tu contraseña (12/msg %S HELP IDENTIFY para mas
 	información).
+NICK_HELP_VALIDAR
+	Sintaxis: 12VALIDAR
+	
+	VALIDA un nick de la base de datos de 12%S. 
+	Un nick que ha sido validado se evita de confirmar
+	su registro por email.
+NICK_HELP_CONFIRM
+	Sintaxis: 12CONFIRM <Clave>
+	
+	CONFIRMa un nick con la base de datos de 12%S.
+	Si coincide la clave enviada al correo con la <Clave> 
+	suministrada por Ud,se trata de Un nick que ha sido validado 
+	su registro por email.
+
 NICK_HELP_MARCAR
 	Sintaxis: 12MARCAR 3<NICK> Añade un comentario al histórico de un nick
 	
@@ -2293,6 +2343,7 @@ NICK_SERVADMIN_HELP
 	2Representantes de Servicios:
 	
 	     12SENDPASS   Manda la contraseña al mail
+	     12SENDCLAVE  Manda la clave confirmación al mail
 	
 	 2Comandos disponibles sólo para los  4Desarrolladores de
 	 4Servicios:
@@ -2302,29 +2353,29 @@ NICK_SERVADMIN_HELP
 	    12UNSUSPEND  Reactiva un nick suspendido
 	    12MARCAR     Añade un comentario al histórico de un nick
 	    12DESMARCAR  Elimina un comentario al histórico de un nick
+	    12SET(3EMAIL)       Asocia una dirección de E-mail con un nick
+	    12SET(3LANGUAGE)    Asocia un Lenguaje con un nick
+	    12SET(3URL)         Asocia una URL con un nick
+	    12SET(3PASS)        Asocia una Password con un nick
+	    12GETPASS            Muestra la contraseña para un nick
 	
 	2Comandos disponibles sólo para los 4Coadministradores de
 	4Servicios:
 	
+	    12DROP       Cancela el registro de un nick
 	    12FORBID     Evita que un nick sea utilizado
 	    12UNFORBID   Libera un nick prohibido
 	    12RENAME     Cambia un nick por otro generado aleatoriamente.
 	
-	2Comandos disponibles sólo para los 4Administradores y 4Súper-Usuarios(Root) 2 de
-	2Servicios:
+	2Comandos disponibles sólo para los 4administradores de
+	4Servicios:
 	
-	    12SET(3EMAIL)       Asocia una dirección de E-mail con un nick
-	    12SET(3LANGUAGE)    Asocia un Lenguaje con un nick
-	    12SET(3URL)         Asocia una URL con un nick
-	    12SET(3PASS)        Asocia una Clave-Password con un nick
-	    12SET(3NOEXPIRE)    Asocia estado NOEXPIRE con un nick
-	    12GETPASS            Muestra la contraseña para un nick
+	 12VALIDAR        valida el registro de ese nick sín ser necesario confirmarse
 	
+	2Comandos disponibles sólo para los 4Directores:
 	
-	4Administradores de Services 1pueden cancelar cualquier nick
-	sin necesidad de identificarse por el mismo, y pueden ver la
-	lista de acceso de cualquier nick (12/msg %S ACCESS LIST <nick>).
-
+	12SET(3NOEXPIRE)   Asocia estado NOEXPIRE con un nick
+	12GETCLAVE          Muestra la clave confirmación para un nick
 
 NICK_SERVADMIN_HELP_USERIP
 	Sintaxis: 12USERIP <nick>
@@ -2347,6 +2398,17 @@ NICK_SERVADMIN_HELP_DROP
 	de datos.
 	 
 	Limitado a 4CoAdministradores de Services.
+NICK_SERVADMIN_HELP_VALIDAR
+	Sintaxis: 12VALIDAR [nick]
+	
+	Sin parámetros, valida el registro de tu nick de la base de
+	datos de 12%S.
+	
+	Con un parámetro, valida el registro de ese nick en la base
+	de datos.
+	 
+	Limitado a 4CoAdministradores de Services.
+
 
 NICK_SERVADMIN_HELP_SET
 	
@@ -2416,14 +2478,28 @@ NICK_SERVADMIN_HELP_SENDPASS
 	Envia la contraseña del nick al mail asociado al nick.
 	
 	Limitado a 12Operadores de Services.
+NICK_SERVADMIN_HELP_SENDCLAVE
+	Sintaxis: 12SENDCLAVE <nick>
+	
+	Envia la clave de confirmación del nick al mail asociado al nick.
+	
+	Limitado a 12Operadores de Services.
 	
 NICK_SERVADMIN_HELP_GETPASS
 	Sintaxis: 12GETPASS <nick>
 	
 	Muestra la contraseña para el nick dado.
 	
-	Limitado a las categorias de 4Desarrolladores ,4Coadministradores
-	 y 4Administradores  de Services.
+	Limitado a las categorías de 4Coadministradores
+	4Administradores  de Services y  4Directores de la Red.
+NICK_SERVADMIN_HELP_GETCLAVE
+	Sintaxis: 12GETCLAVE <nick>
+	
+	Muestra la clave de confirmación al correo para el nick dado.
+	
+	Limitado a las categorías de 4Coadministradores
+	4Administradores  de Services y  4Directores de la Red.
+
 NICK_SERVADMIN_HELP_SUSPEND
 	Sintaxis: 12SUSPEND <nick> <motivo>
 	
@@ -3336,15 +3412,16 @@ MEMO_SERVADMIN_HELP_INFO
 #
 # IpVirtual help messages (mensajes de ayuda de IpVirtual)
 ###########################################################################
-
+#
+#	    12PONER        Inserta Frases Personalizadas en una Agenda(En Desarrollo)
+#	    12USAR         Activa como Ip Virtual ,una Frase de las puestas. 
+#	                     El Primer numero es para activar,el segundo entre [] para eliminar
+#	                     de la lista. (En Desarrollo)
 IPV_HELP
 	Comandos de 4%S:
 	
 	    12CAMBIAR      Activa Tu Ip Virtual Personalizada
-	    12PONER        Inserta Frases Personalizadas en una Agenda(En Desarrollo)
-	    12USAR         Activa como Ip Virtual ,una Frase de las puestas. 
-	                     El Primer numero es para activar,el segundo entre [] para eliminar
-	                     de la lista.
+
 	    12ACTIVAR      Activa la Ip Virtual Personalizada Con Colores (Solo Admins)
 	    12SET          Activa  IpVirtual  de otros semi-personalizada (Solo Admins)
 	    12HELP         La Ayuda del Comando
@@ -3625,7 +3702,7 @@ STATS_ADMIN_HELP
 	    12USERLIST    Listado de Usuarios con información más detallada y sus canales
 	    12USERINFO    Listado con Información más detallada 3de un 4usuario3 y sus canales
 	    12SENDWEB     Envia las estadísticas de la Red en formato html a la consola(en desarrollo)
-	    12HELP        Muestra Ayuda Comandos del Bot	
+	    12HELP        Muestra Ayuda Comandos del Bot
 
 ###########################################################################
 #
@@ -3640,6 +3717,7 @@ OPER_HELP
 	    12DEVEL LIST  Lista todos los Desarrolladores de Servicios
 	    12COADMIN LIST  Lista todos los CO-Administradores de Servicios
 	    12ADMIN LIST  Lista todos los Administradores de Servicios
+	    12DIRECTOR LIST  Lista todos los Directores de la Red
 	 
 	2Comandos disponibles solo para 12Representantes 1de Servicios:
 	
@@ -3667,6 +3745,7 @@ OPER_DEVEL_HELP
 	    12DEVEL LIST  Lista todos los Desarrolladores de Servicios
 	    12COADMIN LIST  Lista todos los CO-Administradores de Servicios
 	    12ADMIN LIST  Lista todos los Administradores de Servicios
+	    12DIRECTOR LIST  Lista todos los Directores de la Red
 	
 	2Comandos disponibles solo para 12Representantes 1de Servicios:
 	
@@ -3688,7 +3767,7 @@ OPER_DEVEL_HELP
 	
 	12OPER        Modifica la lista de Operadores de Servicios
 	12PATROCINA   Modifica la lista de Patrocinadores de Servicios
-	12LOGONNEWS   Añade un LOGONNEWS    
+	12LOGONNEWS   Añade un LOGONNEWS
 	12OPERNNEWS   Añade un OPERNNEWS
 	
 	4Aviso: TODOS los comandos enviados a 12%S son
@@ -3701,6 +3780,7 @@ OPER_COADMIN_HELP
 	    12DEVEL LIST  Lista todos los Desarrolladores de Servicios
 	    12COADMIN LIST  Lista todos los CO-Administradores de Servicios
 	    12ADMIN LIST  Lista todos los Administradores de Servicios
+	    12DIRECTOR LIST  Lista todos los Directores de la Red
 	
 	2Comandos disponibles solo para 12Representantes 1de Servicios:
 	
@@ -3722,7 +3802,7 @@ OPER_COADMIN_HELP
 	
 	12OPER        Modifica la lista de Operadores de Servicios
 	12PATROCINA   Modifica la lista de Patrocinadores de Servicios
-	12LOGONNEWS   Añade un LOGONNEWS    
+	12LOGONNEWS   Añade un LOGONNEWS
 	12OPERNNEWS   Añade un OPERNNEWS
 	
 	2Comandos disponibles solo para los 4CoAdministradores de
@@ -3744,6 +3824,7 @@ OPER_ADMIN_HELP
 	    12DEVEL LIST  Lista todos los Desarrolladores de Servicios
 	    12COADMIN LIST  Lista todos los CO-Administradores de Servicios
 	    12ADMIN LIST  Lista todos los Administradores de Servicios
+	    12DIRECTOR LIST  Lista todos los Directores de la Red
 	 
 	2Comandos disponibles solo para 12Representantes 1de Servicios:
 	
@@ -3765,7 +3846,7 @@ OPER_ADMIN_HELP
 	
 	12OPER        Modifica la lista de Operadores de Servicios
 	12PATROCINA   Modifica la lista de Patrocinadores de Servicios
-	12LOGONNEWS   Añade un LOGONNEWS    
+	12LOGONNEWS   Añade un LOGONNEWS
 	12OPERNNEWS   Añade un OPERNNEWS
 	
 	2Comandos disponibles solo para los 4CoAdministradores de
@@ -3782,23 +3863,11 @@ OPER_ADMIN_HELP
 	
 	    12COADMIN     Modifica la lista de CoAdministradores de Servicios
 	    12MODOS       Fuerza modos de usuario desde un Service
-	    12RAW         Envía un código RAW al servidor IRC
-	    12SET         Establece varias opciones globales de los
-	                    servicios
 	    12VHOST       Cambia por completo el vhost de un usuario
 	
 	    12SPAM       Modifica la lista de palabras consideradas Spam
 	                    y que se vigilaran en aquellos canales donde se alcance
 	                    el número de 4 %d  usuarios
-	    12UPDATE      Fuerza a la base de datos de los Servicios a
-	                    ser actualizada inmediatamente en el disco
-	    12QUIT        Da por finalizada la ejecución del programa
-	                    de Servicios
-	    12SHUTDOWN    Graba la base de datos y da por finalizada la
-	                    ejecucion del programa servicios 
-	    12RESTART     Graba la base de datos y reinicializa los
-	                    Servicios
-	    12ROTATELOG     Renombra el Archivo Logs de los Servicios
 	
 	4Aviso: TODOS los comandos enviados a 12%S son
 	registrados! (log)
@@ -3810,6 +3879,7 @@ OPER_ROOT_HELP
 	    12DEVEL LIST  Lista todos los Desarrolladores de Servicios
 	    12COADMIN LIST  Lista todos los CO-Administradores de Servicios
 	    12ADMIN LIST  Lista todos los Administradores de Servicios
+	    12DIRECTOR LIST  Lista todos los Directores de la Red
 	 
 	2Comandos disponibles solo para 12Representantes 1de Servicios:
 	
@@ -3831,7 +3901,7 @@ OPER_ROOT_HELP
 	
 	12OPER        Modifica la lista de Operadores de Servicios
 	12PATROCINA   Modifica la lista de Patrocinadores de Servicios
-	12LOGONNEWS   Añade un LOGONNEWS    
+	12LOGONNEWS   Añade un LOGONNEWS
 	12OPERNNEWS   Añade un OPERNNEWS
 	
 	2Comandos disponibles solo para los 4CoAdministradores  de
@@ -3848,14 +3918,20 @@ OPER_ROOT_HELP
 	
 	    12COADMIN     Modifica la lista de CoAdministradores de Servicios
 	    12MODOS       Fuerza modos de usuario desde un Service
-	    12RAW         Envía un código RAW al servidor IRC
-	    12SET         Establece varias opciones globales de los
-	                    servicios
 	    12VHOST       Cambia por completo el vhost de un usuario
-	
-	    12SPAM       Modifica la lista de palabras consideradas Spam
+	    12SPAM        Modifica la lista de palabras consideradas Spam
 	                    y que se vigilaran en aquellos canales donde se alcance
 	                    el número de 4 %d  usuarios
+	
+	2Comandos disponibles únicamente para los 4Directores de la
+	4Red:
+	
+	    12ADMIN       Modifica la lista de Administradores de Servicios
+	
+	    12SET         Establece varias opciones globales de los
+	                    servicios
+	    12RAW         Envía un código RAW al servidor IRC
+	
 	    12UPDATE      Fuerza a la base de datos de los Servicios a
 	                    ser actualizada inmediatamente en el disco
 	    12QUIT        Da por finalizada la ejecución del programa
@@ -3864,12 +3940,8 @@ OPER_ROOT_HELP
 	                    ejecucion del programa servicios 
 	    12RESTART     Graba la base de datos y reinicializa los
 	                    Servicios
-	    12ROTATELOG     Renombra el Archivo Logs de los Servicios
-	
-	2Comandos disponibles únicamente para los 4Súper-Usuarios(Root) de los
-	4servicios:
-	
-	    12ADMIN       Modifica la lista de Administradores de Servicios
+	    12RELOAD      Recarga las directivas del archivo de configuración
+	    12ROTATELOG   Renombra el Archivo Logs de los Servicios
 	
 	
 	4Aviso: TODOS los comandos enviados a 12%S son
@@ -3956,7 +4028,7 @@ OPER_HELP_PATROCINA
 	
 	Cualquiera de los operadores de IRC (IRCops) puede utilizar
 	el comando 12PATROCINA LIST. Todos los otros comandos solo pueden
-	ser utilizados por los 4Root,Admins,CoAdmins y Devels.
+	ser utilizados por los 4Directores,Admins,CoAdmins y Devels.
 
 OPER_HELP_OPER
 	Sintaxis: 12OPER ADD <nick>
@@ -3971,7 +4043,14 @@ OPER_HELP_OPER
 	
 	Cualquiera de los operadores de IRC (IRCops) puede utilizar
 	el comando 12OPER LIST. Todos los otros comandos solo pueden
-	ser utilizados por los 4Root,Admins,CoAdmins y Devels.
+	ser utilizados por los 4Directores,Admins,CoAdmins y Devels.
+OPER_HELP_DIRECTOR
+	Sintaxis:12DIRECTOR LIST
+	
+	Habilita a los 12Representantes a
+	listar (LIST) usuarios de la lista de Directores.
+	Su designación es permanente y figuran en la configuración principal
+	de los services.
 
 OPER_HELP_ADMIN
 	Sintaxis: 12ADMIN ADD <nick>
@@ -3986,8 +4065,8 @@ OPER_HELP_ADMIN
 	
 	Cualquiera de los operadores de IRC (IRCops) puede utilizar
 	el comando 12ADMIN LIST. Todos los otros comandos solo pueden
-	ser utilizados por el 4súper-usuarios de los Servicios(Root).
-	
+	ser utilizados por los 4Directores.
+
 OPER_HELP_DEVEL
 	Sintaxis: 12DEVEL ADD <nick>
 	          12DEVEL DEL <nick>
@@ -4001,7 +4080,7 @@ OPER_HELP_DEVEL
 	
 	Cualquiera de los operadores de IRC (IRCops) puede utilizar
 	el comando 12DEVEL LIST. Todos los otros comandos solo pueden
-	ser utilizados por el  4Root,Admins,CoAdmins.
+	ser utilizados por el  4Directores,Admins,CoAdmins.
 	
 OPER_HELP_MODE
 	Sintaxis: 12MODE <canal> <modos>
@@ -4147,7 +4226,7 @@ OPER_HELP_UPDATE
 	Causa que los Servicios actualicen las bases de datos tan
 	pronto como usted envía el comando.
 	
-	Limitado a 4Administradores de Servicios.
+	Limitado a 4Directores de Red.
 
 OPER_HELP_QUIT
 	Sintaxis: 12QUIT
@@ -4158,7 +4237,7 @@ OPER_HELP_QUIT
 	deseen grabarse. Para desactivación normal de los
 	Servicios, utilice el comando 12SHUTDOWN.
 	
-	Limitado a 4Administradores de Servicios.
+	Limitado a 4Directores de Red.
 
 OPER_HELP_SHUTDOWN
 	Sintaxis: 12SHUTDOWN
@@ -4166,7 +4245,7 @@ OPER_HELP_SHUTDOWN
 	Causa que los servicios graben todas las bases de datos y
 	luego se desactiven.
 	
-	Limitado a 4Administradores de Servicios.
+	Limitado a 4Directores de Red.
 
 OPER_HELP_RESTART
 	Sintaxis: 12RESTART
@@ -4175,7 +4254,16 @@ OPER_HELP_RESTART
 	reinicialize (ejemplo: terminar y ejecutar inmediatamente el
 	programa).
 	
-	Limitado a 4Administradores de Servicios.
+	Limitado a 4Directores de Red.
+
+OPER_HELP_RELOAD
+	Sintaxis: 12RELOAD
+	
+	Causa que Services grabe todas las bases de datos y
+	recarge directivas del archivo de configuración. 
+		
+	Limitado a 4Directores de Red.
+
 
 OPER_HELP_ROTATELOG
 	Syntax: 12ROTATELOG
@@ -4183,7 +4271,7 @@ OPER_HELP_ROTATELOG
 	Renames service's log file. The current date, in the form
 	YYYYMMDD, is used to generate the new filename.
 	
-	Limitado a 4súper-usuarios de Servicios
+	Limitado a 4Directores de Red
 
 
 ###########################################################################
@@ -4395,7 +4483,7 @@ CREG_SERVADMIN_HELP_SEC
 	       5OFI  Canal OFICIAL de la RED
 	       5REP  Canal REPRESENTANTES de la RED
 CREG_HELP_GEO
-	   12Secciones Geográficas disponibles en la Red 7%s para ser asignadas al canal
+	   12Secciones Geográficas disponibles en la Red 7%s12 para ser asignadas al canal
 	2AND  Andalucía
 	2ARA  Aragón
 	2AST  Principado de Asturias
@@ -4543,13 +4631,14 @@ CREG_SERVADMIN_HELP
 	                  expirados, enregistro, aceptados, suspendidos,marcados
 	                  comerciales,oficiales,de representantes o dropados.
 	
-	4Administración de Peticiones de Registro:
+	4Administración de Peticiones de Registro:5(CoAdmins)
 
 	    12ACEPTA    Acepta la petición de registro de un canal
-	                  y lo registra en el bot CHaN. 5(CoAdmins)
-	    12DENIEGA   Deniega la petición de registro de un canal. 5(CoAdmins)
+	                  y lo registra en el bot CHaN. 
+	    12DENIEGA   Deniega la petición de registro de un canal.
+	    12FUERZA    Fuerza la aceptación de registro de un canal.
 	 
-	4Administración de Canales:
+	4Administración de Canales:5(CoAdmins)
 
 	    12REG       Registro de canales especiales 5<COM/OFI/REP>
 	    12SUSPEND   Suspende cautelarmente un canal registrado.

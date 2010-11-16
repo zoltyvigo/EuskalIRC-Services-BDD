@@ -24,16 +24,16 @@ static void do_sendweb(User *u);
 /*************************************************************************/
 
 static Command cmds[] = {
-    { "CREDITS",    do_credits,    NULL,  -1,                   -1,-1,-1,-1 },
-    { "CREDITOS",   do_credits,    NULL,  -1,                   -1,-1,-1,-1 },        
-    { "HELP",       do_help,       NULL,  -1,                   -1,-1,-1,-1 },
-    { "AYUDA",      do_help,       NULL,  -1,                   -1,-1,-1,-1 },
-    { "SHOWCOMMANDS",    do_help,  NULL,  -1,                   -1,-1,-1,-1 },
-    { "SENDWEB",    do_sendweb,    NULL,  STATS_HELP_SENDWEB,                   -1,-1,-1,-1 },
-    { "STATS",      do_stats,      NULL,  OPER_HELP_STATS,      -1,-1,-1,-1 },
-    { "UPTIME",     do_stats,      NULL,  OPER_HELP_STATS,      -1,-1,-1,-1 },
+    { "CREDITS",    do_credits,    is_services_oper,  -1,                   -1,-1,-1,-1 },
+    { "CREDITOS",   do_credits,    is_services_oper,  -1,                   -1,-1,-1,-1 },        
+    { "HELP",       do_help,       is_services_oper,  -1,                   -1,-1,-1,-1 },
+    { "AYUDA",      do_help,       is_services_oper,  -1,                   -1,-1,-1,-1 },
+    { "SHOWCOMMANDS",    do_help,  is_services_oper,  -1,                   -1,-1,-1,-1 },
+    { "SENDWEB",    do_sendweb,    is_services_cregadmin,  STATS_HELP_SENDWEB,                   -1,-1,-1,-1 },
+    { "STATS",      do_stats,      is_services_devel,  OPER_HELP_STATS,      -1,-1,-1,-1 },
+    { "UPTIME",     do_stats,      is_services_devel,  OPER_HELP_STATS,      -1,-1,-1,-1 },
    /*del servers.c*/
-    { "SERVERS",    do_servers,    NULL,  -1,                   -1,-1,-1,-1 },
+    { "SERVERS",    do_servers,    is_services_oper,  -1,                   -1,-1,-1,-1 },
       /* Commands for Services CoAdmins: */
 
   /* de channels.c */

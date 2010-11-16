@@ -157,7 +157,7 @@ char *SendMailPatch;
 char *ServerSMTP;
 int  PortSMTP;
 #endif
-int  *NicksMail;
+int  NicksMail;
 char *SendFrom;
 char *WebNetwork;
 #endif
@@ -176,6 +176,7 @@ int   NSDefMemoSignon;
 int   NSDefMemoReceive;
 int   NSRegDelay;
 int   NSExpire;
+int   NSRegMail;
 int   NSAccessMax;
 char *NSEnforcerUser;
 char *NSEnforcerHost;
@@ -208,7 +209,9 @@ char *CanalOpers;
 char *CanalCybers;
 char *CanalAyuda;
 char *CanalSpamers;
+int RootNumber;
 char *ServicesRoot;
+char **ServicesRoots;
 int   LogMaxUsers;
 int   AutokillExpiry;
 int   AutoregistraExpiry;
@@ -354,6 +357,7 @@ Directive directives[] = {
     { "NSDisableLinkCommand",{{PARAM_SET, 0, &NSDisableLinkCommand } } },
     { "NSEnforcerUser",   { { PARAM_STRING, 0, &temp_nsuserhost } } },
     { "NSExpire",         { { PARAM_TIME, 0, &NSExpire } } },
+    { "NSRegMail",         { { PARAM_TIME, 0, &NSRegMail } } },
     { "NSForceNickChange",{ { PARAM_SET, 0, &NSForceNickChange } } },
     { "NSGuestNickPrefix",{ { PARAM_STRING, 0, &NSGuestNickPrefix } } },
     { "NSListMax",        { { PARAM_POSINT, 0, &NSListMax } } },
@@ -744,7 +748,7 @@ int read_config()
     CHECK(CanalAyuda);
     CHECK(CanalCybers);
     CHECK(CanalSpamers);
-    CHECK(ServicesRoot);
+    //CHECK(ServicesRoot);
     CHECK(AutokillExpiry);
     CHECK(AutoregistraExpiry);
 #ifdef REG_NICK_MAIL
@@ -760,6 +764,25 @@ int read_config()
     CHECK(WebNetwork);
 #endif
 
+if (ServicesRoot ) {      /* Check to prevent segmentation fault if it's missing */
+        RootNumber = 0;
+
+s = strtok(ServicesRoot, " ");
+
+        do {
+            if (s) {
+                RootNumber++;
+                ServicesRoots =
+                    realloc(ServicesRoots, sizeof(char *) * RootNumber);
+                ServicesRoots[RootNumber - 1] = sstrdup(s);
+            }
+        } while ((s = strtok(NULL, " ")));
+}
+ 
+    if (!RootNumber) {
+        error(0, "No ServicesRoot defined");
+        retval = 0;
+    }
 
     if (temp_userhost) {
 	if (!(s = strchr(temp_userhost, '@'))) {

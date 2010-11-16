@@ -162,7 +162,66 @@ E char *strerror(int errnum);
 #if !HAVE_STRSIGNAL
 char *strsignal(int signum);
 #endif
+/*** para el reload***************************/
+char *AdminHostold;
+char *CoAdminHostold;
+char *DevelHostold;
+char *OperHostold;
+char *PatrocinaHostold;
+char *s_NickServold;
+char *s_ChanServold;
+char *s_MemoServold;
+char *s_HelpServold;
+char *s_OperServold;
+char *s_CregServold;
+char *s_SpamServold;
+char *s_StatServold;
+char *s_EuskalIRCServold;
+char *s_GlobalNoticerold;
+char *s_NewsServold;
+char *s_IrcIIHelpold;
+char *s_mIRCHelpold;
+char *s_BddServold;
+char *s_ShadowServold;
+char *s_IpVirtualold;
+char *s_GeoIPold;
+char *s_JokuServold;
+char *DEntryMsgold;
+int  CregApoyosold;
+int   SpamUsersold;
+#ifdef REG_NICK_MAIL
+#ifdef SENDMAIL
+char *SendMailPatchold;
+#endif
+#ifdef SMTP
+char *ServerSMTPold;
+int  PortSMTPold;
+#endif
+int  NicksMailold;
+char *SendFromold;
+char *WebNetworkold;
+#endif
+int   NSExpireold;
+int   NSRegMailold;
+int   NSListMaxold;
+int   NSSecureAdminsold;
 
+int   CSMaxRegold;
+int   CSExpireold;
+int   CSAccessMaxold;
+int   CSAutokickMaxold;
+char *CSAutokickReasonold;
+int   CSListMaxold;
+char *CanalAdminsold;
+char *CanalOpersold;
+char *CanalCybersold;
+char *CanalAyudaold;
+char *CanalSpamersold;
+int RootNumberold;
+char *ServicesRootold;
+char **ServicesRootsold;
+int   LogMaxUsersold;
+/***********************************/
 
 /**** config.c ****/
 
@@ -276,7 +335,7 @@ E char *NewsDBName;
 E char *StatDBName;
 
 #ifdef REG_NICK_MAIL
-E int  *NicksMail;
+E int  NicksMail;
 E char *SendMailPatch;
 E char *ServerSMTP;
 E int  PortSMTP;
@@ -311,6 +370,7 @@ E int   NSDefMemoSignon;
 E int   NSDefMemoReceive;
 E int   NSRegDelay;
 E int   NSExpire;
+E int   NSRegMail;
 E int   NSAccessMax;
 E char *NSEnforcerUser;
 E char *NSEnforcerHost;
@@ -343,7 +403,9 @@ E char *CanalOpers;
 E char *CanalCybers;
 E char *CanalAyuda;
 E char *CanalSpamers;
+int RootNumber;
 E char *ServicesRoot;
+E char **ServicesRoots;
 E int   LogMaxUsers;
 E int   AutokillExpiry;
 E int   AutoregistraExpiry;
@@ -549,6 +611,7 @@ E int nick_is_services_oper(NickInfo *ni);
 E int nick_is_services_devel(NickInfo *ni);
 E int nick_is_services_patrocina(NickInfo *ni);
 E void os_remove_nick(const NickInfo *ni);
+E int cambios_config(void);
 
 E void check_clones(User *user);
 

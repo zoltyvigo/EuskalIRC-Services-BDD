@@ -52,8 +52,8 @@ static Command cmds[] = {
     { "SET",      do_set,     is_services_admin,  IPV_HELP_SET,
 		-1, IPV_SERVADMIN_HELP_SET,
 		IPV_SERVADMIN_HELP_SET, IPV_SERVADMIN_HELP_SET },
-     { "PONER",       do_ipv,       NULL,  -1,      -1,-1,-1,-1 },
-     { "USAR",       do_ipv_usar,       NULL,  -1,      -1,-1,-1,-1 },
+   /*  { "PONER",       do_ipv,       NULL,  -1,      -1,-1,-1,-1 },
+     { "USAR",       do_ipv_usar,       NULL,  -1,      -1,-1,-1,-1 },*/
    
     /* Fencepost: */
     { NULL }
@@ -479,8 +479,7 @@ static void do_ipv_del(User *u)
  char *cadena;
  int vhost=0;
 
-       cmd = u->nick;
-       vhost=atoi(text)-1;
+
 	
     if (!text) {
 	char buf[32];
@@ -491,6 +490,8 @@ static void do_ipv_del(User *u)
 	return;
 	#endif
     }
+       cmd = u->nick;
+       vhost=atoi(text)-1;
 	if ((stricmp(cmd, ipvirtual[vhost].titular) == 0) && (vhost = ipvirtual[vhost].numero)) 
 
    	  if ((vhost > 0 && del_ipv(vhost)))  {

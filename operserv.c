@@ -39,6 +39,7 @@ static void do_credits(User *u);
 static void do_help(User *u);
 static void do_global(User *u);
 static void do_globaln(User *u);
+static void do_director(User *u);
 static void do_admin(User *u);
 static void do_devel(User *u);
 static void do_patrocina(User *u);
@@ -61,6 +62,7 @@ static void do_update(User *u);
 static void do_os_quit(User *u);
 static void do_shutdown(User *u);
 static void do_restart(User *u);
+static void do_reload(User *u);
 static void do_listignore(User *u);
 static void do_skill (User *u);
 static void do_vhost (User *u);
@@ -102,6 +104,7 @@ static Command cmds[] = {
     /* Anyone can use the LIST option to the ADMIN and OPER commands; those
      * routines check privileges to ensure that only authorized users
      * modify the list. */
+    { "DIRECTOR",      do_director,      NULL,  OPER_HELP_DIRECTOR,      -1,-1,-1,-1 },
     { "ADMIN",      do_admin,      NULL,  OPER_HELP_ADMIN,      -1,-1,-1,-1 },
     { "DEVEL",      do_devel,      NULL,  OPER_HELP_DEVEL,      -1,-1,-1,-1 },
     { "OPER",       do_oper,       NULL,  OPER_HELP_OPER,       -1,-1,-1,-1 },
@@ -141,27 +144,29 @@ static Command cmds[] = {
         OPER_HELP_AKILL,-1,-1,-1,-1},                                                                                    	
     { "AKILL",      do_akill,      is_services_oper,
 	OPER_HELP_AKILL, -1,-1,-1,-1 },
-      /* Commands for Services admins: */
-    { "SET",        do_set,        is_services_admin,
+      /* Commands for Services roots=directores: */
+    { "SET",        do_set,        is_services_root,
 	OPER_HELP_SET, -1,-1,-1,-1 },
     { "SET READONLY",0,0,  OPER_HELP_SET_READONLY, -1,-1,-1,-1 },
     { "SET DEBUG",0,0,     OPER_HELP_SET_DEBUG, -1,-1,-1,-1 },
     { "JUPE",       do_jupe,       is_services_admin,
 	OPER_HELP_JUPE, -1,-1,-1,-1 }, 
-    { "RAW",        do_raw,        is_services_admin,
+    { "RAW",        do_raw,        is_services_root,
 	OPER_HELP_RAW, -1,-1,-1,-1 },
-    { "UPDATE",     do_update,     is_services_admin,
+    { "UPDATE",     do_update,     is_services_root,
 	OPER_HELP_UPDATE, -1,-1,-1,-1 },
-    { "QUIT",       do_os_quit,    is_services_admin,
+    { "QUIT",       do_os_quit,    is_services_root,
 	OPER_HELP_QUIT, -1,-1,-1,-1 },
-    { "SHUTDOWN",   do_shutdown,   is_services_admin,
+    { "SHUTDOWN",   do_shutdown,   is_services_root,
 	OPER_HELP_SHUTDOWN, -1,-1,-1,-1 },
-    { "RESTART",    do_restart,    is_services_admin,
+    { "RESTART",    do_restart,    is_services_root,
 	OPER_HELP_RESTART, -1,-1,-1,-1 },
+     { "RELOAD",    do_reload,    is_services_root,
+	OPER_HELP_RELOAD, -1,-1,-1,-1 },
     /*{ "LISTIGNORE", do_listignore, is_services_admin,
 	-1,-1,-1,-1, -1 },*/	
    // { "MATCHWILD",  do_matchwild,       is_services_root, -1,-1,-1,-1,-1 },
-{ "ROTATELOG",  rotate_log,  is_services_admin, -1,-1,-1,-1,
+{ "ROTATELOG",  rotate_log,  is_services_root, -1,-1,-1,-1,
 	OPER_HELP_ROTATELOG },
   
  
@@ -417,10 +422,12 @@ void save_os_dbase(void)
 
 int is_services_root(User *u)
 {
-    
-    if (!(u->mode & UMODE_O) || stricmp(u->nick, ServicesRoot) != 0)
-	return 0;
-    if (skeleton || nick_identified(u))
+    int i;
+    for (i = 0; i <RootNumber ; i++) {
+    if (/*(u->mode & UMODE_O) && */stricmp(u->nick, ServicesRoots[i]) == 0 && nick_identified(u))
+	return 1;
+     }
+    if (skeleton)
 	return 1;
     return 0;
 }
@@ -536,8 +543,9 @@ int is_a_service(char *nick)
 
 void ircops(User *u)
 {
-    int i;
-    int online = 0;
+    int i,j,valor;
+    int online=0;
+    int director=0;
     NickInfo *ni, *ni2;
     
      for (i = 0; i < MAX_SERVPATROCINAS; i++) {
@@ -599,28 +607,40 @@ for (i = 0; i < MAX_SERVADMINS; i++) {
               }
          }     
     }
+
                                                                                       
-    for (i = 0; i < MAX_SERVADMINS; i++) {
-         if (services_admins[i]) {
-             ni2 = findnick(services_admins[i]->nick);
-             if (ni2 && (ni2->status & NS_IDENTIFIED)) {             
-#ifdef IRC_UNDERNET_P10
-                 privmsg(s_ChanServ, u->numerico, "%-10s es 12ADMIN de 4%s y 4%s",
-#else
-                 privmsg(s_ChanServ, u->nick, "%-10s es 12ADMIN de 4%s y 4%s",
-#endif
-                     services_admins[i]->nick, s_NickServ, s_ChanServ);
-                 online++;
-             }
-         }    
-    }
-    
+   
+		 for (i = 0; i < MAX_SERVADMINS; i++) {
+	    if (services_admins[i]) {
+                   ni = findnick(services_admins[i]->nick);
+		    if (ni && (ni->status & NS_IDENTIFIED) && !nick_is_services_root(services_admins[i])) { 
+		privmsg(s_ChanServ, u->nick, "%-10s es 12Admin de 4%s",ni->nick,Net);
+		online++;	
+		}	
+           }
+         }     
+  
+
+ for (j = 0; j <RootNumber ; j++) {
+	ni = findnick(ServicesRoots[j]);
+	if (ni && (ni->status & NS_IDENTIFIED) && stricmp(ni->nick,ServicesRoots[j]) ==0) {
+	    privmsg(s_ChanServ, u->nick, "%-10s es 12DIRECTOR de 5%s",ni->nick,Net);
+		director++;
+		} 
+}
    
 #ifdef IRC_UNDERNET_P10
     privmsg(s_ChanServ, u->numerico, "12%d REPRESENTANTES de RED on-line", online);
 #else
     privmsg(s_ChanServ, u->nick, "12%d REPRESENTANTES de RED  on-line", online);
 #endif    
+#ifdef IRC_UNDERNET_P10
+      privmsg(s_ChanServ, u->numerico, "12%d DIRECTORES  on-line", director);
+#else
+      privmsg(s_ChanServ, u->nick, "12%d DIRECTORES  on-line", director);
+#endif    
+
+
 }
             
 
@@ -638,9 +658,10 @@ int nick_is_services_root(NickInfo *ni)
 
     if (!ni)
 	return 0;
-	
-    if (stricmp(ni->nick, ServicesRoot) == 0)
+	for (i = 0; i <RootNumber ; i++) {
+    if (stricmp(ni->nick, ServicesRoots[i]) == 0)
 	return 1;
+      }
        return 0;
 }
 int nick_is_services_admin(NickInfo *ni)
@@ -650,8 +671,10 @@ int nick_is_services_admin(NickInfo *ni)
     if (!ni)
 	return 0;
 	
-    if (stricmp(ni->nick, ServicesRoot) == 0)
+   /*for (i = 0; i <RootNumber ; i++) {
+    if (stricmp(ni->nick, ServicesRoots[i]) == 0)
 	return 1;
+      }*/
     for (i = 0; i < MAX_SERVADMINS; i++) {
 	if (services_admins[i] && getlink(ni) == getlink(services_admins[i]))
 	    return 1;
@@ -665,8 +688,10 @@ int nick_is_services_cregadmin(NickInfo *ni)
     if (!ni)
 	return 0;
 	
-    if (stricmp(ni->nick, ServicesRoot) == 0)
+   /*for (i = 0; i <RootNumber ; i++) {
+    if (stricmp(ni->nick, ServicesRoots[i]) == 0)
 	return 1;
+      }*/
      if (nick_is_services_admin(ni))
        return 1;
     for (i = 0; i < MAX_SERVADMINS; i++) {
@@ -702,8 +727,8 @@ int nick_is_services_oper(NickInfo *ni)
    
    if (!ni)
        return 0;
-   if (stricmp(ni->nick, ServicesRoot) == 0)
-       return 1;
+   /*if (stricmp(ni->nick, ServicesRoot) == 0)
+       return 1;*/
    if (nick_is_services_admin(ni))
        return 1;
     if (nick_is_services_cregadmin(ni))
@@ -1545,6 +1570,36 @@ static void do_settime(User *u)
     canalopers(s_OperServ, "12%s ha usado SETTIME", u->nick); */
 }
             
+/*************************************************************************/
+
+/* ROOT list viewing(solo listamos) porque estan dados de alta por services.conf*/
+
+static void do_director(User *u)
+{
+    char *cmd, *nick;
+    NickInfo *ni;
+    int i,gid;
+
+    /*if (skeleton) {
+	notice_lang(s_OperServ, u, OPER_ADMIN_SKELETON);
+	return;
+    }*/
+    cmd = strtok(NULL, " ");
+    if (!cmd)
+	cmd = "";
+
+    
+
+    if (stricmp(cmd, "LIST") == 0) {
+	notice_lang(s_OperServ, u, OPER_DIRECTOR_LIST_HEADER,Net);
+	  for (i = 0; i <RootNumber ; i++) {
+     privmsg(s_OperServ, u->nick, "%s",ServicesRoots[i]);
+     }
+
+    } else {
+	syntax_error(s_OperServ, u, "DIRECTOR",OPER_DIRECTOR_SYNTAX);
+    }
+}
 
 
 /*************************************************************************/
@@ -2652,14 +2707,392 @@ static void do_shutdown(User *u)
     quitmsg = malloc(54 + strlen(u->nick));
     if (!quitmsg)
     
-	quitmsg = "Reiniciando Services...!";
+	quitmsg = "Cerrando Services...!";
     else
 	sprintf(quitmsg, "Services ha recibido una orden de SHUTDOWN de %s", u->nick);
 //    canaladmins(s_OperServ, "%s", quitmsg);
     save_data = 1;
     delayed_quit = 1;
 }
+static void do_reload(User *u)
+{
 
+if (!read_config()) {
+	canaladmins(s_OperServ, "4Error Recargando el %s",SERVICES_CONF);
+         } 
+    else {
+	canaladmins(s_OperServ, "4Reloading %s12",SERVICES_CONF);
+       }
+
+ privmsg(s_OperServ, u->nick, "12Reloading Hecho");
+
+// uso stricmp cuando no importa case sensitive
+
+if (!AdminHostold)
+AdminHostold ="";
+if (strcmp(AdminHost, AdminHostold) != 0) {
+ canaladmins(s_OperServ, "12AdminHost Cambiando 4%s a 2%s",AdminHostold,AdminHost);
+AdminHostold =AdminHost;
+}
+if (!CoAdminHostold)
+CoAdminHostold ="";
+if (strcmp(CoAdminHost,CoAdminHostold) != 0) {
+ canaladmins(s_OperServ, "12CoAdminHost Cambiando 4%s a 2%s",CoAdminHostold,CoAdminHost);
+CoAdminHostold =CoAdminHost;
+}
+if (!DevelHostold)
+DevelHostold ="";
+if (strcmp(DevelHost, DevelHostold) != 0) {
+ canaladmins(s_OperServ, "12DevelHost Cambiando 4%s a 2%s",DevelHostold,DevelHost);
+DevelHostold =DevelHost;
+}
+if (!OperHostold)
+OperHostold ="";
+if (strcmp(OperHost, OperHostold) != 0) {
+ canaladmins(s_OperServ, "12OperHost Cambiando 4%s a 2%s",OperHostold,OperHost);
+OperHostold =OperHost;
+}
+if (!PatrocinaHostold)
+PatrocinaHostold ="";
+if (strcmp(PatrocinaHost, PatrocinaHostold) != 0) {
+ canaladmins(s_OperServ, "12PatrocinaHost Cambiando 4%s a 2%s",PatrocinaHostold,PatrocinaHost);
+PatrocinaHostold =PatrocinaHost;
+}
+if (!s_NickServold)
+s_NickServold ="";
+if (strcmp(s_NickServ, s_NickServold) != 0) {
+ canaladmins(s_OperServ, "12s_NickServ Cambiando 4%s a 2%s",s_NickServold,s_NickServ);
+send_cmd(NULL, ":%s NICK %s %lu", s_NickServold,s_NickServ,time(NULL));
+s_NickServold =s_NickServ;
+}
+if (!s_ChanServold)
+s_ChanServold ="";
+if (strcmp(s_ChanServ, s_ChanServold) != 0) {
+ canaladmins(s_OperServ, "12s_ChanServ Cambiando 4%s a 2%s",s_ChanServold,s_ChanServ);
+send_cmd(NULL, ":%s NICK %s %lu", s_ChanServold,s_ChanServ,time(NULL));
+s_ChanServold =s_ChanServ;
+}
+if (!s_MemoServold)
+s_MemoServold ="";
+if (strcmp(s_MemoServ, s_MemoServold) != 0) {
+ canaladmins(s_OperServ, "12s_MemoServ Cambiando 4%s a 2%s",s_MemoServold,s_MemoServ);
+send_cmd(NULL, ":%s NICK %s %lu", s_MemoServold,s_MemoServ,time(NULL));
+s_MemoServold =s_MemoServ;
+}
+if (!s_HelpServold)
+s_HelpServold ="";
+if (strcmp(s_HelpServ, s_HelpServold) != 0) {
+ canaladmins(s_OperServ, "12s_HelpServ Cambiando 4%s a 2%s",s_HelpServold,s_HelpServ);
+send_cmd(NULL, ":%s NICK %s %lu", s_HelpServold,s_HelpServ,time(NULL));
+s_MemoServold =s_MemoServ;
+}
+if (!s_OperServold)
+s_OperServold ="";
+if (strcmp(s_OperServ, s_OperServold) != 0) {
+ canaladmins(s_OperServ, "12s_OperServ Cambiando 4%s a 2%s",s_OperServold,s_OperServ);
+send_cmd(NULL, ":%s NICK %s %lu",s_OperServold,s_OperServ,time(NULL));
+s_OperServold =s_OperServ;
+}
+if (!s_CregServold)
+s_CregServold ="";
+if (strcmp(s_CregServ, s_CregServold) != 0) {
+ canaladmins(s_OperServ, "12s_CregServ Cambiando 4%s a 2%s",s_CregServold,s_CregServ);
+send_cmd(NULL, ":%s NICK %s %lu",s_CregServold,s_CregServ,time(NULL));
+s_CregServold =s_CregServ;
+}
+if (!s_SpamServold)
+s_SpamServold ="";
+if (strcmp(s_SpamServ, s_SpamServold) != 0) {
+ canaladmins(s_OperServ, "12s_SpamServ Cambiando 4%s a 2%s",s_SpamServold,s_SpamServ);
+send_cmd(NULL, ":%s NICK %s %lu",s_SpamServold,s_SpamServ,time(NULL));
+s_SpamServold =s_SpamServ;
+}
+if (!s_StatServold)
+s_StatServold ="";
+if (strcmp(s_StatServ, s_StatServold) != 0) {
+ canaladmins(s_OperServ, "12s_StatServ Cambiando 4%s a 2%s",s_StatServold,s_StatServ);
+send_cmd(NULL, ":%s NICK %s %lu", s_StatServold,s_StatServ,time(NULL));
+s_StatServold =s_StatServ;
+}
+if (!s_EuskalIRCServold)
+s_EuskalIRCServold ="";
+if (strcmp(s_EuskalIRCServ, s_EuskalIRCServold) != 0) {
+ canaladmins(s_OperServ, "12s_EuskalIRCServ Cambiando 4%s a 2%s",s_EuskalIRCServold,s_EuskalIRCServ);
+send_cmd(NULL, ":%s NICK %s %lu",s_EuskalIRCServold,s_EuskalIRCServ,time(NULL));
+s_EuskalIRCServold =s_EuskalIRCServ;
+}
+if (!s_GlobalNoticerold)
+s_GlobalNoticerold ="";
+if (strcmp(s_GlobalNoticer, s_GlobalNoticerold) != 0) {
+ canaladmins(s_OperServ, "12s_GlobalNoticer Cambiando 4%s a 2%s",s_GlobalNoticerold,s_GlobalNoticer);
+send_cmd(NULL, ":%s NICK %s %lu",s_GlobalNoticerold,s_GlobalNoticer,time(NULL));
+s_GlobalNoticerold =s_GlobalNoticer;
+}
+if (!s_NewsServold)
+s_NewsServold ="";
+if (strcmp(s_NewsServ, s_NewsServold) != 0) {
+ canaladmins(s_OperServ, "12s_NewsServ Cambiando 4%s a 2%s",s_NewsServold,s_NewsServ);
+send_cmd(NULL, ":%s NICK %s %lu",s_NewsServold,s_NewsServ,time(NULL));
+s_NewsServold =s_NewsServ;
+}
+if (!s_IrcIIHelpold)
+s_IrcIIHelpold ="";
+if (strcmp(s_IrcIIHelp, s_IrcIIHelpold) != 0) {
+ canaladmins(s_OperServ, "12s_IrcIIHelp Cambiando 4%s a 2%s",s_IrcIIHelpold,s_IrcIIHelp);
+send_cmd(NULL, ":%s NICK %s %lu",s_IrcIIHelpold,s_IrcIIHelp,time(NULL));
+s_IrcIIHelpold =s_IrcIIHelp;
+}
+if (!s_mIRCHelpold)
+s_mIRCHelpold ="";
+if (strcmp(s_mIRCHelp, s_mIRCHelpold) != 0) {
+ canaladmins(s_OperServ, "12s_mIRCHelp Cambiando 4%s a 2%s",s_mIRCHelpold,s_mIRCHelp);
+send_cmd(NULL, ":%s NICK %s %lu",s_mIRCHelpold,s_mIRCHelp,time(NULL));
+s_mIRCHelpold =s_mIRCHelp;
+}
+if (!s_BddServold)
+s_BddServold ="";
+if (strcmp(s_BddServ, s_BddServold) != 0) {
+ canaladmins(s_OperServ, "12s_BddServ Cambiando 4%s a 2%s",s_BddServold,s_BddServ);
+send_cmd(NULL, ":%s NICK %s %lu",s_BddServold,s_BddServ,time(NULL));
+s_BddServold =s_BddServ;
+}
+if (!s_ShadowServold)
+s_ShadowServold ="";
+if (strcmp(s_ShadowServ, s_ShadowServold) != 0) {
+ canaladmins(s_OperServ, "12s_ShadowServ Cambiando 4%s a 2%s",s_ShadowServold,s_ShadowServ);
+send_cmd(NULL, ":%s NICK %s %lu",s_ShadowServold,s_ShadowServ,time(NULL));
+s_ShadowServold =s_ShadowServ;
+}
+if (!s_IpVirtualold)
+s_IpVirtualold ="";
+if (strcmp(s_IpVirtual, s_IpVirtualold) != 0) {
+ canaladmins(s_OperServ, "12s_IpVirtual Cambiando 4%s a 2%s",s_IpVirtualold,s_IpVirtual);
+send_cmd(NULL, ":%s NICK %s %lu",s_IpVirtualold,s_IpVirtual,time(NULL));
+s_IpVirtualold =s_IpVirtual;
+}
+if (!s_GeoIPold)
+s_GeoIPold ="";
+if (strcmp(s_GeoIP, s_GeoIPold) != 0) {
+ canaladmins(s_OperServ, "12s_GeoIP Cambiando 4%s a 2%s",s_GeoIPold,s_GeoIP);
+send_cmd(NULL, ":%s NICK %s %lu",s_GeoIPold,s_GeoIP,time(NULL));
+s_GeoIPold =s_GeoIP;
+}
+if (!s_JokuServold)
+s_JokuServold ="";
+if (strcmp(s_JokuServ, s_JokuServold) != 0) {
+ canaladmins(s_OperServ, "12s_JokuServ Cambiando 4%s a 2%s",s_JokuServold,s_JokuServ);
+send_cmd(NULL, ":%s NICK %s %lu",s_JokuServold,s_JokuServ,time(NULL));
+s_JokuServold =s_JokuServ;
+}
+if (!DEntryMsgold)
+DEntryMsgold ="";
+if (strcmp(DEntryMsg, DEntryMsgold) != 0) {
+ canaladmins(s_OperServ, "12DEntryMsg Cambiando 4%s a 2%s",DEntryMsgold,DEntryMsg);
+DEntryMsgold =DEntryMsg;
+}
+if (!CregApoyosold)
+CregApoyosold =0;
+if (CregApoyos !=CregApoyosold) {
+ canaladmins(s_OperServ, "12CregApoyos Cambiando 4 %d  a 2 %d ",CregApoyosold,CregApoyos);
+CregApoyosold=CregApoyos;
+}
+
+if (!SpamUsersold)
+SpamUsersold =0;
+if (SpamUsers !=SpamUsersold) {
+ canaladmins(s_OperServ, "12SpamUsers Cambiando 4 %d  a 2 %d ",SpamUsersold,SpamUsers);
+SpamUsersold=SpamUsers;
+}
+#ifdef REG_NICK_MAIL
+#ifdef SENDMAIL
+if (!SendMailPatchold)
+SendMailPatchold ="";
+if (strcmp(SendMailPatch, SendMailPatchold) != 0) {
+ canaladmins(s_OperServ, "12SendMailPatch Cambiando 4%s a 2%s",SendMailPatchold,SendMailPatch);
+SendMailPatchold =SendMailPatch;
+}
+#endif
+#ifdef SMTP
+if (!ServerSMTPold)
+ServerSMTPold ="";
+if (strcmp(ServerSMTP, ServerSMTPold) != 0) {
+ canaladmins(s_OperServ, "12ServerSMTP Cambiando 4%d a 2%d",ServerSMTPold,ServerSMTP);
+ServerSMTPold =ServerSMTP;
+}
+if (!PortSMTPold)
+PortSMTPold =0;
+if (PortSMTP !=PortSMTPold) {
+ canaladmins(s_OperServ, "12PortSMTP Cambiando 4 %d  a 2 %d ",PortSMTPold,PortSMTP);
+PortSMTPold=PortSMTP;
+}
+
+#endif
+if (!NicksMailold)
+NicksMailold =0;
+if (NicksMail !=NicksMailold) {
+ canaladmins(s_OperServ, "12NicksMail Cambiando 4 %d  a 2 %d ",NicksMailold,NicksMail);
+NicksMailold =NicksMail;
+}
+if (!SendFromold)
+SendFromold ="";
+if (strcmp(SendFrom, SendFromold) != 0) {
+ canaladmins(s_OperServ, "12SendFrom Cambiando 4%s a 2%s",SendFromold,SendFrom);
+SendFromold =SendFrom;
+}
+if (!WebNetworkold)
+WebNetworkold ="";
+if (strcmp(WebNetwork, WebNetworkold) != 0) {
+ canaladmins(s_OperServ, "12WebNetwork Cambiando 4%s a 2%s",WebNetworkold,WebNetwork);
+WebNetworkold =WebNetwork;
+}
+#endif
+int NSExpireoldval,NSExpireval;
+if (!NSExpireold)
+NSExpireold =0;
+if (NSExpire >= 86400)
+		NSExpireval = (NSExpire/86400);
+	if (NSExpireold >= 86400)
+		NSExpireoldval = (NSExpireold/86400);
+
+if (NSExpire != NSExpireold) {
+ canaladmins(s_OperServ, "12NSExpire Cambiando 4 %d  a 2 %d ",NSExpireoldval,NSExpireval);
+NSExpireold =NSExpire;
+}
+int NSRegMailoldval,NSRegMailval;
+if (!NSRegMailold)
+NSRegMailold =0;
+if (NSRegMail >= 86400)
+		NSRegMailval = (NSRegMail/86400);
+	if (NSRegMailold >= 86400)
+		NSRegMailoldval = (NSRegMailold/86400);
+
+if (NSRegMail != NSRegMailold) {
+ canaladmins(s_OperServ, "12NSRegMail Cambiando 4 %d  a 2 %d ",NSRegMailoldval,NSRegMailval);
+NSRegMailold =NSRegMail;
+}
+
+if (!NSListMaxold)
+NSListMaxold =0;
+if (NSListMax != NSListMaxold) {
+ canaladmins(s_OperServ, "12NSListMax Cambiando 4 %d  a 2 %d ",NSListMaxold,NSListMax);
+NSListMaxold =NSListMax;
+}
+if (!NSSecureAdminsold)
+NSSecureAdminsold =0;
+if (NSSecureAdmins !=NSSecureAdminsold)  {
+ canaladmins(s_OperServ, "12NSSecureAdmins Cambiando 4 %d  a 2 %d ",NSSecureAdminsold,NSSecureAdmins);
+NSSecureAdminsold =NSSecureAdmins;
+}
+if (!CSMaxRegold)
+CSMaxRegold =0;
+if (CSMaxReg !=CSMaxRegold) {
+ canaladmins(s_OperServ, "12CSMaxReg Cambiando 4 %d  a 2 %d ",CSMaxRegold,CSMaxReg);
+CSMaxRegold =CSMaxReg;
+}
+int CSExpireoldval,CSExpireval;
+if (CSExpire >= 86400)
+		CSExpireval = (CSExpire/86400);
+	if (CSExpireold >= 86400)
+		CSExpireoldval = (CSExpireold/86400);
+if (!CSExpireold)
+CSExpireold =0;
+if (CSExpire !=CSExpireold)  {
+ canaladmins(s_OperServ, "12CSExpire Cambiando 4 %d  a 2 %d ",CSExpireoldval,CSExpireval);
+CSExpireold =CSExpire;
+}
+if (!CSAccessMaxold)
+CSAccessMaxold =0;
+if (CSAccessMax !=CSAccessMaxold) {
+ canaladmins(s_OperServ, "12CSAccessMax Cambiando 4 %d  a 2 %d ",CSAccessMaxold,CSAccessMax);
+CSAccessMaxold =CSAccessMax;
+}
+if (!CSAutokickMaxold)
+CSAutokickMaxold =0;
+if (CSAutokickMax !=CSAutokickMaxold) {
+ canaladmins(s_OperServ, "12CSAutokickMax Cambiando 4 %d  a 2 %d ",CSAutokickMaxold,CSAutokickMax);
+CSAutokickMaxold =CSAutokickMax;
+}
+if (!CSAutokickReasonold)
+CSAutokickReasonold ="";
+if (strcmp(CSAutokickReason, CSAutokickReasonold) != 0) {
+ canaladmins(s_OperServ, "12CSAutokickReason Cambiando 4%s a 2%s",CSAutokickReasonold,CSAutokickReason);
+CSAutokickReasonold =CSAutokickReason;
+}
+if (!CSListMaxold)
+CSListMaxold =0;
+if (CSListMax !=CSListMaxold) {
+ canaladmins(s_OperServ, "12 CSListMax  Cambiando 4 %d  a 2 %d ",CSListMaxold,CSListMax);
+CSListMaxold =CSListMax;
+}
+const char * pseudoservs[] ={s_NickServ,s_ChanServ,s_CregServ,s_OperServ,s_StatServ,s_EuskalIRCServ,s_HelpServ,s_IrcIIHelp,s_mIRCHelp,s_SpamServ,s_GlobalNoticer,s_NewsServ,s_BddServ,s_ShadowServ,s_IpVirtual,s_GeoIP,s_MemoServ,s_JokuServ};
+int i;
+if (!CanalAdminsold)
+CanalAdminsold ="";
+if (strcmp(CanalAdmins, CanalAdminsold) != 0) {
+ canaladmins(s_OperServ, "12CanalAdmins Cambiando 4%s a 2%s",CanalAdminsold,CanalAdmins);
+for (i = 0; i < 18; i++) {
+send_cmd(pseudoservs[i], "JOIN #%s", CanalAdmins);
+send_cmd(s_ChanServ, "MODE #%s +o %s", CanalAdmins, pseudoservs[i]);
+send_cmd(s_OperServ, "MODE #%s +ntsil 1", CanalAdmins);
+send_cmd(pseudoservs[i], "PART #%s", CanalAdminsold);
+}
+CanalAdminsold =CanalAdmins;
+
+}
+
+if (!CanalOpersold)
+CanalOpersold ="";
+if (strcmp(CanalOpers, CanalOpersold) != 0) {
+ canaladmins(s_OperServ, "12CanalOpers Cambiando 4%s a 2%s",CanalOpersold,CanalOpers);
+for (i = 0; i < 6; i++) {
+send_cmd(pseudoservs[i], "JOIN #%s", CanalOpers);
+send_cmd(s_ChanServ, "MODE #%s +o %s", CanalOpers, pseudoservs[i]);
+send_cmd(s_OperServ, "MODE #%s +ntsil 1", CanalOpers);
+send_cmd(pseudoservs[i], "PART #%s", CanalOpersold);
+}
+
+CanalOpersold =CanalOpers;
+}
+if (!CanalCybersold)
+CanalCybersold ="";
+if (strcmp(CanalCybers, CanalCybersold) != 0) {
+ canaladmins(s_OperServ, "12CanalCybers Cambiando 4%s a 2%s",CanalCybersold,CanalCybers);
+CanalCybersold =CanalCybers;
+}
+if (!CanalAyudaold)
+CanalAyudaold ="";
+if (strcmp(CanalAyuda, CanalAyudaold) != 0) {
+ canaladmins(s_OperServ, "12CanalAyuda Cambiando 4%s a 2%s",CanalAyudaold,CanalAyuda);
+for (i = 5; i < 9; i++) {
+send_cmd(pseudoservs[i], "JOIN #%s", CanalAyuda);
+send_cmd(s_ChanServ, "MODE #%s +o %s", CanalAyuda, pseudoservs[i]);
+send_cmd(s_EuskalIRCServ, "MODE #%s +ntsil 1", CanalAyuda);
+send_cmd(pseudoservs[i], "PART #%s", CanalAyudaold);
+}
+CanalAyudaold =CanalAyuda;
+}
+if (!CanalSpamersold)
+CanalSpamersold="";
+if (strcmp(CanalSpamers, CanalSpamersold) != 0) {
+ canaladmins(s_OperServ, "12CanalSpamers Cambiando 4%s a 2%s",CanalSpamersold,CanalSpamers);
+CanalSpamersold =CanalSpamers;
+}
+if (!RootNumberold)
+RootNumberold =0;
+if (RootNumber !=RootNumberold) {
+ canaladmins(s_OperServ, "12RootNumber Cambiando 4 %d  a 2 %d ",RootNumberold,RootNumber);
+
+RootNumberold =RootNumber;
+}
+
+if (!LogMaxUsersold)
+LogMaxUsersold =0;
+if (LogMaxUsers !=LogMaxUsersold) {
+ canaladmins(s_OperServ, "12LogMaxUsers Cambiando 4 %d  a 2 %s ",LogMaxUsersold,LogMaxUsers);
+LogMaxUsersold =LogMaxUsers;
+}
+
+}
 /*************************************************************************/
 
 static void do_restart(User *u)

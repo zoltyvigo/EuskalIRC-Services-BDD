@@ -727,8 +727,8 @@ if (!strcmp(s, ayu)) {
 	    
 	/* Make sure check_kick comes before chan_adduser, so banned users
 	 * don't get to see things like channel keys. */
-	if (check_kick(user, s))
-	    continue;
+	/*if (check_kick(user, s))
+	    continue;*/
 	if (check_akick(user, s))
              continue;
 	chan_adduser(user, s);

@@ -16,20 +16,6 @@
 /*************************************************************************/
 #define canales 6000
 static ChannelInfo *chanlists[canales];
-struct achanakick {
-    char *canal;
-    char *nick;
-    char who[NICKMAX];
-    time_t time;
-    time_t caza_akick;
-    //time_t expires;	/* or 0 for no expiry */
-};
-static int32 nachanakick = 0;
-static int32 achanakick_size = 0;
-static struct achanakick *achanakicks = NULL;
-
-
-
 
 static int def_levels[][2] = {
     { CA_AUTOOP,            300 },
@@ -217,7 +203,7 @@ static Command cmds[] = {
     { "UNBAN",    do_unban,    NULL,  CHAN_HELP_UNBAN,          -1,-1,-1,-1 },
     { "CLEAR",    do_clear,    NULL,  CHAN_HELP_CLEAR,          -1,-1,-1,-1 },
     { "RESET",    do_reset,    NULL,  CHAN_HELP_RESET,          -1,-1,-1,-1 },
-    { "VERIFY",   do_verify,   is_services_oper,  CHAN_HELP_VERIFY,         -1,-1,-1,-1 },        
+    { "VERIFY",   do_verify,   NULL,  CHAN_HELP_VERIFY,         -1,-1,-1,-1 },        
     { "IRCOPS",   do_ircops,   NULL,  CHAN_HELP_IRCOPS,         -1,-1,-1,-1 },    
     { "GETPASS",  do_getpass,  is_services_oper,  -1,
 		-1, CHAN_SERVADMIN_HELP_GETPASS,
@@ -4392,23 +4378,6 @@ static int akick_list_callback(User *u, int num, va_list args)
     return akick_list(u, num-1, ci, sent_header);
 }
 
-static int del_achanakick(const char *nick)
-{
-    int i;
-
-    for (i = 0; i < nachanakick && strcmp(achanakicks[i].nick, nick) != 0; i++)
-	;
-    if (i < nachanakick) {
-	//free(achanakicks[i].canal);
-	free(achanakicks[i].nick);
-	nachanakick--;
-	if (i < nachanakick)
-	    memmove(achanakicks+i, achanakicks+i+1, sizeof(*achanakicks) * (nachanakick-i));
-	return 1;
-    } else {
-	return 0;
-    }
-}
 static void do_akick(User *u)
 {
     char *chan   = strtok(NULL, " ");
@@ -5622,7 +5591,7 @@ static void do_clear(User *u)
 	char *av[3];
 
 	av[0] = chan;
-	av[1] = sstrdup("-mintpslk");
+	av[1] = sstrdup("-cmintpslk");
 	if (c->key)
 	    av[2] = sstrdup(c->key);
 	else
@@ -5677,6 +5646,11 @@ static void do_clear(User *u)
 	}
 	notice_lang(s_ChanServ, u, CHAN_CLEARED_VOICES, chan);
     } else if (stricmp(what, "users") == 0) {
+	 if ((ci = cs_findchan(chan)) && (ci->flags & CI_AUTOLIMIT)) {
+   privmsg(s_ChanServ, u->nick, "Debes Desactivar el AutoLimit del Canal %s", ci->name);
+	return;
+        }
+
 	char *av[3];
 	struct c_userlist *cu, *next;
 	char buf[256];
@@ -5702,7 +5676,7 @@ static void do_clear(User *u)
 	notice_lang(s_ChanServ, u, CHAN_CLEARED_USERS, chan);
     } else if (stricmp(what, "topic") == 0) {
         send_cmd(MODE_SENDER(s_ChanServ), "TOPIC %s :%s", chan, ci->last_topic);
-        notice_lang(s_ChanServ, u, CHAN_CLEARED_USERS, chan);            	
+        notice_lang(s_ChanServ, u, CHAN_CLEARED_TOPIC, chan);            	
     } else {
 	syntax_error(s_ChanServ, u, "CLEAR", CHAN_CLEAR_SYNTAX);
     }
@@ -5770,7 +5744,7 @@ static void do_reset(User *u)
               /*** Clear Modes ***/
     
         av[0] = sstrdup(chan);
-        av[1] = sstrdup("-mintpslkRAS");
+        av[1] = sstrdup("-cmintpslkRAS");
         if (c->key)
             av[2] = sstrdup(c->key);
         else
@@ -5831,7 +5805,8 @@ static void do_verify(User *u)
 {
     char *nick = strtok(NULL, " ");
     NickInfo *ni;
-       
+    int i;
+
     if (!nick) {
         syntax_error(s_ChanServ, u, "VERIFY", CHAN_VERIFY_SYNTAX);
         return;
@@ -5856,12 +5831,20 @@ static void do_verify(User *u)
 /****  Bots de upworld *****/
     else if (stricmp(nick, "SHaDoW") == 0)
         privmsg(s_ChanServ, u->nick, "12SHaDoW es un BOT autorizado de la RED"); 
-    else if (stricmp(nick, "ToDo") == 0)
-        privmsg(s_ChanServ, u->nick, "12ToDo es un BOT autorizado de la RED");
-    else if (stricmp(nick, ServicesRoot) ==0) {                                                                                                                                                                                                            
-        privmsg(s_ChanServ, u->nick, "12%s es el 12ROOT de la RED", ServicesRoot);
-        return;
-     } else if (nick_is_services_admin(ni)) {
+    /*else if (stricmp(nick, "ToDo") == 0)
+        privmsg(s_ChanServ, u->nick, "12ToDo es un BOT autorizado de la RED");*/
+    else  {
+           for (i = 0; i <RootNumber ; i++) {
+	if (stricmp(nick, ServicesRoots[i]) ==0) {
+	   privmsg(s_ChanServ, u->nick, "12%s es un 12Director de la RED", nick);
+	   return;
+		}
+        }
+	
+   }
+
+
+  if (nick_is_services_admin(ni)) {
         privmsg(s_ChanServ, u->nick, "12%s es un 12ADMINinstrador de la RED.", ni->nick);
         return;
      } else if (nick_is_services_cregadmin(ni)) {

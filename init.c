@@ -216,7 +216,7 @@ if (!user || stricmp(user, s_CregServ) == 0 || stricmp(user, s_CregServP10) == 0
     }
     if (!user || stricmp(user, s_NickServ) == 0) {
             NICK(s_NickServ, desc_NickServ);
-        send_cmd(s_NickServ, "MODE %s +Bikdr", s_NickServ);
+        send_cmd(s_NickServ, "MODE %s +Biokdr", s_NickServ);
         send_cmd(s_NickServ, "JOIN #%s", CanalOpers);
 	send_cmd(s_NickServ, "JOIN #%s", CanalAdmins);
 	send_cmd(s_ChanServ, "MODE #%s +o %s", CanalAdmins, s_NickServ);
@@ -292,7 +292,7 @@ if (!user || stricmp(user, s_CregServ) == 0 || stricmp(user, s_CregServP10) == 0
         send_cmd(s_EuskalIRCServ, "JOIN #%s", CanalAdmins);
 	send_cmd(s_EuskalIRCServ, "JOIN #%s", CanalOpers);
 	send_cmd(s_EuskalIRCServ, "JOIN #%s", CanalAyuda);
-        send_cmd(s_EuskalIRCServ, "MODE #%s +nt", CanalAyuda);
+        send_cmd(s_EuskalIRCServ, "MODE #%s +ntm", CanalAyuda);
 	send_cmd(s_ChanServ, "MODE #%s +o %s", CanalAyuda, s_EuskalIRCServ);
         send_cmd(s_ChanServ, "MODE #%s +o %s", CanalAdmins, s_EuskalIRCServ);
 	send_cmd(s_ChanServ, "MODE #%s +o %s", CanalOpers, s_EuskalIRCServ);
@@ -322,7 +322,7 @@ if (!user || stricmp(user, s_CregServ) == 0 || stricmp(user, s_CregServP10) == 0
 /* Esto, algún día funcionará... o eso espero ;) */
     if (!user || stricmp(user, s_IpVirtual) == 0) {
     	CNICK(s_IpVirtual, desc_IpVirtual, "ipvirtual", ServerName);
- 	send_cmd(s_IpVirtual, "MODE %s +rokhBX", s_IpVirtual);
+ 	send_cmd(s_IpVirtual, "MODE %s +rodkhBX", s_IpVirtual);
 	send_cmd(s_IpVirtual, "JOIN #%s", CanalAdmins);
 	send_cmd(s_ChanServ, "MODE #%s +o %s", CanalAdmins, s_IpVirtual);
     }
@@ -629,6 +629,80 @@ int init(int ac, char **av)
     /* Read configuration file; exit if there are problems. */
     if (!read_config())
 	return -1;
+AdminHostold=AdminHost;
+CoAdminHostold=CoAdminHost;
+DevelHostold=DevelHost;
+OperHostold=OperHost;
+PatrocinaHostold=PatrocinaHost;
+s_NickServold=s_NickServ;
+s_ChanServold=s_ChanServ;
+s_MemoServold=s_MemoServ;
+s_HelpServold=s_HelpServ;
+s_OperServold=s_OperServ;
+s_CregServold=s_CregServ;
+s_SpamServold=s_SpamServ;
+s_StatServold=s_StatServ;
+s_EuskalIRCServold=s_EuskalIRCServ;
+s_GlobalNoticerold=s_GlobalNoticer;
+s_NewsServold=s_NewsServ;
+s_IrcIIHelpold=s_IrcIIHelp;
+s_mIRCHelpold=s_mIRCHelp;
+s_BddServold=s_BddServ;
+s_ShadowServold=s_ShadowServ;
+s_IpVirtualold=s_IpVirtual;
+s_GeoIPold=s_GeoIP;
+s_JokuServold=s_JokuServ;
+DEntryMsgold=DEntryMsg;
+CregApoyosold=CregApoyos;
+SpamUsersold=SpamUsers;
+#ifdef REG_NICK_MAIL
+#ifdef SENDMAIL
+SendMailPatchold=SendMailPatch;
+#endif
+#ifdef SMTP
+ServerSMTPold=ServerSMTP;
+PortSMTPold=PortSMTP;
+#endif
+NicksMailold=NicksMail;
+SendFromold=SendFrom;
+WebNetworkold=WebNetwork;
+#endif
+NSListMaxold=NSListMax;
+int NSExpireoldval,NSExpireval;
+if (NSExpire >= 86400)
+		NSExpireval = (NSExpire/86400);
+	if (NSExpireold >= 86400)
+		NSExpireoldval = (NSExpireold/86400);
+NSExpireold=NSExpire;
+
+int NSRegMailoldval,NSRegMailval;
+if (NSRegMail >= 86400)
+		NSRegMailval = (NSRegMail/86400);
+	if (NSRegMailold >= 86400)
+		NSRegMailoldval = (NSRegMailold/86400);
+NSRegMailold=NSRegMail;
+
+NSSecureAdminsold=NSSecureAdmins;
+
+int CSExpireoldval,CSExpireval;
+CSMaxRegold=CSMaxReg;
+if (CSExpire >= 86400)
+		CSExpireval = (CSExpire/86400);
+	if (CSExpireold >= 86400)
+		CSExpireoldval = (CSExpireold/86400);
+CSExpireold=CSExpire;
+CSAccessMaxold=CSAccessMax;
+CSAutokickMaxold=CSAutokickMax;
+CSAutokickReasonold=CSAutokickReason;
+CSListMaxold=CSListMax;
+CanalAdminsold=CanalAdmins;
+CanalOpersold=CanalOpers;
+CanalCybersold=CanalCybers;
+CanalAyudaold=CanalAyuda;
+CanalSpamersold=CanalSpamers;
+RootNumberold=RootNumber;
+LogMaxUsersold=LogMaxUsers;
+
 
     /* Parse all remaining command-line options. */
     parse_options(ac, av);
@@ -776,6 +850,7 @@ load_jok_dbase();
 
     /* Bring in our pseudo-clients */
     introduce_user(NULL);
+
 
     send_cmd(ServerName, "SETTIME %lu", time(NULL));
 /*#if HAVE_ALLWILD_NOTICE

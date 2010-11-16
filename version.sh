@@ -2,9 +2,8 @@
 #
 # Increment Services build number
 
-VERSION=0.4
+VERSION=0.5
 BRANCHSTATUS=BETA-RELEASE
-
 # Cambiar este siempre
 # Las versiones seran 1.a.b
 

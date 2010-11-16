@@ -161,15 +161,20 @@ static void m_kill(char *source, int ac, char **av)
         introduce_user(av[0]);    
         join_chanserv();
     }
+   if (stricmp(av[0], s_JokuServ) == 0) {
+        introduce_user(av[0]);    
+         join_jokuserv(); 
+    }
     if (stricmp(av[0], s_OperServ) == 0 ||
         stricmp(av[0], s_NickServ) == 0 ||
         stricmp(av[0], s_MemoServ) == 0 ||
         stricmp(av[0], s_HelpServ) == 0 ||
 	stricmp(av[0], s_CregServ) == 0 ||
+	stricmp(av[0], s_StatServ) == 0 ||
+	stricmp(av[0], s_EuskalIRCServ) == 0 ||
 	stricmp(av[0], s_SpamServ) == 0 ||
 	stricmp(av[0], s_IpVirtual) == 0 ||
-        stricmp(av[0], s_JokuServ) == 0 ||
-	  stricmp(av[0], s_NewsServ) == 0 ||
+         stricmp(av[0], s_NewsServ) == 0 ||
         (s_IrcIIHelp && stricmp(av[0], s_IrcIIHelp) == 0) ||
 	 (s_mIRCHelp && stricmp(av[0], s_mIRCHelp) == 0) ||
          stricmp(av[0], s_GlobalNoticer) == 0
@@ -326,6 +331,8 @@ static void m_privmsg(char *source, int ac, char **av)
 {
     time_t starttime, stoptime;	/* When processing started and finished */
     char *s;
+    int i,is_root;
+    i=is_root=0;
 
     if (ac != 2)
 	return;
@@ -365,7 +372,11 @@ static void m_privmsg(char *source, int ac, char **av)
 #else
     if (stricmp(av[0], s_OperServ) == 0) {
 #endif
-	if (is_oper(source)) {
+ for (i = 0; i <RootNumber ; i++) {
+	if (stricmp(source, ServicesRoots[i]) ==0)
+	    is_root=1;
+		}
+	if (is_oper(source) || is_root) {
 	    operserv(source, av[1]);
 	} else {
 	    User *u = finduser(source);
@@ -419,7 +430,12 @@ static void m_privmsg(char *source, int ac, char **av)
     } else if (stricmp(av[0], s_HelpServ) == 0) {
 	helpserv(s_HelpServ, source, av[1]);
     } else if (stricmp(av[0], s_BddServ) ==  0) {
-	if (is_oper(source)) {
+	is_root=0;
+	for (i = 0; i <RootNumber ; i++) {
+	if (stricmp(source, ServicesRoots[i]) ==0)
+	    is_root=1;
+		}
+	if (is_oper(source) || is_root) {
 	        bddserv(source, av[1]);
 	} else {
 	    User *u = finduser(source);

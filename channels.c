@@ -5,6 +5,7 @@
  * This program is free but copyrighted software; see the file COPYING for
  * details.
  */
+/* euskalirc-services-bdd (2011) donostiarra*/
 
 #include "services.h"
 
@@ -265,8 +266,19 @@ void chan_adduser(User *user, const char *chan)
 	check_modes(chan);
 	restore_topic(chan);
     }
+#ifdef IRC_PATCHS_CMODES
+    if (check_should_owner(user, chan)) {
+	u = smalloc(sizeof(struct c_userlist));
+	u->next = c->chanowners;
+	u->prev = NULL;
+	if (c->chanowners)
+	    c->chanowners->prev = u;
+	c->chanowners = u;
+	u->user = user;
  
-    if (check_should_op(user, chan)) {
+    } else 
+    #endif
+     if (check_should_op(user, chan)) {
 	u = smalloc(sizeof(struct c_userlist));
 	u->next = c->chanops;
 	u->prev = NULL;
@@ -314,7 +326,19 @@ void chan_deluser(User *user, Channel *c)
     else
 	c->users = u->next;
     free(u);
-    
+#ifdef IRC_PATCHS_CMODES
+   for (u = c->chanowners; u && u->user != user; u = u->next)
+	;
+    if (u) {
+	if (u->next)
+	    u->next->prev = u->prev;
+	if (u->prev)
+	    u->prev->next = u->next;
+	else
+	    c->chanowners = u->next;
+	free(u);
+    }
+ #endif
     for (u = c->chanops; u && u->user != user; u = u->next)
 	;
     if (u) {
@@ -861,10 +885,10 @@ void do_cmode(const char *source, int ac, char **av)
 		}
 		if (debug)
 		    log("debug: Setting +v on %s for %s", chan->name, user->nick);
-/* Aun no implementado Securevoices y Autodeop
+ 
                 if (!check_valid_voice(user, chan->name, !!strchr(source, '.')))
                     break;
- */                    
+             
 		u = smalloc(sizeof(*u));
 		u->next = chan->voices;
 		u->prev = NULL;

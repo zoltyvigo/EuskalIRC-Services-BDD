@@ -241,6 +241,9 @@ void do_write_bdd(char *entrada, int tabla, const char *valor, ...)
 	  } else if (tabla == 26){
 	 	send_cmd(NULL, "DB * %d v %s :4%s%s", tabla_v, nicks, nicks, CoAdminHost);
 	 	tabla_v++;
+	 } else if (tabla == 27){
+	 	send_cmd(NULL, "DB * %d v %s :4%s%s", tabla_v, nicks, nicks, RootHost);
+	 	tabla_v++;
 	 } else if (tabla == 3) {
 	 	send_cmd(NULL, "DB * %d o %s :%s", tabla_o, nicks, valor);
 		tabla_o++;

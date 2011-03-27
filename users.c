@@ -1123,7 +1123,23 @@ int is_on_chan(const char *nick, const char *chan)
     }
     return 0;
 }
+#ifdef IRC_PATCHS_CMODES
+/* Is the given nick a channel owner on the given channel? */
 
+int is_chanowner (const char *nick, const char *chan)
+{
+    Channel *c = findchan(chan);
+    struct c_userlist *u;
+
+    if (!c)
+	return 0;
+    for (u = c->chanowners; u; u = u->next) {
+	if (stricmp(u->user->nick, nick) == 0)
+	    return 1;
+    }
+    return 0;
+}
+#endif
 /*************************************************************************/
 
 /* Is the given nick a channel operator on the given channel? */

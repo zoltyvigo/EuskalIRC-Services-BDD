@@ -66,6 +66,7 @@ char *s_EuskalIRCServ;
 char *s_StatServ;
 int  CregApoyos;
 char *OperHost;
+char *RootHost;
 char *AdminHost;
 char *CoAdminHost;
 char *DevelHost;
@@ -407,6 +408,7 @@ Directive directives[] = {
     { "ServiceEuskalIRC",      { { PARAM_STRING, 0, &temp_usereuskalirc } } },
     { "DEntryMsg",	  { { PARAM_STRING, 0, &DEntryMsg } } },
     { "OperHost",	  { { PARAM_STRING, 0, &OperHost } } },
+    { "RootHost",	  { { PARAM_STRING, 0, &RootHost } } },
     { "AdminHost",	  { { PARAM_STRING, 0, &AdminHost } } },
      { "CoAdminHost",	  { { PARAM_STRING, 0, &CoAdminHost } } },
     { "DevelHost",	  { { PARAM_STRING, 0, &DevelHost } } },
@@ -687,6 +689,7 @@ int read_config()
       CHECK(incr3);
     CHECK(ServerDesc);
     CHECK(OperHost);
+    CHECK(RootHost);
     CHECK(AdminHost);
     CHECK(CoAdminHost);
     CHECK(DevelHost);

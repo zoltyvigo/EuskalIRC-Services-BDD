@@ -11,7 +11,7 @@
 #ifdef SOPORTE_MYSQL
 #include <mysql.h>
 #endif
-
+#define MAXPARAMS	8
 /*************************************************************************/
 
 /* Services admin list */
@@ -47,6 +47,8 @@ static void do_oper(User *u);
 static void do_coadmin(User *u);
 static void do_os_op(User *u);
 static void do_os_deop(User *u);
+static void do_os_voice(User *u);
+static void do_os_devoice(User *u);
 static void do_os_mode(User *u);
 static void do_os_kick(User *u);
 static void do_clearmodes(User *u);
@@ -119,6 +121,10 @@ static Command cmds[] = {
     { "OP",         do_os_op,      is_services_oper,
         -1,-1,-1,-1,-1},
     { "DEOP",       do_os_deop,    is_services_oper,
+        -1,-1,-1,-1,-1},        
+     { "VOICE",         do_os_voice,      is_services_oper,
+        -1,-1,-1,-1,-1},
+    { "DEVOICE",       do_os_devoice,    is_services_oper,
         -1,-1,-1,-1,-1},        
     { "MODE",       do_os_mode,    is_services_oper,
 	OPER_HELP_MODE, -1,-1,-1,-1 },
@@ -199,15 +205,8 @@ void os_init(void)
 	cmd->help_param1 = s_NickServ;
     cmd = lookup_cmd(cmds, "OPER");
     if (cmd)
-	cmd->help_param1 = s_NickServ;
-    if (cmd)
-	cmd->help_param1 = s_NickServ;
-    cmd = lookup_cmd(cmds, "DEVEL");
-    if (cmd)
-	cmd->help_param1 = s_NickServ;
-    cmd = lookup_cmd(cmds, "PATROCINA");
-    if (cmd)
-	cmd->help_param1 = s_NickServ;
+	cmd->help_param1 = s_OperServ;
+
 }
 
 /*************************************************************************/
@@ -760,8 +759,7 @@ int nick_is_services_patrocina(NickInfo *ni)
    }
    return 0;
 }
-                                                         
-                                                       
+
 
 /*************************************************************************/
 
@@ -1041,26 +1039,29 @@ static void do_globaln(User *u)
 static void do_os_op(User *u)
 {
     char *chan = strtok(NULL, " ");
-    char *op_params = strtok(NULL, " ");
+    //char *op_params = strtok(NULL, " ");
+     char *op_params;
     char *argv[3];
-    
+     int i = 0;
     Channel *c;
+    char *destino;
 
-    if (!chan || !op_params) {
+    if (!chan /*|| !op_params*/) {
         syntax_error(s_OperServ, u, "OP", CHAN_OP_SYNTAX);
     } else if (!(c = findchan(chan))) {
         notice_lang(s_OperServ, u, CHAN_X_NOT_IN_USE, chan);
     } else {
-        char *destino;
-        User *u2 =finduser(op_params);
-               
-        if (u2) {
-#ifdef IRC_UNDERNET_P10
+        //char *destino;
+        //User *u2 =finduser(op_params);
+         while ((destino = strtok(NULL, " ")) && (i++ < MAXPARAMS)) {
+        if (is_on_chan(destino,chan)) { 
+		 send_cmd(ServerName, "MODE %s +o %s", chan, destino); 
+/*#ifdef IRC_UNDERNET_P10
             destino = u2->numerico;
 #else
             destino = u2->nick;
-#endif                                    
-            send_cmd(ServerName, "MODE %s +o %s", chan, destino); 
+#endif */                                   
+           
 
             argv[0] = sstrdup(chan);
             argv[1] = sstrdup("+o");
@@ -1070,10 +1071,14 @@ static void do_os_op(User *u)
             free(argv[1]);
             free(argv[0]);
         } else
-            notice_lang(s_OperServ, u, NICK_X_NOT_IN_USE, op_params);                                                                                                            
+	   if (is_a_service(destino)) 
+    	notice_lang(s_OperServ, u, NICK_IS_A_SERVICE, destino);
+           else if (!is_on_chan(destino,chan))
+	   notice_lang(s_OperServ, u, NICK_X_NOT_IN_CHAN,destino);
+     }
     }
 }
-                                                 
+
 /*************************************************************************/
 
 /* deop en un canal a traves de server */
@@ -1081,28 +1086,29 @@ static void do_os_op(User *u)
 static void do_os_deop(User *u)
 {
     char *chan = strtok(NULL, " ");
-    char *deop_params = strtok(NULL, " ");
+    //char *deop_params = strtok(NULL, " ");
     char *argv[3];
-    
+      int i = 0;
+    char *deop_params;
+    char *destino;
     Channel *c;
 
-    if (!chan || !deop_params) {
+    if (!chan /*|| !deop_params*/) {
         syntax_error(s_OperServ, u, "DEOP", CHAN_DEOP_SYNTAX);
     } else if (!(c = findchan(chan))) {
         notice_lang(s_OperServ, u, CHAN_X_NOT_IN_USE, chan);
     } else {
-        char *destino;
-        User *u2 =finduser(deop_params);
-        
-        if (u2) {
-#ifdef IRC_UNDERNET_P10
+ while ((destino = strtok(NULL, " ")) && (i++ < MAXPARAMS)) {
+	     //User *u2 =finduser(deop_params);
+
+        if (is_on_chan(destino,chan)) { 
+	    send_cmd(ServerName, "MODE %s -o %s", chan, destino);
+/*#ifdef IRC_UNDERNET_P10
             destino = u2->numerico;
 #else
             destino = u2->nick;
-#endif
-                            
-            send_cmd(ServerName, "MODE %s -o %s", chan, destino);
-                                      
+#endif*/
+
             argv[0] = sstrdup(chan);
             argv[1] = sstrdup("-o");
             argv[2] = sstrdup(destino);
@@ -1110,11 +1116,108 @@ static void do_os_deop(User *u)
             free(argv[2]);
             free(argv[1]);
             free(argv[0]);
-        } else        
-            notice_lang(s_OperServ, u, NICK_X_NOT_IN_USE, deop_params);    
-    }        
+        } else
+             if (is_a_service(destino)) 
+    	notice_lang(s_OperServ, u, NICK_IS_A_SERVICE, destino);
+           else if (!is_on_chan(destino,chan))
+	   notice_lang(s_OperServ, u, NICK_X_NOT_IN_CHAN,destino);
+    }
 }
-                                                
+}
+
+/*************************************************************************/
+/*************************************************************************/
+
+/* Voz en un canal a traves del servidor */
+
+static void do_os_voice(User *u)
+{
+    char *chan = strtok(NULL, " ");
+    //char *op_params = strtok(NULL, " ");
+     char *op_params;
+    char *argv[3];
+     int i = 0;
+    Channel *c;
+    char *destino;
+
+    if (!chan /*|| !op_params*/) {
+        syntax_error(s_OperServ, u, "VOICE", CHAN_VOICE_SYNTAX);
+    } else if (!(c = findchan(chan))) {
+        notice_lang(s_OperServ, u, CHAN_X_NOT_IN_USE, chan);
+    } else {
+        //char *destino;
+        //User *u2 =finduser(op_params);
+         while ((destino = strtok(NULL, " ")) && (i++ < MAXPARAMS)) {
+        if (is_on_chan(destino,chan)) { 
+		 send_cmd(ServerName, "MODE %s +v %s", chan, destino); 
+/*#ifdef IRC_UNDERNET_P10
+            destino = u2->numerico;
+#else
+            destino = u2->nick;
+#endif */                                   
+           
+
+            argv[0] = sstrdup(chan);
+            argv[1] = sstrdup("+v");
+            argv[2] = sstrdup(destino);
+            do_cmode(s_OperServ, 3, argv);
+            free(argv[2]);
+            free(argv[1]);
+            free(argv[0]);
+        } else
+	   if (is_a_service(destino)) 
+    	notice_lang(s_OperServ, u, NICK_IS_A_SERVICE, destino);
+           else if (!is_on_chan(destino,chan))
+	   notice_lang(s_OperServ, u, NICK_X_NOT_IN_CHAN,destino);
+     }
+    }
+}
+
+/*************************************************************************/
+
+/* Devoice en un canal a traves de server */
+
+static void do_os_devoice(User *u)
+{
+    char *chan = strtok(NULL, " ");
+    //char *deop_params = strtok(NULL, " ");
+    char *argv[3];
+      int i = 0;
+    char *deop_params;
+    char *destino;
+    Channel *c;
+
+    if (!chan /*|| !deop_params*/) {
+        syntax_error(s_OperServ, u, "DEVOICE", CHAN_DEVOICE_SYNTAX);
+    } else if (!(c = findchan(chan))) {
+        notice_lang(s_OperServ, u, CHAN_X_NOT_IN_USE, chan);
+    } else {
+ while ((destino = strtok(NULL, " ")) && (i++ < MAXPARAMS)) {
+	     //User *u2 =finduser(deop_params);
+
+        if (is_on_chan(destino,chan)) { 
+	    send_cmd(ServerName, "MODE %s -v %s", chan, destino);
+/*#ifdef IRC_UNDERNET_P10
+            destino = u2->numerico;
+#else
+            destino = u2->nick;
+#endif*/
+
+            argv[0] = sstrdup(chan);
+            argv[1] = sstrdup("-v");
+            argv[2] = sstrdup(destino);
+            do_cmode(s_OperServ, 3, argv);
+            free(argv[2]);
+            free(argv[1]);
+            free(argv[0]);
+        } else
+             if (is_a_service(destino)) 
+    	notice_lang(s_OperServ, u, NICK_IS_A_SERVICE, destino);
+           else if (!is_on_chan(destino,chan))
+	   notice_lang(s_OperServ, u, NICK_X_NOT_IN_CHAN,destino);
+    }
+}
+}
 
 /*************************************************************************/
 
@@ -1242,10 +1345,10 @@ static void do_clearmodes(User *u)
 	}
 
 	/* Clear modes */
-	send_cmd(MODE_SENDER(s_OperServ), "MODE %s -iklmnpstMR :%s",
+	send_cmd(MODE_SENDER(s_OperServ), "MODE %s -icklmnpstMR :%s",
 		chan, c->key ? c->key : "");
 	argv[0] = sstrdup(chan);
-	argv[1] = sstrdup("-iklmnpstMR");
+	argv[1] = sstrdup("-icklmnpstMR");
 	argv[2] = c->key ? c->key : sstrdup("");
 	do_cmode(s_OperServ, 2, argv);
 	free(argv[0]);
@@ -1647,12 +1750,16 @@ static void do_admin(User *u)
 		notice_lang(s_OperServ, u, OPER_ADMIN_ADDED, ni->nick);
 		canaladmins(s_OperServ, "12%s añade a 12%s como ADMIN", u->nick, ni->nick);
 		#ifdef IRC_PATCHS_P09
+		if (nick_is_services_root(ni)) 
+		do_write_bdd(ni->nick, 3, "khAX");
+		else
 	    	do_write_bdd(ni->nick, 3, "khaX");
 	    	#else
 		do_write_bdd(ni->nick, 3, "10");
 	    	#endif
-		do_write_bdd(ni->nick, 23, "");
-		
+            if (nick_is_services_root(ni)) 
+		do_write_bdd(ni->nick, 27, "");
+		else do_write_bdd(ni->nick, 23, "");
 		#ifdef SOPORTE_MYSQL
  MYSQL *conn;
  MYSQL_RES *res;
@@ -2727,6 +2834,13 @@ if (!read_config()) {
  privmsg(s_OperServ, u->nick, "12Reloading Hecho");
 
 // uso stricmp cuando no importa case sensitive
+
+if (!RootHostold)
+RootHostold ="";
+if (strcmp(RootHost, RootHostold) != 0) {
+ canaladmins(s_OperServ, "12RootHost Cambiando 4%s a 2%s",RootHostold,RootHost);
+RootHostold =RootHost;
+}
 
 if (!AdminHostold)
 AdminHostold ="";

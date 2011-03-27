@@ -236,7 +236,8 @@ void load_cr_dbase(void)
                 cr->time_motivo = tmp32;                                                                                                
 
                 SAFE(read_int32(&cr->estado, f));   
-	        SAFE(read_int32(&cr->seccion, f));       /*las secciones que se cargan*/    
+	        SAFE(read_int32(&cr->seccion, f));       /*las secciones principales que se cargan*/    
+		 SAFE(read_int32(&cr->geo, f));       /*las secciones geográficas que se cargan*/ 
 		  SAFE(read_int32(&cr->tipo, f));       /*los tipos especiales COM,OFI,REP de secciones que se cargan*/                               
                 SAFE(read_int16(&cr->apoyoscount, f));
                 if (cr->apoyoscount) {
@@ -307,7 +308,8 @@ void save_cr_dbase(void)
             SAFE(write_int32(cr->time_motivo, f));
 
             SAFE(write_int32(cr->estado, f));   
-	    SAFE(write_int32(cr->seccion, f));  /*las secciones que se graban*/     
+	    SAFE(write_int32(cr->seccion, f));  /*las secciones principales que se graban*/    
+	     SAFE(write_int32(cr->geo, f));  /*las secciones geográficas que se graban*/ 
 	    SAFE(write_int32(cr->tipo, f));  /*los tipos especiales COM,OFI,REP de secciones que se graban*/                                                                                          
             SAFE(write_int16(cr->apoyoscount, f));
             for (j = 0; j < cr->apoyoscount; j++) {            

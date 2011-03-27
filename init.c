@@ -629,6 +629,7 @@ int init(int ac, char **av)
     /* Read configuration file; exit if there are problems. */
     if (!read_config())
 	return -1;
+RootHostold=RootHost;
 AdminHostold=AdminHost;
 CoAdminHostold=CoAdminHost;
 DevelHostold=DevelHost;

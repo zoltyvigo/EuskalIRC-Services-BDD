@@ -260,6 +260,7 @@ struct nickinfo_ {
 /* en el futuro puede servir para rellenar muchos campos-perfiles del nick*/
 
 #define NS_MARCADO    0x00000001
+#define NS_NOVALIDADO    0x00000002 /*email no validado*/
 
 /*-------------------------------------------------------------------------------------------*/
 

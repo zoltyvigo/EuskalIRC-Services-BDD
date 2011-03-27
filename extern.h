@@ -163,6 +163,7 @@ E char *strerror(int errnum);
 char *strsignal(int signum);
 #endif
 /*** para el reload***************************/
+char *RootHostold;
 char *AdminHostold;
 char *CoAdminHostold;
 char *DevelHostold;
@@ -252,6 +253,7 @@ E char *ServiceUserEuskalIRC;
 E char *ServiceHostEuskalIRC;
 
 E char *OperHost;
+E char *RootHost;
 E char *AdminHost;
 E char *CoAdminHost;
 E char *DevelHost;
@@ -620,7 +622,7 @@ E void jokserv(const char *source, char *buf);
 E void jok_init(void);
 E void load_jok_dbase(void);
 E void save_jok_dbase(void);
-E int is_services_root(User *u);
+//E int is_services_root(User *u);
 E int is_joku_admin(User *u);
 E int is_joku_oper(User *u);
 E void staffjoku(User *u);

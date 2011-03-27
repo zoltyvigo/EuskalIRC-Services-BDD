@@ -211,6 +211,9 @@ CHAN_IDENTIFY_REQUIRED
 	La contraseña es necesaria para ese comando.
 	Vuelve a intentar después de escribir 12/msg %s IDENTIFY contraseña.
 
+NICK_X_NOT_IN_CHAN
+	El nick 12%s no está en el canal.
+
 ###########################################################################
 #
 # Mensajes de Nickserv
@@ -267,7 +270,12 @@ NICK_PASSWORD_IS
 NICK_PASSWORD_TEMP
 	Recuerda que tienes 3 %d días para confirmar el correo.Tu contraseña temporal es 12%s.
 	Para identificarte haz lo siguiente: /NiCK 2%s:12%s.
-	No Cambies la palabra 4NiCK,que es el bot que te registra.
+NICK_PASSWORD_TEMP_HORAS
+	Recuerda que tienes 3 %d horas para confirmar el correo.Tu contraseña temporal es 12%s.
+	Para identificarte haz lo siguiente: /NiCK 2%s:12%s.
+NICK_PASSWORD_TEMP_MINUTOS
+	Recuerda que tienes 3 %d minutos para confirmar el correo.Tu contraseña temporal es 12%s.
+	Para identificarte haz lo siguiente: /NiCK 2%s:12%s.
 NICK_IN_MAIL
 	Revisa tu correo en unos minutos, te llegará una password temporal.
 NICK_DONE
@@ -334,6 +342,8 @@ NICK_SET_URL_UNSET
 # SET EMAIL responses
 NICK_SET_EMAIL_CHANGED
 	Dirección de E-mail cambiada a 12%s.
+NICK_SET_TIMEREG_CHANGED
+	Fecha de Tiempo Registro cambiada a 12%s.
 NICK_SET_EMAIL_UNSET
 	Dirección de E-mail deshabilitada.
 
@@ -379,7 +389,7 @@ NICK_SET_PRIVATE_OFF
 
 # SET HIDE responses
 NICK_SET_HIDE_SYNTAX
-	12SET HIDE {EMAIL | USERMASK | QUIT} {ON | OFF}
+	12SET HIDE {EMAIL | QUIT} {ON | OFF}
 NICK_SET_HIDE_EMAIL_ON
 	Tu dirección de E-mail no se mostrará en 12%s INFO.
 NICK_SET_HIDE_EMAIL_OFF
@@ -599,6 +609,8 @@ NICK_STATUS_OFFLINE
 	STATUS %s 0 (No conectado)
 NICK_STATUS_NOT_REGISTRED
 	STATUS %s 0 (Conectado, no registrado)
+NICK_STATUS_NOVALIDADO
+	STATUS %s 1 (no validado)
 NICK_STATUS_NOT_IDENTIFIED
 	STATUS %s 1 (Conectado, no coincide mascara, ni identificado)
 NICK_STATUS_RECOGNIZED
@@ -607,6 +619,8 @@ NICK_STATUS_IDENTIFIED
 	STATUS %s 3 (Identificado)
 NICK_STATUS_SUSPENDED
 	STATUS %s 4 (Suspendido)
+NICK_STATUS_VALIDADO
+	STATUS %s 5 (validado)
 
 NICK_STATUS_ID_BDD
 	Identificado por BDD
@@ -888,6 +902,10 @@ CHAN_SET_SECUREOPS_ON
 	Opción de Secure ops 12activada.
 CHAN_SET_SECUREOPS_OFF
 	Opción de Secure ops 12desactivada.
+CHAN_SET_SECUREVOICES_ON
+	Opción de Secure voices 12activada.
+CHAN_SET_SECUREVOICES_OFF
+	Opción de Secure voices 12desactivada.
 
 # SET LEAVEOPS responses
 CHAN_SET_LEAVEOPS_SYNTAX
@@ -1112,6 +1130,8 @@ CHAN_INFO_OPT_KEEPTOPIC
 	Retención de tópico
 CHAN_INFO_OPT_TOPICLOCK
 	Candado de tópico
+CHAN_INFO_OPT_SECUREVOICES
+	Secure Voices
 CHAN_INFO_OPT_SECUREOPS
 	Secure Ops
 CHAN_INFO_OPT_AUTOLIMIT
@@ -1963,13 +1983,11 @@ NICK_HELP
 	
 	1Registro
 	    12REGISTER   Registra un nick
+	    12CONFIRM    Confirma un nick con la base de datos de NiCK.
 	
 	1Administración de opciones
 	 12SET        Para ajustar opciones
 	 12GHOST      Desconectar el nick con una conexion fantasma
-	 12RECOVER    Desconecta a otro usuario que está utilizando tu nick
-	 12RELEASE    Toma custodia de tu nick después de utilizar el
-	                comando RECOVER
 	
 	1Información
 	    12INFO       Muestra la informacion de un nick
@@ -1997,15 +2015,12 @@ NICK_HELP_EXPIRE_ZERO
 	12/msg %S HELP comando
 	
 	    12REGISTER   Registra un nick
+	    12CONFIRM    Confirma un nick con la base de datos de NiCK.
 	    12IDENTIFY   Identificarse con tu contraseña
 	    12INFO       Muestra la informacion de un nick
 	    12STATUS     Muestra el estado de un nick
 	    12LIST       Lista los nicks registrados
 	    12SET        Para ajustar opciones, incluyendo protección de kill
-	    12GHOST      Desconectar el nick con una conexion fantasma
-	    12RECOVER    Desconecta a otro usuario que eestá utilizando tu nick
-	    12RELEASE    Toma custodia de tu nick después de utilizar el
-	                comando RECOVER
 	
 	4NOTA: Este servicio esta diseñado para proveer un modo en
 	que los usuarios de IRC aseguran que su identidad no sea
@@ -2222,14 +2237,14 @@ NICK_HELP_SET_PRIVATE
 	información usando el comando 12INFO.)
 
 NICK_HELP_SET_HIDE
-	Sintaxis: 12SET HIDE {EMAIL | USERMASK | QUIT} {ON | OFF}
+	Sintaxis: 12SET HIDE {EMAIL | QUIT} {ON | OFF}
 	
 	Permite evites que ciertas informaciones sean
 	mostradas cuando alguien usa el comando 12%S INFO en tu
-	nick. Usted puede esconder su E-mail (12EMAIL), ultima
-	mascara user@host (12USERMASK), o su ultimo mensaje de salida
-	(12QUIT). El segundo parámetro especifica que información
-	debe ser mostrada (12OFF) o escondida (12ON).
+	nick. Usted puede esconder su E-mail (12EMAIL),
+	o su ultimo mensaje de salida (12QUIT). 
+	El segundo parámetro especifica que información debe ser mostrada 
+	(12OFF) o escondida (12ON).
 
 NICK_HELP_SET_VHOST
 	Sintaxis: 12SET VHOST {<mascara> | OFF}
@@ -2337,7 +2352,16 @@ NICK_HELP_STATUS
 	resto serán ignorados. No se genera mensaje de error si no
 	se envía nick.
 
-NICK_SERVADMIN_HELP
+NICK_SERVOPER_HELP
+	
+	2Los siguientes comandos están disponibles para los
+	2Representantes de Servicios:
+	
+	     12SENDPASS   Manda la contraseña al mail
+	     12SENDCLAVE  Manda la clave confirmación al mail
+
+
+NICK_SERVDEVEL_HELP
 	
 	2Los siguientes comandos están disponibles para los
 	2Representantes de Servicios:
@@ -2353,7 +2377,89 @@ NICK_SERVADMIN_HELP
 	    12UNSUSPEND  Reactiva un nick suspendido
 	    12MARCAR     Añade un comentario al histórico de un nick
 	    12DESMARCAR  Elimina un comentario al histórico de un nick
-	    12SET(3EMAIL)       Asocia una dirección de E-mail con un nick
+	    12SET(3LANGUAGE)    Asocia un Lenguaje con un nick
+	    12SET(3URL)         Asocia una URL con un nick
+	    12SET(3PASS)        Asocia una Password con un nick
+	    12GETPASS            Muestra la contraseña para un nick
+
+NICK_SERVCOADMIN_HELP
+	
+	2Los siguientes comandos están disponibles para los
+	2Representantes de Servicios:
+	
+	     12SENDPASS   Manda la contraseña al mail
+	     12SENDCLAVE  Manda la clave confirmación al mail
+	
+	 2Comandos disponibles sólo para los  4Desarrolladores de
+	 4Servicios:
+	
+	    12USERIP     Obtiene la dirección IP/Host del usuario.
+	    12SUSPEND    Suspende el nick
+	    12UNSUSPEND  Reactiva un nick suspendido
+	    12MARCAR     Añade un comentario al histórico de un nick
+	    12DESMARCAR  Elimina un comentario al histórico de un nick
+	    12SET(3LANGUAGE)    Asocia un Lenguaje con un nick
+	    12SET(3URL)         Asocia una URL con un nick
+	    12SET(3PASS)        Asocia una Password con un nick
+	    12GETPASS            Muestra la contraseña para un nick
+	
+	2Comandos disponibles sólo para los 4Coadministradores de
+	4Servicios:
+	
+	    12DROP       Cancela el registro de un nick
+	    12FORBID     Evita que un nick sea utilizado
+	    12UNFORBID   Libera un nick prohibido
+	    12RENAME     Cambia un nick por otro generado aleatoriamente.
+
+NICK_SERVADMIN_HELP
+	2Los siguientes comandos están disponibles para los
+	2Representantes de Servicios:
+	
+	     12SENDPASS   Manda la contraseña al mail
+	     12SENDCLAVE  Manda la clave confirmación al mail
+	
+	 2Comandos disponibles sólo para los  4Desarrolladores de
+	 4Servicios:
+	
+	    12USERIP     Obtiene la dirección IP/Host del usuario.
+	    12SUSPEND    Suspende el nick
+	    12UNSUSPEND  Reactiva un nick suspendido
+	    12MARCAR     Añade un comentario al histórico de un nick
+	    12DESMARCAR  Elimina un comentario al histórico de un nick
+	    12SET(3LANGUAGE)    Asocia un Lenguaje con un nick
+	    12SET(3URL)         Asocia una URL con un nick
+	    12SET(3PASS)        Asocia una Password con un nick
+	    12GETPASS            Muestra la contraseña para un nick
+	
+	2Comandos disponibles sólo para los 4Coadministradores de
+	4Servicios:
+	
+	    12DROP       Cancela el registro de un nick
+	    12FORBID     Evita que un nick sea utilizado
+	    12UNFORBID   Libera un nick prohibido
+	    12RENAME     Cambia un nick por otro generado aleatoriamente.
+	
+	2Comandos disponibles sólo para los 4administradores de
+	4Servicios:
+	
+	 12VALIDAR        valida el registro de ese nick sín ser necesario confirmarse
+
+NICK_SERVDIRECTOR_HELP
+	
+	2Los siguientes comandos están disponibles para los
+	2Representantes de Servicios:
+	
+	     12SENDPASS   Manda la contraseña al mail
+	     12SENDCLAVE  Manda la clave confirmación al mail
+	
+	 2Comandos disponibles sólo para los  4Desarrolladores de
+	 4Servicios:
+	
+	    12USERIP     Obtiene la dirección IP/Host del usuario.
+	    12SUSPEND    Suspende el nick
+	    12UNSUSPEND  Reactiva un nick suspendido
+	    12MARCAR     Añade un comentario al histórico de un nick
+	    12DESMARCAR  Elimina un comentario al histórico de un nick
 	    12SET(3LANGUAGE)    Asocia un Lenguaje con un nick
 	    12SET(3URL)         Asocia una URL con un nick
 	    12SET(3PASS)        Asocia una Password con un nick
@@ -2374,8 +2480,11 @@ NICK_SERVADMIN_HELP
 	
 	2Comandos disponibles sólo para los 4Directores:
 	
+	12SET(3TIMEREG)    Asocia fecha de registro con un nick
+	12SET(3EMAIL)      Asocia una dirección de E-mail con un nick
 	12SET(3NOEXPIRE)   Asocia estado NOEXPIRE con un nick
 	12GETCLAVE          Muestra la clave confirmación para un nick
+
 
 NICK_SERVADMIN_HELP_USERIP
 	Sintaxis: 12USERIP <nick>
@@ -2426,7 +2535,22 @@ NICK_SERVADMIN_HELP_SET_NOEXPIRE
 	que el nick expire. Si no se incluye un nick, entonces se
 	aplica a tu propio nick.
 	
-	Limitado a 4Administradores de Services.
+	Limitado a 4Directores de Red.
+
+NICK_SERVADMIN_HELP_SET_TIMEREG
+	Sintaxis: 12SET TIMEREG <4[+-] 5X 3[s | m |d]12>
+	
+	Asocia una fecha de registro con tu nick. 
+	El tiempo  es especificado como un entero 5"X" (esto es, sin decimales)
+	 seguido de: d para especificar días, h (horas), o m (minutos).
+	Combinaciones (como 1h30m) no están permitidas.  Si un
+	especificador de unidades no es incluido, por defecto se
+	asumen SEGUNDOS (entonces, poner +30 sin nada, significa 30
+	segundos)
+	Esta fecha será mostrada cuando alguien solicite información
+	sobre su nick con el comando 12INFO.
+	
+	Limitado a 4Directores de Red.
 
 NICK_SERVADMIN_HELP_UNLINK
 	
@@ -2575,6 +2699,7 @@ CHAN_HELP
 	
 	    12INFO       Muestra información de un canal
 	    12LIST       Lista los canales registrados
+	    12VERIFY     Verificar si un usuario es REPRESENTANTE de RED o no
 	    12IRCOPS     Ver los  REPRESENTANTES de RED on-line
 	
 
@@ -3146,27 +3271,235 @@ CHAN_HELP_IRCOPS
 	Lista todos los usuarios on-line que son Representantes
 	de los servicios de la red. 
 
-CHAN_SERVADMIN_HELP
+CHAN_SERVDIRECTOR_HELP
 	
-	Los siguiente comandos están disponibles para los
-	4Administradores de los Servicios:
+	Los siguientes comandos están disponibles a partir de
+	12Operadores de los Servicios:
 	
-	    12REGISTER   Para registrar un canal
-	    12VERIFY     Verificar si un usuario es REPRESENTANTE de RED o no
 	    12STATUS     Devuelve el nivel de acceso actual de un
 	                   usuario en un canal
-	    12GETPASS    Devuelve la contraseña del fundador
 	    12SUSPEND    Suspende un canal
 	    12UNSUSPEND  Reactiva un canal suspendido
-	    12FORBID     Previene que un canal pueda ser utilizado
-	    12UNFORBID   Libera la prohibicion de un canal prohibido
-	    12DROP       Cancela el registro de un canal
 	
-	Los  4Administradores de Servicios 1también pueden eliminar
-	cualquier canal sin necesidad de identificarse vía
-	contraseña, y pueden ver la lista de accesos, la lista de
-	AKICK, y listar los valores de nivel (LEVELS) de cualquier
-	canal.
+	   1Fijar opciones de los canales
+	
+	    12SET TOPIC , 12SET MLOCK , 12SET KEEPTOPIC
+	    12SET TOPICLOCK , 12SET ISSUED , 12SET PRIVATE
+	    12SET  RESTRICTED , 12SET SECURE , 12SET  SECUREOPS
+	    12SET SECUREVOICES , 12SET AUTOLIMIT , 12SET MEMOALERT
+	    12SET LEAVEOPS ,  12SET  STAY
+	
+	   Escriba 12/msg Chan HELP SET para ayuda mas específica
+	   de los comandos SET arriba mencionados.
+	
+	Los siguientes comandos están disponibles a partir de los
+	4Desarrolladores de los Servicios:
+	
+	  1Fijar información de los canales
+	
+	    12SET NAME       Cambia el nombre del canal persistente(mayúsculas)
+	    12SET DESC       Cambia la descripción del canal
+	    12SET ENTRYMSG   Fija un mensaje de bienvenida que será mostrado
+	                       a los usuarios cuando entren al canal
+	    12SET URL        Asocia una URL al canal
+	    12SET EMAIL      Asocia una dirección de correo al canal
+	
+	Los siguientes comandos están disponibles a partir de los
+	4CoAdministradores de los Servicios:
+	
+	  1Fijar personal clave asociado al canal
+	
+	    12SET FOUNDER   Cambia el fundador del canal
+	    12SET SUCCESSOR Cambia el sucesor del canal
+	    12SET PASSWORD  Cambia la contraseña del fundador
+	
+	    12GETPASS       Devuelve la contraseña del fundador
+	
+	Los siguientes comandos están disponibles a partir de los
+	4Administradores de los Servicios:
+	
+	   1Fijar canales prohibidos y liberados
+	
+	    12FORBID        Previene que un canal pueda ser utilizado
+	    12UNFORBID      Libera la prohibicion de un canal prohibido
+	    12DROP          Cancela el registro de un canal
+	
+	Los siguientes comandos están disponibles a partir de los
+	4Directores de la Red:
+	
+	    1Fijar opciones especiales
+	
+	    12TIMEREG Asocia fecha de registro con un canal
+	    12SET NOEXPIRE  Previene que el canal expire
+
+CHAN_SERVADMIN_HELP
+	
+	Los siguientes comandos están disponibles a partir de
+	12Operadores de los Servicios:
+	
+	    12STATUS     Devuelve el nivel de acceso actual de un
+	                   usuario en un canal
+	    12SUSPEND    Suspende un canal
+	    12UNSUSPEND  Reactiva un canal suspendido
+	
+	    1Fijar opciones de los canales
+	
+	    12SET TOPIC , 12SET MLOCK , 12SET KEEPTOPIC
+	    12SET TOPICLOCK , 12SET ISSUED , 12SET PRIVATE
+	    12SET  RESTRICTED , 12SET SECURE , 12SET  SECUREOPS
+	    12SET SECUREVOICES , 12SET AUTOLIMIT , 12SET MEMOALERT
+	    12SET LEAVEOPS ,  12SET  STAY
+	
+	   Escriba 12/msg Chan HELP SET para ayuda mas específica
+	   de los comandos SET arriba mencionados.
+	
+	
+	Los  12Representantes de Red también pueden
+	ver la lista de accesos, la lista de AKICK, y listar
+	los valores de nivel (LEVELS) de cualquier canal.
+	
+	Los siguientes comandos están disponibles a partir de los
+	4Desarrolladores de los Servicios:
+	
+	1Fijar información de los canales
+	
+	    12SET NAME       Cambia el nombre del canal persistente(mayúsculas)
+	    12SET DESC       Cambia la descripción del canal
+	    12SET ENTRYMSG   Fija un mensaje de bienvenida que será mostrado
+	                       a los usuarios cuando entren al canal
+	    12SET URL        Asocia una URL al canal
+	    12SET EMAIL      Asocia una dirección de correo al canal
+	
+	Los siguientes comandos están disponibles a partir de los
+	4CoAdministradores de los Servicios:
+	
+	1Fijar personal clave asociado al canal
+	
+	    12SET FOUNDER   Cambia el fundador del canal
+	    12SET SUCCESSOR Cambia el sucesor del canal
+	    12SET PASSWORD  Cambia la contraseña del fundador
+	    12GETPASS       Devuelve la contraseña del fundador
+	
+	Los siguientes comandos están disponibles a partir de los
+	4Administradores de los Servicios:
+	
+	1Fijar canales prohibidos y liberados
+	
+	    12FORBID        Previene que un canal pueda ser utilizado
+	    12UNFORBID      Libera la prohibicion de un canal prohibido
+	    12DROP          Cancela el registro de un canal
+
+CHAN_SERVCOADMIN_HELP
+	
+	Los siguientes comandos están disponibles a partir de
+	12Operadores de los Servicios:
+	
+	    12STATUS     Devuelve el nivel de acceso actual de un
+	                   usuario en un canal
+	    12SUSPEND    Suspende un canal
+	    12UNSUSPEND  Reactiva un canal suspendido
+	
+	    1Fijar opciones de los canales
+	
+	    12SET TOPIC , 12SET MLOCK , 12SET KEEPTOPIC
+	    12SET TOPICLOCK , 12SET ISSUED , 12SET PRIVATE
+	    12SET  RESTRICTED , 12SET SECURE , 12SET  SECUREOPS
+	    12SET SECUREVOICES , 12SET AUTOLIMIT , 12SET MEMOALERT
+	    12SET LEAVEOPS ,  12SET  STAY
+	
+	   Escriba 12/msg Chan HELP SET para ayuda mas específica
+	   de los comandos SET arriba mencionados.
+	
+	Los siguientes comandos están disponibles a partir de los
+	4Desarrolladores de los Servicios:
+	
+	1Fijar información de los canales
+	
+	    12SET NAME       Cambia el nombre del canal persistente(mayúsculas)
+	    12SET DESC       Cambia la descripción del canal
+	    12SET ENTRYMSG   Fija un mensaje de bienvenida que será mostrado
+	                       a los usuarios cuando entren al canal
+	    12SET URL        Asocia una URL al canal
+	    12SET EMAIL      Asocia una dirección de correo al canal
+	
+	Los siguientes comandos están disponibles a partir de los
+	4CoAdministradores de los Servicios:
+	
+	1Fijar personal clave asociado al canal
+	
+	    12SET FOUNDER   Cambia el fundador del canal
+	    12SET SUCCESSOR Cambia el sucesor del canal
+	    12SET PASSWORD  Cambia la contraseña del fundador
+	    12GETPASS       Devuelve la contraseña del fundador
+
+CHAN_SERVDEVEL_HELP
+	
+	Los siguientes comandos están disponibles a partir de
+	12Operadores de los Servicios:
+	
+	    12STATUS     Devuelve el nivel de acceso actual de un
+	                   usuario en un canal
+	    12SUSPEND    Suspende un canal
+	    12UNSUSPEND  Reactiva un canal suspendido
+	
+	    1Fijar opciones de los canales
+	
+	    12SET TOPIC , 12SET MLOCK , 12SET KEEPTOPIC
+	    12SET TOPICLOCK , 12SET ISSUED , 12SET PRIVATE
+	    12SET  RESTRICTED , 12SET SECURE , 12SET  SECUREOPS
+	    12SET SECUREVOICES , 12SET AUTOLIMIT , 12SET MEMOALERT
+	    12SET LEAVEOPS ,  12SET  STAY
+	
+	   Escriba 12/msg Chan HELP SET para ayuda mas específica
+	   de los comandos SET arriba mencionados.
+	
+	Los siguientes comandos están disponibles a partir de los
+	4Desarrolladores de los Servicios:
+	
+	1Fijar información de los canales
+	
+	    12SET NAME       Cambia el nombre del canal persistente(mayúsculas)
+	    12SET DESC       Cambia la descripción del canal
+	    12SET ENTRYMSG   Fija un mensaje de bienvenida que será mostrado
+	                       a los usuarios cuando entren al canal
+	    12SET URL        Asocia una URL al canal
+	    12SET EMAIL      Asocia una dirección de correo al canal
+
+CHAN_SERVOPER_HELP
+	
+	Los siguientes comandos están disponibles a partir de
+	12Operadores de los Servicios:
+	
+	    12STATUS     Devuelve el nivel de acceso actual de un
+	                   usuario en un canal
+	    12SUSPEND    Suspende un canal
+	    12UNSUSPEND  Reactiva un canal suspendido
+	
+	    1Fijar opciones de los canales
+	
+	    12SET TOPIC , 12SET MLOCK , 12SET KEEPTOPIC
+	    12SET TOPICLOCK , 12SET ISSUED , 12SET PRIVATE
+	    12SET  RESTRICTED , 12SET SECURE , 12SET  SECUREOPS
+	    12SET SECUREVOICES , 12SET AUTOLIMIT , 12SET MEMOALERT
+	    12SET LEAVEOPS ,  12SET  STAY
+	
+	   Escriba 12/msg Chan HELP SET para ayuda mas específica
+	   de los comandos SET arriba mencionados.
+
+CHAN_SERVADMIN_HELP_TIMEREG
+	Sintaxis: 12TIMEREG <4[+-] 5X 3[s | m |d]12>
+	
+	Asocia una fecha de registro con el canal.
+	El tiempo  es especificado como un entero 5"X" (esto es, sin decimales)
+	 seguido de: d para especificar días, h (horas), o m (minutos).
+	Combinaciones (como 1h30m) no están permitidas.  Si un
+	especificador de unidades no es incluido, por defecto se
+	asumen SEGUNDOS (entonces, poner +30 sin nada, significa 30
+	segundos)
+	Esta fecha será mostrada cuando alguien solicite información
+	sobre el canal con el comando 12INFO.
+	
+	Limitado a 4Directores de Red.
 
 CHAN_SERVADMIN_HELP_DROP
 	Sintaxis: 12DROP <canal>
@@ -3177,13 +3510,11 @@ CHAN_SERVADMIN_HELP_DROP
 
 CHAN_SERVADMIN_HELP_SET
 	
-	4Administradores de Services  también pueden definir la opción
+	4Directores de Red también pueden definir la opción
 	12NOEXPIRE, con la cual algún canal se puede prevenir que
-	expire. Adicionalmente, los Administradores de Services
+	expire. Adicionalmente, los Representantes de Services
 	pueden definir opciones para cualquier canal sin necesidad
 	de identificarse con contraseña para ese canal.
-	
-	
 
 CHAN_SERVADMIN_HELP_SET_NOEXPIRE
 	Sintaxis: 12SET <canal> NOEXPIRE {ON | OFF}
@@ -3191,7 +3522,7 @@ CHAN_SERVADMIN_HELP_SET_NOEXPIRE
 	Define si el canal dado expirara. Si se define 12ON previene
 	que el canal expire.
 	
-	Limitado a 4Administradores de Services.
+	Limitado a 4Directores de la Red.
 
 CHAN_SERVADMIN_HELP_INFO
 	

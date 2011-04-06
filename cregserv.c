@@ -1415,7 +1415,7 @@ static void do_deniega(User *u)
         cr->estado = 0;
         cr->estado |= CR_RECHAZADO;
         privmsg(s_CregServ, u->nick, "Al canal 12%s se le ha denegado el registro", chan);
-        canalopers(s_CregServ, "12%s ha denegado el registro de 12%s", u->nick, chan);
+        canalopers(s_CregServ, "4%s ha denegado el registro de 12%s", u->nick, chan);
 	send_cmd(s_CregServ,"TOPIC %s :Este canal ha sido 5RECHAZADO en su Registro(12%s)", chan,razon);
 #ifdef SOPORTE_MYSQL
  MYSQL *conn;
@@ -1517,7 +1517,7 @@ static void do_marcar(User *u)
         cr->estado = 0;
         cr->estado |= CR_MARCADO;
         privmsg(s_CregServ, u->nick, "Al canal 12%s se le ha MARCADO", chan);
-        canaladmins(s_CregServ, "12%s ha MARCADO el Canal  12%s", u->nick, chan);; 
+        canaladmins(s_CregServ, "4%s ha MARCADO el Canal  12%s", u->nick, chan);; 
     }
 }
 /******************DESMARCAR UN CANAL *********/
@@ -1546,7 +1546,7 @@ static void do_desmarcar(User *u)
         cr->estado  &= ~CR_MARCADO;
         cr->estado |= CR_REGISTRADO;
         privmsg(s_CregServ, u->nick, "Al canal 12%s se le ha DESMARCADO", chan);
-        canaladmins(s_CregServ, "12%s ha DESMARCADO el Canal  12%s", u->nick, chan);; 
+        canaladmins(s_CregServ, "4%s ha DESMARCADO el Canal  12%s", u->nick, chan);; 
     }
 }
 
@@ -1576,7 +1576,7 @@ static void do_suspend(User *u)
         cr->estado = 0;
         cr->estado |= CR_SUSPENDIDO;
         privmsg(s_CregServ, u->nick, "Al canal 12%s se le ha SUSPENDIDO", chan);
-        canaladmins(s_CregServ, "12%s ha SUSPENDIDO el Canal  12%s", u->nick, chan);
+        canaladmins(s_CregServ, "4%s ha SUSPENDIDO el Canal  12%s", u->nick, chan);
 #ifdef SOPORTE_MYSQL
  MYSQL *conn;
 char actualiza[BUFSIZE];
@@ -1624,7 +1624,7 @@ static void do_unsuspend(User *u)
         cr->estado = 0;
         cr->estado |= CR_REGISTRADO;
         privmsg(s_CregServ, u->nick, "Al canal 12%s se le ha REACTIVADO", chan);
-        canaladmins(s_CregServ, "12%s ha REACTIVADO el Canal  12%s", u->nick, chan);
+        canaladmins(s_CregServ, "4%s ha REACTIVADO el Canal  12%s", u->nick, chan);
 	
  #ifdef SOPORTE_MYSQL
  MYSQL *conn;
@@ -1694,7 +1694,7 @@ canaladmins(s_CregServ, "%s\n", mysql_error(conn));
 #endif
          
  
-        canalopers(s_CregServ, "12%s ha aceptado el canal 12%s", u->nick, chan);
+        canalopers(s_CregServ, "4%s ha aceptado el canal 12%s", u->nick, chan);
         privmsg(s_CregServ, u->nick, "12%s ha sido aceptado en %s", chan, s_ChanServ); 
 	send_cmd(s_CregServ,"TOPIC %s :Este canal ha sido 12ACEPTADO en su Registro", chan);
 
@@ -1763,7 +1763,7 @@ static void do_drop(User *u)
         cr=cr_findcreg(chan);
         delcreg(cr);    
         privmsg(s_CregServ, u->nick, "El canal 12%s ha sido dropado de CReG", chan); 
-        canalopers(s_CregServ, "12%s ha dropado el canal 12%s", u->nick, chan);
+        canalopers(s_CregServ, "4%s ha dropado el canal 12%s", u->nick, chan);
 	#ifdef SOPORTE_MYSQL
 MYSQL *conn;
 char modifica[BUFSIZE];
@@ -1814,7 +1814,7 @@ static void do_fuerza(User *u)
 	send_cmd(s_CregServ, "PRIVMSG  %s  :Felicidades Por el Registro De Su Nuevo Canal %s",cr->founder,chan);
         send_cmd(s_CregServ,"TOPIC %s :Este canal ha sido ACEPTADO en su Registro", chan);
       
-	canalopers(s_CregServ, "12%s ha forzado la aceptación del canal 12%s", u->nick, chan);
+	canalopers(s_CregServ, "4%s ha forzado la aceptación del canal 12%s", u->nick, chan);
         privmsg(s_CregServ, u->nick, "12%s ha sido registrado en %s", chan, s_ChanServ);
 
 #ifdef SOPORTE_MYSQL

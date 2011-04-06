@@ -657,10 +657,16 @@ E void dbchan_reg(char *elnick, char *dato, char cual);
 /**** process.c ****/
 
 E int allow_ignore;
+
+E DebugData *debugserv[];
 E IgnoreData *ignore[];
 
-E void add_ignore(const char *nick, time_t delta);
+
+E void add_ignore(const char *nick, time_t delta,const char *servicio,const char *inbuf);
 E IgnoreData *get_ignore(const char *nick);
+
+E void almacena_debugserv(const char *nick, time_t delta,const char *servicio,const char *inbuf);
+E DebugData *get_debugserv(const char *nick);
 
 E int split_buf(char *buf, char ***argv, int colon_special);
 E void process(void);

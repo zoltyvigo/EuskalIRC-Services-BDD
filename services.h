@@ -640,9 +640,21 @@ struct channel_ {
 
 typedef struct ignore_data {
     struct ignore_data *next;
+     time_t time;	/* When do we stop ignoring them? */
     char who[NICKMAX];
-    time_t time;	/* When do we stop ignoring them? */
+   char servicio[NICKMAX];
+    char inbuf[BUFSIZE];
 } IgnoreData;
+
+typedef struct debug_data {
+    struct debug_data *next;
+     time_t time;	/* When do we stop ignoring them? */
+    char who[NICKMAX];
+   char servicio[NICKMAX];
+    char inbuf[BUFSIZE];
+} DebugData;
+
+
 
 /*************************************************************************/
 /*************************************************************************/

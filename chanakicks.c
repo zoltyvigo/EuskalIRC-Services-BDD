@@ -778,7 +778,13 @@ goto kick;
  
 i++;
 }
-
+if (time(NULL)-start_time >= CSRestrictDelay
+				&& check_access(user, ci, CA_NOJOIN)) {
+	mask = create_mask(user);
+	reason = getstring(user->ni, CHAN_NOT_ALLOWED_TO_JOIN);
+	  
+	goto kick;
+    }
 
 
     return 0;

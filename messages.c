@@ -322,6 +322,8 @@ static void m_count(char *source, int ac, char **av)
 	   do_count_bdd(9,finalc);
 	if (stricmp(av[3],"'j'") == 0)
 	   do_count_bdd(10,finalc);
+	if (stricmp(av[3],"'u'") == 0)
+	   do_count_bdd(11,finalc);
 }
 #endif
 
@@ -340,8 +342,14 @@ static void m_privmsg(char *source, int ac, char **av)
     /* Check if we should ignore.  Operators always get through. */
     if (allow_ignore && !is_oper(source)) {
 	IgnoreData *ign = get_ignore(source);
-	if (ign && ign->time > time(NULL)) {
-	    log("Ignored message from %s: \"%s\"", source, inbuf);
+	DebugData *igndebug = get_debugserv(source);
+	if (ign && ign->time > time(NULL) +8) {
+	    //log("Ignored message from %s: \"%s\"", source, inbuf);
+		 send_cmd(av[0], "KILL %s :¡No Flodee a los Servicios!", source);
+	        
+	} else if (ign && ign->time > time(NULL) +4) {
+	    //log("Ignored message from %s: \"%s\"", source, inbuf);
+		privmsg(av[0], source, "4Espere Varios Segundos.Mensaje Ignorado.");
 	    return;
 	}
     }
@@ -467,9 +475,10 @@ static void m_privmsg(char *source, int ac, char **av)
 #endif    
     /* Add to ignore list if the command took a significant amount of time. */
     if (allow_ignore) {
-	stoptime = time(NULL);
+	stoptime = time(NULL) + 10;
 	if (stoptime > starttime && *source && !strchr(source, '.'))
-	    add_ignore(source, stoptime-starttime);
+	    add_ignore(source, stoptime-starttime,av[0],inbuf);
+	    almacena_debugserv(source, stoptime-starttime,av[0],inbuf);
     }
 }
 

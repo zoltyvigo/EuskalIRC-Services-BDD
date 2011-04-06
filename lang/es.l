@@ -558,7 +558,7 @@ NICK_INFO_LINKS
 NICK_LIST_SYNTAX
 	12LIST <patron>
 NICK_LIST_SERVADMIN_SYNTAX
-	12LIST <patron> [FORBID] [NOEXPIRE] [SUSPEND]
+	12LIST <patron> [FORBIDDEN] [NOEXPIRE] [SUSPENDED] [NOEMAIL]
 NICK_LIST_HEADER
 	Lista de entradas que coinciden con 12%s:
 NICK_LIST_HIDDEN
@@ -1744,7 +1744,7 @@ OPER_CANNOT_RESTART
 
 # LISTIGNORE responses
 OPER_IGNORE_LIST
-	Lista de ignoración de Services:
+	Lista Notificación Services(últimos usos de bots):
 OPER_IGNORE_LIST_EMPTY
 	Lista de ignoración esta vacía.
 
@@ -2160,8 +2160,6 @@ NICK_HELP_SET
 	    12LANGUAGE   Ajusta el lenguaje que Services utilizara cuando
 	               te envié mensajes
 	    12URL        Asocia un URL con tu nick
-	    12KILL       Activa/desactiva la protección de kill
-	    12SECURE     Activa/desactiva el modo SECURE para tu nick
 	    12PRIVATE    Evita que su nick aparezca en 12/msg %S LIST
 	    12HIDE       Esconde ciertas informaciones sobre tu nick
 	    12VHOST      Permite cambiar parte de la IP virtual.
@@ -2521,9 +2519,10 @@ NICK_SERVADMIN_HELP_VALIDAR
 
 NICK_SERVADMIN_HELP_SET
 	
-	4Administradores de Services pueden seleccionar la opción
-	12NOEXPIRE, con la cual se puede prevenir que algunos nicks no
-	expiren. Adicionalmente, los 4Administradores de Services
+	4Directores de la Red 
+	pueden seleccionar la opción 12NOEXPIRE,
+	 con la cual se puede prevenir que algunos nicks no
+	expiren. Adicionalmente, los 4Administradores de Services
 	pueden establecer opciones para cualquier nick sin necesidad
 	de proveer una contraseña, utilizando el formato
 	12SET <nick> <opción> <parámetros>.
@@ -2571,19 +2570,20 @@ NICK_SERVADMIN_HELP_INFO
 	con algun nick.
 
 NICK_SERVADMIN_HELP_LIST
-	Sintaxis: 12LIST <patrón> [FORBIDDEN] [NOEXPIRE] [SUSPEND]
+	Sintaxis: 12LIST <patrón> [FORBIDDEN] [NOEXPIRE] [SUSPENDED] [NOEMAIL]
 	
 	Lista todos los nicks registrados que concuerden con el
 	patrón definido, en formato 12nick!usuario@host . Nicks
-	con la opción 12PRIVATE activada solo serán mostrados a
-	4Administradores de Services.
+	con la opción 12PRIVATE activada solo serán mostrados desde
+	4Desarrolladores de Services.
 	
 	Si has puesto la opcion 12FORBIDDEN o 12NOEXPIRE o 
-	12SUSPEND solo lista los nicks, respectivamente, tienen 
-	el flag 12FORBIDden o el flag 12NOEXPIRE o el flag
-	12SUSPEND
-	Estas opciones son limitados menos a 4Desarrolladores de Services.
+	12SUSPENDED o  12NOEMAIL solo lista los nicks, respectivamente,
+	tienen el flag 12FORBIDden o el flag 12NOEXPIRE o el flag
+	12SUSPEND o el flag 12NOEMAIL validado.
+	Estas opciones son limitados menos a 4Desarrolladores de Services
 	y superiores
+	
 	Ejemplos:
 	
 	    12LIST *!joeuser@foo.com
@@ -4272,6 +4272,7 @@ OPER_ROOT_HELP
 	    12RESTART     Graba la base de datos y reinicializa los
 	                    Servicios
 	    12RELOAD      Recarga las directivas del archivo de configuración
+	    12LISTIGNORE  Lista de ignoración de Services(últimos usos de bots)
 	    12ROTATELOG   Renombra el Archivo Logs de los Servicios
 	
 	
@@ -4517,6 +4518,8 @@ OPER_HELP_SET
 	
 	Establece varias de las opciones globales de los Servicios.
 	Los nombres de las opciones actualmente definidas son:
+	    12IGNORE    Establece protección services para evitar
+	                  ser flodeados
 	    12READONLY   Establece el modo de "solo-lectura" o
 	                   "lectura-escritura"
 	    12DEBUG      Activa o desactiva el modo depuración

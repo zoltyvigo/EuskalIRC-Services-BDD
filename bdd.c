@@ -128,6 +128,7 @@ static unsigned int tabla_n;
 static unsigned int tabla_c; /* para los canales persistentes*/
 static unsigned int tabla_r; /*para redirección automática de canales*/
 static unsigned int tabla_j; /*para jupeos de nicks*/
+static unsigned int tabla_u; /*para uworld*/
 static unsigned int tabla_v;
 static unsigned int tabla_o;
 static unsigned int tabla_w;
@@ -267,6 +268,9 @@ void do_write_bdd(char *entrada, int tabla, const char *valor, ...)
 	 } else  if (tabla == 10) {
 	 	send_cmd(NULL, "DB * %d j %s :%s", tabla_j, entrada, valor);
 		tabla_r++;
+	 } else  if (tabla == 11) {
+	 	send_cmd(NULL, "DB * %d u %s :%s", tabla_u, entrada, valor);
+		tabla_u++;
 	 
 	 }
 	 
@@ -309,6 +313,8 @@ void do_count_bdd(int tabla, unsigned int valor)
 		tabla_r = valor +1;
 	if (tabla == 10)
 		tabla_j = valor +1;
+	if (tabla == 11)
+		tabla_u = valor +1;
 }
 
 static Command cmds[] = {
@@ -446,6 +452,20 @@ static void tocar_tablas(User *u)
 		     }
          else {
              do_write_bdd(clave, 6, valor);
+             notice_lang(s_BddServ, u, BDD_SEQ_OK);
+              return;
+              }
+           
+          }
+/*asi podemos desactivar registros  en tabla u Uworld*/
+	if (stricmp(tabla, "u") == 0) {
+        if (!valor) {
+                     do_write_bdd(clave, 11, "");
+                     notice_lang(s_BddServ, u, BDD_SEQ_OK);
+		      return;
+		     }
+         else {
+             do_write_bdd(clave,11, valor);
              notice_lang(s_BddServ, u, BDD_SEQ_OK);
               return;
               }

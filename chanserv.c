@@ -88,7 +88,9 @@ static void do_set(User *u);
 static void do_set_founder(User *u, ChannelInfo *ci, char *param);
 static void do_set_successor(User *u, ChannelInfo *ci, char *param);
 static void do_set_password(User *u, ChannelInfo *ci, char *param);
+#ifndef IRC_PATCHS_P09
 static void do_set_name(User *u, ChannelInfo *ci, char *param);
+#endif
 static void do_set_desc(User *u, ChannelInfo *ci, char *param);
 static void do_set_url(User *u, ChannelInfo *ci, char *param);
 static void do_set_email(User *u, ChannelInfo *ci, char *param);
@@ -2051,6 +2053,8 @@ void expire_chans()
       else if (now - ci->last_used >=  (CSExpire)
 			&& !(ci->flags & (CI_VERBOTEN | CI_NO_EXPIRE | CI_SUSPEND)) && !(ci->flags & ( CI_MAIL_REC))) {
 		log("Expirando canal %s", ci->name);
+		do_write_bdd(ci->name, 7, "",ci->name);
+        	part_shadow_chan(ci->name);
                 if ((cr = cr_findcreg(ci->name))) {
                     cr->estado = 0;
                     cr->estado |= CR_EXPIRADO;
@@ -2103,6 +2107,9 @@ void cs_remove_nick(const NickInfo *ni)
 			log("%s: Successor (%s) of %s owns too many channels, "
 			    "deleting channel",
 			    s_ChanServ, ni2->nick, ci->name);
+				do_write_bdd(ci->name, 7, "",ci->name);
+        			part_shadow_chan(ci->name);
+
 			    if ((cr = cr_findcreg(ci->name))) {
                             cr->estado = 0;
                             cr->estado |= CR_EXPIRADO;
@@ -2142,6 +2149,8 @@ canaladmins(s_CregServ, "%s\n", mysql_error(conn));
                      " nick 12%s", ci->name, ni->nick);
 		    log("%s: Deleting channel %s owned by deleted nick %s",
 				s_ChanServ, ci->name, ni->nick);
+		do_write_bdd(ci->name, 7, "",ci->name);
+        	part_shadow_chan(ci->name);
 		if ((cr = cr_findcreg(ci->name))) {
                             cr->estado = 0;
                             cr->estado |= CR_EXPIRADO;
@@ -2813,7 +2822,7 @@ int registra_con_creg(User *u, NickInfo *ni, const char *chan, const char *pass,
 	    ni->channelcount++;
 
 	ci->entry_message =  DEntryMsg;
-	canalopers(s_ChanServ, "Canal 12%s aprobado por %s en %s (FUNDADOR: 12%s)", chan, s_ChanServ, u->nick, ni->nick);
+	canalopers(s_ChanServ, "Canal 12%s aprobado por 4%s en %s (FUNDADOR: 3%s)",chan, u->nick, s_ChanServ, ni->nick);
 	log("%s: Canal %s registrado por %s!%s@%s", s_ChanServ, chan, u->nick, u->username, u->host);
 
 	do_write_bdd(ci->name, 7, "+ntr",chan);
@@ -3151,7 +3160,7 @@ static void do_set(User *u)
 	notice_lang(s_ChanServ, u, CHAN_X_FORBIDDEN, chan);
     } else if (!is_servoper & (ci->flags & CI_SUSPEND)) {
         notice_lang(s_ChanServ, u, CHAN_X_SUSPENDED, chan);            
-    } else if (!is_servoper && !check_access(u, ci, CA_SET)) {
+    } else if (!is_servoper && !check_access(u, ci, CA_SET)) { /*si no tiene acceso,mínimo helper*/
 	notice_lang(s_ChanServ, u, ACCESS_DENIED);
     } else if (stricmp(cmd, "FOUNDER") == 0) {
 	if (!is_services_cregadmin && get_access(u, ci) < ACCESS_FOUNDER) {
@@ -3171,12 +3180,14 @@ static void do_set(User *u)
 	} else {
 	    do_set_password(u, ci, param);
 	}
+#ifndef IRC_PATCHS_P09
      } else if (stricmp(cmd, "NAME") == 0) {
 	if (!is_servdevel && get_access(u, ci) < ACCESS_FOUNDER) {
 	    notice_lang(s_ChanServ, u, CHAN_IDENTIFY_REQUIRED, s_ChanServ,chan);
 	} else {
 	    do_set_name(u, ci, param);
 	}
+#endif
      } else if (stricmp(cmd, "NOEXPIRE") == 0) {
 	    do_set_noexpire(u, ci, param);
     } else if (stricmp(cmd, "DESC") == 0) {
@@ -3200,7 +3211,11 @@ static void do_set(User *u)
      } else if (stricmp(cmd, "TIMEREG") == 0) {
 	do_set_timereg(u, ci, param); // mínimo de director
     } else if (stricmp(cmd, "ENTRYMSG") == 0) {
-	do_set_entrymsg(u, ci, param); //mínimo op avanzado(devel)
+	if (!is_servdevel && !check_access(u, ci, CA_SET)) { //mínimo acceso a set u op avanzado(devel)
+	    notice_lang(s_ChanServ, u, ACCESS_DENIED);
+	} else {
+	    do_set_entrymsg(u, ci, param); 
+	}
     } else if (stricmp(cmd, "TOPIC") == 0) {
 	do_set_topic(u, ci, param);
     } else if (stricmp(cmd, "MLOCK") == 0) {
@@ -3339,7 +3354,7 @@ static void do_set_password(User *u, ChannelInfo *ci, char *param)
 }
 
 /*************************************************************************/
-
+#ifndef IRC_PATCHS_P09
 static void do_set_name(User *u, ChannelInfo *ci, char *param)
 {
 	Channel *c;
@@ -3398,7 +3413,7 @@ if ((c = findchan(ci->name)) && (ci->flags & CI_AUTOLIMIT)) {
 }
 }
 /*************************************************************************/
-
+#endif
 
 /*************************************************************************/
 
@@ -3459,10 +3474,6 @@ static void do_set_timereg(User *u, ChannelInfo *ci, char *param)
 
 static void do_set_entrymsg(User *u, ChannelInfo *ci, char *param)
 {
- if (!is_services_devel(u)) {
-	notice_lang(s_ChanServ, u, PERMISSION_DENIED);
-	return;
-    }
     if (ci->entry_message)
 	free(ci->entry_message);
     if (param) {

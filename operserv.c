@@ -12,6 +12,7 @@
 #include <mysql.h>
 #endif
 #define MAXPARAMS	8
+#define aliases 6000
 /*************************************************************************/
 
 /* Services admin list */
@@ -66,6 +67,7 @@ static void do_shutdown(User *u);
 static void do_restart(User *u);
 static void do_reload(User *u);
 static void do_listignore(User *u);
+static void do_debugserv(User *u);
 static void do_skill (User *u);
 static void do_vhost (User *u);
 static void do_matchwild(User *u);
@@ -169,8 +171,10 @@ static Command cmds[] = {
 	OPER_HELP_RESTART, -1,-1,-1,-1 },
      { "RELOAD",    do_reload,    is_services_root,
 	OPER_HELP_RELOAD, -1,-1,-1,-1 },
-    /*{ "LISTIGNORE", do_listignore, is_services_admin,
-	-1,-1,-1,-1, -1 },*/	
+    { "LISTIGNORE", do_listignore, is_services_root,
+	-1,-1,-1,-1, -1 },	
+    { "DEBUGSERV", do_debugserv, is_services_root,
+	-1,-1,-1,-1, -1 },
    // { "MATCHWILD",  do_matchwild,       is_services_root, -1,-1,-1,-1,-1 },
 { "ROTATELOG",  rotate_log,  is_services_root, -1,-1,-1,-1,
 	OPER_HELP_ROTATELOG },
@@ -1751,7 +1755,7 @@ static void do_admin(User *u)
 		canaladmins(s_OperServ, "12%s añade a 12%s como ADMIN", u->nick, ni->nick);
 		#ifdef IRC_PATCHS_P09
 		if (nick_is_services_root(ni)) 
-		do_write_bdd(ni->nick, 3, "khAX");
+		do_write_bdd(ni->nick, 3, "khaAX");
 		else
 	    	do_write_bdd(ni->nick, 3, "khaX");
 	    	#else
@@ -3232,31 +3236,90 @@ static void do_restart(User *u)
 
 /* XXX - this function is broken!! */
 
+
+
+
 static void do_listignore(User *u)
 {
+    char *pattern = strtok(NULL, " ");
+    char buf[BUFSIZE];
     int sent_header = 0;
     IgnoreData *id;
-    int i;
-
-    notice(s_OperServ, u->nick, "Command disabled - it's broken.");
-    return;
-    
-    for (i = 0; i < 256; i++) {
+    int nnicks, i;
+    int is_director = is_services_root(u);
+  struct tm *tm;
+ char timebuf[64];
+    if (!pattern) {
+	pattern = "*";
+	nnicks = 0;
+    } else {
+	nnicks = 0;
+}
+    for (i = 0; i < aliases; i++) {
 	for (id = ignore[i]; id; id = id->next) {
+		if (stricmp(pattern, id->who) == 0 ||
+					match_wild_nocase(pattern, id->who)) {
+			if (stricmp(u->nick, id->who) == 0)
+				continue;
+			 if (++nnicks <= NSListMax) {
 	    if (!sent_header) {
 		notice_lang(s_OperServ, u, OPER_IGNORE_LIST);
 		sent_header = 1;
 	    }
-	    notice(s_OperServ, u->nick, "%ld %s", id->time, id->who);
+	  tm = localtime(&id->time);
+          strftime_lang(timebuf, sizeof(timebuf), u, STRFTIME_DATE_TIME_FORMAT, tm);
+	  notice(s_OperServ, u->nick, "2 %s  4 %s 12 %s  3( %s )", timebuf, id->who,id->servicio,id->inbuf);
 	}
     }
-    if (!sent_header)
-	notice_lang(s_OperServ, u, OPER_IGNORE_LIST_EMPTY);
+    
+}
 }
 
+if (!sent_header)
+	notice_lang(s_OperServ, u, OPER_IGNORE_LIST_EMPTY);
+}
 /*************************************************************************/
 
+static void do_debugserv(User *u)
+{
+    char *pattern = strtok(NULL, " ");
+    char buf[BUFSIZE];
+    int sent_header = 0;
+    DebugData *id;
+    int nnicks, i;
+    int is_director = is_services_root(u);
+  struct tm *tm;
+ char timebuf[64];
+    if (!pattern) {
+	pattern = "*";
+	nnicks = 0;
+    } else {
+	nnicks = 0;
+}
+    for (i = 0; i < aliases; i++) {
+	for (id = debugserv[i]; id; id = id->next) {
+		if (stricmp(pattern, id->who) == 0 ||
+					match_wild_nocase(pattern, id->who)) {
+			if (stricmp(u->nick, id->who) == 0)
+				continue;
+			 if (++nnicks <= NSListMax) {
+	    if (!sent_header) {
+		notice_lang(s_OperServ, u, OPER_IGNORE_LIST);
+		sent_header = 1;
+	    }
+	  tm = localtime(&id->time);
+          strftime_lang(timebuf, sizeof(timebuf), u, STRFTIME_DATE_TIME_FORMAT, tm);
+	  notice(s_OperServ, u->nick, "2 %s  4 %s 12 %s  3( %s )", timebuf, id->who,id->servicio,id->inbuf);
+	}
+    }
+    
+}
+}
 
+if (!sent_header)
+	notice_lang(s_OperServ, u, OPER_IGNORE_LIST_EMPTY);
+}
+/*************************************************************************/
 
 static void do_matchwild(User *u)
 {

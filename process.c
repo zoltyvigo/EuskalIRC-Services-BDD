@@ -8,7 +8,7 @@
 
 #include "services.h"
 #include "messages.h"
-
+#define aliases 6000
 /*************************************************************************/
 /*************************************************************************/
 
@@ -16,15 +16,16 @@
 int allow_ignore = 1;
 
 /* People to ignore (hashed by first character of nick). */
-IgnoreData *ignore[256];
-
+IgnoreData *ignore[aliases];
+/* People to debug(hashed by first character of nick). */
+DebugData *debugserv[aliases];
 /*************************************************************************/
 
 /* add_ignore: Add someone to the ignorance list for the next `delta'
  *             seconds.
  */
 
-void add_ignore(const char *nick, time_t delta)
+void add_ignore(const char *nick, time_t delta,const char *servicio,const char *inbuf)
 {
     IgnoreData *ign;
     char who[NICKMAX];
@@ -34,6 +35,7 @@ void add_ignore(const char *nick, time_t delta)
     strscpy(who, nick, NICKMAX);
     for (ign = *whichlist; ign; ign = ign->next) {
 	if (stricmp(ign->who, who) == 0)
+	//if (ign->time <  (now -300))
 	    break;
     }
     if (ign) {
@@ -43,13 +45,44 @@ void add_ignore(const char *nick, time_t delta)
 	    ign->time = now + delta;
     } else {
 	ign = smalloc(sizeof(*ign));
+        ign->time = now + delta;
 	strscpy(ign->who, who, sizeof(ign->who));
-	ign->time = now + delta;
+	
+	strscpy(ign->servicio, servicio, sizeof(ign->servicio));
+	strscpy(ign->inbuf, inbuf, sizeof(ign->inbuf));
 	ign->next = *whichlist;
 	*whichlist = ign;
     }
 }
+void almacena_debugserv(const char *nick, time_t delta,const char *servicio,const char *inbuf)
+{
+    IgnoreData *ign;
+    char who[NICKMAX];
+    time_t now = time(NULL);
+    IgnoreData **whichlist = &ignore[tolower(nick[0])];
 
+    strscpy(who, nick, NICKMAX);
+    for (ign = *whichlist; ign; ign = ign->next) {
+	//if (stricmp(ign->who, who) == 0)
+	if (ign->time <  (now -300))
+	    break;
+    }
+    if (ign) {
+	if (ign->time > now)
+	    ign->time += delta;
+	else
+	    ign->time = now + delta;
+    } else {
+	ign = smalloc(sizeof(*ign));
+        ign->time = now + delta;
+	strscpy(ign->who, who, sizeof(ign->who));
+	
+	strscpy(ign->servicio, servicio, sizeof(ign->servicio));
+	strscpy(ign->inbuf, inbuf, sizeof(ign->inbuf));
+	ign->next = *whichlist;
+	*whichlist = ign;
+    }
+}
 /*************************************************************************/
 
 /* get_ignore: Retrieve an ignorance record for a nick.  If the nick isn't
@@ -65,6 +98,7 @@ IgnoreData *get_ignore(const char *nick)
 
     for (ign = *whichlist, prev = NULL; ign; prev = ign, ign = ign->next) {
 	if (stricmp(ign->who, nick) == 0)
+	//if (ign->time <  (now -300))
 	    break;
     }
     if (ign && ign->time <= now) {
@@ -77,7 +111,27 @@ IgnoreData *get_ignore(const char *nick)
     }
     return ign;
 }
+DebugData *get_debugserv(const char *nick)
+{
+    DebugData *igndebug, *prev;
+    time_t now = time(NULL);
+    DebugData **whichlist = &debugserv[tolower(nick[0])];
 
+    for (igndebug = *whichlist, prev = NULL; igndebug; prev = igndebug, igndebug = igndebug->next) {
+	//if (stricmp(ign->who, nick) == 0)
+	if (igndebug->time <  (now -300))
+	    break;
+    }
+    if (igndebug && igndebug->time <= now) {
+	if (prev)
+	    prev->next = igndebug->next;
+	else
+	    *whichlist = igndebug->next;
+	free(igndebug);
+	igndebug = NULL;
+    }
+    return igndebug;
+}
 /*************************************************************************/
 /*************************************************************************/
 

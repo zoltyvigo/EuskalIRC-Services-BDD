@@ -67,8 +67,8 @@ static void do_set_language(User *u, NickInfo *ni, char *param);
 static void do_set_url(User *u, NickInfo *ni, char *param);
 static void do_set_email(User *u, NickInfo *ni, char *param);
 static void do_set_timeregister(User *u, NickInfo *ni, char *param);
-static void do_set_kill(User *u, NickInfo *ni, char *param);
-static void do_set_secure(User *u, NickInfo *ni, char *param);
+/*static void do_set_kill(User *u, NickInfo *ni, char *param);
+static void do_set_secure(User *u, NickInfo *ni, char *param);*/
 static void do_set_private(User *u, NickInfo *ni, char *param);
 static void do_set_hide(User *u, NickInfo *ni, char *param);
 static void do_set_noexpire(User *u, NickInfo *ni, char *param);
@@ -2541,11 +2541,11 @@ static void do_set(User *u)
 	do_set_email(u, set_nick ? ni : u->real_ni, param);
      } else if ((stricmp(cmd, "TIMEREG") == 0) && is_services_admin(u)) {
 	do_set_timeregister(u, set_nick ? ni : u->real_ni, param);
-    } else if (stricmp(cmd, "KILL") == 0) {
+    }/* else if (stricmp(cmd, "KILL") == 0) {
 	do_set_kill(u, ni, param);
     } else if (stricmp(cmd, "SECURE") == 0) {
 	do_set_secure(u, ni, param);
-    } else if (stricmp(cmd, "PRIVATE") == 0) {
+    }*/ else if (stricmp(cmd, "PRIVATE") == 0) {
 	do_set_private(u, ni, param);
     } else if (stricmp(cmd, "HIDE") == 0) {
 	do_set_hide(u, ni, param);

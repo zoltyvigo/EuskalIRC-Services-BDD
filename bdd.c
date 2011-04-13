@@ -275,7 +275,7 @@ void do_write_bdd(char *entrada, int tabla, const char *valor, ...)
 	 }
 	 
 //send_cmd(NULL, "DB * %d %s %s :%s", reg, tab, ent, val);
-send_cmd(NULL, "STATS b");	
+send_cmd(s_BddServ, "STATS b");	
 
 }
 void do_write_canal(char *entrada, int tabla, const char *valor,const char *param, ...)
@@ -284,7 +284,7 @@ if (tabla == 8) {
 	 	send_cmd(NULL, "DB * %d c %s :%s:%s", tabla_c, entrada, valor,param);
 		tabla_c++;
 }
-send_cmd(NULL, "STATS b");
+send_cmd(s_BddServ, "STATS b");
 }
 void do_count_bdd(int tabla, unsigned int valor)
 {
@@ -357,7 +357,7 @@ static void do_help(User *u)
 
 static void actualizar_contadores(User *u)
 {
-	send_cmd(NULL, "STATS b");
+	send_cmd(s_BddServ, "STATS b");
 	notice_lang(s_BddServ, u, BDD_SEQ_OK);
 }
 

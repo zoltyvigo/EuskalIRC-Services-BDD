@@ -19,24 +19,29 @@
 static ChannelInfo *chanlists[canales];
 
 static int def_levels[][2] = {
-    { CA_AUTOOP,            300 },
-    { CA_AUTOVOICE,         100 },
-    { CA_AUTODEOP,            -1 },
-    { CA_NOJOIN,              -1 },
     { CA_INVITE,            300 },
     { CA_AKICK,             450 },
     { CA_SET,    	    499 },
-    { CA_CLEAR,  ACCESS_INVALID },
     { CA_UNBAN,             300 },
+    { CA_AUTOOP,            300 },
+    { CA_AUTODEOP,            -1 },
+    { CA_AUTOVOICE,         100 },
     { CA_OPDEOP,            200 },
     { CA_ACCESS_LIST,           0 },
+    { CA_CLEAR,  ACCESS_INVALID },
+    { CA_NOJOIN,              -1 },
     { CA_ACCESS_CHANGE,     450 },
     { CA_MEMO,              100 },
-    { CA_RESET,             450 },
-    { CA_AUTODEVOICE          -1 },
     { CA_VOICEDEVOICE,        50 },
+    { CA_AUTODEVOICE,          -1 },
     { CA_KICK,              400 },
-    { CA_BAN,               400 },                    
+    { CA_BAN,               400 },  
+    { CA_RESET,             450 },
+    { CA_LEVELS_LIST,       100 },
+    { CA_MEMO_SEND,         0 },
+    { CA_AKICK_LIST,         200},
+    { CA_AKICK_DEL,         400},
+    { CA_AKICK_VIEW,         300},
     { -1 }
 };
 
@@ -46,24 +51,29 @@ typedef struct {
     int desc;
 } LevelInfo;
 static LevelInfo levelinfo[] = {
-    { CA_AUTOOP,        "AUTOOP",     CHAN_LEVEL_AUTOOP },
-    { CA_AUTOVOICE,     "AUTOVOICE",  CHAN_LEVEL_AUTOVOICE },
-    { CA_AUTODEOP,      "AUTODEOP",   CHAN_LEVEL_AUTODEOP },
-    { CA_AUTODEVOICE,   "AUTODEVOICE", CHAN_LEVEL_AUTODEVOICE }, 
-    { CA_NOJOIN,        "NOJOIN",     CHAN_LEVEL_NOJOIN },
     { CA_INVITE,        "INVITE",     CHAN_LEVEL_INVITE },
-    { CA_OPDEOP,        "OPDEOP",     CHAN_LEVEL_OPDEOP },
-    { CA_VOICEDEVOICE,  "VOICEDEVOICE", CHAN_LEVEL_VOICEDEVOICE },        
-    { CA_KICK,          "KICK",       CHAN_LEVEL_KICK },
-    { CA_BAN,           "BAN",        CHAN_LEVEL_BAN },  
-    { CA_UNBAN,         "UNBAN",      CHAN_LEVEL_UNBAN },            
     { CA_AKICK,         "AKICK",      CHAN_LEVEL_AKICK },
     { CA_SET,           "SET",        CHAN_LEVEL_SET },
-    { CA_CLEAR,         "CLEAR",      CHAN_LEVEL_CLEAR },
-    { CA_RESET,         "RESET",      CHAN_LEVEL_RESET },
+    { CA_UNBAN,         "UNBAN",      CHAN_LEVEL_UNBAN }, 
+    { CA_AUTOOP,        "AUTOOP",     CHAN_LEVEL_AUTOOP },
+    { CA_AUTODEOP,      "AUTODEOP",   CHAN_LEVEL_AUTODEOP },
+    { CA_AUTOVOICE,     "AUTOVOICE",  CHAN_LEVEL_AUTOVOICE },
+    { CA_OPDEOP,        "OPDEOP",     CHAN_LEVEL_OPDEOP },
     { CA_ACCESS_LIST,   "ACC-LIST",   CHAN_LEVEL_ACCESS_LIST },
+    { CA_CLEAR,         "CLEAR",      CHAN_LEVEL_CLEAR },
+    { CA_NOJOIN,        "NOJOIN",     CHAN_LEVEL_NOJOIN },
     { CA_ACCESS_CHANGE, "ACC-CHANGE", CHAN_LEVEL_ACCESS_CHANGE },
     { CA_MEMO,          "MEMO",       CHAN_LEVEL_MEMO },
+    { CA_VOICEDEVOICE,  "VOICEDEVOICE", CHAN_LEVEL_VOICEDEVOICE },
+    { CA_AUTODEVOICE,   "AUTODEVOICE", CHAN_LEVEL_AUTODEVOICE }, 
+    { CA_KICK,          "KICK",       CHAN_LEVEL_KICK },
+    { CA_BAN,           "BAN",        CHAN_LEVEL_BAN },  
+    { CA_RESET,         "RESET",      CHAN_LEVEL_RESET },
+    { CA_LEVELS_LIST,   "LEV-LIST",   CHAN_LEVEL_LEVEL_LIST },
+    { CA_MEMO_SEND,     "MEMO-SEND",   CHAN_LEVEL_SEND_MEMO },
+    { CA_AKICK_LIST,    "AKICK-LIST",   CHAN_LEVEL_AKICK_LIST },
+    { CA_AKICK_DEL,     "AKICK-DEL",   CHAN_LEVEL_AKICK_DEL },
+    { CA_AKICK_VIEW,    "AKICK-VIEW",   CHAN_LEVEL_AKICK_VIEW },
     { -1 }
 };
 static int levelinfo_maxwidth = 0;
@@ -174,7 +184,7 @@ static Command cmds[] = {
     { "SET TOPICLOCK",  NULL,  NULL,  CHAN_HELP_SET_TOPICLOCK,  -1,-1,-1,-1 },
     { "SET MLOCK",      NULL,  NULL,  CHAN_HELP_SET_MLOCK,      -1,-1,-1,-1 },
     { "SET RESTRICTED", NULL,  NULL,  CHAN_HELP_SET_RESTRICTED, -1,-1,-1,-1 },
-    { "SET SECURE",     NULL,  NULL,  CHAN_HELP_SET_SECURE,     -1,-1,-1,-1 },
+    /*{ "SET SECURE",     NULL,  NULL,  CHAN_HELP_SET_SECURE,     -1,-1,-1,-1 },*/
     { "SET SECUREVOICES",  NULL,  NULL,  CHAN_HELP_SET_SECUREOPS,  -1,-1,-1,-1 },     
     { "SET SECUREOPS",  NULL,  NULL,  CHAN_HELP_SET_SECUREOPS,  -1,-1,-1,-1 },
     { "SET LEAVEOPS",   NULL,  NULL,  CHAN_HELP_SET_LEAVEOPS,   -1,-1,-1,-1 },
@@ -1606,6 +1616,8 @@ int check_valid_op(User *user, const char *chan, int serverop)
 int check_valid_voice(User *user, const char *chan, int serverop)
 {
     ChannelInfo *ci = cs_findchan(chan);
+ if (!ci)
+	return 0;
 
 //    send_cmd(s_ChanServ, "PRIVMSG #opers :DEBUG Pilla la voz!!! eurekaaaaaaaa");
 
@@ -2501,8 +2513,9 @@ static void reset_levels(ChannelInfo *ci)
     if (ci->levels)
 	free(ci->levels);
     ci->levels = smalloc(CA_SIZE * sizeof(*ci->levels));
-    for (i = 0; def_levels[i][0] >= 0; i++)
+      for (i = 0; def_levels[i][0] >= 0; i++) {
 	ci->levels[def_levels[i][0]] = def_levels[i][1];
+	  }
 }
 
 /*************************************************************************/
@@ -3234,8 +3247,8 @@ static void do_set(User *u)
 	do_set_leaveops(u, ci, param);
     } else if (stricmp(cmd, "RESTRICTED") == 0) {
 	do_set_restricted(u, ci, param);
-    } else if (stricmp(cmd, "SECURE") == 0) {
-	do_set_secure(u, ci, param);
+    /*} else if (stricmp(cmd, "SECURE") == 0) {
+	do_set_secure(u, ci, param);*/
     } else if (stricmp(cmd, "ISSUED") == 0) {
 	do_set_opnotice(u, ci, param);
     } else if (stricmp(cmd, "DEBUG") == 0) {
@@ -3909,7 +3922,7 @@ static void do_set_restricted(User *u, ChannelInfo *ci, char *param)
 
 /*************************************************************************/
 
-static void do_set_secure(User *u, ChannelInfo *ci, char *param)
+/*static void do_set_secure(User *u, ChannelInfo *ci, char *param)
 {
     if (stricmp(param, "ON") == 0) {
 	ci->flags |= CI_SECURE;
@@ -3920,7 +3933,7 @@ static void do_set_secure(User *u, ChannelInfo *ci, char *param)
     } else {
 	syntax_error(s_ChanServ, u, "SET SECURE", CHAN_SET_SECURE_SYNTAX);
     }
-}
+}*/
 
 /*************************************************************************/
 
@@ -4787,6 +4800,15 @@ static void do_levels(User *u)
 
     } else if (stricmp(cmd, "LIST") == 0) {
 	int i;
+	
+         if ((( !check_access(u, ci, CA_LEVELS_LIST)))
+                    && !is_services_oper(u))
+                
+    {
+	notice_lang(s_ChanServ, u, ACCESS_DENIED);
+        return;
+
+    }
 	notice_lang(s_ChanServ, u, CHAN_LEVELS_LIST_HEADER, chan);
 	if (!levelinfo_maxwidth) {
 	    for (i = 0; levelinfo[i].what >= 0; i++) {

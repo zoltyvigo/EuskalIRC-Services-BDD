@@ -478,8 +478,12 @@ struct chaninfo_ {
 #define CA_KICK         15
 #define CA_BAN          16
 #define CA_RESET        17
-
-#define CA_SIZE         18
+#define CA_LEVELS_LIST  18
+#define CA_MEMO_SEND    19
+#define CA_AKICK_LIST   20
+#define CA_AKICK_DEL    21
+#define CA_AKICK_VIEW   22
+#define CA_SIZE         23
 
 /*************************************************************************/
 
@@ -611,11 +615,6 @@ struct channel_ {
 #define NUMNICKMAXCHAR 'z'
 
 /*************************************************************************/
-
-/* Soporte P10 */
-
-#define NUMNICKBASE 64
-#define NUMNICKMAXCHAR 'z'
 
 #define toLower(c)      (NTL_tolower_tab[(c)-CHAR_MIN])
 #define toUpper(c)      (NTL_toupper_tab[(c)-CHAR_MIN])

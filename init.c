@@ -363,7 +363,7 @@ if (!user || stricmp(user, s_CregServ) == 0 || stricmp(user, s_CregServP10) == 0
 	send_cmd( s_StatServ, "JOIN #%s", CanalOpers);
 	send_cmd(s_ChanServ, "MODE #%s +o %s", CanalAdmins, s_StatServ);
 	send_cmd(s_ChanServ, "MODE #%s +o %s", CanalOpers, s_StatServ);
-    	send_cmd(NULL, "STATS b");
+    	send_cmd(s_BddServ, "STATS b");
                         
     }
    

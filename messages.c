@@ -233,7 +233,7 @@ static void m_motd(char *source, int ac, char **av)
 		"1996-1999 Andy Church.", source);
     send_cmd(ServerName, "372 %s :- 2000-2001, Toni García, Zoltan. Upworld ", source);
     send_cmd(ServerName, "327 %s :- 2002, David Martin, [x].", source);
-    send_cmd(ServerName, "327 %s :- 2009, http://code.google.com/p/euskalirc-services-bdd ,(donostiarra),admin.euskalirc.", source);
+    send_cmd(ServerName, "327 %s :3 2009-2011,4 donostiarra 2http://sourceforge.net/projects/services-bdd", source);
     send_cmd(ServerName, "376 %s :End of /MOTD command.", source);
 }
 
@@ -602,42 +602,55 @@ void m_whois(char *source, int ac, char **av)
     const char *clientdesc;
 
     if (source && ac >= 1) {
-	if (stricmp(av[0], s_NickServ) == 0)
+     	if (stricmp(av[1], s_NickServ) == 0)
 	    clientdesc = desc_NickServ;
-	else if (stricmp(av[0], s_ChanServ) == 0)
+	else if (stricmp(av[1], s_ChanServ) == 0)
 	    clientdesc = desc_ChanServ;
-	else if (stricmp(av[0], s_MemoServ) == 0)
+	else if (stricmp(av[1], s_MemoServ) == 0)
 	    clientdesc = desc_MemoServ;
-	else if (stricmp(av[0], s_HelpServ) == 0)
+	else if (stricmp(av[1], s_HelpServ) == 0)
 	    clientdesc = desc_HelpServ;
-	else if (stricmp(av[0], s_CregServ) == 0)
+	else if (stricmp(av[1], s_EuskalIRCServ) == 0)
+	    clientdesc = desc_EuskalIRCServ;
+	else if (stricmp(av[1], s_CregServ) == 0)
 	    clientdesc = desc_CregServ;
-	 else if (stricmp(av[0], s_IpVirtual) == 0)
-	    clientdesc = desc_IpVirtual;
-        else if (stricmp(av[0], s_GlobalNoticer) == 0)
+        else if (stricmp(av[1], s_GlobalNoticer) == 0)
             clientdesc = desc_GlobalNoticer;                    
-	else if (s_IrcIIHelp && stricmp(av[0], s_IrcIIHelp) == 0)
+	else if (s_IrcIIHelp && stricmp(av[1], s_IrcIIHelp) == 0)
 	    clientdesc = desc_IrcIIHelp;
-	else if (s_mIRCHelp && stricmp(av[0], s_mIRCHelp) == 0)
+	else if (s_mIRCHelp && stricmp(av[1], s_mIRCHelp) == 0)
 	    clientdesc = desc_mIRCHelp;
-	else if (stricmp(av[0], s_OperServ) == 0)
+	else if (stricmp(av[1], s_OperServ) == 0)
 	    clientdesc = desc_OperServ;
-	else if (stricmp(av[0], s_GlobalNoticer) == 0)
-	    clientdesc = desc_GlobalNoticer;
-	else if (stricmp(av[0], s_JokuServ) == 0)
+	else if (stricmp(av[1], s_JokuServ) == 0)
 	    clientdesc = desc_JokuServ;
+	else if (stricmp(av[1], s_BddServ) == 0)
+	    clientdesc = desc_BddServ;
+	else if (stricmp(av[1], s_ShadowServ) == 0)
+	    clientdesc = desc_ShadowServ;
+	else if (stricmp(av[1], s_NewsServ) == 0)
+	    clientdesc = desc_NewsServ;
+	else if (stricmp(av[1], s_GeoIP) == 0)
+	    clientdesc = desc_GeoIP;
+	else if (stricmp(av[1], s_SpamServ) == 0)
+	    clientdesc = desc_SpamServ;
+        else if (stricmp(av[1], s_StatServ) == 0)
+	    clientdesc = desc_StatServ;
+        else if (stricmp(av[1], s_IpVirtual) == 0)
+	    clientdesc = desc_IpVirtual;
 	else {
-	    send_cmd(ServerName, "401 %s %s :No such service.", source, av[0]);
+	    send_cmd(ServerName, "401 %s %s :No such service.", source, av[1]);
 	    return;
 	}
-	send_cmd(ServerName, "311 %s %s %s %s :%s", source, av[0],
+	send_cmd(ServerName, "311 %s %s %s  %s * :%s", source, av[1],
 		ServiceUser, ServiceHost, clientdesc);
-	send_cmd(ServerName, "312 %s %s %s :%s", source, av[0],
+	send_cmd(ServerName, "312 %s %s %s  :%s", source, av[1],
 		ServerName, ServerDesc);
-	send_cmd(ServerName, "318 End of /WHOIS response.");
+	send_cmd(ServerName, "316 %s :04euskalirc-services-bdd 12http://euskalirc.wordpress.com", source);
+	send_cmd(ServerName, "316 %s :3http://sourceforge.net/projects/services-bdd", source);
+	send_cmd(ServerName, "318 %s %s :End of /WHOIS response.",source,av[1]);
     }
 }
-
 /*************************************************************************/
 /*************************************************************************/
 

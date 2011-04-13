@@ -346,6 +346,7 @@ static void do_send(User *u)
     char *text = strtok(NULL, "");
     time_t now = time(NULL);
     int is_servadmin = is_services_admin(u);
+    ChannelInfo *ci = cs_findchan(name);
 
     if (!text) {
 	syntax_error(s_MemoServ, u, "SEND", MEMO_SEND_SYNTAX);
@@ -354,8 +355,12 @@ static void do_send(User *u)
 	notice_lang(s_MemoServ, u, NICK_IDENTIFY_REQUIRED, s_NickServ);
 
     } else if (!(mi = getmemoinfo(name, &ischan))) {
+         
 	notice_lang(s_MemoServ, u,
 		ischan ? CHAN_X_NOT_REGISTERED : NICK_X_NOT_REGISTERED, name);
+
+        
+
 
     } else if (MSSendDelay > 0 &&
 		u && u->lastmemosend+MSSendDelay > now && !is_servadmin) {
@@ -370,6 +375,13 @@ static void do_send(User *u)
 	notice_lang(s_MemoServ, u, MEMO_X_HAS_TOO_MANY_MEMOS, name);
 
     } else {
+	      
+        if (ischan) {
+        if ((( !check_access(u, ci,  CA_MEMO_SEND)))
+                    && !is_services_oper(u))   {
+        notice_lang(s_MemoServ, u, ACCESS_DENIED);
+	return; }
+        }
 	u->lastmemosend = now;
 	mi->memocount++;
 	mi->memos = srealloc(mi->memos, sizeof(Memo) * mi->memocount);

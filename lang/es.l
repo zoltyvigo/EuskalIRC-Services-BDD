@@ -725,13 +725,11 @@ CHAN_LEVEL_VOICEDEVOICE
 CHAN_LEVEL_INVITE
 	Permitido a usar comando INVITE
 CHAN_LEVEL_KICK
-	Permitido a usar comando KICK
+	Permitido a usar comando KICK 
 CHAN_LEVEL_BAN
-	Permitodo a usar comando BAN
+	Permitido a usar comando BAN
 CHAN_LEVEL_UNBAN
 	Permitido a usar comando UNBAN
-CHAN_LEVEL_AKICK
-	Permitido a usar comando AKICK
 CHAN_LEVEL_SET
 	Permitido a usar comando SET (no siendo FUNDADOR)
 CHAN_LEVEL_CLEAR
@@ -740,10 +738,22 @@ CHAN_LEVEL_RESET
 	Permitido a usar comando RESET
 CHAN_LEVEL_ACCESS_LIST
 	Permitido a ver lista de acceso
+CHAN_LEVEL_LEVEL_LIST
+	Permitido a ver lista de niveles
 CHAN_LEVEL_ACCESS_CHANGE
 	Permitido a modificar lista de acceso
 CHAN_LEVEL_MEMO
 	Permitido a ver mensajes del canal
+CHAN_LEVEL_SEND_MEMO
+	Permitido a mandar mensajes del canal
+CHAN_LEVEL_AKICK
+	Permitido a usar comando AKICK(ADD/ENFORCE)
+CHAN_LEVEL_AKICK_LIST
+	Permitido a listar AKICKs del canal (COUNT/LIST)
+CHAN_LEVEL_AKICK_DEL
+	Permitido a borrar AKICKs del canal(DEL)
+CHAN_LEVEL_AKICK_VIEW
+	Permitido a listar con más detalles los AKICKs del canal(VIEW)
 
 # Automatic responses
 CHAN_IS_REGISTERED
@@ -2784,7 +2794,6 @@ CHAN_HELP_SET
 	    12MLOCK       Fija los modos del canal en 'ON' u 'OFF'
 	    12PRIVATE     Oculta el canal (no se ve cuando se utiliza el comando LIST)
 	    12RESTRICTED  Restringe el acceso al canal
-	    12SECURE      Activa los rasgos de seguridad de %S
 	    12SECUREOPS   Control estricto de Status de operador
 	    12SECUREVOICES Control estricto de Status de moderador
 	    12AUTOLIMIT   Evita los ataques por MassJoin (clones) variando de forma automática
@@ -3126,8 +3135,8 @@ CHAN_HELP_LEVELS
 
 CHAN_HELP_LEVELS_DESC
 	La siguiente lista muestra los valores/funciones por
-	defecto. Note que los niveles para AUTODEOP y NOJOIN son
-	los máximos niveles, mientras que todos los demás, son los
+	defecto. Note que los niveles para AUTODEOP ,AUTODEVOICE Y NOJOIN 
+	son los máximos niveles, mientras que todos los demás, son los
 	mínimos.
 
 CHAN_HELP_LEVELS_DESC_FORMAT
@@ -3321,7 +3330,7 @@ CHAN_SERVDIRECTOR_HELP
 	   1Fijar canales prohibidos y liberados
 	
 	    12FORBID        Previene que un canal pueda ser utilizado
-	    12UNFORBID      Libera la prohibicion de un canal prohibido
+	    12UNFORBID      Libera la prohibición de un canal prohibido
 	    12DROP          Cancela el registro de un canal
 	
 	Los siguientes comandos están disponibles a partir de los
@@ -3386,7 +3395,7 @@ CHAN_SERVADMIN_HELP
 	1Fijar canales prohibidos y liberados
 	
 	    12FORBID        Previene que un canal pueda ser utilizado
-	    12UNFORBID      Libera la prohibicion de un canal prohibido
+	    12UNFORBID      Libera la prohibición de un canal prohibido
 	    12DROP          Cancela el registro de un canal
 
 CHAN_SERVCOADMIN_HELP
@@ -4194,6 +4203,7 @@ OPER_ADMIN_HELP
 	
 	    12COADMIN     Modifica la lista de CoAdministradores de Servicios
 	    12MODOS       Fuerza modos de usuario desde un Service
+	    12JUPE        Instruye a los Servicios a crear un servidor satélite
 	    12VHOST       Cambia por completo el vhost de un usuario
 	
 	    12SPAM       Modifica la lista de palabras consideradas Spam
@@ -4249,6 +4259,7 @@ OPER_ROOT_HELP
 	
 	    12COADMIN     Modifica la lista de CoAdministradores de Servicios
 	    12MODOS       Fuerza modos de usuario desde un Service
+	    12JUPE        Instruye a los Servicios a crear un servidor satélite
 	    12VHOST       Cambia por completo el vhost de un usuario
 	    12SPAM        Modifica la lista de palabras consideradas Spam
 	                    y que se vigilaran en aquellos canales donde se alcance
@@ -4524,7 +4535,7 @@ OPER_HELP_SET
 	                   "lectura-escritura"
 	    12DEBUG      Activa o desactiva el modo depuración
 	
-	Solo disponible para los 4Administradores de Servicios.
+	Solo disponible para los 4Directores de la Red.
 
 OPER_HELP_SET_READONLY
 	Sintaxis: 12SET READONLY {ON | OFF}

@@ -393,11 +393,7 @@ NickInfo *ni = findnick(u->nick);
 	notice_lang(s_ChanServ, u, CHAN_X_FORBIDDEN, canal);
    } else if (((stricmp(cmd,"LIST") != 0 && stricmp(cmd,"VIEW") != 0  && stricmp(cmd,"ENFORCE") != 0 ) && (ci->flags & CI_SUSPEND))) {
         notice_lang(s_ChanServ, u, CHAN_X_SUSPENDED, canal);          
-    } else if (!check_access(u, ci, CA_AKICK) && !is_services_oper(u)) {
-	if (ci->founder && getlink(ci->founder) == u->ni)
-	    notice_lang(s_ChanServ, u, CHAN_IDENTIFY_REQUIRED, s_ChanServ,canal);
-	else
-	    notice_lang(s_ChanServ, u, ACCESS_DENIED);
+   
 
     } else if (stricmp(cmd, "ADD") == 0) {
 
@@ -405,6 +401,15 @@ NickInfo *ni = findnick(u->nick);
 	    notice_lang(s_ChanServ, u, OPER_TOO_MANY_AKILLS);
 	    return;
 	}
+        if (!check_access(u, ci, CA_AKICK) && !is_services_oper(u)) {
+             if (ci->founder && getlink(ci->founder) == u->ni) {
+	    notice_lang(s_ChanServ, u, CHAN_IDENTIFY_REQUIRED, s_ChanServ,canal);
+            return; }
+	else {
+	    notice_lang(s_ChanServ, u, ACCESS_DENIED);
+            return;
+            }
+         }
 		cont=0;
 	       for (i = 0; i < nachanakick; i++) {
 	    if (stricmp(achanakicks[i].canal, canal) == 0) {
@@ -486,6 +491,15 @@ check_akick(u->user, canal);
     } else if (stricmp(cmd, "DEL") == 0) {
 	NickInfo *ni = findnick(mask);
 	char *nick, *user, *host;
+        if (!check_access(u, ci, CA_AKICK_DEL) && !is_services_oper(u)) {
+             if (ci->founder && getlink(ci->founder) == u->ni) {
+	    notice_lang(s_ChanServ, u, CHAN_IDENTIFY_REQUIRED, s_ChanServ,canal);
+            return; }
+	else {
+	    notice_lang(s_ChanServ, u, ACCESS_DENIED);
+            return;
+            }
+         }
  /* para escribir menos al eliminar nicks de  akicks no valido ni */ 
 	if (!ni || ni) {
 	    split_usermask(mask, &nick, &user, &host);
@@ -526,7 +540,15 @@ check_akick(u->user, canal);
 	}
 
     } else if (stricmp(cmd, "ENFORCE") == 0) {
-
+       if (!check_access(u, ci, CA_AKICK) && !is_services_oper(u)) {
+             if (ci->founder && getlink(ci->founder) == u->ni) {
+	    notice_lang(s_ChanServ, u, CHAN_IDENTIFY_REQUIRED, s_ChanServ,canal);
+            return; }
+	else {
+	    notice_lang(s_ChanServ, u, ACCESS_DENIED);
+            return;
+            }
+         }
 	Channel *c = canal ? findchan(canal) : NULL;
     struct c_userlist *u;
 char *nick, *user, *host;
@@ -597,7 +619,15 @@ i++;
 	notice_lang(s_ChanServ, u2, CHAN_AKICK_ENFORCE_DONE, canal, count);   
 
        } else if (stricmp(cmd, "COUNT") == 0) {
-
+           if (!check_access(u, ci, CA_AKICK_LIST) && !is_services_oper(u)) {
+             if (ci->founder && getlink(ci->founder) == u->ni) {
+	    notice_lang(s_ChanServ, u, CHAN_IDENTIFY_REQUIRED, s_ChanServ,canal);
+            return; }
+	else {
+	    notice_lang(s_ChanServ, u, ACCESS_DENIED);
+            return;
+            }
+         }
 	i=0;
 	cont=0;
 	  if (!mask) {
@@ -619,6 +649,15 @@ i++;
 privmsg(s_ChanServ, u->nick, " El canal %s tiene %d entradas en su lista de autokick",canal,cont);
 
   } else if (stricmp(cmd, "LIST") == 0) {
+        if (!check_access(u, ci, CA_AKICK_LIST) && !is_services_oper(u)) {
+             if (ci->founder && getlink(ci->founder) == u->ni) {
+	    notice_lang(s_ChanServ, u, CHAN_IDENTIFY_REQUIRED, s_ChanServ,canal);
+            return; }
+	else {
+	    notice_lang(s_ChanServ, u, ACCESS_DENIED);
+            return;
+            }
+         }
 	//expire_achanakicks();
 	 if (!mask) {
 		 mask ="*";		
@@ -648,6 +687,15 @@ if (strchr(mask, '@'))
 	}
 
     } else if (stricmp(cmd, "VIEW") == 0) {
+         if (!check_access(u, ci, CA_AKICK_VIEW) && !is_services_oper(u)) {
+             if (ci->founder && getlink(ci->founder) == u->ni) {
+	    notice_lang(s_ChanServ, u, CHAN_IDENTIFY_REQUIRED, s_ChanServ,canal);
+            return; }
+	else {
+	    notice_lang(s_ChanServ, u, ACCESS_DENIED);
+            return;
+            }
+         }
 	//expire_achanakicks();
 	 if (!mask) {
 		 mask ="*";		

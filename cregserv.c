@@ -1441,9 +1441,10 @@ canaladmins(s_CregServ, "%s\n", mysql_error(conn));
        MemoInfo *mi;
        Memo *m;
 	int ischan;
-        if (!(mi = getmemoinfo(cr->founder, &ischan))) 
+        /*if (!(mi = getmemoinfo(cr->founder, &ischan))) 
 	notice_lang(s_MemoServ, u,
-		ischan ? CHAN_X_NOT_REGISTERED : NICK_X_NOT_REGISTERED, cr->founder);
+		ischan ? CHAN_X_NOT_REGISTERED : NICK_X_NOT_REGISTERED, cr->founder);*/
+        mi = getmemoinfo(cr->founder, &ischan);
         time_t now = time(NULL);
         u->lastmemosend = now;
 	char *source =  u->nick;
@@ -1703,9 +1704,10 @@ canaladmins(s_CregServ, "%s\n", mysql_error(conn));
        MemoInfo *mi;
        Memo *m;
 	int ischan;
-        if (!(mi = getmemoinfo(cr->founder, &ischan))) 
+        /*if (!(mi = getmemoinfo(cr->founder, &ischan))) 
 	notice_lang(s_MemoServ, u,
-		ischan ? CHAN_X_NOT_REGISTERED : NICK_X_NOT_REGISTERED, cr->founder);
+		ischan ? CHAN_X_NOT_REGISTERED : NICK_X_NOT_REGISTERED, cr->founder);*/
+        mi = getmemoinfo(cr->founder, &ischan);
         time_t now = time(NULL);
         u->lastmemosend = now;
 	char *source =  u->nick;
@@ -1841,9 +1843,10 @@ canaladmins(s_CregServ, "%s\n", mysql_error(conn));
        MemoInfo *mi;
        Memo *m;
 	int ischan;
-        if (!(mi = getmemoinfo(cr->founder, &ischan))) 
+        /*if (!(mi = getmemoinfo(cr->founder, &ischan))) 
 	notice_lang(s_MemoServ, u,
-		ischan ? CHAN_X_NOT_REGISTERED : NICK_X_NOT_REGISTERED, cr->founder);
+		ischan ? CHAN_X_NOT_REGISTERED : NICK_X_NOT_REGISTERED, cr->founder);*/
+	mi = getmemoinfo(cr->founder, &ischan);
         time_t now = time(NULL);
         u->lastmemosend = now;
 	char *source =  u->nick;

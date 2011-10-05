@@ -175,6 +175,7 @@ static void m_kill(char *source, int ac, char **av)
 	stricmp(av[0], s_SpamServ) == 0 ||
 	stricmp(av[0], s_IpVirtual) == 0 ||
          stricmp(av[0], s_NewsServ) == 0 ||
+	stricmp(av[0], s_XServ) == 0 ||
         (s_IrcIIHelp && stricmp(av[0], s_IrcIIHelp) == 0) ||
 	 (s_mIRCHelp && stricmp(av[0], s_mIRCHelp) == 0) ||
          stricmp(av[0], s_GlobalNoticer) == 0
@@ -333,8 +334,8 @@ static void m_privmsg(char *source, int ac, char **av)
 {
     time_t starttime, stoptime;	/* When processing started and finished */
     char *s;
-    int i,is_root;
-    i=is_root=0;
+    int i,is_root,is_patrocs;
+    i=is_root=is_patrocs=0;
 
     if (ac != 2)
 	return;
@@ -433,6 +434,8 @@ static void m_privmsg(char *source, int ac, char **av)
 	jokserv(source, av[1]);
      } else if (stricmp(av[0], s_StatServ) == 0) { 
 	statserv(source, av[1]);
+     } else if (stricmp(av[0], s_XServ) == 0) { 
+	xserv(source, av[1]);
     /* else if (stricmp(av[0], s_SpamServ) == 0) {
 	spamserv(source, av[1]);*/
     } else if (stricmp(av[0], s_HelpServ) == 0) {
@@ -638,6 +641,8 @@ void m_whois(char *source, int ac, char **av)
 	    clientdesc = desc_StatServ;
         else if (stricmp(av[1], s_IpVirtual) == 0)
 	    clientdesc = desc_IpVirtual;
+	else if (stricmp(av[1], s_XServ) == 0)
+	    clientdesc = desc_XServ;
 	else {
 	    send_cmd(ServerName, "401 %s %s :No such service.", source, av[1]);
 	    return;

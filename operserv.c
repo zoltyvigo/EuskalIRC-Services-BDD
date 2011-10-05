@@ -16,24 +16,24 @@
 /*************************************************************************/
 
 /* Services admin list */
-static NickInfo *services_admins[MAX_SERVADMINS];
-
+//static NickInfo *services_admins[MAX_SERVADMINS];
+NickInfo *services_admins[MAX_SERVADMINS];
 /* Services devel list */
-static NickInfo *services_devels[MAX_SERVDEVELS];
-
-
+//static NickInfo *services_devels[MAX_SERVDEVELS];
+NickInfo *services_devels[MAX_SERVDEVELS];
 /* Services operator list */
-static NickInfo *services_opers[MAX_SERVOPERS];
-
+//static NickInfo *services_opers[MAX_SERVOPERS];
+NickInfo *services_opers[MAX_SERVOPERS];
 /* Services patrocinadores list */
-static NickInfo *services_patrocinas[MAX_SERVPATROCINAS];
-
+//static NickInfo *services_patrocinas[MAX_SERVPATROCINAS];
+NickInfo *services_patrocinas[MAX_SERVPATROCINAS];
 
 /* Services bots list */
-static NickInfo *services_bots[MAX_SERVOPERS];
+//static NickInfo *services_bots[MAX_SERVOPERS];
+NickInfo *services_bots[MAX_SERVOPERS];
 /* Services cregadmins-coadmins list */
-static NickInfo *services_cregadmins[MAX_SERVADMINS];
-
+//static NickInfo *services_cregadmins[MAX_SERVADMINS];
+NickInfo *services_cregadmins[MAX_SERVADMINS];
 
 /*************************************************************************/
 static void do_credits(User *u);
@@ -246,7 +246,39 @@ void operserv(const char *source, char *buf)
 	run_cmd(s_OperServ, u, cmds, cmd);
     }
 }
+/*************************************************************************/
 
+/* Main XServ routine. */
+
+/*void xserv(const char *source, char *buf)
+{
+    char *cmd;
+    char *s;
+    User *u = finduser(source);
+
+    if (!u) {
+	log("%s: user record for %s not found", s_XServ, source);
+	notice(s_XServ, source,
+		getstring((NickInfo *)NULL, USER_RECORD_NOT_FOUND));
+	return;
+    }
+
+    log("%s: %s: %s", s_XServ, source, buf);
+
+    cmd = strtok(buf, " ");
+    if (!cmd) {
+	return;
+    } else if (stricmp(cmd, "\1PING") == 0) {
+	if (!(s = strtok(NULL, "")))
+	    s = "\1";
+	notice(s_XServ, source, "\1PING %s", s);
+    } else if (stricmp(cmd, "\1VERSION\1") == 0) {
+        notice(s_XServ, source, "\1VERSION %s %s -- %s\1",
+               PNAME, s_XServ, version_build);                
+    } else {
+	run_cmd(s_XServ, u, cmds, cmd);
+    }
+}*/
 /*************************************************************************/
 /**************************** Privilege checks ***************************/
 /*************************************************************************/
@@ -526,13 +558,37 @@ int is_services_oper(User *u)
     return 0;
 }
 /*************************************************************************/
+/**************************************************************************/
+/* Does the given user have Services patrocina privileges? */
+
+int is_services_patrocina(User *u)
+{
+    int i;
+
+/**    if (!(u->mode & UMODE_O))
+	return 0; ***/
+   if (is_services_oper(u))
+	return 1;
+    if (skeleton)
+	return 1;
+
+    for (i = 0; i < MAX_SERVOPERS; i++) {
+	if (services_patrocinas[i] && u->ni == getlink(services_patrocinas[i])) {
+	    if (nick_identified(u))
+		return 1;
+	    return 0;
+	}
+    }
+    return 0;
+}
+/*************************************************************************/
 
 /*************************************************************************/
 /* Es este usuario un bot? */
 
 int is_a_service(char *nick)
 {
-   if ((stricmp(nick, s_NickServ) == 0) || (stricmp(nick, s_ChanServ) == 0) || (stricmp(nick, s_CregServ) == 0) || (stricmp(nick, s_MemoServ) == 0) || (stricmp(nick, s_OperServ) == 0) || (stricmp(nick, s_ShadowServ) == 0) || (stricmp(nick, s_BddServ) == 0) || (stricmp(nick, s_HelpServ) == 0) || (stricmp(nick, s_GlobalNoticer) == 0) || (stricmp(nick, s_NewsServ) == 0) || (stricmp(nick, s_EuskalIRCServ) == 0) || (stricmp(nick, s_SpamServ) == 0)|| (stricmp(nick, s_IpVirtual) == 0) || (stricmp(nick, s_GeoIP) == 0))
+   if ((stricmp(nick, s_NickServ) == 0) || (stricmp(nick, s_ChanServ) == 0) || (stricmp(nick, s_CregServ) == 0) || (stricmp(nick, s_MemoServ) == 0) || (stricmp(nick, s_OperServ) == 0) || (stricmp(nick, s_ShadowServ) == 0) || (stricmp(nick, s_BddServ) == 0) || (stricmp(nick, s_HelpServ) == 0) || (stricmp(nick, s_GlobalNoticer) == 0) || (stricmp(nick, s_NewsServ) == 0) || (stricmp(nick, s_EuskalIRCServ) == 0) || (stricmp(nick, s_SpamServ) == 0)|| (stricmp(nick, s_IpVirtual) == 0) || (stricmp(nick, s_GeoIP) == 0) || (stricmp(nick, s_XServ) == 0))
 	return 1;
   else
   	return 0;
@@ -957,6 +1013,7 @@ if (cont > 0) {
       
 }
 
+
 /*************************************************************************/
 
 /* Global privmsg sending via GlobalNoticer. */
@@ -1082,8 +1139,9 @@ static void do_os_op(User *u)
      }
     }
 }
-
 /*************************************************************************/
+
+
 
 /* deop en un canal a traves de server */
 
@@ -1129,7 +1187,6 @@ static void do_os_deop(User *u)
 }
 }
 
-/*************************************************************************/
 /*************************************************************************/
 
 /* Voz en un canal a traves del servidor */
@@ -1224,6 +1281,7 @@ static void do_os_devoice(User *u)
 }
 
 /*************************************************************************/
+
 
 /* Channel mode changing (MODE command). */
 
@@ -1645,6 +1703,8 @@ static void do_unblock(User *u)
     } else {
         send_cmd(ServerName ,"GLINE * -%s", mascara);
         canalopers(s_OperServ, "12%s ha usado UNBLOCK/UNGLINE en 12%s", u->nick, mascara);
+        if (del_akill(mascara))           	                  
+		notice_lang(s_OperServ, u, OPER_AKILL_REMOVED, mascara);
     }
 }
                                         

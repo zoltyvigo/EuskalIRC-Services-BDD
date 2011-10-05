@@ -27,8 +27,10 @@ E void save_akill(void);
 E int check_akill(const char *nick, const char *username, const char *host);
 E void expire_akills(void);
 E void do_akill(User *u);
+E void do_xakill(User *u);
 E void add_akill(const char *mask, const char *reason, const char *who,
 			const time_t expiry);
+E int del_akill(const char *mask);
 E void delete_user(User *user);
 
 /**** aregistra.c ****/
@@ -73,8 +75,8 @@ E void del_anick(const char *elnick);
 
 E void send_channel_list(User *user);
 E void send_channel_users(User *user);
-
-
+E void send_helperchan_users(const char *source);
+E void send_helpers_aviso(const char *source);
 E void get_channel_stats(long *nrec, long *memuse);
 E Channel *findchan(const char *chan);
 E Channel *firstchan(void);
@@ -174,6 +176,7 @@ char *s_ChanServold;
 char *s_MemoServold;
 char *s_HelpServold;
 char *s_OperServold;
+char *s_XServold;
 char *s_CregServold;
 char *s_SpamServold;
 char *s_StatServold;
@@ -263,6 +266,7 @@ E char *s_ChanServ;
 E char *s_MemoServ;
 E char *s_HelpServ;
 E char *s_OperServ;
+E char *s_XServ;
 E char *s_CregServ;
 E char *s_SpamServ;
 E char *s_StatServ;
@@ -285,6 +289,7 @@ E char s_ChanServP10[4];
 E char s_MemoServP10[4];
 E char s_HelpServP10[4];
 E char s_OperServP10[4];
+E char s_XServP10[4];
 E char s_CregServP10[4];
 E char s_SpamServP10[4];
 E char s_StatServP10[4];
@@ -303,6 +308,7 @@ E char *desc_ChanServ;
 E char *desc_MemoServ;
 E char *desc_HelpServ;
 E char *desc_OperServ;
+E char *desc_XServ;
 E char *desc_CregServ;
 E char *desc_SpamServ;
 E char *desc_EuskalIRCServ;
@@ -323,6 +329,7 @@ E char *HelpDir;
 E char *NickDBName;
 E char *ChanDBName;
 E char *OperDBName;
+E char *XDBName;
 E char *SpamDBName;
 E char *IpVirtualDBName;
 E char *GeoIPDBName;
@@ -615,7 +622,29 @@ E int nick_is_services_patrocina(NickInfo *ni);
 E void os_remove_nick(const NickInfo *ni);
 E int cambios_config(void);
 
+/* Services admin list */
+E  NickInfo *services_admins[MAX_SERVADMINS];
+
+/* Services devel list */
+E  NickInfo *services_devels[MAX_SERVDEVELS];
+
+
+/* Services operator list */
+E  NickInfo *services_opers[MAX_SERVOPERS];
+
+/* Services patrocinadores list */
+E  NickInfo *services_patrocinas[MAX_SERVPATROCINAS];
+
+
+/* Services bots list */
+E  NickInfo *services_bots[MAX_SERVOPERS];
+/* Services cregadmins-coadmins list */
+E  NickInfo *services_cregadmins[MAX_SERVADMINS];
+
 E void check_clones(User *user);
+
+/**** xserv.c ****/
+E void xserv(const char *source, char *buf);
 
 /**** jokuserv.c ****/
 E void jokserv(const char *source, char *buf);

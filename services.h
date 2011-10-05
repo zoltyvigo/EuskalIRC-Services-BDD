@@ -247,10 +247,12 @@ struct nickinfo_ {
     time_t id_timestamp;/* TS8 timestamp of user who last ID'd for nick */
 /*     char *msuspend; */
 };
-#define AYU_ENTRA 0x00000001
-#define AYU_PROCESO  0x00000002
+#define AYU_ENTRA      0x00000001
+#define AYU_PROCESO    0x00000002
 #define AYU_ACEPTA     0x00000004
 #define AYU_RECHAZA    0x00000008
+#define AYU_ATENDIDO   0x00000010
+#define AYU_DESATENDIDO   0x00000020
 
 #define ACTIV_PROCESO   0x00000001 /*registrado temporalmente a falta confirmacion email*/
 #define ACTIV_CONFIRM   0x00000002 /*registro validado por email*/

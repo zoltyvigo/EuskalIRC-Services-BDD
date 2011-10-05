@@ -8,7 +8,7 @@
 /* euskalirc-services-bdd (2011) donostiarra*/
 
 #include "services.h"
-
+#include "pseudo.h"
 
 #define HASH(chan)	((chan)[1] ? ((chan)[1]&31)<<5 | ((chan)[2]&31) : 0)
 static Channel *chanlist[1024];
@@ -164,7 +164,56 @@ void send_channel_users(User *user)
     for (u = c->voices; u; u = u->next)
 	privmsg(s_StatServ, source, "%s", u->user->nick);
 }
+void send_helperchan_users(const char *source)
+{
+    User *user;
+    char ayu[BUFSIZE];
+     snprintf(ayu, sizeof(ayu), "#%s", CanalOpers);
+    Channel *c = ayu ? findchan(ayu) : NULL;
+    struct c_userlist *u;
+User *u2 = finduser(source);
+NickInfo *ni;
+ni = findnick(source);
 
+if (!c) {
+	canaladmins(s_EuskalIRCServ, "2%s 4 Solicita Soporte y NO Hay HELPERs disponibles",source);
+	ni->in_ayu   &= ~AYU_ENTRA;
+	ni->in_ayu |= AYU_RECHAZA ;
+	notice_lang(s_EuskalIRCServ, u2, EUSKALIRC_INDISPONIBLE,source);
+    } else
+         { //canaladmins(s_StatServ, "2 Entra Usuario %s y SI Hay HELPERs disponibles",source);
+	   notice_lang(s_EuskalIRCServ, u2, EUSKALIRC_MENSAJE_ENTRADA,source);
+          }
+
+}
+void send_helpers_aviso(const char *source)
+{
+   User *u = finduser(source);
+char ayu[BUFSIZE];
+     snprintf(ayu, sizeof(ayu), "#%s", CanalAyuda);
+    Channel *c = ayu ? findchan(ayu) : NULL;
+    if   (is_services_root(u))  {
+    privmsg(s_EuskalIRCServ,ayu, "Hola 4%s,BienVenido/a 5Director de Red ",source);
+    return;
+     }
+     else if (is_services_admin(u))  {
+    privmsg(s_EuskalIRCServ,ayu, "Hola 4%s,BienVenido/a 5Administrador de Red ",source);
+    return;
+     }
+     else if (is_services_cregadmin(u))  {
+    privmsg(s_EuskalIRCServ,ayu, "Hola 4%s,BienVenido/a 5Co-Administrador de Red ",source);
+    return;
+     }
+    else if (is_services_devel(u))  {
+    privmsg(s_EuskalIRCServ,ayu, "Hola 4%s,BienVenido/a 5Devel de Red ",source);
+    return;
+    }
+    else if (is_services_oper(u))  {
+    privmsg(s_EuskalIRCServ,ayu, "Hola 4%s,BienVenido/a 5Operador de Red ",source);
+    return;
+    }
+
+}
 
 /*************************************************************************/
 

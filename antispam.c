@@ -417,10 +417,10 @@ for (i = 0; i < sspam; i++) {
  	if (strstr(buf, spam[i].hitza)) {
 	       
 		if   (is_services_root(u) || is_services_admin(u) || is_services_cregadmin(u) || is_services_devel(u) || is_services_oper(u))  {
- 		 privmsg(s_SpamServ, chan, "El Representante de Red 12%s  dijo 4%s !! ", source,spam[i].hitza);
-		return;
+		canaladmins(s_SpamServ, "El Representante de Red 12%s  dijo 4%s !! ", source,spam[i].hitza);;
+ 		 return;
 		}
-		 privmsg(s_SpamServ, chan, "Ey! %s dijo 4%s !!", source,spam[i].hitza);
+		// privmsg(s_SpamServ, chan, "Ey! %s dijo 4%s !!", source,spam[i].hitza);
 		send_cmd(s_SpamServ, "MODE %s +b :%s", chan , source);
 	        send_cmd(s_SpamServ, "KICK %s %s : _antispam 4(Publicidad No Autorizada.Forma Parte Del Listado Censurado Por La Red)", chan, source);
 		send_cmd(ServerName, "SVSJOIN  %s #%s", source,CanalSpamers);

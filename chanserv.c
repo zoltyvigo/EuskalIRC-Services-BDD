@@ -2338,7 +2338,7 @@ void join_chanserv(void)
              send_cmd(s_ChanServ, "J %s", ci->name);
              send_cmd(MODE_SENDER(s_ChanServ), "M %s +o %s", ci->name, s_ChanServP10);
 #else
-             send_cmd(s_ShadowServ, "JOIN %s", ci->name);
+             send_cmd(s_ChanServ, "JOIN %s", ci->name);
              send_cmd(MODE_SENDER(s_ChanServ), "MODE %s +o %s", ci->name, s_ChanServ);
 #endif
              check_modes(ci->name);
@@ -2812,8 +2812,9 @@ int registra_con_creg(User *u, NickInfo *ni, const char *chan, const char *pass,
 	log("%s: Channel %s not found for REGISTER", s_ChanServ, chan);
 	return 0;
     } else if (!(ci = makechan(chan))) {
+	send_cmd(s_ChanServ, "JOIN %s", ci->name);
 	log("%s: makechan() failed for REGISTER %s", s_ChanServ, chan);
-	return 0;
+	return 1;
     } else {
 	c->ci = ci;
 	ci->c = c;

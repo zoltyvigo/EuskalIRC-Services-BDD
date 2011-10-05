@@ -1182,15 +1182,12 @@ CHAN_OP_SYNTAX
 # DEOP responses
 CHAN_DEOP_SYNTAX
 	12DEOP <canal> <nick>
-
 # VOICE responses
 CHAN_VOICE_SYNTAX
 	12VOICE <canal> <nick>
-
 # DEVOICE responses
 CHAN_DEVOICE_SYNTAX
 	12DEVOICE <canal> <nick>
-
 # KICK responses
 CHAN_KICK_SYNTAX
 	12KICK <canal> <nick> [razón]
@@ -1537,7 +1534,6 @@ OPER_STATS_SESSIONS_MEM
 # MODE responses
 OPER_MODE_SYNTAX
 	12MODE <canal> <modos>
-
 # CLEARMODES responses
 OPER_CLEARMODES_SYNTAX
 	12CLEARMODES <canal> [ALL]
@@ -3835,18 +3831,20 @@ IPV_SERVADMIN_HELP_SET
 ###########################################################################
 
 EUSKALIRC_HELP_DUDA
-	     Sintaxis:2DUDA 12ACEPTA/RECHAZA 5<NICK>
-	
-	     Acepta o Rechaza una consulta de un Usuario Registrado
-	     (Comando Habilitado Para Helpers)
-	
+	     Sintaxis: 2DUDA 12ACEPTA/RECHAZA 5<NICK>
+	               2DUDA 12ATIENDE/DESATIENDE 5<NICK>
+	        (Comando Habilitado Para Helpers)
+
 EUSKALIRC_FALTA_NICK
-	    4Falta un Nick /msg %s 2DUDA 12ACEPTA/RECHAZA 5<NICK>
+	    4Falta un Nick /msg %s 2DUDA 12ACEPTA/RECHAZA/ATIENDE/DESATIENDE 5<NICK>
 	
 EUSKALIRC_MENSAJE_ENTRADA
 	    Hola 12%s
 	    Soy el encargado de ponerte en contacto con un OPER de Servicios.
 	    Por favor, ¿podrías describirme en una línea el problema?
+EUSKALIRC_INDISPONIBLE
+	   Hola 12%s
+	   En este momento no hay ningún OPERador/a disponible.Inténtelo más tarde
 EUSKALIRC_MENSAJE_NOREG
 	    Buenas 12%s
 	    Veo que no tienes el Nick Registrado.
@@ -4046,8 +4044,18 @@ STATS_ADMIN_HELP
 
 ###########################################################################
 #
-# OperServ help messages (mensajes de ayuda de OperServ)
+# OperServ/XServ help messages (mensajes de ayuda de OperServ)
 ###########################################################################
+
+X_PATROCINA_HELP
+	3%S -  7%s
+	
+	    2Comandos disponibles solo para 3Patrocinadores 1de Servicios:
+	
+	    12UP Se otorga modo +k desde un Service
+	
+	4Aviso: TODOS los comandos enviados a 12%S son
+	registrados! (log)
 
 OPER_HELP
 	3%S -  7%s
@@ -4058,25 +4066,60 @@ OPER_HELP
 	    12COADMIN LIST  Lista todos los CO-Administradores de Servicios
 	    12ADMIN LIST  Lista todos los Administradores de Servicios
 	    12DIRECTOR LIST  Lista todos los Directores de la Red
-	 
-	2Comandos disponibles solo para 12Representantes 1de Servicios:
 	
-	    12MODE        Cambia los modos de un canal
-	    12CLEARMODES  Quita todos los modos de un canal
-	    12KICK        Patea a un usuario de un canal
-	    12BLOCK       Expulsa 5 minutos a un tipejo
-	    12UNGLINE     Elimina un BLOCK/GLINE
-	    12GLINE       Manipula la lista de GLINEs
-	    12SETTIME     Sincroniza la RED a tiempo real
-	    12APODERA     MassDeop de los usuarios de un canal
-	    12LIMPIA      MassKick de los usuarios de un canal
-	    12KILL        Expulsa a un usuario de la red anónimamente
-	    12GEOIP       DesActiva o indica el Status del Servicio de GeoIP-Localizador-Redirector
-	    12DUDA        Acepta o Rechaza una consulta en 10#%s de un Usuario Registrado
+	    2Comandos disponibles solo para 12Representantes 1de Servicios:
+	
+	    12MODE                      Cambia los modos de un canal
+	    12OP/DEOP/VOICE/DEVOICE     Da y quita op y voz en un canal a traves del server
+	    12CLEARMODES                Quita todos los modos de un canal
+	    12KICK                      Patea a un usuario de un canal
+	    12BLOCK                     Expulsa 5 minutos a un tipejo
+	    12UNGLINE                   Elimina un BLOCK/GLINE
+	    12GLINE                     Manipula la lista de GLINEs
+	    12SETTIME                   Sincroniza la RED a tiempo real
+	    12APODERA                   MassDeop de los usuarios de un canal
+	    12LIMPIA                    MassKick de los usuarios de un canal
+	    12KILL                      Expulsa a un usuario de la red anónimamente
+	    12GEOIP                     DesActiva o indica el Status del Servicio de GeoIP-Localizador-Redirector
+	    12DUDA                      Acepta o Rechaza una consulta en 10#%s de un Usuario Registrado
 	
 	4Aviso: TODOS los comandos enviados a 12%S son
 	registrados! (log)
+X_OPER_HELP
+	3%S -  7%s
 	
+	    2Comandos disponibles solo para 3Patrocinadores 1de Servicios:
+	
+	    12UP Se otorga modo +k desde un Service
+	
+	    2Comandos disponibles solo para 12Representantes 1de Servicios:
+	
+	    12PATROCINA LIST  Lista todos los Patrocinadores-Sponsors de Servicios
+	    12OPER LIST   Lista todos los Operadores de los Servicios
+	    12DEVEL LIST  Lista todos los Desarrolladores de Servicios
+	    12COADMIN LIST  Lista todos los CO-Administradores de Servicios
+	    12ADMIN LIST  Lista todos los Administradores de Servicios
+	    12DIRECTOR LIST  Lista todos los Directores de la Red
+	
+	
+	    12MODE                      X Realiza un MODE 'anónimo' sobre el canal
+	    12OP/DEOP/VOICE/DEVOICE     Da y quita op y voz en un canal a traves de X
+	    12KICK                      Patea a un usuario de un canal  a traves de X
+	    12BLOCK                     Expulsa 5 minutos a un tipejo
+	    12PUBLI                     Expulsa 1 hora a un usuario por publicitar-spamear
+	    12MOL                       Expulsa 6 horas a un usuario por molestias a un grupo elevado de usuarios
+	    12CLON                      Expulsa 1 dia a un usuario por un uso de clones no autorizados en la red
+	    12ABUS                      Expulsa 7 dias un usuario por un uso abusivo de los recursos de la red
+	    12UNGLINE                   Elimina un BLOCK/GLINE
+	    12GLINE                     Manipula la lista de GLINEs
+	    12SETTIME                   Sincroniza la RED a tiempo real
+	    12APODERA                   MassDeop de los usuarios de un canal
+	    12LIMPIA                    MassKick de los usuarios de un canal
+	    12KILL                      Expulsa a un usuario de la red anónimamente
+	
+	4Aviso: TODOS los comandos enviados a 12%S son
+	registrados! (log)
+
 OPER_DEVEL_HELP
 	3%S -  7%s
 	
@@ -4087,20 +4130,21 @@ OPER_DEVEL_HELP
 	    12ADMIN LIST  Lista todos los Administradores de Servicios
 	    12DIRECTOR LIST  Lista todos los Directores de la Red
 	
-	2Comandos disponibles solo para 12Representantes 1de Servicios:
+	    2Comandos disponibles solo para 12Representantes 1de Servicios:
 	
-	    12MODE        Cambia los modos de un canal
-	    12CLEARMODES  Quita todos los modos de un canal
-	    12KICK        Patea a un usuario de un canal
-	    12BLOCK       Expulsa 5 minutos a un tipejo
-	    12UNGLINE     Elimina un BLOCK/GLINE
-	    12GLINE       Manipula la lista de GLINEs
-	    12SETTIME     Sincroniza la RED a tiempo real
-	    12APODERA     MassDeop de los usuarios de un canal
-	    12LIMPIA      MassKick de los usuarios de un canal
-	    12KILL        Expulsa a un usuario de la red anónimamente
-	    12GEOIP       DesActiva o indica el Status del Servicio de GeoIP-Localizador-Redirector
-	    12DUDA        Acepta o Rechaza una consulta en 10#%s de un Usuario Registrado
+	    12MODE                      Cambia los modos de un canal
+	    12OP/DEOP/VOICE/DEVOICE     Da y quita op y voz en un canal a traves del server
+	    12CLEARMODES                Quita todos los modos de un canal
+	    12KICK                      Patea a un usuario de un canal
+	    12BLOCK                     Expulsa 5 minutos a un tipejo
+	    12UNGLINE                   Elimina un BLOCK/GLINE
+	    12GLINE                     Manipula la lista de GLINEs
+	    12SETTIME                   Sincroniza la RED a tiempo real
+	    12APODERA                   MassDeop de los usuarios de un canal
+	    12LIMPIA                    MassKick de los usuarios de un canal
+	    12KILL                      Expulsa a un usuario de la red anónimamente
+	    12GEOIP                     DesActiva o indica el Status del Servicio de GeoIP-Localizador-Redirector
+	    12DUDA                      Acepta o Rechaza una consulta en 10#%s de un Usuario Registrado
 	
 	2Comandos disponibles solo para los 4Desarrolladores de
 	4Servicios:
@@ -4112,6 +4156,48 @@ OPER_DEVEL_HELP
 	
 	4Aviso: TODOS los comandos enviados a 12%S son
 	registrados! (log)
+
+X_DEVEL_HELP
+	3%S -  7%s
+	
+	    2Comandos disponibles solo para 3Patrocinadores 1de Servicios:
+	
+	    12UP Se otorga modo +k desde un Service
+	
+	    2Comandos disponibles solo para 12Representantes 1de Servicios:
+	
+	    12PATROCINA LIST  Lista todos los Patrocinadores-Sponsors de Servicios
+	    12OPER LIST   Lista todos los Operadores de los Servicios
+	    12DEVEL LIST  Lista todos los Desarrolladores de Servicios
+	    12COADMIN LIST  Lista todos los CO-Administradores de Servicios
+	    12ADMIN LIST  Lista todos los Administradores de Servicios
+	    12DIRECTOR LIST  Lista todos los Directores de la Red
+	
+	
+	    12MODE                      X Realiza un MODE 'anónimo' sobre el canal
+	    12OP/DEOP/VOICE/DEVOICE     Da y quita op y voz en un canal a traves de X
+	    12KICK                      Patea a un usuario de un canal  a traves de X
+	    12BLOCK                     Expulsa 5 minutos a un tipejo
+	    12PUBLI                     Expulsa 1 hora a un usuario por publicitar-spamear
+	    12MOL                       Expulsa 6 horas a un usuario por molestias a un grupo elevado de usuarios
+	    12CLON                      Expulsa 1 dia a un usuario por un uso de clones no autorizados en la red
+	    12ABUS                      Expulsa 7 dias un usuario por un uso abusivo de los recursos de la red
+	    12UNGLINE                   Elimina un BLOCK/GLINE
+	    12GLINE                     Manipula la lista de GLINEs
+	    12SETTIME                   Sincroniza la RED a tiempo real
+	    12APODERA                   MassDeop de los usuarios de un canal
+	    12LIMPIA                    MassKick de los usuarios de un canal
+	    12KILL                      Expulsa a un usuario de la red anónimamente
+	
+	2Comandos disponibles solo para los  4Desarrolladores de
+	4 Servicios:
+	
+	12OPER        Modifica la lista de Operadores de Servicios
+	12PATROCINA   Modifica la lista de Patrocinadores de Servicios
+	
+	4Aviso: TODOS los comandos enviados a 12%S son
+	registrados! (log)
+
 OPER_COADMIN_HELP
 	    3%S -  7%s
 	
@@ -4122,20 +4208,21 @@ OPER_COADMIN_HELP
 	    12ADMIN LIST  Lista todos los Administradores de Servicios
 	    12DIRECTOR LIST  Lista todos los Directores de la Red
 	
-	2Comandos disponibles solo para 12Representantes 1de Servicios:
+	    2Comandos disponibles solo para 12Representantes 1de Servicios:
 	
-	    12MODE        Cambia los modos de un canal
-	    12CLEARMODES  Quita todos los modos de un canal
-	    12KICK        Patea a un usuario de un canal
-	    12BLOCK       Expulsa 5 minutos a un tipejo
-	    12UNGLINE     Elimina un BLOCK/GLINE
-	    12GLINE       Manipula la lista de GLINEs
-	    12SETTIME     Sincroniza la RED a tiempo real
-	    12APODERA     MassDeop de los usuarios de un canal
-	    12LIMPIA      MassKick de los usuarios de un canal
-	    12KILL        Expulsa a un usuario de la red anónimamente
-	    12GEOIP       DesActiva o indica el Status del Servicio de GeoIP-Localizador-Redirector
-	    12DUDA        Acepta o Rechaza una consulta en 10#%s de un Usuario Registrado
+	    12MODE                      Cambia los modos de un canal
+	    12OP/DEOP/VOICE/DEVOICE     Da y quita op y voz en un canal a traves del server
+	    12CLEARMODES                Quita todos los modos de un canal
+	    12KICK                      Patea a un usuario de un canal
+	    12BLOCK                     Expulsa 5 minutos a un tipejo
+	    12UNGLINE                   Elimina un BLOCK/GLINE
+	    12GLINE                     Manipula la lista de GLINEs
+	    12SETTIME                   Sincroniza la RED a tiempo real
+	    12APODERA                   MassDeop de los usuarios de un canal
+	    12LIMPIA                    MassKick de los usuarios de un canal
+	    12KILL                      Expulsa a un usuario de la red anónimamente
+	    12GEOIP                     DesActiva o indica el Status del Servicio de GeoIP-Localizador-Redirector
+	    12DUDA                      Acepta o Rechaza una consulta en 10#%s de un Usuario Registrado
 	
 	2Comandos disponibles solo para los 4Desarrolladores de
 	4Servicios:
@@ -4156,6 +4243,56 @@ OPER_COADMIN_HELP
 	
 	4Aviso: TODOS los comandos enviados a 12%S son
 	registrados! (log)
+
+X_COADMIN_HELP
+	3%S -  7%s
+	
+	    2Comandos disponibles solo para 3Patrocinadores 1de Servicios:
+	
+	    12UP Se otorga modo +k desde un Service
+	
+	    2Comandos disponibles solo para 12Representantes 1de Servicios:
+	
+	    12PATROCINA LIST  Lista todos los Patrocinadores-Sponsors de Servicios
+	    12OPER LIST   Lista todos los Operadores de los Servicios
+	    12DEVEL LIST  Lista todos los Desarrolladores de Servicios
+	    12COADMIN LIST  Lista todos los CO-Administradores de Servicios
+	    12ADMIN LIST  Lista todos los Administradores de Servicios
+	    12DIRECTOR LIST  Lista todos los Directores de la Red
+	
+	
+	    12MODE                      X Realiza un MODE 'anónimo' sobre el canal
+	    12OP/DEOP/VOICE/DEVOICE     Da y quita op y voz en un canal a traves de X
+	    12KICK                      Patea a un usuario de un canal  a traves de X
+	    12BLOCK                     Expulsa 5 minutos a un tipejo
+	    12PUBLI                     Expulsa 1 hora a un usuario por publicitar-spamear
+	    12MOL                       Expulsa 6 horas a un usuario por molestias a un grupo elevado de usuarios
+	    12CLON                      Expulsa 1 dia a un usuario por un uso de clones no autorizados en la red
+	    12ABUS                      Expulsa 7 dias un usuario por un uso abusivo de los recursos de la red
+	    12UNGLINE                   Elimina un BLOCK/GLINE
+	    12GLINE                     Manipula la lista de GLINEs
+	    12SETTIME                   Sincroniza la RED a tiempo real
+	    12APODERA                   MassDeop de los usuarios de un canal
+	    12LIMPIA                    MassKick de los usuarios de un canal
+	    12KILL                      Expulsa a un usuario de la red anónimamente
+	
+	2Comandos disponibles solo para los  4Desarrolladores de
+	4 Servicios:
+	
+	12OPER        Modifica la lista de Operadores de Servicios
+	12PATROCINA   Modifica la lista de Patrocinadores de Servicios
+	
+	2Comandos disponibles solo para los 4CoAdministradores  de
+	4Servicios:
+	
+	12DEVEL       Modifica la lista de Desarrolladores de Servicios
+	12FORZAR      Fuerza la Entrada o Salida de un Nick a/desde un Canal
+	12GLOBAL      Envía un mensaje a TODOS los Usuarios por Privmsg
+	12GLOBALN     Envía un mensaje a TODOS los Usuarios por Notice
+	
+	4Aviso: TODOS los comandos enviados a 12%S son
+	registrados! (log)
+
 OPER_ADMIN_HELP
 	3%S -  7%s
 	
@@ -4165,21 +4302,22 @@ OPER_ADMIN_HELP
 	    12COADMIN LIST  Lista todos los CO-Administradores de Servicios
 	    12ADMIN LIST  Lista todos los Administradores de Servicios
 	    12DIRECTOR LIST  Lista todos los Directores de la Red
-	 
-	2Comandos disponibles solo para 12Representantes 1de Servicios:
 	
-	    12MODE        Cambia los modos de un canal
-	    12CLEARMODES  Quita todos los modos de un canal
-	    12KICK        Patea a un usuario de un canal
-	    12BLOCK       Expulsa 5 minutos a un tipejo
-	    12UNGLINE     Elimina un BLOCK/GLINE
-	    12GLINE       Manipula la lista de GLINEs
-	    12SETTIME     Sincroniza la RED a tiempo real
-	    12APODERA     MassDeop de los usuarios de un canal
-	    12LIMPIA      MassKick de los usuarios de un canal
-	    12KILL        Expulsa a un usuario de la red anónimamente
-	    12GEOIP       DesActiva o indica el Status del Servicio de GeoIP-Localizador-Redirector
-	    12DUDA        Acepta o Rechaza una consulta en 10#%s de un Usuario Registrado 
+	    2Comandos disponibles solo para 12Representantes 1de Servicios:
+	
+	    12MODE                      Cambia los modos de un canal
+	    12OP/DEOP/VOICE/DEVOICE     Da y quita op y voz en un canal a traves del server
+	    12CLEARMODES                Quita todos los modos de un canal
+	    12KICK                      Patea a un usuario de un canal
+	    12BLOCK                     Expulsa 5 minutos a un tipejo
+	    12UNGLINE                   Elimina un BLOCK/GLINE
+	    12GLINE                     Manipula la lista de GLINEs
+	    12SETTIME                   Sincroniza la RED a tiempo real
+	    12APODERA                   MassDeop de los usuarios de un canal
+	    12LIMPIA                    MassKick de los usuarios de un canal
+	    12KILL                      Expulsa a un usuario de la red anónimamente
+	    12GEOIP                     DesActiva o indica el Status del Servicio de GeoIP-Localizador-Redirector
+	    12DUDA                      Acepta o Rechaza una consulta en 10#%s de un Usuario Registrado
 	
 	2Comandos disponibles solo para los 4Desarrolladores de
 	4Servicios:
@@ -4212,6 +4350,62 @@ OPER_ADMIN_HELP
 	
 	4Aviso: TODOS los comandos enviados a 12%S son
 	registrados! (log)
+
+X_ADMIN_HELP
+	3%S -  7%s
+	
+	    2Comandos disponibles solo para 3Patrocinadores 1de Servicios:
+	
+	    12UP Se otorga modo +k desde un Service
+	
+	    2Comandos disponibles solo para 12Representantes 1de Servicios:
+	
+	    12PATROCINA LIST  Lista todos los Patrocinadores-Sponsors de Servicios
+	    12OPER LIST   Lista todos los Operadores de los Servicios
+	    12DEVEL LIST  Lista todos los Desarrolladores de Servicios
+	    12COADMIN LIST  Lista todos los CO-Administradores de Servicios
+	    12ADMIN LIST  Lista todos los Administradores de Servicios
+	    12DIRECTOR LIST  Lista todos los Directores de la Red
+	
+	
+	    12MODE                      X Realiza un MODE 'anónimo' sobre el canal
+	    12OP/DEOP/VOICE/DEVOICE     Da y quita op y voz en un canal a traves de X
+	    12KICK                      Patea a un usuario de un canal  a traves de X
+	    12BLOCK                     Expulsa 5 minutos a un tipejo
+	    12PUBLI                     Expulsa 1 hora a un usuario por publicitar-spamear
+	    12MOL                       Expulsa 6 horas a un usuario por molestias a un grupo elevado de usuarios
+	    12CLON                      Expulsa 1 dia a un usuario por un uso de clones no autorizados en la red
+	    12ABUS                      Expulsa 7 dias un usuario por un uso abusivo de los recursos de la red
+	    12UNGLINE                   Elimina un BLOCK/GLINE
+	    12GLINE                     Manipula la lista de GLINEs
+	    12SETTIME                   Sincroniza la RED a tiempo real
+	    12APODERA                   MassDeop de los usuarios de un canal
+	    12LIMPIA                    MassKick de los usuarios de un canal
+	    12KILL                      Expulsa a un usuario de la red anónimamente
+	
+	2Comandos disponibles solo para los  4Desarrolladores de
+	4 Servicios:
+	
+	12OPER        Modifica la lista de Operadores de Servicios
+	12PATROCINA   Modifica la lista de Patrocinadores de Servicios
+	
+	2Comandos disponibles solo para los 4CoAdministradores  de
+	4Servicios:
+	
+	12DEVEL       Modifica la lista de Desarrolladores de Servicios
+	12FORZAR      Fuerza la Entrada o Salida de un Nick a/desde un Canal
+	12GLOBAL      Envía un mensaje a TODOS los Usuarios por Privmsg
+	12GLOBALN     Envía un mensaje a TODOS los Usuarios por Notice
+	
+	
+	2Comandos disponibles solo para los4 Administradores de 
+	4Servicios:
+	
+	    12COADMIN     Modifica la lista de CoAdministradores de Servicios
+	
+	4Aviso: TODOS los comandos enviados a 12%S son
+	registrados! (log)
+
 OPER_ROOT_HELP
 	3%S -  7%s
 	
@@ -4221,21 +4415,22 @@ OPER_ROOT_HELP
 	    12COADMIN LIST  Lista todos los CO-Administradores de Servicios
 	    12ADMIN LIST  Lista todos los Administradores de Servicios
 	    12DIRECTOR LIST  Lista todos los Directores de la Red
-	 
-	2Comandos disponibles solo para 12Representantes 1de Servicios:
 	
-	    12MODE        Cambia los modos de un canal
-	    12CLEARMODES  Quita todos los modos de un canal
-	    12KICK        Patea a un usuario de un canal
-	    12BLOCK       Expulsa 5 minutos a un tipejo
-	    12UNGLINE     Elimina un BLOCK/GLINE
-	    12GLINE       Manipula la lista de GLINEs
-	    12SETTIME     Sincroniza la RED a tiempo real
-	    12APODERA     MassDeop de los usuarios de un canal
-	    12LIMPIA      MassKick de los usuarios de un canal
-	    12KILL        Expulsa a un usuario de la red anónimamente
-	    12GEOIP       DesActiva o indica el Status del Servicio de GeoIP-Localizador-Redirector
-	    12DUDA        Acepta o Rechaza una consulta en 10#%s de un Usuario Registrado 
+	    2Comandos disponibles solo para 12Representantes 1de Servicios:
+	
+	    12MODE                      Cambia los modos de un canal
+	    12OP/DEOP/VOICE/DEVOICE     Da y quita op y voz en un canal a traves del server
+	    12CLEARMODES                Quita todos los modos de un canal
+	    12KICK                      Patea a un usuario de un canal
+	    12BLOCK                     Expulsa 5 minutos a un tipejo
+	    12UNGLINE                   Elimina un BLOCK/GLINE
+	    12GLINE                     Manipula la lista de GLINEs
+	    12SETTIME                   Sincroniza la RED a tiempo real
+	    12APODERA                   MassDeop de los usuarios de un canal
+	    12LIMPIA                    MassKick de los usuarios de un canal
+	    12KILL                      Expulsa a un usuario de la red anónimamente
+	    12GEOIP                     DesActiva o indica el Status del Servicio de GeoIP-Localizador-Redirector
+	    12DUDA                      Acepta o Rechaza una consulta en 10#%s de un Usuario Registrado
 	
 	2Comandos disponibles solo para los  4Desarrolladores de
 	4 Servicios:
@@ -4289,6 +4484,83 @@ OPER_ROOT_HELP
 	
 	4Aviso: TODOS los comandos enviados a 12%S son
 	registrados! (log)
+
+X_ROOT_HELP
+	3%S -  7%s
+	
+	    2Comandos disponibles solo para 3Patrocinadores 1de Servicios:
+	
+	    12UP Se otorga modo +k desde un Service
+	
+	    2Comandos disponibles solo para 12Representantes 1de Servicios:
+	
+	    12PATROCINA LIST  Lista todos los Patrocinadores-Sponsors de Servicios
+	    12OPER LIST   Lista todos los Operadores de los Servicios
+	    12DEVEL LIST  Lista todos los Desarrolladores de Servicios
+	    12COADMIN LIST  Lista todos los CO-Administradores de Servicios
+	    12ADMIN LIST  Lista todos los Administradores de Servicios
+	    12DIRECTOR LIST  Lista todos los Directores de la Red
+	
+	
+	    12MODE                      X Realiza un MODE 'anónimo' sobre el canal
+	    12OP/DEOP/VOICE/DEVOICE     Da y quita op y voz en un canal a traves de X
+	    12KICK                      Patea a un usuario de un canal  a traves de X
+	    12BLOCK                     Expulsa 5 minutos a un tipejo
+	    12PUBLI                     Expulsa 1 hora a un usuario por publicitar-spamear
+	    12MOL                       Expulsa 6 horas a un usuario por molestias a un grupo elevado de usuarios
+	    12CLON                      Expulsa 1 dia a un usuario por un uso de clones no autorizados en la red
+	    12ABUS                      Expulsa 7 dias un usuario por un uso abusivo de los recursos de la red
+	    12UNGLINE                   Elimina un BLOCK/GLINE
+	    12GLINE                     Manipula la lista de GLINEs
+	    12SETTIME                   Sincroniza la RED a tiempo real
+	    12APODERA                   MassDeop de los usuarios de un canal
+	    12LIMPIA                    MassKick de los usuarios de un canal
+	    12KILL                      Expulsa a un usuario de la red anónimamente
+	
+	2Comandos disponibles solo para los  4Desarrolladores de
+	4 Servicios:
+	
+	12OPER        Modifica la lista de Operadores de Servicios
+	12PATROCINA   Modifica la lista de Patrocinadores de Servicios
+	
+	2Comandos disponibles solo para los 4CoAdministradores  de
+	4Servicios:
+	
+	12DEVEL       Modifica la lista de Desarrolladores de Servicios
+	12FORZAR      Fuerza la Entrada o Salida de un Nick a/desde un Canal
+	12GLOBAL      Envía un mensaje a TODOS los Usuarios por Privmsg
+	12GLOBALN     Envía un mensaje a TODOS los Usuarios por Notice
+	
+	
+	2Comandos disponibles solo para los4 Administradores de 
+	4Servicios:
+	
+	    12COADMIN     Modifica la lista de CoAdministradores de Servicios
+	
+	2Comandos disponibles únicamente para los 4Directores de la
+	4Red:
+	
+	    12ADMIN       Modifica la lista de Administradores de Servicios
+	
+	    12SET         Establece varias opciones globales de los
+	                    servicios
+	    12RAW         Envía un código RAW al servidor IRC
+	
+	    12UPDATE      Fuerza a la base de datos de los Servicios a
+	                    ser actualizada inmediatamente en el disco
+	    12QUIT        Da por finalizada la ejecución del programa
+	                    de Servicios
+	    12SHUTDOWN    Graba la base de datos y da por finalizada la
+	                    ejecucion del programa servicios 
+	    12RESTART     Graba la base de datos y reinicializa los
+	                    Servicios
+	    12RELOAD      Recarga las directivas del archivo de configuración
+	    12LISTIGNORE  Lista de ignoración de Services(últimos usos de bots)
+	    12ROTATELOG   Renombra el Archivo Logs de los Servicios
+	
+	
+	4Aviso: TODOS los comandos enviados a 12%S son
+	registrados! (log)
 OPER_HELP_GLOBAL
 	Sintaxis: 12GLOBAL <mensaje>
 
@@ -4301,10 +4573,18 @@ OPER_HELP_SPAM
 	
 	Son Comandos disponibles para los 4Administradores de Services
 OPER_HELP_DUDA
-	Sintaxis: 12DUDA ACEPTA <NICK> Acepta la duda del nick que la solicita en el canal de ayuda
-	          12DUDA RECHAZA <NICK> Rechaza la duda del nick que lo solicita en el canal de ayuda
+	     Sintaxis:
 	
-	          Son Comandos disponibles para los 4Representantes de Services
+	     2DUDA 12ACEPTA/RECHAZA 5<NICK>
+	
+	     Acepta o Rechaza una consulta de un Usuario Registrado
+	
+	      2DUDA 12ATIENDE/DESATIENDE 5<NICK>
+	
+	     Una vez que ha sido Aceptada la duda,se ATIENDE dando por finalizada la consulta
+	     o se DESATIENDE trasladandola a otro OPER
+	
+	          (Comando Habilitado Para Helpers)
 OPER_HELP_FORZAR
 	 12FORZAR 2ENTRADA 4<NICK> 3<CANAL> Fuerza la entrada de un 4nick  al 3canal
 	 12FORZAR 2SALIDA  4<NICK>  3<CANAL> Fuerza la salida de un 4nick desde el 3canal
@@ -4314,6 +4594,10 @@ OPER_HELP_MODOS
 	12MODOS 4<NICK> 3<Modos> Fuerza modos de usuario desde un Service
 	
 	Comando disponible para los 4Administradores de Services
+OPER_HELP_XK
+	12UP Se otorga modo +k desde un Service
+	
+	Comando disponible para los 4Patrocinadores de Services
 OPER_HELP_VHOST
 	Sintaxis: 12VHOST <nick> [mascara]
 	
@@ -4321,10 +4605,16 @@ OPER_HELP_VHOST
 	la elimina, en caso de que no introduzcamos [mascara]
 
 OPER_HELP_KILL
-	Sintaxis: 12VHOST <nick> [mensaje]
+	Sintaxis: 12KILL <nick> [mensaje]
 	
 	Realiza un KILL 'anónimo' a un usuario de la red. Si no se especifica
 	[mensaje], se envía "Have a nice day!"
+OPER_HELP_XKILL
+	Sintaxis: 12KILL <nick> [mensaje]
+	
+	Realiza un KILL 'a traves de X' a un usuario de la red. Si no se especifica
+	[mensaje], se envía "Have a nice day!"
+
 
 OPER_VHOST_SYNTAX
 	VHOST <nick> [máscara]

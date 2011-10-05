@@ -366,7 +366,7 @@ void add_akill(const char *mask, const char *reason, const char *who,
 
 /* Return whether the mask was found in the AKILL list. */
 
-static int del_akill(const char *mask)
+int del_akill(const char *mask)
 {
     int i;
 
@@ -588,7 +588,214 @@ void do_akill(User *u)
 
     } else {
 	syntax_error(s_OperServ, u, "AKILL", OPER_AKILL_SYNTAX);
+   }
+}
+/*************************************************************************/
+
+/* Handle an XServ AKILL command. */
+
+void do_xakill(User *u)
+{
+    char *cmd, *mask, *reason, *expiry, *s;
+    time_t expires;
+    int i;
+
+    cmd = strtok(NULL, " ");
+    if (!cmd)
+	cmd = "";
+
+    if (stricmp(cmd, "ADD") == 0) {
+	if (nakill >= 32767) {
+	    notice_lang(s_XServ, u, OPER_TOO_MANY_AKILLS);
+	    return;
+	}
+	mask = strtok(NULL, " ");
+	if (mask && *mask == '+') {
+	    expiry = mask;
+	    mask = strtok(NULL, " ");
+	} else {
+	    expiry = NULL;
+	}
+
+	expires = expiry ? dotime(expiry) : AutokillExpiry;
+	if (expires < 0) {
+	    notice_lang(s_XServ, u, BAD_EXPIRY_TIME);
+	    return;
+	} else if (expires > 0) {
+	    expires += time(NULL);
+	}
+
+	if (mask && (reason = strtok(NULL, ""))) {
+            if (strchr(mask, '!')) {
+                notice_lang(s_XServ, u, OPER_AKILL_NO_NICK);
+                notice_lang(s_XServ, u, BAD_USERHOST_MASK);
+                return;
+            }	
+
+	    s = strchr(mask, '@');
+
+            if (!s) {
+                 notice_lang(s_XServ, u, BAD_USERHOST_MASK);
+                 return;
+	    }
+             if (stricmp("*@*", mask) == 0) {
+                 notice_lang(s_XServ, u, ACCESS_DENIED);
+                 canalopers(s_XServ, "El LAMER 12%s intenta meter un GLINE Global (*@*)", u->nick);
+                 return;
+            }     	    
+	    add_akill(mask, reason, u->nick, expires);
+#ifdef IRC_UNDERNET_P10
+            send_cmd(NULL,"%c GL * +%s %lu :%s", convert2y[ServerNumerico],
+                             mask, expires-time(NULL), reason);
+#else
+            send_cmd(ServerName, "GLINE * +%s %lu :%s", mask, expires-time(NULL), reason);
+#endif            
+	    notice_lang(s_XServ, u, OPER_AKILL_ADDED, mask);
+/*
+            char buf[128], *s = NULL;
+	    int amount = AutokillExpiry; 
+	    if (expiry) {
+	        amount = strtol(expiry, (char **)&expiry, 10);
+	        if (amount) {
+	            switch (*expiry) {
+		        case 'd': s = "dias";    break;
+			case 'h': s = "horas";   break;
+			case 'm': s = "minutos"; break;
+			default : amount = 0;
+		    }
+		}
+	    }
+	    if (!amount)
+	        strcpy(buf, "No expira");
+	    else
+	        snprintf(buf, sizeof(buf), "expira en %d %s%s",
+				amount, s, amount==1 ? "" : "s");
+		canalopers(s_OperServ, "%s ha añadido un AKILL para %s (%s)",
+			u->nick, mask, buf);
+	    } */
+	    
+	    if (readonly)
+		notice_lang(s_XServ, u, READ_ONLY_MODE);
+	} else {
+	    syntax_error(s_XServ, u, "AKILL", OPER_AKILL_ADD_SYNTAX);
+	}
+
+ canalopers(s_XServ, "%s ha añadido un AKILL para %s",
+                        u->nick, mask);
+ /* quitarlo cuando se arregle la funcion de arriba :) */
+                        
+    } else if (stricmp(cmd, "DEL") == 0) {
+	mask = strtok(NULL, " ");
+	if (mask) {
+	    if (del_akill(mask)) {           	                  
+		notice_lang(s_XServ, u, OPER_AKILL_REMOVED, mask);
+#ifdef IRC_UNDERNET_P10
+                send_cmd(NULL,"%c GL * -%s", convert2y[ServerNumerico], mask);
+#else
+                send_cmd(ServerName, "GLINE * -%s", mask);
+#endif
+
+		if (readonly)
+		    notice_lang(s_XServ, u, READ_ONLY_MODE);
+	    } else {
+		notice_lang(s_XServ, u, OPER_AKILL_NOT_FOUND, mask);
+	    }
+	} else {
+	    syntax_error(s_XServ, u, "AKILL", OPER_AKILL_DEL_SYNTAX);
+	}
+
+    } else if (stricmp(cmd, "LIST") == 0) {
+	expire_akills();
+	s = strtok(NULL, " ");
+	if (!s)
+	    s = "*";
+	if (strchr(s, '@'))
+	    strlower(strchr(s, '@'));
+	notice_lang(s_XServ, u, OPER_AKILL_LIST_HEADER);
+	for (i = 0; i < nakill; i++) {
+	    if (!s || match_wild(s, akills[i].mask)) {
+		notice_lang(s_XServ, u, OPER_AKILL_LIST_FORMAT,
+					akills[i].mask, akills[i].reason);
+	    }
+	}
+
+    } else if (stricmp(cmd, "VIEW") == 0) {
+	expire_akills();
+	s = strtok(NULL, " ");
+	if (!s)
+	    s = "*";
+	if (strchr(s, '@'))
+	    strlower(strchr(s, '@'));
+	notice_lang(s_XServ, u, OPER_AKILL_LIST_HEADER);
+	for (i = 0; i < nakill; i++) {
+	    if (!s || match_wild(s, akills[i].mask)) {
+		char timebuf[32], expirebuf[256];
+		struct tm tm;
+		time_t t = time(NULL);
+
+		tm = *localtime(akills[i].time ? &akills[i].time : &t);
+		strftime_lang(timebuf, sizeof(timebuf),
+			u, STRFTIME_SHORT_DATE_FORMAT, &tm);
+		if (akills[i].expires == 0) {
+		    snprintf(expirebuf, sizeof(expirebuf),
+				getstring(u->ni, OPER_AKILL_NO_EXPIRE));
+		} else if (akills[i].expires <= t) {
+		    snprintf(expirebuf, sizeof(expirebuf),
+				getstring(u->ni, OPER_AKILL_EXPIRES_SOON));
+		} else {
+		    time_t t2 = akills[i].expires - t;
+		    t2 += 59;
+		    if (t2 < 3600) {
+			t2 /= 60;
+			if (t2 == 1)
+			    snprintf(expirebuf, sizeof(expirebuf),
+				getstring(u->ni, OPER_AKILL_EXPIRES_1M), t2);
+			else
+			    snprintf(expirebuf, sizeof(expirebuf),
+				getstring(u->ni, OPER_AKILL_EXPIRES_M), t2);
+		    } else if (t2 < 86400) {
+			t2 /= 60;
+			if (t2/60 == 1) {
+			    if (t2%60 == 1)
+				snprintf(expirebuf, sizeof(expirebuf),
+				    getstring(u->ni, OPER_AKILL_EXPIRES_1H1M),
+				    t2/60, t2%60);
+			    else
+				snprintf(expirebuf, sizeof(expirebuf),
+				    getstring(u->ni, OPER_AKILL_EXPIRES_1HM),
+				    t2/60, t2%60);
+			} else {
+			    if (t2%60 == 1)
+				snprintf(expirebuf, sizeof(expirebuf),
+				    getstring(u->ni, OPER_AKILL_EXPIRES_H1M),
+				    t2/60, t2%60);
+			    else
+				snprintf(expirebuf, sizeof(expirebuf),
+				    getstring(u->ni, OPER_AKILL_EXPIRES_HM),
+				    t2/60, t2%60);
+			}
+		    } else {
+			t2 /= 86400;
+			if (t2 == 1)
+			    snprintf(expirebuf, sizeof(expirebuf),
+				getstring(u->ni, OPER_AKILL_EXPIRES_1D), t2);
+			else
+			    snprintf(expirebuf, sizeof(expirebuf),
+				getstring(u->ni, OPER_AKILL_EXPIRES_D), t2);
+		    }
+				
+		}
+		notice_lang(s_XServ, u, OPER_AKILL_VIEW_FORMAT,
+				akills[i].mask,
+				*akills[i].who ? akills[i].who : "<desconocido>",
+				timebuf, expirebuf, akills[i].reason);
+	    }
+	}
+
+    } else {
+	syntax_error(s_XServ, u, "AKILL", OPER_AKILL_SYNTAX);
     }
 }
+
 
 /*************************************************************************/

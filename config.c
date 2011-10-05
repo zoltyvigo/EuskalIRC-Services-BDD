@@ -49,6 +49,7 @@ char *s_ChanServ;
 char *s_MemoServ;
 char *s_HelpServ;
 char *s_OperServ;
+char *s_XServ;
 char *s_SpamServ;
 char *s_GlobalNoticer;
 char *s_NewsServ;
@@ -81,6 +82,7 @@ char s_ChanServP10[4];
 char s_MemoServP10[4];
 char s_HelpServP10[4];
 char s_OperServP10[4];
+char s_XServP10[4];
 char s_CregServP10[4];
 char s_SpamServP10[4];
 char s_StatServP10[4];
@@ -101,6 +103,7 @@ char *desc_ChanServ;
 char *desc_MemoServ;
 char *desc_HelpServ;
 char *desc_OperServ;
+char *desc_XServ;
 char *desc_SpamServ;
 char *desc_CregServ;
 char *desc_StatServ;
@@ -125,6 +128,7 @@ char *ChanDBName;
 char *CregDBName;
 char *SpamDBName;
 char *OperDBName;
+char *XDBName;
 char *IpVirtualDBName;
 char *EuskalIRCDBName;
 char *JokuDBName;
@@ -369,6 +373,9 @@ Directive directives[] = {
     { "OperServDB",       { { PARAM_STRING, 0, &OperDBName } } },
     { "OperServName",     { { PARAM_STRING, 0, &s_OperServ },
                             { PARAM_STRING, 0, &desc_OperServ } } },
+     { "XServDB",       { { PARAM_STRING, 0, &XDBName } } },
+    { "XServName",     { { PARAM_STRING, 0, &s_XServ },
+                            { PARAM_STRING, 0, &desc_XServ } } },
     { "CregServDB",       { { PARAM_STRING, 0, &CregDBName } } },
     { "CregServName",     { { PARAM_STRING, 0, &s_CregServ },
                             { PARAM_STRING, 0, &desc_CregServ } } },
@@ -704,6 +711,7 @@ int read_config()
     CHEK2(s_MemoServ, MemoServName);
     CHEK2(s_HelpServ, HelpServName);
     CHEK2(s_OperServ, OperServName);
+    CHEK2(s_XServ, XServName);
     CHEK2(s_CregServ, CregServName);
     CHEK2(s_IpVirtual, IPVirtualName);
     CHEK2(s_GeoIP, GeoIPName);
@@ -719,6 +727,7 @@ int read_config()
     CHEK2(NickDBName, NickServDB);
     CHEK2(ChanDBName, ChanServDB);
     CHEK2(OperDBName, OperServDB);
+    CHEK2(XDBName, XServDB);
     CHEK2(SpamDBName, SpamServDB);
     CHEK2(CregDBName, CregServDB);
     CHEK2(JokuDBName, JokuServDB);

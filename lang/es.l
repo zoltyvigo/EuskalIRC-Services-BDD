@@ -1672,11 +1672,11 @@ OPER_AKILL_EXPIRES_1D
 OPER_SET_SYNTAX
 	12SET <opcion> <parametros>
 OPER_SET_IGNORE_ON
-	Ignore code sera usado.
+	Protección Flood Servicios Activado.
 OPER_SET_IGNORE_OFF
-	Ignore code no sera usado.
+	Protección Flood Servicios DesActivado.
 OPER_SET_IGNORE_ERROR
-	Parámetro para IGNORE debe ser ON o OFF.
+	Parámetro para IGNORE debe ser ON u OFF o STATUS.
 OPER_SET_READONLY_ON
 	Services esta ahora en modo leer-solamente read-only.
 OPER_SET_READONLY_OFF
@@ -4569,7 +4569,8 @@ OPER_HELP_GLOBAL
 OPER_HELP_SPAM
 	  12SPAM ADD <param> Añade una palabra considerada como SPAM
 	  12SPAM DEL <param> Elimina de la lista una palabra considerada SPAM
-	  12SPAM LIST	       Da un listado de palabras SPAM
+	  12SPAM LIST        Da un listado de palabras SPAM
+	  12SPAM STATUS      Indica el estado del servicio SPAM(ON/OFF)
 	
 	Son Comandos disponibles para los 4Administradores de Services
 OPER_HELP_DUDA

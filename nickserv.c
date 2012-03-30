@@ -246,6 +246,7 @@ void listnicks(int count_only, const char *nick)
 	tm = localtime(&ni->expira_min);
 	strftime(buf, sizeof(buf), getstring((NickInfo *)NULL,STRFTIME_DATE_TIME_FORMAT), tm);
 	printf("Tiempo Mínimo Expiración: %s\n", buf);
+        
 	if (ni->url)
 	    printf("URL: %s\n", ni->url);
 	if (ni->email)
@@ -324,6 +325,8 @@ void get_nickserv_stats(long *nrec, long *memuse)
 		mem += strlen(ni->url)+1;
 	    if (ni->email)
 		mem += strlen(ni->email)+1;
+	    if (ni->vhost)
+		mem += strlen(ni->vhost)+1;
 	    if (ni->last_usermask)
 		mem += strlen(ni->last_usermask)+1;
 	    if (ni->last_realname)
@@ -338,6 +341,7 @@ void get_nickserv_stats(long *nrec, long *memuse)
                 mem += strlen(ni->suspendreason)+1;
 	   if (ni->motivo)
                 mem += strlen(ni->motivo)+1;
+	 
             if (ni->forbidby)
                 mem += strlen(ni->forbidby)+1;
             if (ni->forbidreason)
@@ -446,6 +450,7 @@ static void load_old_ns_dbase(dbFILE *f, int ver)
 	unsigned short channelcount;
 	char *url;
 	char *email;
+	char *vhost;
     } old_nickinfo;
 
     int i, j, c;
@@ -516,6 +521,8 @@ static void load_old_ns_dbase(dbFILE *f, int ver)
 		SAFE(read_string(&ni->url, f));
 	    if (old_nickinfo.email)
 		SAFE(read_string(&ni->email, f));
+	    if (old_nickinfo.vhost)
+		SAFE(read_string(&ni->vhost, f));
 	    SAFE(read_string(&ni->last_usermask, f));
 	    if (!ni->last_usermask)
 		ni->last_usermask = sstrdup("@");
@@ -585,7 +592,9 @@ void load_ns_dbase(void)
 		SAFE(read_buffer(ni->pass, f));
 		SAFE(read_buffer(ni->clave, f));
 		SAFE(read_string(&ni->url, f));
+             
 		SAFE(read_string(&ni->email, f));
+		SAFE(read_string(&ni->vhost, f));
 		SAFE(read_string(&ni->last_usermask, f));
 		if (!ni->last_usermask)
 		    ni->last_usermask = sstrdup("@");
@@ -633,6 +642,7 @@ void load_ns_dbase(void)
                     ni->time_motivo = tmp32;
                     SAFE(read_int32(&tmp32, f));
                     ni->time_expiresuspend = tmp32;
+		    
                     SAFE(read_string(&ni->forbidby, f));
                     SAFE(read_string(&ni->forbidreason, f));
                 } else {
@@ -644,6 +654,7 @@ void load_ns_dbase(void)
                     ni->time_suspend = 0;
 		     ni->time_motivo = 0;
                     ni->time_expiresuspend = 0;
+		    
                     ni->forbidby = NULL;
                     ni->forbidreason = NULL;
                 }    
@@ -770,6 +781,7 @@ void save_ns_dbase(void)
 	    SAFE(write_buffer(ni->clave, f));
 	    SAFE(write_string(ni->url, f));
 	    SAFE(write_string(ni->email, f));
+	     SAFE(write_string(ni->vhost, f));
 	    SAFE(write_string(ni->last_usermask, f));
 	    SAFE(write_string(ni->last_realname, f));
 	    SAFE(write_string(ni->last_quit, f));
@@ -786,6 +798,7 @@ void save_ns_dbase(void)
             SAFE(write_int32(ni->time_suspend, f));
 	  SAFE(write_int32(ni->time_motivo, f));
             SAFE(write_int32(ni->time_expiresuspend, f));
+	
             SAFE(write_string(ni->forbidby, f));
             SAFE(write_string(ni->forbidreason, f));                                                              
 	    if (ni->link) {
@@ -1278,6 +1291,8 @@ static int delnick(NickInfo *ni)
 	free(ni->last_realname);
     if (ni->email)
         free (ni->email);	
+    if (ni->vhost)
+        free (ni->vhost);
     if (ni->url)
         free (ni->url);    
     if (ni->suspendby)
@@ -1290,6 +1305,7 @@ static int delnick(NickInfo *ni)
         free (ni->suspendreason); 
  if (ni->motivo)
         free (ni->motivo); 
+    
     if (ni->forbidby)
         free (ni->forbidby);        
     if (ni->forbidreason)
@@ -1720,7 +1736,9 @@ return;
 		 privmsg(s_NickServ, row[1], "El nick %s acaba de ser registrado en %s/index.php?option=com_user&task=register",row[1],WebNetwork);
 		 privmsg(s_NickServ, row[1], "Si es su legítimo propietario,identifíquese de nuevo");
 		ni = findnick(ni->nick);
-       
+       ni->active &= ~ ACTIV_PROCESO;
+		 ni->active |= ACTIV_FORZADO;
+		ni->nickactoper = sstrdup("WEB");
 	   send_cmd(NULL, "RENAME %s", row[1]);
 	
 	    ni->flags = 0;
@@ -2716,7 +2734,7 @@ static void do_set_vhost(User *u, NickInfo *ni, char *param)
 	 return;
     }
      if (!param) {
-		    privmsg(s_NickServ, u->nick, "V-Host sin Rellenar  Minimo 3 car?cteres");
+		    privmsg(s_NickServ, u->nick, "V-Host sin Rellenar  Minimo 3 caracteres");
 		    return;
 	}
     
@@ -2736,7 +2754,8 @@ static void do_set_vhost(User *u, NickInfo *ni, char *param)
 	#endif
 	 notice_lang(s_NickServ, u, NICK_SET_VHOST_OFF);
     } else {
-        strcat(param , ".ip.virtual");
+        strcat(param , ".virtual");
+	ni->vhost=sstrdup(param);
 	#ifdef IRC_UNDERNET_P09
         do_write_bdd(ni->nick, 4, param);
 	#endif
@@ -3454,6 +3473,9 @@ static void do_info(User *u)
 			notice_lang(s_NickServ, u, NICK_INFO_EMAIL_FORZADO, ni->email,ni->nickactoper);
                }  else notice_lang(s_NickServ, u, NICK_INFO_EMAIL_INVALID, ni->email);
 	}
+
+         if ((ni->vhost) && !(ni->vhost==NULL))
+	 privmsg(s_NickServ,u->nick, "VHOST:%s", ni->vhost);
         
         /*if (is_services_oper(u))  {    
 	     if (ni->active & ACTIV_CONFIRM) 
@@ -3522,6 +3544,7 @@ static void do_info(User *u)
 	notice_lang(s_NickServ, u, NICK_INFO_OPTIONS,
 		*buf ? buf : getstring(u->ni, NICK_INFO_OPT_NONE));
 
+	
 	    
 	if ((ni->status & NS_NO_EXPIRE) && (real == u->ni || is_servoper))
 	    notice_lang(s_NickServ, u, NICK_INFO_NO_EXPIRE);

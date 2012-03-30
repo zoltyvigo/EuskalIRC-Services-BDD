@@ -222,6 +222,7 @@ struct nickinfo_ {
     time_t time_suspend;     /* Tiempo cuando suspendio el nick */
     time_t time_expiresuspend; /* Expiracion suspension */
    time_t time_vhost; /* Tiempo para el proximo cambio de vhost --->24 horas y tal */
+    char *vhost;	/* virtualhost ipv */
     char *forbidby;          /* Quien lo forbideo */
     char *forbidreason;      /* Motivo del forbid */
 

@@ -9,7 +9,7 @@
  
  #include "services.h"
  #include "pseudo.h"
- 
+
  // SpamServ estruktura
 
 typedef struct spam_ SpamInfo;
@@ -17,8 +17,9 @@ struct spam_ {
     int32 zenb;
     char *hitza;
     char zeinek[NICKMAX];
+    
 };
-
+static int32 spamgline=0;
 static int32 sspam = 0;
 static int32 spam_size = 0;
 static SpamInfo *spam = NULL;
@@ -51,10 +52,11 @@ void load_spam()
 
     if (!(f = open_db(s_OperServ, SpamDBName, "r")))
 	return;
-    switch (i = get_file_version(f)) {
+      switch (i = get_file_version(f)) {
       case 8:
       case 7:
 	SAFE(read_int16(&n, f));
+         SAFE(read_int32(&spamgline, f));
 	sspam = n;
 	if (sspam < 8)
 	    spam_size = 16;
@@ -67,11 +69,14 @@ void load_spam()
 	    close_db(f);
 	    return;
 	}
+        
 	for (i = 0; i < sspam; i++) {
 	    SAFE(read_int32(&spam[i].zenb, f));
 	    SAFE(read_string(&spam[i].hitza, f));
 	    SAFE(read_buffer(spam[i].zeinek, f));
+	    
 	}
+	
 	break;
 
       default:
@@ -107,11 +112,14 @@ void save_spam()
     if (!(f = open_db(s_OperServ, SpamDBName, "w")))
 	return;
     SAFE(write_int16(sspam, f));
+    SAFE(write_int32(spamgline, f));
     for (i = 0; i < sspam; i++) {
 	SAFE(write_int32(spam[i].zenb, f));
 	SAFE(write_string(spam[i].hitza, f));
 	SAFE(write_buffer(spam[i].zeinek, f));
+	
     }
+    
     close_db(f);
 }
 
@@ -125,13 +133,49 @@ void do_spam(User *u)
     char *cmd = strtok(NULL, " ");
     char *typename;
     int *msgs;
-
-
+   
 
     if (!cmd)
 	cmd = "";
+ if  ((stricmp(cmd, "ON") == 0)) {
+	if (!is_servadmin) {
+	    notice_lang(s_GeoIP, u, PERMISSION_DENIED);
+	    return;
+	} 
+       spamgline=1;
+         canaladmins(s_SpamServ, "2ACTIVADO Glines por 12%s",u->nick);
+	  privmsg(s_SpamServ, u->nick, "Servicio Glines 2ACTIVADO");
+        return;
+        }
 
+     if ((stricmp(cmd, "OFF") == 0))  {
+	if (!is_servadmin) {
+	    notice_lang(s_GeoIP, u, PERMISSION_DENIED);
+	    return;
+	} 
+	 spamgline=0;
+           canaladmins(s_SpamServ, "4DESACTIVADO Glines por 12%s",u->nick);
+	 privmsg(s_SpamServ, u->nick, "Servicio Glines 5DESACTIVADO");
+         return;
+	
+         }
+    if ((stricmp(cmd, "STATUS") == 0))  {
+	if (!is_servadmin) {
+	    notice_lang(s_SpamServ, u, PERMISSION_DENIED);
+	    return;
+	} 
+	if (spamgline) 
+             privmsg(s_SpamServ, u->nick, "Estado Servicio Glines de AntiSpam 2ACTIVADO");
+         else
+               privmsg(s_SpamServ, u->nick, "Estado Servicio Glines de AntiSpam  5DESACTIVADO");
+	return;
+               
+}
     if (stricmp(cmd, "LIST") == 0) {
+	if (!is_servadmin) {
+	    notice_lang(s_SpamServ, u, PERMISSION_DENIED);
+	    return;
+	} 
 	do_spam_list(u);
 
     } else if (stricmp(cmd, "ADD") == 0) {
@@ -148,9 +192,9 @@ void do_spam(User *u)
 
     } else {
         #ifdef IRC_UNDERNET_P10
-	privmsg(s_OperServ, u->numerico, "Sintaxis: SPAM ADD/DEL/LIST [param]");
+	privmsg(s_OperServ, u->numerico, "Sintaxis: SPAM ADD/DEL/LIST/STATUS [param]");
 	#else
-	privmsg(s_ChanServ, u->nick,"Sintaxis: SPAM ADD/DEL/LIST [param]");
+	privmsg(s_OperServ, u->nick,"Sintaxis: SPAM ADD/DEL/LIST/STATUS [param]");
 	#endif
     }
 }
@@ -181,10 +225,10 @@ static void do_spam_del(User *u)
     if (!text) {
 	char buf[32];
 	#ifdef IRC_UNDERNET_P10
-	         privmsg(s_OperServ, u->numerico, "Sintaxis: SPAM ADD/DEL/LIST [param]");
+	         privmsg(s_OperServ, u->numerico, "Sintaxis: SPAM ADD/DEL/LIST/STATUS [param]");
                 
 #else
-                 privmsg(s_ChanServ, u->nick, "Sintaxis: SPAM ADD/DEL/LIST [param]");
+                 privmsg(s_OperServ, u->nick, "Sintaxis: SPAM ADD/DEL/LIST/STATUS [param]");
 #endif
 	
     } else {
@@ -259,9 +303,9 @@ static void do_spam_add(User *u)
     if (!text) {
 	char buf[32];
 	#ifdef IRC_UNDERNET_P10
-	privmsg(s_OperServ, u->numerico, "Sintaxis: SPAM ADD/DEL/LIST [param]");
+	privmsg(s_OperServ, u->numerico, "Sintaxis: SPAM ADD/DEL/LIST/STATUS [param]");
 	#else
-	privmsg(s_OperServ, u->nick,"Sintaxis: SPAM ADD/DEL/LIST [param]");
+	privmsg(s_OperServ, u->nick,"Sintaxis: SPAM ADD/DEL/LIST/STATUS [param]");
 	#endif
     } else {
 	int n = add_spam(u, text);
@@ -387,7 +431,7 @@ if (!strcmp(kanala, adm_kanala) || !strcmp(kanala, opr_kanala)) return;
  for (i = 0; i < sspam; i++) {
 
         if (strstr(testua, spam[i].hitza)) {
-           canaladmins(s_SpamServ, "[SPAM] User: 2%s@12%s , Canal: %s '5%s'", zein, erab->host, kanala, testua);
+           canaladmins(s_SpamServ, "[SPAM] User: 2%s@12%s , Canal: %s '5%s'(4%s)", zein, erab->host, kanala, testua,spam[i].hitza);
             break;
             }
             count ++;
@@ -406,6 +450,12 @@ char op_canal[BUFSIZE];
 snprintf(adm_canal, sizeof(adm_canal), "#%s", CanalAdmins);
 snprintf(op_canal, sizeof(op_canal), "#%s", CanalOpers);
   User *u = finduser(source);
+
+char *mask, *reason, *expiry;
+    time_t expires;
+
+expires = GlinePscannerExpiry;
+
    
 if (SpamUsers == 0)
 return;
@@ -420,11 +470,16 @@ for (i = 0; i < sspam; i++) {
 		canaladmins(s_SpamServ, "El Representante de Red 12%s  dijo 4%s !! ", source,spam[i].hitza);;
  		 return;
 		}
+		if (!spamgline) {
 		// privmsg(s_SpamServ, chan, "Ey! %s dijo 4%s !!", source,spam[i].hitza);
 		send_cmd(s_SpamServ, "MODE %s +b :%s", chan , source);
 	        send_cmd(s_SpamServ, "KICK %s %s : _antispam 4(Publicidad No Autorizada.Forma Parte Del Listado Censurado Por La Red)", chan, source);
 		send_cmd(ServerName, "SVSJOIN  %s #%s", source,CanalSpamers);
-		return;
+		return; 
+               } else if (spamgline) {
+			 send_cmd(ServerName, "GLINE * +*@%s %lu :%s", u->host, expires, "_antispam 4(Publicidad No Autorizada.Forma Parte Del Listado Censurado Por La Red)");
+			 return;
+				}
 		}
 	
 	}

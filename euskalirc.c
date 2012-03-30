@@ -21,7 +21,7 @@ void do_euskal(User *u) /*la colocamos en extern.h y asi la llamamos desde oper*
       
   
 
-    if ((!cmd) || ((!stricmp(cmd, "ACEPTA") == 0) && (!stricmp(cmd, "RECHAZA") == 0) && (!stricmp(cmd, "ATIENDE") == 0)&& (!stricmp(cmd, "DESATIENDE") == 0))) {
+    if ((!cmd) || ((!stricmp(cmd, "ACEPTA") == 0) && (!stricmp(cmd, "RECHAZA") == 0) && (!stricmp(cmd, "ATENDIDO") == 0)&& (!stricmp(cmd, "DESATIENDE") == 0))) {
       	 notice_lang(s_OperServ, u, EUSKALIRC_HELP_DUDA);
     	return;
     }
@@ -76,15 +76,15 @@ void do_euskal(User *u) /*la colocamos en extern.h y asi la llamamos desde oper*
 
           }
 
-       else if ((stricmp(cmd, "ATIENDE") == 0) && (ni->in_ayu & AYU_ACEPTA))  {
+       else if ((stricmp(cmd, "ATENDIDO") == 0) && (ni->in_ayu & AYU_ACEPTA))  {
 	if (!is_services_oper(u)) {
 	    notice_lang(s_OperServ, u, PERMISSION_DENIED);
 	    return;
 	}  else if (ni && (ni->status & NS_IDENTIFIED)) {
-          privmsg(s_EuskalIRCServ, nick , "Por favor.Recuerde abandonar el canal,una vez que haya sido atendido/a.Gracias.");
+          privmsg(s_EuskalIRCServ, nick , "Por favor.Recuerde abandonar el canal,una vez que haya sido atendido/a.Si aún no se le resolvió el problema planteado, o deseara realizar otra consulta,deberá igualmente salir previamente del canal (2#%s) y volver a entrar, para asignarle nuevamente otro representante de servicios. Gracias.",CanalAyuda);
           canalopers( s_EuskalIRCServ,"12OPER 4%s 5ATIENDE DUDA de  2%s",u->nick,nick);
 	ni->in_ayu   &= ~AYU_ACEPTA;
-	ni->in_ayu |= AYU_ATENDIDO ;
+	ni->in_ayu |= AYU_ATENDIDO;
         send_cmd(s_EuskalIRCServ, "MODE #%s -v %s", CanalAyuda, ni->nick); 
         return;
 	  }
@@ -120,7 +120,7 @@ if ((stricmp(cmd, "ACEPTA") == 0) && !(ni->in_ayu & AYU_PROCESO))  {
        privmsg(s_OperServ,u->nick, " 2El Nick 12%s 2Ni Solicita ni Precisa Asistencia!.5 RECHAZO3 ilógico!",ni->nick);
 	return;
      }
-  else if ((stricmp(cmd, "ATIENDE") == 0) && !(ni->in_ayu & AYU_ACEPTA))  { 
+  else if ((stricmp(cmd, "ATENDIDO") == 0) && !(ni->in_ayu & AYU_ACEPTA))  { 
     
        privmsg(s_OperServ,u->nick, " 2El Nick 12%s 2No estaba siendo atendido!.5 Finalización del soporte3 ilógico!",ni->nick);
 	return;
@@ -198,7 +198,7 @@ if (!strcmp(chan, ayu)) {
       if ((ni = u->real_ni) && !(is_services_oper(u))) {
 	 ni->in_ayu = 0;
           ni->in_ayu |= AYU_ENTRA;
-	canalopers( s_EuskalIRCServ,"4%s Solicita Soporte",source);
+	canalopers( s_EuskalIRCServ,"4%s Entra para solicitar soporte",source);
 	 send_helperchan_users(source);
 	             }
         else if  (!is_services_oper(u)) {

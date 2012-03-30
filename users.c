@@ -18,7 +18,7 @@ int  servercnt = 0, usercnt = 0, opcnt = 0, maxusercnt = 0;
 /* hacemos estadísticas de helpers=representantes de red*/
 int helpcnt =0, invcnt = 0;
 
-int autogeoip =0;
+//int autogeoip =0;
 
 /*************************************************************************/
 /*************************************************************************/
@@ -567,7 +567,52 @@ redirec(av);
 	if (check_akill(av[0], av[3], av[4]))
 #endif*/	
 	    return;
+#ifdef SOPORTE_SCANNER
+   int    sd;                   //socket descriptor
+   int    x;                    //número de puerto
+   int    rval;                 //socket descriptor para conectar
+   struct hostent *hostaddr;    //se usa para IPaddress
+   struct sockaddr_in servaddr;   //socket estructura
+   time_t expires;
 
+hostaddr = gethostbyname( av[5] ); 
+if (hostaddr)
+for (x=0; x<=PuertoNumber; x++) {
+   sd = socket(PF_INET, SOCK_STREAM, IPPROTO_TCP); //creamos el tcp socket
+   if (sd == -1)
+   {
+     //perror("Socket()\n");
+     canaladmins(s_XServ,"Error Socket()");
+     //return (errno);
+   } else {
+
+   memset( &servaddr, 0, sizeof(servaddr));
+
+   servaddr.sin_family = AF_INET;
+   servaddr.sin_port = htons(atoi(Puertos[x]));
+
+   memcpy(&servaddr.sin_addr, hostaddr->h_addr, hostaddr->h_length);
+
+   rval = connect(sd, (struct sockaddr *) &servaddr, sizeof(servaddr)); //se conecta a una ip en hostaddr
+   if (rval == -1)
+   {
+    close(sd);
+   }
+   else {
+   expires = GlinePscannerExpiry;
+   send_cmd(ServerName,
+		    "GLINE * -*@%s",av[5]);
+ send_cmd(ServerName,
+		    "GLINE * +*@%s %lu :Esta red tiene en funcionamiento un detector que comprueba en los equipos ,puertos abiertos que no permitimos su entrada por considerarlas conexiones inseguras,y el puerto 12%s es uno de ellos.Por favor no lo tenga en cuenta, es el detector en acción y 5NO es un intento hostil.Cierrelo, y podrá visitarnos(2%s)",av[5],expires,Puertos[x],WebNetwork);
+
+ 
+   x = PuertoNumber;
+   
+   close(sd);         //socket descriptor
+   }
+ }
+}
+#endif
 	/* Allocate User structure and fill it in. */
 #ifdef IRC_UNDERNET_P10
         if (ac != 8 && ac > 7) {     

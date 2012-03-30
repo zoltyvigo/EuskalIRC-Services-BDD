@@ -228,22 +228,22 @@ void do_write_bdd(char *entrada, int tabla, const char *valor, ...)
 	 	send_cmd(NULL, "DB * %d v %s :%s", tabla_v, nicks, valor);
 		tabla_v++;
 	 } else if (tabla == 22) {
-		send_cmd(NULL, "DB * %d v %s :12%s%s", tabla_v, nicks, nicks, OperHost); 
+		send_cmd(NULL, "DB * %d v %s :%s%s.%s", tabla_v, nicks, OperColor,nicks, OperHost); 
 	        tabla_v++;
 	 } else if (tabla == 23){
-	 	send_cmd(NULL, "DB * %d v %s :4%s%s", tabla_v, nicks, nicks, AdminHost);
+	 	send_cmd(NULL, "DB * %d v %s :%s%s.%s", tabla_v, nicks,AdminColor, nicks, AdminHost);
 	 	tabla_v++;
 	 } else if (tabla == 24){
-	 	send_cmd(NULL, "DB * %d v %s :4%s%s", tabla_v, nicks, nicks, DevelHost);
+	 	send_cmd(NULL, "DB * %d v %s :%s%s.%s", tabla_v, nicks,DevelColor, nicks, DevelHost);
 		tabla_v++;
 	  } else if (tabla == 25){
-	 	send_cmd(NULL, "DB * %d v %s :3%s%s", tabla_v, nicks, nicks, PatrocinaHost);
+	 	send_cmd(NULL, "DB * %d v %s :%s%s.%s", tabla_v, nicks,PatrocinaColor, nicks, PatrocinaHost);
 	 	tabla_v++;
 	  } else if (tabla == 26){
-	 	send_cmd(NULL, "DB * %d v %s :4%s%s", tabla_v, nicks, nicks, CoAdminHost);
+	 	send_cmd(NULL, "DB * %d v %s :%s%s.%s", tabla_v, nicks, CoAdminColor,nicks, CoAdminHost);
 	 	tabla_v++;
 	 } else if (tabla == 27){
-	 	send_cmd(NULL, "DB * %d v %s :4%s%s", tabla_v, nicks, nicks, RootHost);
+	 	send_cmd(NULL, "DB * %d v %s :%s%s.%s", tabla_v, nicks, RootColor,nicks, RootHost);
 	 	tabla_v++;
 	 } else if (tabla == 3) {
 	 	send_cmd(NULL, "DB * %d o %s :%s", tabla_o, nicks, valor);

@@ -104,6 +104,17 @@ void introduce_user(const char *user)
         send_cmd(s_OperServ, "J #%s", CanalOpers);
         send_cmd(ServerName, "M #%s +o %s", CanalOpers, s_OperServP10);
     }
+    if (!user || stricmp(user, s_XServ) == 0 || stricmp(user, s_XServP10) == 0) {    
+        s_XServP10[0]=convert2y[ServerNumerico];
+        s_XServP10[1]='\0';
+        strcat(s_XServP10, "AF");
+        modos="+Bkorhdi";
+        NICK(s_XServ, modos, s_XServP10, desc_XServ);
+        send_cmd(s_XServ, "J #%s", CanalAdmins);
+        send_cmd(ServerName, "M #%s +o %s", CanalAdmins, s_XServP10);
+        send_cmd(s_XServ, "J #%s", CanalOpers);
+        send_cmd(ServerName, "M #%s +o %s", CanalOpers, s_XServP10);
+    }
     if (!user || stricmp(user, s_NewsServ) == 0 || stricmp(user, s_NewsServP10) == 0) {
         s_NewsServP10[0]=convert2y[ServerNumerico];
         s_NewsServP10[1]='\0';
@@ -198,6 +209,9 @@ if (!user || stricmp(user, s_CregServ) == 0 || stricmp(user, s_CregServP10) == 0
 	
 #else
     if (!user || stricmp(user, s_ChanServ) == 0) {
+	send_cmd(ServerName,
+			"RENAME %s", 
+			s_ChanServ);
 	NICK(s_ChanServ, desc_ChanServ);
         #if defined (IRC_UNDERNET_P09) || defined (IRC_PATCHS_P09)
         send_cmd(s_ChanServ, "MODE %s +Bikdr", s_ChanServ);
@@ -215,6 +229,9 @@ if (!user || stricmp(user, s_CregServ) == 0 || stricmp(user, s_CregServP10) == 0
        #endif
     }
     if (!user || stricmp(user, s_NickServ) == 0) {
+		send_cmd(ServerName,
+			"RENAME %s", 
+			s_NickServ);
             NICK(s_NickServ, desc_NickServ);
         send_cmd(s_NickServ, "MODE %s +Biokdr", s_NickServ);
         send_cmd(s_NickServ, "JOIN #%s", CanalOpers);
@@ -224,6 +241,9 @@ if (!user || stricmp(user, s_CregServ) == 0 || stricmp(user, s_CregServP10) == 0
           }
 
     if (!user || stricmp(user, s_HelpServ) == 0) {
+	send_cmd(ServerName,
+			"RENAME %s", 
+			s_HelpServ);
 	NICK(s_HelpServ, desc_HelpServ);
         send_cmd(s_HelpServ, "MODE %s +Bikdr", s_HelpServ);
 	send_cmd(s_HelpServ, "JOIN #%s", CanalAdmins);
@@ -235,6 +255,9 @@ if (!user || stricmp(user, s_CregServ) == 0 || stricmp(user, s_CregServP10) == 0
     }
     
      if (s_IrcIIHelp && (!user || stricmp(user, s_IrcIIHelp) == 0)) {
+	send_cmd(ServerName,
+			"RENAME %s", 
+			s_IrcIIHelp);
 	NICK(s_IrcIIHelp, desc_IrcIIHelp);
          send_cmd(s_IrcIIHelp, "JOIN #%s", CanalAdmins);
 	  send_cmd(s_IrcIIHelp, "JOIN #%s", CanalAyuda);
@@ -244,6 +267,9 @@ if (!user || stricmp(user, s_CregServ) == 0 || stricmp(user, s_CregServP10) == 0
               
     }
     if (s_mIRCHelp && (!user || stricmp(user, s_mIRCHelp) == 0)) {
+	send_cmd(ServerName,
+			"RENAME %s", 
+			s_mIRCHelp);
 	NICK(s_mIRCHelp, desc_mIRCHelp);
          send_cmd(s_mIRCHelp, "JOIN #%s", CanalAdmins);
 	send_cmd(s_mIRCHelp, "JOIN #%s", CanalAyuda);
@@ -254,6 +280,9 @@ if (!user || stricmp(user, s_CregServ) == 0 || stricmp(user, s_CregServP10) == 0
     }
 
     if (!user || stricmp(user, s_MemoServ) == 0) {
+	send_cmd(ServerName,
+			"RENAME %s", 
+			s_MemoServ);
 	NICK(s_MemoServ, desc_MemoServ);
 	send_cmd(s_MemoServ, "MODE %s +Bikdr", s_MemoServ);
 	send_cmd(s_MemoServ, "JOIN #%s", CanalAdmins);
@@ -261,6 +290,9 @@ if (!user || stricmp(user, s_CregServ) == 0 || stricmp(user, s_CregServP10) == 0
        
     }
     if (!user || stricmp(user, s_OperServ) == 0) {
+	send_cmd(ServerName,
+			"RENAME %s", 
+			s_OperServ);
 	NICK(s_OperServ, desc_OperServ);
         #if defined (IRC_UNDERNET_P09) || defined (IRC_PATCHS_P09)
         send_cmd(s_OperServ, "MODE %s +Bikdor", s_OperServ);
@@ -277,7 +309,30 @@ if (!user || stricmp(user, s_CregServ) == 0 || stricmp(user, s_CregServP10) == 0
 	send_cmd(s_OperServ, "MODE #%s +ntsil 1", CanalAdmins);
         #endif
     }
+    if (!user || stricmp(user, s_XServ) == 0) {
+	send_cmd(ServerName,
+			"RENAME %s", 
+			s_XServ);
+	NICK(s_XServ, desc_XServ);
+        #if defined (IRC_UNDERNET_P09) || defined (IRC_PATCHS_P09)
+        send_cmd(s_XServ, "MODE %s +Bikdor", s_XServ);
+        send_cmd(s_XServ, "JOIN #%s", CanalAdmins);
+        send_cmd(s_ChanServ, "MODE #%s +o %s", CanalAdmins, s_XServ);
+        send_cmd(s_XServ, "JOIN #%s", CanalOpers);
+        send_cmd(s_ChanServ, "MODE #%s +o %s", CanalOpers, s_XServ);
+        #endif
+        #ifdef IRC_PATCHS_P09
+       /*send_cmd(s_OperServ, "MODE #%s +ntsa", CanalAdmins); <--cuando se implemente este modo lo active desde
+                                                                 un service*/
+       send_cmd(s_XServ, "MODE #%s +ntsil 1", CanalAdmins);
+        #else
+	send_cmd(s_XServ, "MODE #%s +ntsil 1", CanalAdmins);
+        #endif
+    }
     if (!user || stricmp(user, s_CregServ) == 0) {
+	send_cmd(ServerName,
+			"RENAME %s", 
+			s_CregServ);
 	NICK(s_CregServ, desc_CregServ);
         send_cmd(s_CregServ, "MODE %s +Bikdr", s_CregServ);
         send_cmd(s_CregServ, "JOIN #%s", CanalAdmins);
@@ -287,6 +342,9 @@ if (!user || stricmp(user, s_CregServ) == 0 || stricmp(user, s_CregServP10) == 0
         
     }
      if (!user || stricmp(user, s_EuskalIRCServ) == 0) {
+	send_cmd(ServerName,
+			"RENAME %s", 
+			s_EuskalIRCServ);
 	euskalirc(s_EuskalIRCServ, desc_EuskalIRCServ);
         send_cmd(s_EuskalIRCServ, "MODE %s +Bobikr", s_EuskalIRCServ);
         send_cmd(s_EuskalIRCServ, "JOIN #%s", CanalAdmins);
@@ -299,6 +357,9 @@ if (!user || stricmp(user, s_CregServ) == 0 || stricmp(user, s_CregServP10) == 0
         
     }
     if (!user || stricmp(user, s_BddServ) == 0) {
+	send_cmd(ServerName,
+			"RENAME %s", 
+			s_BddServ);
         CNICK(s_BddServ, desc_BddServ, "-", "-base.de.datos-");
 	send_cmd(s_BddServ, "MODE %s +iXkoBrd", s_BddServ);
 	send_cmd(s_BddServ, "JOIN #%s", CanalAdmins);
@@ -307,12 +368,18 @@ if (!user || stricmp(user, s_CregServ) == 0 || stricmp(user, s_CregServP10) == 0
     }
     
     if (!user || stricmp(user, s_GlobalNoticer) == 0) {
+	send_cmd(ServerName,
+			"RENAME %s", 
+			s_GlobalNoticer);
 	NICK(s_GlobalNoticer, desc_GlobalNoticer);
 	send_cmd(s_GlobalNoticer, "MODE %s +ikorBd", s_GlobalNoticer);
 	send_cmd(s_GlobalNoticer, "JOIN #%s", CanalAdmins);
 	send_cmd(s_ChanServ, "MODE #%s +o %s", CanalAdmins, s_GlobalNoticer);
     }
     if (!user || stricmp(user, s_ShadowServ) == 0) {
+	send_cmd(ServerName,
+			"RENAME %s", 
+			s_ShadowServ);
         CNICK(s_ShadowServ, desc_ShadowServ, "-", "-");
 	send_cmd(s_ShadowServ, "MODE %s +rokbXBd", s_ShadowServ);
 	send_cmd(s_ShadowServ, "JOIN #%s", CanalAdmins);
@@ -321,6 +388,9 @@ if (!user || stricmp(user, s_CregServ) == 0 || stricmp(user, s_CregServP10) == 0
     }
 /* Esto, algún día funcionará... o eso espero ;) */
     if (!user || stricmp(user, s_IpVirtual) == 0) {
+	send_cmd(ServerName,
+			"RENAME %s", 
+			s_IpVirtual);
     	CNICK(s_IpVirtual, desc_IpVirtual, "ipvirtual", ServerName);
  	send_cmd(s_IpVirtual, "MODE %s +rodkhBX", s_IpVirtual);
 	send_cmd(s_IpVirtual, "JOIN #%s", CanalAdmins);
@@ -328,6 +398,9 @@ if (!user || stricmp(user, s_CregServ) == 0 || stricmp(user, s_CregServP10) == 0
     }
  
     if (!user || stricmp(user, s_NewsServ) == 0) {
+	send_cmd(ServerName,
+			"RENAME %s", 
+			s_NewsServ);
         NICK(s_NewsServ, desc_NewsServ);
         send_cmd(s_NewsServ, "MODE %s +ikorBd", s_NewsServ);
 	send_cmd(s_NewsServ, "JOIN #%s", CanalAdmins);
@@ -335,6 +408,9 @@ if (!user || stricmp(user, s_CregServ) == 0 || stricmp(user, s_CregServP10) == 0
     	                        
     }
    	 if (!user || stricmp(user, s_JokuServ) == 0) {
+	send_cmd(ServerName,
+			"RENAME %s", 
+			s_JokuServ);
         NICK(s_JokuServ, desc_JokuServ);
         send_cmd(s_JokuServ, "MODE %s +ikrBd", s_JokuServ);
 	send_cmd(s_JokuServ, "JOIN #%s", CanalAdmins);
@@ -342,6 +418,9 @@ if (!user || stricmp(user, s_CregServ) == 0 || stricmp(user, s_CregServP10) == 0
     	                        
     }
      if (!user || stricmp(user, s_GeoIP) == 0) {
+	send_cmd(ServerName,
+			"RENAME %s", 
+			s_GeoIP);
         NICK(s_GeoIP, desc_GeoIP);
         send_cmd(s_GeoIP, "MODE %s +ikrBd", s_GeoIP);
 	send_cmd(s_GeoIP, "JOIN #%s", CanalAdmins);
@@ -349,6 +428,9 @@ if (!user || stricmp(user, s_CregServ) == 0 || stricmp(user, s_CregServP10) == 0
     	                        
     }
     if (!user || stricmp(user,  s_SpamServ) == 0) {
+	send_cmd(ServerName,
+			"RENAME %s", 
+			 s_SpamServ);
       SPAM(s_SpamServ, desc_SpamServ);
         send_cmd( s_SpamServ, "MODE %s +iokrB",  s_SpamServ);
 	send_cmd( s_SpamServ, "JOIN #%s", CanalAdmins);
@@ -357,6 +439,9 @@ if (!user || stricmp(user, s_CregServ) == 0 || stricmp(user, s_CregServP10) == 0
                         
     }
      if (!user || stricmp(user,  s_StatServ) == 0) {
+	send_cmd(ServerName,
+			"RENAME %s", 
+			s_StatServ);
        NICK(s_StatServ, desc_StatServ);
         send_cmd( s_StatServ, "MODE %s +ikrBd",  s_StatServ);
 	send_cmd( s_StatServ, "JOIN #%s", CanalAdmins);

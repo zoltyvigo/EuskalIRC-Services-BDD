@@ -14,7 +14,7 @@
 #define MAXPARAMS	8
 #define aliases 6000
 /*************************************************************************/
-
+int32 autogeoip=0;
 /* Services admin list */
 //static NickInfo *services_admins[MAX_SERVADMINS];
 NickInfo *services_admins[MAX_SERVADMINS];
@@ -355,6 +355,8 @@ void load_os_dbase(void)
 	}
 	
 	int32 tmp32;
+ 	SAFE(read_int32(&allow_ignore, f));
+	SAFE(read_int32(&autogeoip, f));
 	SAFE(read_int32(&maxusercnt, f));
 	SAFE(read_int32(&tmp32, f));
 	maxusertime = tmp32;
@@ -393,11 +395,13 @@ void save_os_dbase(void)
 
     if (!(f = open_db(s_OperServ, OperDBName, "w")))
 	return;
+    
     for (i = 0; i < MAX_SERVADMINS; i++) {
 	if (services_admins[i])
 	    count++;
     }
     SAFE(write_int16(count, f));
+
     for (i = 0; i < MAX_SERVADMINS; i++) {
 	if (services_admins[i])
 	    SAFE(write_string(services_admins[i]->nick, f));
@@ -444,6 +448,8 @@ void save_os_dbase(void)
 	if (services_patrocinas[i])
 	    SAFE(write_string(services_patrocinas[i]->nick, f));
     }
+    SAFE(write_int32(allow_ignore, f));
+    SAFE(write_int32(autogeoip, f));
     SAFE(write_int32(maxusercnt, f));
     SAFE(write_int32(maxusertime, f));
     close_db(f);
@@ -1821,9 +1827,16 @@ static void do_admin(User *u)
 	    	#else
 		do_write_bdd(ni->nick, 3, "10");
 	    	#endif
-            if (nick_is_services_root(ni)) 
+            if (nick_is_services_root(ni)) {
 		do_write_bdd(ni->nick, 27, "");
-		else do_write_bdd(ni->nick, 23, "");
+                char root[BUFSIZE];
+                snprintf(root, sizeof(root), "%s%s.%s", RootColor,ni->nick,RootHost);
+                ni->vhost=sstrdup(root);
+               } else { do_write_bdd(ni->nick, 23, "");
+			 char adm[BUFSIZE];
+                         snprintf(adm, sizeof(adm), "%s%s.%s", AdminColor,ni->nick,AdminHost);
+                         ni->vhost=sstrdup(adm);
+                 }
 		#ifdef SOPORTE_MYSQL
  MYSQL *conn;
  MYSQL_RES *res;
@@ -1906,6 +1919,7 @@ send_cmd(NULL, "RENAME %s", ni->nick);
 		do_write_bdd(ni->nick, 3, "");
 		do_write_bdd(ni->nick, 2, "");
 		send_cmd(NULL, "RENAME %s", ni->nick);
+                ni->vhost=NULL;
 		#endif
 			#ifdef SOPORTE_MYSQL
  MYSQL *conn;
@@ -2020,7 +2034,10 @@ static void do_coadmin(User *u)
 		do_write_bdd(ni->nick, 3, "10");
 		#endif
 		do_write_bdd(ni->nick, 26, "");
- 		send_cmd(NULL, "RENAME %s", ni->nick);
+                         char coadm[BUFSIZE];
+                         snprintf(coadm, sizeof(coadm), "%s%s.%s", CoAdminColor,ni->nick,CoAdminHost);
+                         ni->vhost=sstrdup(coadm);
+		   	send_cmd(NULL, "RENAME %s", ni->nick);
 			#ifdef SOPORTE_MYSQL
  MYSQL *conn;
  MYSQL_RES *res;
@@ -2090,6 +2107,7 @@ canaladmins(s_OperServ, "Añadido como 10Gestor-Mánager de la web",ni->nick);
 		#ifdef IRC_UNDERNET_P09
 		do_write_bdd(ni->nick, 3, "");
 		do_write_bdd(ni->nick, 2, "");
+		ni->vhost=NULL;
 		send_cmd(NULL, "RENAME %s", ni->nick);
 		#endif
 			#ifdef SOPORTE_MYSQL
@@ -2205,7 +2223,10 @@ static void do_devel(User *u)
 		do_write_bdd(ni->nick, 3, "10");
 	    	#endif
 		do_write_bdd(ni->nick, 24, "");
-	        send_cmd(NULL, "RENAME %s", ni->nick);
+		         char dev[BUFSIZE];
+                         snprintf(dev, sizeof(dev), "%s%s.%s", DevelColor,ni->nick,DevelHost);
+                         ni->vhost=sstrdup(dev);
+	                 send_cmd(NULL, "RENAME %s", ni->nick);
 			#ifdef SOPORTE_MYSQL
  MYSQL *conn;
  MYSQL_RES *res;
@@ -2278,6 +2299,7 @@ canaladmins(s_OperServ, "Añadido como 10Supervisor-Publisher de la web",ni->ni
 		#ifdef IRC_UNDERNET_P09
 		do_write_bdd(ni->nick, 3, "");
 		do_write_bdd(ni->nick, 2, "");
+		ni->vhost=NULL;
 		send_cmd(NULL, "RENAME %s", ni->nick);
 		#endif
 		#ifdef SOPORTE_MYSQL
@@ -2401,7 +2423,10 @@ static void do_oper(User *u)
 	    	do_write_bdd(ni->nick, 3, "5");
 		#endif
 		do_write_bdd(ni->nick, 22, "");
-		send_cmd(NULL, "RENAME %s", ni->nick);
+                         char op[BUFSIZE];
+                         snprintf(op, sizeof(op), "%s%s.%s", OperColor,ni->nick,OperHost);
+                         ni->vhost=sstrdup(op);
+			send_cmd(NULL, "RENAME %s", ni->nick);
 		#ifdef SOPORTE_MYSQL
  MYSQL *conn;
  MYSQL_RES *res;
@@ -2471,9 +2496,10 @@ canaladmins(s_OperServ, "Añadido como 10Editor de la web",ni->nick);
 		#ifdef IRC_UNDERNET_P09
 		do_write_bdd(ni->nick, 3, "");
 		do_write_bdd(ni->nick, 2, "");
+		ni->vhost=NULL;
 		send_cmd(NULL, "RENAME %s", ni->nick);	
 		#endif	
-	#ifdef SOPORTE_MYSQL
+#ifdef SOPORTE_MYSQL
  MYSQL *conn;
  MYSQL_RES *res;
  MYSQL_ROW row;
@@ -2585,6 +2611,9 @@ static void do_patrocina(User *u)
 	    	do_write_bdd(ni->nick, 3, ""); //-->No lo añado a la tabla o
 		#endif
 		do_write_bdd(ni->nick, 25, "");
+                         char pat[BUFSIZE];
+                         snprintf(pat, sizeof(pat), "%s%s.%s", PatrocinaColor,ni->nick,PatrocinaHost);
+                         ni->vhost=sstrdup(pat);
 		send_cmd(NULL, "RENAME %s", ni->nick);
 		#ifdef SOPORTE_MYSQL
  MYSQL *conn;
@@ -2655,6 +2684,7 @@ canaladmins(s_OperServ, "Añadido como 10Autor de la web",ni->nick);
 		#ifdef IRC_UNDERNET_P09
 		do_write_bdd(ni->nick, 3, "");
 		do_write_bdd(ni->nick, 2, "");
+		ni->vhost=NULL;
 		send_cmd(NULL, "RENAME %s", ni->nick);	
 		#endif	
 	#ifdef SOPORTE_MYSQL
@@ -2742,6 +2772,12 @@ static void do_set(User *u)
 	} else if (stricmp(setting, "off") == 0) {
 	    allow_ignore = 0;
 	    notice_lang(s_OperServ, u, OPER_SET_IGNORE_OFF);
+	} else if (stricmp(setting, "status") == 0) {
+	    if (allow_ignore) 
+             privmsg(s_OperServ, u->nick, "Protección Flood Servicios 2Activado");
+         else
+               privmsg(s_OperServ, u->nick, "Protección Flood Servicios 5DESACTIVADO");
+	return;
 	} else {
 	    notice_lang(s_OperServ, u, OPER_SET_IGNORE_ERROR);
 	}

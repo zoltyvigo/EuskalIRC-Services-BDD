@@ -162,6 +162,7 @@ ENCRYPTION=
 REG_NICK_MAIL="REG_NICK_MAIL"
 SENDMAIL="SENDMAIL"
 MYSQL="MYSQL"
+SCANNER="SCANNER"
 
 MYSQLLIBS=""
 MYSQLCFLAGS=""
@@ -622,6 +623,34 @@ if [ "$REG_NICK_MAIL" = "REG_NICK_MAIL" ] ; then
 done
 echo ""
 fi
+echo ""
+ok=0
+     echo "Quieres usar el Soporte TCP PORT SCANNER?"
+     echo "(Seleccionando "\"yes\"", usarás el soporte SCANNER(no olvide configurar puertos en example.conf)"
+     echo "en caso contrario, "\"no"\", No lo usarás."
+     echo ""
+     while [ $ok -eq 0 ] ; do
+        echo2 "[$DEF] "
+        if read INPUT ; then : ; else echo "" ; exit 1 ; fi
+        if [ ! "$INPUT" ] ; then
+                INPUT=$DEF
+        fi
+        case $INPUT in
+                n*|N*)
+                        SCANNER=
+			ok=1
+                        ;;
+                y*|Y*)
+                        SCANNER=SOPORTE_SCANNER
+			ok=1
+                        ;;
+                *)
+                        echo "Por favor, presione 'y' o 'n'."
+                        ;;
+        esac
+
+done
+echo ""
  ok=0
      echo "Quieres usar el Soporte MYSQL?"
      echo "Debian Linux to get mysql_config and libraries for C code to compile"
@@ -657,7 +686,6 @@ fi
         esac
 
 done
-echo ""
 
 ######
 
@@ -1336,6 +1364,9 @@ EOT
 if [ "$MYSQL" ] ; then cat >>sysconf.h <<EOT ; fi
 #define $MYSQL
 EOT
+if [ "$SCANNER" ] ; then cat >>sysconf.h <<EOT ; fi
+#define $SCANNER
+EOT
 cat >>sysconf.h <<EOT
 
 typedef   signed $TYPE_INT16  int16;
@@ -1416,6 +1447,7 @@ ENCRYPTION="$ENCRYPTION"
 REG_NICK_MAIL="$REG_NICK_MAIL"
 SENDMAIL="$SENDMAIL"
 MYSQL="$MYSQL"
+SCANNER="$SCANNER"
 
 CC="$CC"
 CC_FLAGS="$CC_FLAGS $MYSQLCFLAGS"

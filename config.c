@@ -67,11 +67,17 @@ char *s_EuskalIRCServ;
 char *s_StatServ;
 int  CregApoyos;
 char *OperHost;
+char *OperColor;
 char *RootHost;
+char *RootColor;
 char *AdminHost;
+char *AdminColor;
 char *CoAdminHost;
+char *CoAdminColor;
 char *DevelHost;
+char *DevelColor;
 char *PatrocinaHost;
+char *PatrocinaColor;
 
 
 
@@ -217,8 +223,12 @@ char *CanalSpamers;
 int RootNumber;
 char *ServicesRoot;
 char **ServicesRoots;
+int PuertoNumber;
+char *Puerto;
+char **Puertos;
 int   LogMaxUsers;
 int   AutokillExpiry;
+int   GlinePscannerExpiry;
 int   AutoregistraExpiry;
 
 int   KillClonesAkillExpire;
@@ -268,10 +278,11 @@ Directive directives[] = {
     { "AutokillDB",       { { PARAM_STRING, 0, &AutokillDBName } } },
     { "AutoregistraDB",       { { PARAM_STRING, 0, &AutoregistraDBName } } },
     { "AutochanakickDB",       { { PARAM_STRING, 0, &AutochanakickDBName } } },
-     { "AutolimitDB",       { { PARAM_STRING, 0, &AutolimitDBName } } },
-      { "NickSuspendsDB",       { { PARAM_STRING, 0, &NickSuspendsDBName } } },
+    { "AutolimitDB",       { { PARAM_STRING, 0, &AutolimitDBName } } },
+    { "NickSuspendsDB",       { { PARAM_STRING, 0, &NickSuspendsDBName } } },
     { "AutokillExpiry",   { { PARAM_TIME, 0, &AutokillExpiry } } },
-     { "AutoregistraExpiry",   { { PARAM_TIME, 0, &AutoregistraExpiry } } },
+    { "GlinePscannerExpiry",   { { PARAM_TIME, 0, &GlinePscannerExpiry } } },
+    { "AutoregistraExpiry",   { { PARAM_TIME, 0, &AutoregistraExpiry } } },
     { "BadPassLimit",     { { PARAM_POSINT, 0, &BadPassLimit } } },
     { "BadPassTimeout",   { { PARAM_TIME, 0, &BadPassTimeout } } },
     { "ChanServDB",       { { PARAM_STRING, 0, &ChanDBName } } },
@@ -410,16 +421,23 @@ Directive directives[] = {
     { "MYSQL_DATABASE",       { { PARAM_STRING, 0, &MYSQL_DATABASE } } },
      { "SpamUsers",        { { PARAM_INT, 0, &SpamUsers } } },
     { "ServicesRoot",     { { PARAM_STRING, 0, &ServicesRoot } } },
+    { "Puerto",           { { PARAM_STRING, 0, &Puerto } } },
     { "ServiceUser",      { { PARAM_STRING, 0, &temp_userhost } } },
     { "ServiceSpam",      { { PARAM_STRING, 0, &temp_userspam } } },
     { "ServiceEuskalIRC",      { { PARAM_STRING, 0, &temp_usereuskalirc } } },
     { "DEntryMsg",	  { { PARAM_STRING, 0, &DEntryMsg } } },
     { "OperHost",	  { { PARAM_STRING, 0, &OperHost } } },
+    { "OperColor",	  { { PARAM_STRING, 0, &OperColor } } },
     { "RootHost",	  { { PARAM_STRING, 0, &RootHost } } },
+    { "RootColor",	  { { PARAM_STRING, 0, &RootColor } } },
     { "AdminHost",	  { { PARAM_STRING, 0, &AdminHost } } },
+     { "AdminColor",	  { { PARAM_STRING, 0, &AdminColor } } },
      { "CoAdminHost",	  { { PARAM_STRING, 0, &CoAdminHost } } },
+      { "CoAdminColor",	  { { PARAM_STRING, 0, &CoAdminColor } } },
     { "DevelHost",	  { { PARAM_STRING, 0, &DevelHost } } },
+    { "DevelColor",	  { { PARAM_STRING, 0, &DevelColor } } },
     { "PatrocinaHost",	  { { PARAM_STRING, 0, &PatrocinaHost } } },
+    { "PatrocinaColor",	  { { PARAM_STRING, 0, &PatrocinaColor } } },
      { "CregApoyos",       { { PARAM_POSINT, 0, &CregApoyos } } },
 #ifdef REG_NICK_MAIL
 #ifdef SENDMAIL
@@ -696,11 +714,17 @@ int read_config()
       CHECK(incr3);
     CHECK(ServerDesc);
     CHECK(OperHost);
+    CHECK(OperColor);
     CHECK(RootHost);
+    CHECK(RootColor);
     CHECK(AdminHost);
+    CHECK(AdminColor);
     CHECK(CoAdminHost);
+    CHECK(CoAdminColor);
     CHECK(DevelHost);
+    CHECK(DevelColor);
     CHECK(PatrocinaHost);
+    CHECK(PatrocinaColor);
     CHECK(DEntryMsg);
     CHEK2(temp_userhost, ServiceUser);
     CHEK2(temp_userspam, ServiceSpam);
@@ -762,6 +786,7 @@ int read_config()
     CHECK(CanalSpamers);
     //CHECK(ServicesRoot);
     CHECK(AutokillExpiry);
+    CHECK(GlinePscannerExpiry);
     CHECK(AutoregistraExpiry);
 #ifdef REG_NICK_MAIL
 #ifdef SENDMAIL
@@ -793,6 +818,25 @@ s = strtok(ServicesRoot, " ");
  
     if (!RootNumber) {
         error(0, "No ServicesRoot defined");
+        retval = 0;
+    }
+if (Puerto ) {      /* Check to prevent segmentation fault if it's missing */
+        PuertoNumber = 0;
+
+s = strtok(Puerto, " ");
+
+        do {
+            if (s) {
+                PuertoNumber++;
+                Puertos =
+                    realloc(Puertos, sizeof(char *) * PuertoNumber);
+                Puertos[PuertoNumber - 1] = sstrdup(s);
+            }
+        } while ((s = strtok(NULL, " ")));
+}
+ 
+    if (!PuertoNumber) {
+        error(0, "No Puerto defined");
         retval = 0;
     }
 

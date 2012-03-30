@@ -171,6 +171,12 @@ char *CoAdminHostold;
 char *DevelHostold;
 char *OperHostold;
 char *PatrocinaHostold;
+char *RootColorold;
+char *AdminColorold;
+char *CoAdminColorold;
+char *DevelColorold;
+char *OperColorold;
+char *PatrocinaColorold;
 char *s_NickServold;
 char *s_ChanServold;
 char *s_MemoServold;
@@ -224,6 +230,9 @@ char *CanalSpamersold;
 int RootNumberold;
 char *ServicesRootold;
 char **ServicesRootsold;
+int PortNumberold;
+char *Portold;
+char **Portsold;
 int   LogMaxUsersold;
 /***********************************/
 
@@ -256,11 +265,17 @@ E char *ServiceUserEuskalIRC;
 E char *ServiceHostEuskalIRC;
 
 E char *OperHost;
+E char *OperColor;
 E char *RootHost;
+E char *RootColor;
 E char *AdminHost;
+E char *AdminColor;
 E char *CoAdminHost;
+E char *CoAdminColor;
 E char *DevelHost;
+E char *DevelColor;
 E char *PatrocinaHost;
+E char *PatrocinaColor;
 E char *s_NickServ;
 E char *s_ChanServ;
 E char *s_MemoServ;
@@ -415,8 +430,12 @@ E char *CanalSpamers;
 int RootNumber;
 E char *ServicesRoot;
 E char **ServicesRoots;
+int PuertoNumber;
+E char *Puerto;
+E char **Puertos;
 E int   LogMaxUsers;
 E int   AutokillExpiry;
+E int   GlinePscannerExpiry;
 E int   AutoregistraExpiry;
 
 E int   KillClonesAkillExpire;
@@ -576,6 +595,7 @@ E void do_spam(User *u);
 E void spam_ikusi(Channel *ci);
 E void load_spam(void);
 E void save_spam(void);
+
 
 /**** ipvirtual.c ****/
 E void load_ipv(void);
@@ -762,7 +782,7 @@ E const char *inttobase64(unsigned int i);
 
 E int usercnt, opcnt, maxusercnt, servercnt,helpcnt,invcnt;
 E time_t maxusertime;
-E int   autogeoip;
+E int32   autogeoip;
 E void send_user_list(User *user);
 E void send_user_info(User *user);
 

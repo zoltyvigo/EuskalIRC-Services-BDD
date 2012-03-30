@@ -29,7 +29,7 @@ static void do_ipv_del(User *u);
 static void do_ipv_list(User *u);
 static void do_ipv_usar(User *u);
 static void do_credits (User *u);
-static void do_vhost (User *u);
+static void do_activarhost (User *u);
 static void do_cambia_vhost (User *u);
 static void do_help (User *u);
 static void do_set(User *u);
@@ -42,7 +42,7 @@ static void do_set_vhost(User *u, NickInfo *ni, char *param);
 
 static Command cmds[] = {
     { "CREDITS",    do_credits,    NULL,  -1,                   -1,-1,-1,-1 },
-    { "ACTIVAR",	    do_vhost,	   is_services_admin,   IPV_HELP_ACTIVAR,   -1,-1,-1,-1 },
+    { "ACTIVAR",	    do_activarhost,	   is_services_admin,   IPV_HELP_ACTIVAR,   -1,-1,-1,-1 },
      { "CAMBIAR",	    do_cambia_vhost,	   NULL,   IPV_HELP_CAMBIAR,   -1,-1,-1,-1 },
     { "CREDITOS",   do_credits,    NULL,  -1,                   -1,-1,-1,-1 },        
     { "HELP",       do_help,       NULL,  -1,                   -1,-1,-1,-1 },
@@ -567,6 +567,7 @@ return;
 if (!stricmp(vhost, "OFF")) {
 #ifdef IRC_UNDERNET_P09
 do_write_bdd(u->nick, 4, "");
+ni->vhost=NULL;
 #endif
 notice_lang(s_IpVirtual, u, IPV_ACTIVAR_UNSET, u->nick);;
 canaladmins(s_IpVirtual, "2 %s 5 Desactiva Su VHOST ", u->nick);
@@ -607,6 +608,7 @@ strftime_lang(timebuf, sizeof(timebuf), u, STRFTIME_DATE_TIME_FORMAT, tm);
 //sartu_datua(22, u->nick, vhost);
 #ifdef IRC_UNDERNET_P09
 do_write_bdd(u->nick, 4, vhost);
+ni->vhost=sstrdup(vhost);
 #endif
     notice_lang(s_IpVirtual, u, IPV_ACTIVAR_SET, u->nick, vhost);
 //vhost_aldaketa(u->nick, vhost, 1);
@@ -625,7 +627,7 @@ privmsg(s_IpVirtual, u->nick, "Hora exacta: %s", timebuf);
 
 }
 
-static void do_vhost(User *u)
+void do_activarhost(User *u)
 {
     char *nick = strtok(NULL, " ");
     char *mask = strtok(NULL, "");
@@ -647,6 +649,7 @@ static void do_vhost(User *u)
     if (!mask) {
 	#ifdef IRC_UNDERNET_P09
     	do_write_bdd(nick, 2, "");
+        ni->vhost=NULL;
 	#endif
 	notice_lang(s_IpVirtual, u, IPV_ACTIVAR_UNSET, nick);
 	return;
@@ -658,7 +661,8 @@ static void do_vhost(User *u)
     
     #ifdef IRC_UNDERNET_P09
     do_write_bdd(nick, 2, mask);
-#endif
+    ni->vhost=sstrdup(mask);
+    #endif
     notice_lang(s_IpVirtual, u, IPV_ACTIVAR_SET, nick, mask);
 }
 /*************************************************************************/

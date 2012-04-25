@@ -904,6 +904,7 @@ load_jok_dbase();
     load_cr_dbase();
     load_ipv();
     load_achanakick();
+    load_X_dbase();
     log("Cargadas las bases de datos");
 
     /* Connect to the remote server */

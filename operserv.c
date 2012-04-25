@@ -2781,6 +2781,25 @@ static void do_set(User *u)
 	} else {
 	    notice_lang(s_OperServ, u, OPER_SET_IGNORE_ERROR);
 	}
+  } else if (stricmp(option, "DESNOTIFY") == 0) {
+	if (stricmp(setting, "on") == 0) {
+	    notifinouts = 1;
+	    notice_lang(s_OperServ, u, X_SET_NOTIFY_ON);
+	} else if (stricmp(setting, "off") == 0) {
+	   notifinouts = 0;
+	    notice_lang(s_OperServ, u, X_SET_NOTIFY_OFF);
+	} else if (stricmp(setting, "status") == 0) {
+	    if (notifinouts) 
+	      privmsg(s_OperServ, u->nick, "Notificación De Servicios 5DESACTIVADO");
+             
+         else
+               privmsg(s_OperServ, u->nick, "Notificación De Servicios 2Activado");
+	return;
+	} else {
+	    notice_lang(s_OperServ, u, X_SET_NOTIFY_ERROR);
+	}
+
+
 
     } else if (stricmp(option, "READONLY") == 0) {
 	if (stricmp(setting, "on") == 0) {

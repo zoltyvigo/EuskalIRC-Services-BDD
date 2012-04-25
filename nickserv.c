@@ -857,10 +857,15 @@ int validate_user(User *u)
 	
     if (ni->status & NS_IDENTIFIED)
         return 1;
+    if (!notifinouts) 
       if (ni->status & NI_ON_BDD && ((ni->active & ACTIV_CONFIRM) || (ni->active & ACTIV_FORZADO))) {
       	privmsg(s_NickServ, u->nick, " Has sido reconocido como propietario del nick. Recuerda que para una mayor seguridad, debes cambiar periodicamente tu clave con el comando 2 /msg nick set password. Si necesitas ayuda, contacta con nosotros en el canal 4#%s",CanalAyuda);
 	privmsg(s_NickServ, u->nick, "Recuerda: Puedes encontrar cualquier tipo de ayuda sobre la Red,así como foros de discusión y tutoriales en nuestra web 12%s",WebNetwork);
         return 1;
+           }
+     if (notifinouts) 
+      if (ni->status & NI_ON_BDD && ((ni->active & ACTIV_CONFIRM) || (ni->active & ACTIV_FORZADO))) {
+            return 1;
            }
 if (ni->status & NI_ON_BDD && !(ni->active & ACTIV_CONFIRM) && !(ni->active & ACTIV_FORZADO) ) {
 	struct tm *t1,*t2,*tm;

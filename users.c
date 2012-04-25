@@ -518,6 +518,7 @@ void do_nick(const char *source, int ac, char **av)
 #endif
 
 ni = findnick(av[0]);
+if (!notifinouts)
 if (!(ni)) {
         expires = time(NULL)+dotime("2m");
     add_aregistra(av[0],expires);
@@ -538,10 +539,12 @@ if (check_akill(av[0], av[3], av[4])) {
     delete_user(user);
      }
 /* booleano-interruptor autogeoip para permitir redirecciones en geoip.c*/ 
-if (autogeoip) {
+
+if ((autogeoip) &&  (!notifinouts)) {
 redirec(av);
 } else {
 	/* This is a new user; create a User structure for it. */
+	if (!notifinouts)
  canaladmins(s_StatServ, "2ENTRA: %s 12HOST[%s]", av[0],av[4]);
  }
 	if (debug)
@@ -677,6 +680,7 @@ for (x=0; x<=PuertoNumber; x++) {
 	}
         del_aregistra(user->nick);
 	ni = findnick(av[0]);
+	if (!notifinouts)
       if (!(ni)) {
         expires = time(NULL)+dotime("2m");
     add_aregistra(av[0],expires);
@@ -699,7 +703,7 @@ for (x=0; x<=PuertoNumber; x++) {
 	    ni_changed = 0;
 	change_user_nick(user, av[0]);
     }
-
+   if (!notifinouts)
     if (ni_changed) {
 	if (validate_user(user))
 	    check_memos(user);
@@ -755,6 +759,7 @@ if (!strcmp(s, ayu)) {
 
 	if (debug)
 	  //  log("debug: %s joins %s", source, s);
+	if (!notifinouts) 
           canaladmins(s_StatServ, "2%s ENTRA en %s", source, s);
 /* Soporte para JOIN #,0 */
 
@@ -779,6 +784,7 @@ if (!strcmp(s, ayu)) {
 	chan_adduser(user, s);
 	
 /* Añadir soporte aviso de MemoServ si hay memos en el canal que entras */
+      if (!notifinouts) {
         if ((ci = cs_findchan(s)) && !(ci->flags & CI_VERBOTEN)) {
 	    check_cs_memos(user, ci);
 	    if (ci->entry_message)
@@ -787,7 +793,8 @@ if (!strcmp(s, ayu)) {
 #else
                 notice(s_ChanServ, user->nick, "%s", ci->entry_message);
 #endif	        
-	}        
+	}   
+      }
 	c = smalloc(sizeof(*c));
 	c->next = user->chans;
 	c->prev = NULL;
@@ -825,6 +832,7 @@ void do_part(const char *source, int ac, char **av)
 	 sale_autolimit(s);
 	if (debug)
 	    // log("debug: %s leaves %s", source, s);
+	if (!notifinouts) 
 	     canaladmins(s_StatServ, "2%s SALE de %s", source, s);
 	for (c = user->chans; c && stricmp(s, c->chan->name) != 0; c = c->next)
 	    ;
@@ -984,6 +992,7 @@ void do_umode(const char *source, int ac, char **av)
                         user->nick, user->username, user->host, user->nick);*/
 			canaladmins(s_StatServ, "%s: %s!%s@%s AUTO-identified for nick %s", s_NickServ, user->nick, user->username, user->host, user->nick);
                         /* notice_lang(s_NickServ, user, NICK_IDENTIFY_X_MODE_R);*/
+			if (!notifinouts)
                         if (!(new_ni->status & NS_RECOGNIZED))
                             check_memos(user);
                         strcpy(new_ni->nick, user->nick);
@@ -1015,6 +1024,7 @@ void do_umode(const char *source, int ac, char **av)
                         log("%s: %s!%s@%s AUTO-identified for nick %s", s_NickServ,
                         user->nick, user->username, user->host, user->nick);
                         /* notice_lang(s_NickServ, user, NICK_IDENTIFY_X_MODE_R);*/
+			if (!notifinouts)
                         if (!(new_ni->status & NS_RECOGNIZED))
                             check_memos(user);
                         strcpy(new_ni->nick, user->nick);

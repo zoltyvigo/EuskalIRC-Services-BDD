@@ -5060,8 +5060,7 @@ static void do_info(User *u)
 	    notice_lang(s_ChanServ, u, CHAN_INFO_TOPIC_SET_BY,
 			ci->last_topic_setter);
 	}
-
-	if (ci->entry_message && show_all)
+      	if (ci->entry_message && show_all)
 	    notice_lang(s_ChanServ, u, CHAN_INFO_ENTRYMSG, ci->entry_message);
 	if (ci->url)
 	    notice_lang(s_ChanServ, u, CHAN_INFO_URL, ci->url);

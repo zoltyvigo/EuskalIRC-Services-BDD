@@ -39,7 +39,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-/* #include "language.h" */
+#include "language.h" 
 
 #undef getline
 int numstrings = 0;	/* Number of strings we should have */

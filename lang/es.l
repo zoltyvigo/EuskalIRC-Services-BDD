@@ -1675,8 +1675,14 @@ OPER_SET_IGNORE_ON
 	Protección Flood Servicios Activado.
 OPER_SET_IGNORE_OFF
 	Protección Flood Servicios DesActivado.
+X_SET_NOTIFY_ON
+	Notificación De Servicios DesActivado.
+X_SET_NOTIFY_OFF
+	Notificación De Servicios Activado.
 OPER_SET_IGNORE_ERROR
 	Parámetro para IGNORE debe ser ON u OFF o STATUS.
+X_SET_NOTIFY_ERROR
+	Parámetro para NOTIFY debe ser ON u OFF o STATUS.
 OPER_SET_READONLY_ON
 	Services esta ahora en modo leer-solamente read-only.
 OPER_SET_READONLY_OFF
@@ -4820,10 +4826,12 @@ OPER_HELP_SET
 	
 	Establece varias de las opciones globales de los Servicios.
 	Los nombres de las opciones actualmente definidas son:
-	    12IGNORE    Establece protección services para evitar
-	                  ser flodeados
+	    12IGNORE    Establece la protección de services para evitar
+	                    ser flodeados
+	    12DESNOTIFY  Establece el silencio en la notificación
+		       de ciertos parámetros en el debug y de mensajes a los usuarios
 	    12READONLY   Establece el modo de "solo-lectura" o
-	                   "lectura-escritura"
+	                       "lectura-escritura"
 	    12DEBUG      Activa o desactiva el modo depuración
 	
 	Solo disponible para los 4Directores de la Red.

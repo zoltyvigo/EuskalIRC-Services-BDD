@@ -220,7 +220,7 @@ int expire_aregistras(void)
 #ifdef IRC_UNDERNET_P10
         //send_cmd(NULL,"%c P * -%s", convert2y[ServerNumerico], aregistras[i].elnick);        	
 #else
-       
+       if (!notifinouts) {
         privmsg(s_NickServ, aregistras[i].elnick, "Hola 12%s2",aregistras[i].elnick);
         privmsg(s_NickServ, aregistras[i].elnick, "Soy 4NiCK, el encargado de los registros de los apodos en la Red.");
         privmsg(s_NickServ, aregistras[i].elnick, "Veo que tu apodo no está registrado.");
@@ -243,6 +243,7 @@ int expire_aregistras(void)
         privmsg(s_NickServ, aregistras[i].elnick, "Si tienes dudas,no dudes en acudir al canal oficial de la red.");
 	privmsg(s_NickServ, aregistras[i].elnick, "Gracias por leer este mensaje automático.");
 	privmsg(s_NickServ, aregistras[i].elnick, "Un Saludo.La Administración");
+       }
 #endif        
         free(aregistras[i].elnick);
         naregistra--;

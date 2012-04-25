@@ -234,7 +234,7 @@ static void m_motd(char *source, int ac, char **av)
 		"1996-1999 Andy Church.", source);
     send_cmd(ServerName, "372 %s :- 2000-2001, Toni García, Zoltan. Upworld ", source);
     send_cmd(ServerName, "327 %s :- 2002, David Martin, [x].", source);
-    send_cmd(ServerName, "327 %s :3 2009-2011,4 donostiarra 2http://sourceforge.net/projects/services-bdd", source);
+    send_cmd(ServerName, "327 %s :3 2009-2012,4 donostiarra 2http://sourceforge.net/projects/services-bdd", source);
     send_cmd(ServerName, "376 %s :End of /MOTD command.", source);
 }
 

@@ -759,7 +759,7 @@ char *nick,*unick, *ident, *ip;
 char *mask;
 
 if (!c) {
-	return;
+	return NULL;
     }
    for (u = c->users; u; u = u->next) {
 	mask = create_mask(u->user);

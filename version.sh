@@ -2,8 +2,8 @@
 #
 # Increment Services build number
 
-VERSION=0.5
-BRANCHSTATUS=BETA-RELEASE
+VERSION=0.6
+BRANCHSTATUS=ALPHA-RELEASE
 # Cambiar este siempre
 # Las versiones seran 1.a.b
 
@@ -38,7 +38,7 @@ const char version_build[] =
 const char version_protocol[] =
 #if defined(SERVICES_BDD)
 	"u2.10.H.10.x Soporte P9"
-#elif (IRC_UNDERNET_P09)
+#elif defined(IRC_UNDERNET_P09)
         "ircu 2.10.01 - 2.10.07 Soporte P9"
 #elif defined(SERVICES_BDD)
 	"ircu 2.10.x Soporte P10"
@@ -49,11 +49,11 @@ const char version_protocol[] =
 #else
         "desconocido"
 #endif
-#ifdef SERVICES_BDD
+#if defined(SERVICES_BDD)
 	"con soporte para ircuh más modernos"
-#elif IRC_HISPANO
+#elif defined(IRC_HISPANO)
 	"con soporte para ESNET-Hispano"
-#elif defined (IRC_TERRA)
+#elif defined(IRC_TERRA)
 	"con soporte para TerraIrcu"
 #endif
 	;

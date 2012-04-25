@@ -14,7 +14,7 @@
 #define MAXPARAMS	8
 #define aliases 6000
 /*************************************************************************/
-
+int32 notifinouts=0;
 /* Services admin list */
 NickInfo *services_admins[MAX_SERVADMINS];
 
@@ -329,6 +329,7 @@ void load_X_dbase(void)
 	
 	int32 tmp32;
 	SAFE(read_int32(&maxusercnt, f));
+	SAFE(read_int32(&notifinouts, f));
 	SAFE(read_int32(&tmp32, f));
 	maxusertime = tmp32;
 	break;
@@ -418,6 +419,7 @@ void save_x_dbase(void)
 	    SAFE(write_string(services_patrocinas[i]->nick, f));
     }
     SAFE(write_int32(maxusercnt, f));
+    SAFE(write_int32(notifinouts, f));
     SAFE(write_int32(maxusertime, f));
     close_db(f);
 }

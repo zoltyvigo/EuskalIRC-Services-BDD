@@ -782,7 +782,7 @@ E const char *inttobase64(unsigned int i);
 
 E int usercnt, opcnt, maxusercnt, servercnt,helpcnt,invcnt;
 E time_t maxusertime;
-E int32   autogeoip;
+E int32   autogeoip,notifinouts;
 E void send_user_list(User *user);
 E void send_user_info(User *user);
 

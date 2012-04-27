@@ -173,7 +173,7 @@ void do_server(const char *source, int ac, char **av)
     server->numerico = sstrdup(av[5]);
     server->hijo = NULL;
     server->rehijo = NULL;
-#ifdef IRC_UNDERNET_P10
+#if defined(IRC_UNDERNET_P10)
     server->hub = find_servernumeric(source);
 #else
     server->hub = find_servername(source);

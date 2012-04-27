@@ -85,7 +85,7 @@ E Channel *nextchan(void);
 E void chan_adduser(User *user, const char *chan);
 E void chan_deluser(User *user, Channel *c);
 
-#ifdef IRC_UNDERNET_P10
+#if defined(IRC_UNDERNET_P10)
 E void do_burst(const char *source, int ac, char **av);
 E void do_create(const char *source, int ac, char **av);
 #endif
@@ -199,11 +199,11 @@ char *s_JokuServold;
 char *DEntryMsgold;
 int  CregApoyosold;
 int   SpamUsersold;
-#ifdef REG_NICK_MAIL
-#ifdef SENDMAIL
+#if defined(REG_NICK_MAIL)
+#if defined(SENDMAIL)
 char *SendMailPatchold;
 #endif
-#ifdef SMTP
+#if defined(SMTP)
 char *ServerSMTPold;
 int  PortSMTPold;
 #endif
@@ -251,7 +251,7 @@ E char *MYSQL_USER;
 E char *MYSQL_PASS;
 E char *MYSQL_DATABASE;
 
-#ifdef IRC_UNDERNET_P10
+#if defined(IRC_UNDERNET_P10)
 E int   ServerNumerico;
 #endif 
 
@@ -298,7 +298,7 @@ E char *s_JokuServ;
 E char *DEntryMsg;
 E int  CregApoyos;
 
-#ifdef IRC_UNDERNET_P10
+#if defined(IRC_UNDERNET_P10)
 E char s_NickServP10[4];
 E char s_ChanServP10[4];
 E char s_MemoServP10[4];
@@ -358,7 +358,7 @@ E char *NickSuspendsDBName;
 E char *NewsDBName;
 E char *StatDBName;
 
-#ifdef REG_NICK_MAIL
+#if defined(REG_NICK_MAIL)
 E int  NicksMail;
 E char *SendMailPatch;
 E char *ServerSMTP;
@@ -553,7 +553,7 @@ E char *stristr(char *s1, char *s2);
 E char *strupper(char *s);
 E char *strlower(char *s);
 E char *strnrepl(char *s, int32 size, const char *old, const char *new);
-#ifdef IRC_UNDERNET
+#if defined(IRC_UNDERNET)
 E int strCasecmp(const char *a, const char *b);
 E int NTL_tolower_tab[];
 E int NTL_toupper_tab[];
@@ -688,7 +688,7 @@ E void bdd_init(void);
 E char *gen_nice_key(unsigned int ilevel);
 
 /**** bdd_hispano.c ****/
-#ifdef IRC_UNDERNET_P10
+#if defined(IRC_UNDERNET_P10)
 E int encontrardb(char cual);
 E void datobase(char cual, char *dato1, char *dato2);
 E void meter_dato(int cual, char *dato1, char *dato2);
@@ -771,7 +771,7 @@ E void disconn(int s);
 
 /**** P10.c ****/
 
-#ifdef IRC_UNDERNET_P10
+#if defined(IRC_UNDERNET_P10)
 E char convert2y[];
 E unsigned int base64toint(const char *s);
 E const char *inttobase64(unsigned int i); 
@@ -789,7 +789,7 @@ E void send_user_info(User *user);
 
 E void get_user_stats(long *nusers, long *memuse);
 E User *finduser(const char *nick);
-#ifdef IRC_UNDERNET_P10
+#if defined(IRC_UNDERNET_P10)
 E User *finduserP10(const char *nick);
 #endif
 E User *firstuser(void);

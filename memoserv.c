@@ -433,7 +433,7 @@ static void do_cancel(User *u)
     MemoInfo *mi;
     
     if (!nick) {
-#ifdef IRC_UNDERNET_P10
+#if defined(IRC_UNDERNET_P10)
         privmsg(s_MemoServ, u->numerico, "Sintaxis: CANCEL <nick|canal>");
 #else
         privmsg(s_MemoServ, u->nick, "Sintaxis: CANCEL <nick|canal>");
@@ -449,7 +449,7 @@ static void do_cancel(User *u)
         for (i = mi->memocount -1; i >= 0; i--) {
              if ((mi->memos[i].flags & MF_UNREAD) && !stricmp(mi->memos[i].sender, u->ni->nick)) {
                  delmemo(mi, mi->memos[i].number);
-#ifdef IRC_UNDERNET_P10
+#if defined(IRC_UNDERNET_P10)
                  privmsg(s_MemoServ, u->numerico, "Ha sido cancelado memo a %s", nick);
 #else            
                  privmsg(s_MemoServ, u->nick, "Ha sido cancelado memo a %s", nick);
@@ -457,7 +457,7 @@ static void do_cancel(User *u)
                  return;
              }
         }   
-#ifdef IRC_UNDERNET_P10
+#if defined(IRC_UNDERNET_P10)
         privmsg(s_MemoServ, u->numerico, "No hay memos para cancelar");       
 #else
         privmsg(s_MemoServ, u->nick, "No hay memos para cancelar");

@@ -189,7 +189,7 @@ void process()
     int ac;			/* Parameters for the command */
     char **av;
     Message *m;
-#ifdef IRC_UNDERNET_P10
+#if defined(IRC_UNDERNET_P10)
     User *u=NULL;
 #endif    
 
@@ -212,7 +212,7 @@ void process()
 	strscpy(source, buf+1, sizeof(source));
 	memmove(buf, s, strlen(s)+1);
     } else {
-#ifdef IRC_UNDERNET_P10
+#if defined(IRC_UNDERNET_P10)
         if (strncmp(buf, "SERVER" ,strlen("SERVER"))==0) {
             s = strdup(buf);
             source[0] = '\0';

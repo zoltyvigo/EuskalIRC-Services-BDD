@@ -38,7 +38,7 @@ char *ServiceHostEuskalIRC;
 static char *temp_userhost;
 static char *temp_userspam;
 static char *temp_usereuskalirc;
-#ifdef IRC_UNDERNET_P10
+#if defined(IRC_UNDERNET_P10)
 int  ServerNumerico;
 #endif
 int tramo1,tramo2,tramo3;
@@ -82,7 +82,7 @@ char *PatrocinaColor;
 
 
 
-#ifdef IRC_UNDERNET_P10
+#if defined(IRC_UNDERNET_P10)
 char s_NickServP10[4];
 char s_ChanServP10[4];
 char s_MemoServP10[4];
@@ -160,11 +160,11 @@ int   ReadTimeout;
 int   WarningTimeout;
 int   TimeoutCheck;
 
-#ifdef REG_NICK_MAIL
-#ifdef SENDMAIL
+#if defined(REG_NICK_MAIL)
+#if defined(SENDMAIL)
 char *SendMailPatch;
 #endif
-#ifdef SMTP
+#if defined(SMTP)
 char *ServerSMTP;
 int  PortSMTP;
 #endif
@@ -346,7 +346,7 @@ Directive directives[] = {
     			    { PARAM_STRING, 0, &desc_BddServ } } },
     { "IPVirtualName",	  { { PARAM_STRING, 0, &s_IpVirtual },
     			    { PARAM_STRING, 0, &desc_IpVirtual } } },
-#ifdef IRC_UNDERNET_P10
+#if defined(IRC_UNDERNET_P10)
     { "ServerNumerico",   { { PARAM_INT, 0, &ServerNumerico } } },
    /* { "ServerHUB",       { { PARAM_STRING, 0, &ServerHUB } } },*/
 #endif        
@@ -439,11 +439,11 @@ Directive directives[] = {
     { "PatrocinaHost",	  { { PARAM_STRING, 0, &PatrocinaHost } } },
     { "PatrocinaColor",	  { { PARAM_STRING, 0, &PatrocinaColor } } },
      { "CregApoyos",       { { PARAM_POSINT, 0, &CregApoyos } } },
-#ifdef REG_NICK_MAIL
-#ifdef SENDMAIL
+#if defined(REG_NICK_MAIL)
+#if defined(SENDMAIL)
     { "SendMailPatch",    { { PARAM_STRING, 0, &SendMailPatch } } },
 #endif
-#ifdef SMTP
+#if defined(SMTP)
     { "ServerSMTP",       { { PARAM_STRING, 0, &ServerSMTP } } },
     { "PortSMTP",         { { PARAM_PORT, 0, &PortSMTP } } },
 #endif
@@ -554,7 +554,7 @@ int parse(char *buf, int linenum)
 		*(int *)d->params[i].ptr = 1;
 		continue;
 	    }
-#ifdef STREAMLINED
+#if defined(STREAMLINED)
 	    if (d->params[i].flags & PARAM_FULLONLY) {
 		error(linenum, "Directive `%s' not available in STREAMLINED mode",
 			d->name);
@@ -703,7 +703,7 @@ int read_config()
     CHECK(MYSQL_PASS);
     CHECK(MYSQL_DATABASE);
 
-#ifdef IRC_UNDERNET_P10
+#if defined(IRC_UNDERNET_P10)
     CHECK(ServerNumerico);
 #endif
       CHECK(tramo1);
@@ -788,11 +788,11 @@ int read_config()
     CHECK(AutokillExpiry);
     CHECK(GlinePscannerExpiry);
     CHECK(AutoregistraExpiry);
-#ifdef REG_NICK_MAIL
-#ifdef SENDMAIL
+#if defined(REG_NICK_MAIL)
+#if defined(SENDMAIL)
     CHECK(SendMailPatch);
 #endif
-#ifdef SMTP
+#if defined(SMTP)
     CHECK(ServerSMTP);
     CHECK(PortSMTP);
 #endif

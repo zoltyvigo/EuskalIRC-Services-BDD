@@ -210,7 +210,7 @@ int main(int ac, char **av, char **envp)
 		log("debug: Running expire routines");
 //            canalopers(ServerName, "Ejecutando rutinas de expiracion");
 	    if (!skeleton) {
-		#ifdef SOPORTE_MYSQL
+		#if defined(SOPORTE_MYSQL)
 		waiting = -20;
 	    mirar_tablas();
 	    #endif
@@ -302,7 +302,7 @@ int main(int ac, char **av, char **envp)
 
     /* Check for restart instead of exit */
     if (save_data == -2) {
-#ifdef SERVICES_BIN
+#if defined(SERVICES_BIN)
 	log("Reiniciando");
 	if (!quitmsg)
 	    quitmsg = "Reiniciando";

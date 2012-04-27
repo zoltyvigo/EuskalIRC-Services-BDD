@@ -191,7 +191,7 @@ void do_spam(User *u)
 	    notice_lang(s_OperServ, u, PERMISSION_DENIED);
 
     } else {
-        #ifdef IRC_UNDERNET_P10
+        #if defined(IRC_UNDERNET_P10)
 	privmsg(s_OperServ, u->numerico, "Sintaxis: SPAM ADD/DEL/LIST/STATUS [param]");
 	#else
 	privmsg(s_OperServ, u->nick,"Sintaxis: SPAM ADD/DEL/LIST/STATUS [param]");
@@ -224,7 +224,7 @@ static void do_spam_del(User *u)
 
     if (!text) {
 	char buf[32];
-	#ifdef IRC_UNDERNET_P10
+	#if defined(IRC_UNDERNET_P10)
 	         privmsg(s_OperServ, u->numerico, "Sintaxis: SPAM ADD/DEL/LIST/STATUS [param]");
                 
 #else
@@ -236,26 +236,26 @@ static void do_spam_del(User *u)
 	if (stricmp(text, "ALL") != 0) {
 	    int num = atoi(text);
 	    if (num > 0 && del_spam(num))
-	      #ifdef IRC_UNDERNET_P10
+	      #if defined(IRC_UNDERNET_P10)
 		privmsg(s_OperServ, u->numerico, "Entrada eliminada.");
 		#else
 		privmsg(s_OperServ, u->nick,"Entrada eliminada.");
 		#endif
 	    else
-	        #ifdef IRC_UNDERNET_P10
+	        #if defined(IRC_UNDERNET_P10)
 		privmsg(s_OperServ, u->numerico, "Numero incorrecto.");
 		#else
 		privmsg(s_OperServ, u->nick,"Numero incorrecto.");
 		#endif
 	} else {
 	    if (del_spam(0))
-	         #ifdef IRC_UNDERNET_P10
+	         #if defined(IRC_UNDERNET_P10)
 		privmsg(s_OperServ, u->numerico, "Se han eliminado todas las entradas");
 		#else
 		privmsg(s_OperServ, u->nick, "Se han eliminado todas las entradas");
 		#endif
 	    else
-	         #ifdef IRC_UNDERNET_P10	        
+	         #if defined(IRC_UNDERNET_P10)
 		privmsg(s_OperServ, u->numerico, "No se ha eliminado nada");
 		#else
 		privmsg(s_OperServ, u->nick,"No se ha eliminado nada");
@@ -302,7 +302,7 @@ static void do_spam_add(User *u)
 
     if (!text) {
 	char buf[32];
-	#ifdef IRC_UNDERNET_P10
+	#if defined(IRC_UNDERNET_P10)
 	privmsg(s_OperServ, u->numerico, "Sintaxis: SPAM ADD/DEL/LIST/STATUS [param]");
 	#else
 	privmsg(s_OperServ, u->nick,"Sintaxis: SPAM ADD/DEL/LIST/STATUS [param]");
@@ -310,13 +310,13 @@ static void do_spam_add(User *u)
     } else {
 	int n = add_spam(u, text);
 	if (n < 0)
-	    #ifdef IRC_UNDERNET_P10
+	    #if defined(IRC_UNDERNET_P10)
 	    privmsg(s_OperServ, u->numerico, "La lista esta llena.");
 	   #else
 	    privmsg(s_OperServ, u->nick,"La lista esta llena.");
 	    #endif
 	else
-	     #ifdef IRC_UNDERNET_P10
+	     #if defined(IRC_UNDERNET_P10)
 	    privmsg(s_OperServ, u->numerico, "Se ha añadido a la lista de spams.");
 	    #else
 	    privmsg(s_OperServ, u->nick, "Se ha añadido a la lista de spams.");
@@ -335,7 +335,7 @@ static void do_spam_list(User *u)
 
     for (i = 0; i < sspam; i++) {
 	    if (count == 0)
-	     #ifdef IRC_UNDERNET_P10
+	     #if defined(IRC_UNDERNET_P10)
 	privmsg(s_OperServ, u->numerico, "ID :: Texto :: Agregado por");
 
  privmsg(s_OperServ, u->numerico, "%d - '%s' - '%s'", spam[i].zenb, spam[i].hitza, *spam[i].zeinek ? spam[i].zeinek : "<unknown>");
@@ -346,7 +346,7 @@ static void do_spam_list(User *u)
 	    count++;
     }
     if (count == 0)
-        #ifdef IRC_UNDERNET_P10
+        #if defined(IRC_UNDERNET_P10)
 	privmsg(s_OperServ, u->numerico, "La lista esta vacia.");
 	#else
 	 privmsg(s_OperServ, u->nick,"La lista esta vacia.");
@@ -373,7 +373,7 @@ if (!strcmp(ci->name, adm_kanala) || !strcmp(ci->name, opr_kanala)) return;
 if (ci->erab == 0)
  canaladmins(s_SpamServ, "Saliendo de %s, usuarios: %d", ci->name, ci->erab);
 if (ci->erab == 0) 
-#ifdef IRC_UNDERNET_P10
+#if defined(IRC_UNDERNET_P10)
 send_cmd(s_SpamServ, "L %s", ci->name);
 
  #else
@@ -381,7 +381,7 @@ send_cmd(s_SpamServ, "PART %s", ci->name);
 #endif
 
 else if (ci->erab >= SpamUsers) {
- #ifdef IRC_UNDERNET_P10
+ #if defined(IRC_UNDERNET_P10)
  send_cmd(s_SpamServ, "J %s", ci->name);
  #else
 send_cmd(s_SpamServ, "JOIN %s", ci->name);
@@ -394,7 +394,7 @@ else
 { 
 if (ci->erab < SpamUsers)
 
-#ifdef IRC_UNDERNET_P10
+#if defined(IRC_UNDERNET_P10)
 send_cmd(s_SpamServ, "L %s", ci->name);
 #else
 send_cmd(s_SpamServ, "PART %s", ci->name);

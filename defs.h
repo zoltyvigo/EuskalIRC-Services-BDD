@@ -25,7 +25,7 @@
 #define lenof(a)	(sizeof(a) / sizeof(*(a)))
 
 /* Telling compilers about printf()-like functions: */
-#ifdef __GNUC__
+#if defined( __GNUC__)
 # define FORMAT(type,fmt,start) __attribute__((format(type,fmt,start)))
 #else
 # define FORMAT(type,fmt,start)

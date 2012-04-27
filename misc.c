@@ -22,7 +22,7 @@ int toupper(char c)
 	return (unsigned char)c;
 }
 
-#ifdef IRC_UNDERNET
+#if defined(IRC_UNDERNET)
 /* toUpper , Compatiblidad Undernet
  * zoltan  1/11/2000
  */
@@ -93,7 +93,7 @@ int tolower(char c)
 	return (unsigned char)c;
 }
 
-#ifdef IRC_UNDERNET
+#if defined(IRC_UNDERNET)
 /* toLower , Compatiblidad Undernet
  * zoltan  1/11/2000
  */
@@ -223,7 +223,7 @@ char *strlower(char *s)
     return s;
 }
 
-#ifdef IRC_UNDERNET
+#if defined(IRC_UNDERNET)
 /* Para compatiblidad Undernet
  * zoltan 1/11/2000
  */

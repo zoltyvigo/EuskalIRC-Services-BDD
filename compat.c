@@ -131,17 +131,17 @@ char *strsignal(int signum)
 	case SIGHUP:	strscpy(buf, "Hangup", sizeof(buf));		break;
 	case SIGINT:	strscpy(buf, "Interrupt", sizeof(buf));		break;
 	case SIGQUIT:	strscpy(buf, "Quit", sizeof(buf));		break;
-#ifdef SIGILL
+#if defined(SIGILL)
 	case SIGILL:	strscpy(buf, "Illegal instruction", sizeof(buf));
 			break;
 #endif
-#ifdef SIGABRT
+#if defined(SIGABRT)
 	case SIGABRT:	strscpy(buf, "Abort", sizeof(buf));		break;
 #endif
 #if defined(SIGIOT) && (!defined(SIGABRT) || SIGIOT != SIGABRT)
 	case SIGIOT:	strscpy(buf, "IOT trap", sizeof(buf));		break;
 #endif
-#ifdef SIGBUS
+#if defined(SIGBUS)
 	case SIGBUS:	strscpy(buf, "Bus error", sizeof(buf));		break;
 #endif
 	case SIGFPE:	strscpy(buf, "Floating point exception", sizeof(buf));

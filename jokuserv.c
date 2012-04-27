@@ -296,7 +296,7 @@ void staffjoku(User *u)
          if (joku_opers[i]) {
              ni = findnick(joku_opers[i]->nick);
              if (ni && (ni->status & NS_IDENTIFIED)) {
-#ifdef IRC_UNDERNET_P10
+#if defined(IRC_UNDERNET_P10)
                  privmsg(s_JokuServ, u->numerico, "%-10s es 12MASTER-OPER de 4%s",
 #else
                  privmsg(s_JokuServ, u->nick, "%-10s es 12MASTER-OPER de 4%s",
@@ -312,7 +312,7 @@ void staffjoku(User *u)
          if (joku_admins[i]) {
              ni2 = findnick(joku_admins[i]->nick);
              if (ni2 && (ni2->status & NS_IDENTIFIED)) {             
-#ifdef IRC_UNDERNET_P10
+#if defined(IRC_UNDERNET_P10)
                  privmsg(s_JokuServ, u->numerico, "%-10s es 12OWNER-ADMIN de 4%s",
 #else
                  privmsg(s_JokuServ, u->nick, "%-10s es 12OWNER-ADMIN de 4%s",
@@ -324,7 +324,7 @@ void staffjoku(User *u)
     }
     
    
-#ifdef IRC_UNDERNET_P10
+#if defined(IRC_UNDERNET_P10)
     privmsg(s_JokuServ, u->numerico, "12%d Miembros Staff del  Bot on-line", online);
 #else
     privmsg(s_JokuServ, u->nick, "12%d Miembros Staff del  Bot on-line", online);
@@ -507,7 +507,7 @@ static void do_admin(User *u)
 	notice_lang(s_JokuServ, u, JOKU_ADMIN_LIST_HEADER);
 	for (i = 0; i < MAX_SERVADMINS; i++) {
 	    if (joku_admins[i])
-#ifdef IRC_UNDERNET_P10
+#if defined(IRC_UNDERNET_P10)
                 privmsg(s_JokuServ, u->numerico, "%s", joku_admins[i]->nick);
 #else	    
 		privmsg(s_JokuServ, u->nick, "%s", joku_admins[i]->nick);
@@ -599,7 +599,7 @@ static void do_oper(User *u)
 	notice_lang(s_JokuServ, u, JOKU_OPER_LIST_HEADER);
 	for (i = 0; i < MAX_SERVOPERS; i++) {
 	    if (joku_opers[i])
-#ifdef IRC_UNDERNET_P10
+#if defined(IRC_UNDERNET_P10)
                 privmsg(s_JokuServ, u->numerico, "%s", joku_opers[i]->nick);
 #else	    
 		privmsg(s_JokuServ, u->nick, "%s", joku_opers[i]->nick);
@@ -686,7 +686,7 @@ static void do_canal(User *u)
 	notice_lang(s_JokuServ, u, JOKU_CANAL_LIST_HEADER);
 	for (i = 0; i < MAX_SERVOPERS; i++) {
 	    if (canales[i])
-#ifdef IRC_UNDERNET_P10
+#if defined(IRC_UNDERNET_P10)
                 privmsg(s_JokuServ, u->numerico, "%s", canales[i]->name);
 #else	    
 		privmsg(s_JokuServ, u->nick, "%s", canales[i]->name);
@@ -704,7 +704,7 @@ void join_jokuserv(void)
             
     for (i = 0; i < MAX_SERVOPERS; i++) {
 	if (canales[i])
-#ifdef IRC_UNDERNET_P10
+#if defined(IRC_UNDERNET_P10)
              send_cmd(s_JokuServ, "J %s", canales[i]->name);
          #else
              send_cmd(s_JokuServ, "JOIN %s", canales[i]->name);

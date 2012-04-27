@@ -21,7 +21,7 @@ static void do_help(const char *whoami, const char *source, char *topic);
 void helpserv(const char *whoami, const char *source, char *buf)
 {
     char *cmd, *topic, *s;
-#ifdef IRC_UNDERNET_P10    
+#if defined(IRC_UNDERNET_P10)
     User *u = finduser(source);
     
     if (!u)
@@ -33,7 +33,7 @@ void helpserv(const char *whoami, const char *source, char *buf)
     if (cmd && stricmp(cmd, "\1PING") == 0) {
 	if (!(s = strtok(NULL, "")))
 	    s = "\1";
-#ifdef IRC_UNDERNET_P10
+#if defined(IRC_UNDERNET_P10)
 	notice(s_HelpServ, u->numerico, "\1PING %s", s);
     } else {
         do_help(whoami, u->numerico, topic);    
@@ -122,7 +122,7 @@ static void do_help(const char *whoami, const char *source, char *topic)
 	 * doing weird stuff to the output.  Also replace blank lines by
 	 * spaces (see send.c/notice_list() for an explanation of why).
 	 */
-#ifdef IRC_UNDERNET_P10
+#if defined(IRC_UNDERNET_P10)
 	privmsg(whoami, u->numerico, "%s", s ? s : " ");
 #else
         privmsg(whoami, source, "%s", s ? s : " ");

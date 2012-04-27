@@ -50,7 +50,7 @@
 # include <sys/select.h>
 #endif
 
-#ifdef _AIX
+#if defined(_AIX)
 /* Some AIX boxes seem to have bogus includes that don't have these
  * prototypes. */
 extern int strcasecmp(const char *, const char *);
@@ -143,7 +143,7 @@ extern int toupper(char), tolower(char);
  * Aritz, aritz@itxaropena.org
  * Itxaropena Garapen Taldea - www.itxaropena.org
  */
-#ifdef IRC_UNDERNET_P10
+#if defined(IRC_UNDERNET_P10)
 #define TKOPURU	26
 unsigned int tablas[28];
 
@@ -498,7 +498,7 @@ typedef struct channel_ Channel;
 struct user_ {
     User *next, *prev;
     char nick[NICKMAX];
-#ifdef IRC_UNDERNET_P10
+#if defined(IRC_UNDERNET_P10)
     char *numerico;			/* Numerico del nick en Redes P10 */
 #endif    
     NickInfo *ni;			/* Effective NickInfo (not a link) */

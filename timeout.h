@@ -35,7 +35,7 @@ extern Timeout *add_timeout(int delay, void (*code)(Timeout *), int repeat);
 /* Remove a timeout from the list (if it's there). */
 extern void del_timeout(Timeout *t);
 
-#ifdef DEBUG_COMMANDS
+#if defined(DEBUG_COMMANDS)
 /* Send the list of timeouts to the given user. */
 extern void send_timeout_list(User *u);
 #endif

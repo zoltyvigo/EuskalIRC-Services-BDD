@@ -13,7 +13,7 @@
 /* Send a NICK command for the given pseudo-client.  If `user' is NULL,
  * send NICK commands for all the pseudo-clients. */
 
-#ifdef IRC_UNDERNET_P10
+#if defined(IRC_UNDERNET_P10)
 #  define NICK(nick,modos,numerico,name) \
     do { \
 	send_cmd(NULL, "%c N %s 1 %lu %s %s %s AAAAAA %s :%s", convert2y[ServerNumerico], (nick), time(NULL),\
@@ -45,7 +45,7 @@
 
 void introduce_user(const char *user)
 {
-#ifdef IRC_UNDERNET_P10
+#if defined(IRC_UNDERNET_P10)
     char *modos=NULL;
 #endif    
     
@@ -59,7 +59,7 @@ void introduce_user(const char *user)
 #undef LTSIZE
 
     
-#ifdef IRC_UNDERNET_P10
+#if defined(IRC_UNDERNET_P10)
     if (!user || stricmp(user, s_NickServ) == 0 || stricmp(user, s_NickServP10) == 0) {
         s_NickServP10[0]=convert2y[ServerNumerico];
         s_NickServP10[1]='\0';
@@ -220,7 +220,7 @@ if (!user || stricmp(user, s_CregServ) == 0 || stricmp(user, s_CregServP10) == 0
 	send_cmd(s_ChanServ, "MODE #%s +o %s", CanalAdmins, s_ChanServ);
         send_cmd(s_ChanServ, "MODE #%s +o %s", CanalOpers, s_ChanServ);
        #endif
-       #ifdef IRC_PATCHS_P09
+       #if defined(IRC_PATCHS_P09)
        	/*send_cmd(s_ChanServ, "MODE #%s +ntsO", CanalOpers); <--cuando se implemente este modo lo active desde
                                                     		 un service*/
         send_cmd(s_ChanServ, "MODE #%s +ntsil 1", CanalOpers);
@@ -301,7 +301,7 @@ if (!user || stricmp(user, s_CregServ) == 0 || stricmp(user, s_CregServP10) == 0
         send_cmd(s_OperServ, "JOIN #%s", CanalOpers);
         send_cmd(s_ChanServ, "MODE #%s +o %s", CanalOpers, s_OperServ);
         #endif
-        #ifdef IRC_PATCHS_P09
+        #if defined(IRC_PATCHS_P09)
        /*send_cmd(s_OperServ, "MODE #%s +ntsa", CanalAdmins); <--cuando se implemente este modo lo active desde
                                                                  un service*/
        send_cmd(s_OperServ, "MODE #%s +ntsil 1", CanalAdmins);
@@ -321,7 +321,7 @@ if (!user || stricmp(user, s_CregServ) == 0 || stricmp(user, s_CregServP10) == 0
         send_cmd(s_XServ, "JOIN #%s", CanalOpers);
         send_cmd(s_ChanServ, "MODE #%s +o %s", CanalOpers, s_XServ);
         #endif
-        #ifdef IRC_PATCHS_P09
+        #if defined(IRC_PATCHS_P09)
        /*send_cmd(s_OperServ, "MODE #%s +ntsa", CanalAdmins); <--cuando se implemente este modo lo active desde
                                                                  un service*/
        send_cmd(s_XServ, "MODE #%s +ntsil 1", CanalAdmins);
@@ -741,11 +741,11 @@ s_JokuServold=s_JokuServ;
 DEntryMsgold=DEntryMsg;
 CregApoyosold=CregApoyos;
 SpamUsersold=SpamUsers;
-#ifdef REG_NICK_MAIL
-#ifdef SENDMAIL
+#if defined(REG_NICK_MAIL)
+#if defined(SENDMAIL)
 SendMailPatchold=SendMailPatch;
 #endif
-#ifdef SMTP
+#if defined(SMTP)
 ServerSMTPold=ServerSMTP;
 PortSMTPold=PortSMTP;
 #endif
@@ -834,7 +834,7 @@ LogMaxUsersold=LogMaxUsers;
     /* Set signal handlers.  Catch certain signals to let us do things or
      * panic as necessary, and ignore all others.
      */
-#ifdef NSIG
+#if defined(NSIG)
     for (i = 1; i <= NSIG; i++)
 #else
     for (i = 1; i <= 32; i++)
@@ -850,7 +850,7 @@ LogMaxUsersold=LogMaxUsers;
     signal(SIGHUP, sighandler);
     signal(SIGILL, sighandler);
     signal(SIGTRAP, sighandler);
-#ifdef SIGIOT
+#if defined(SIGIOT)
     signal(SIGIOT, sighandler);
 #endif
     signal(SIGFPE, sighandler);
@@ -865,7 +865,7 @@ LogMaxUsersold=LogMaxUsers;
     /* Initialiize subservices */
     ns_init();
     cs_init();
-#ifdef CREGSERV
+#if defined(CREGSERV)
     cr_init();
 #endif    
     ms_init();
@@ -912,7 +912,7 @@ load_jok_dbase();
     if (servsock < 0)
 	fatal_perror("No puedo conectar al servidor");
     send_cmd(NULL, "PASS :%s", RemotePassword);
-#ifdef IRC_UNDERNET_P09
+#if defined(IRC_UNDERNET_P09)
     send_cmd(NULL, "SERVER %s 1 %lu %lu P09 :%s",
              ServerName, start_time, start_time, ServerDesc);
 #else /* IRC_UNDERNET_P10 */

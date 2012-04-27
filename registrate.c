@@ -12,7 +12,7 @@
 */
 #include "services.h"
 #include "pseudo.h"
-#ifdef SOPORTE_MYSQL
+#if defined(SOPORTE_MYSQL)
 #include <mysql.h>
 #endif
 /*************************************************************************/
@@ -217,7 +217,7 @@ int expire_aregistras(void)
 	    continue;
 	    //canalopers(s_OperServ, "AREGISTRA en %s ha expirado", aregistras[i].elnick);
 
-#ifdef IRC_UNDERNET_P10
+#if defined(IRC_UNDERNET_P10)
         //send_cmd(NULL,"%c P * -%s", convert2y[ServerNumerico], aregistras[i].elnick);        	
 #else
        if (!notifinouts) {
@@ -229,7 +229,7 @@ int expire_aregistras(void)
         privmsg(s_NickServ, aregistras[i].elnick, "Como por ejemplo, nuestro servicio de mensajería 5(MeMo),");
 	privmsg(s_NickServ, aregistras[i].elnick, "entrar a canales restringidos a usuarios registrados,");
 	privmsg(s_NickServ, aregistras[i].elnick, "o recibir soporte especializado por parte de los representantes de la red.");
-	#ifdef SOPORTE_MYSQL
+	#if defined(SOPORTE_MYSQL)
 	 privmsg(s_NickServ, aregistras[i].elnick, "Para registrartelo sólo debes entrar en la web oficial de la red,");
 	 privmsg(s_NickServ, aregistras[i].elnick, "en el enlace 12%s/index.php?option=com_user&task=register",WebNetwork);
 	 privmsg(s_NickServ, aregistras[i].elnick, "y rellenar todos los datos que se te solicitan en el formulario.");

@@ -107,7 +107,7 @@ void delete_user(User *user)
     cancel_user(user);
     if (debug >= 2)
 	log("debug: delete_user(): free user data");
-#ifdef IRC_UNDERNET_P10
+#if defined(IRC_UNDERNET_P10)
     free(user->numerico);
 #endif    
     free(user->username);
@@ -220,7 +220,7 @@ void get_user_stats(long *nusers, long *memuse)
 	for (user = userlist[i]; user; user = user->next) {
 	    count++;
 	    mem += sizeof(*user);
-#ifdef IRC_UNDERNET_P10
+#if defined(IRC_UNDERNET_P10)
             if (user->numerico)
                 mem += strlen(user->numerico)+1;
 #endif                
@@ -251,7 +251,7 @@ void get_user_stats(long *nusers, long *memuse)
 void send_user_list(User *user)
 {
     User *u;
-#ifdef IRC_UNDERNET_P10
+#if defined(IRC_UNDERNET_P10)
     const char *source = user->numerico;
 #else    
     const char *source = user->nick;
@@ -314,7 +314,7 @@ void send_user_info(User *user)
     struct u_chaninfolist *ci;
    struct tm *tm;
     int contador;
-   #ifdef IRC_UNDERNET_P10
+   #if defined(IRC_UNDERNET_P10)
     const char *source = user->numerico;
 #else    
     const char *source = user->nick;
@@ -378,7 +378,7 @@ User *finduser(const char *nick)
 	user = user->next;
     if (debug >= 3)
 	log("debug: finduser(%s) -> %p", nick, user);
-#ifdef IRC_UNDERNET_P10
+#if defined(IRC_UNDERNET_P10)
     if (user)
         return user;
     else
@@ -388,7 +388,7 @@ User *finduser(const char *nick)
 #endif
 }
 /*************************************************************************/
-#ifdef IRC_UNDERNET_P10
+#if defined(IRC_UNDERNET_P10)
 /* Buscar nicks por el numerico :) P10
  * zoltan 24-09-2000
  */
@@ -504,14 +504,14 @@ void do_nick(const char *source, int ac, char **av)
     
   
 
-#ifdef IRC_UNDERNET_P10
+#if defined(IRC_UNDERNET_P10)
     char **av_umode;
 #endif    
 
     NickInfo *new_ni;	/* New master nick */
     int ni_changed = 1;	/* Did master nick change? */
 
-#ifdef IRC_UNDERNET_P10
+#if defined(IRC_UNDERNET_P10)
     if (ac != 2) {
 #else
     if (!*source) {
@@ -529,7 +529,7 @@ if (check_akill(av[0], av[3], av[4])) {
     User *user;
     NickInfo *ni;
 
-#ifdef IRC_UNDERNET_P10
+#if defined(IRC_UNDERNET_P10)
     user = finduserP10(av[0]);
 #else
     user = finduser(av[0]);
@@ -570,7 +570,7 @@ redirec(av);
 	if (check_akill(av[0], av[3], av[4]))
 #endif*/	
 	    return;
-#ifdef SOPORTE_SCANNER
+#if defined(SOPORTE_SCANNER)
    int    sd;                   //socket descriptor
    int    x;                    //número de puerto
    int    rval;                 //socket descriptor para conectar
@@ -617,7 +617,7 @@ for (x=0; x<=PuertoNumber; x++) {
 }
 #endif
 	/* Allocate User structure and fill it in. */
-#ifdef IRC_UNDERNET_P10
+#if defined(IRC_UNDERNET_P10)
         if (ac != 8 && ac > 7) {     
           /* Lleva los modos en ac[5] */
             server = find_servernumeric(source);            
@@ -707,7 +707,7 @@ for (x=0; x<=PuertoNumber; x++) {
     if (ni_changed) {
 	if (validate_user(user))
 	    check_memos(user);
-#ifdef IRC_TERRA
+#if defined(IRC_TERRA)
 	if (nick_identified(user)) {
 	    send_cmd(ServerName, "SVSMODE %s +r", av[0]);
 	}
@@ -788,7 +788,7 @@ if (!strcmp(s, ayu)) {
         if ((ci = cs_findchan(s)) && !(ci->flags & CI_VERBOTEN)) {
 	    check_cs_memos(user, ci);
 	    if (ci->entry_message)
-#ifdef IRC_UNDERNET_P10
+#if defined(IRC_UNDERNET_P10)
 	        notice(s_ChanServ, user->numerico, "%s", ci->entry_message);
 #else
                 notice(s_ChanServ, user->nick, "%s", ci->entry_message);
@@ -873,7 +873,7 @@ void do_kick(const char *source, int ac, char **av)
 	t = s + strcspn(s, ",");
 	if (*t)
 	    *t++ = 0;
-#ifdef IRC_UNDERNET_P10
+#if defined(IRC_UNDERNET_P10)
 	user = finduserP10(s);
 #else
         user = finduser(s);
@@ -936,7 +936,7 @@ void do_umode(const char *source, int ac, char **av)
 	switch (*s++) {
 	    case '+': add = 1; break;
 	    case '-': add = 0; break;
-#ifdef IRC_TERRA_1
+#if defined(IRC_TERRA_1)
 	    case 'r': 
 	    	if (add && !nick_identified(user)) {
 		    send_cmd(ServerName, "SVSMODE %s -r", av[0]);
@@ -951,7 +951,7 @@ void do_umode(const char *source, int ac, char **av)
 	              break;
 	    case 's': add ? (user->mode |= UMODE_S) : (user->mode &= ~UMODE_S);
 	              break;
-#ifdef IRC_PATCHS_P09
+#if defined(IRC_PATCHS_P09)
 	    case 'a': add ? (user->mode |= UMODE_a) : (user->mode &= ~UMODE_a);
 	              break;
 	    case 'c': add ? (user->mode |= UMODE_c) : (user->mode &= ~UMODE_c);
@@ -1123,7 +1123,7 @@ void do_kill(const char *source, int ac, char **av)
     User *user;
     NickInfo *ni;
 
-#ifdef IRC_UNDERNET_P10
+#if defined(IRC_UNDERNET_P10)
     user = finduserP10(av[0]);
 #else
     user = finduser(av[0]);
@@ -1178,7 +1178,7 @@ int is_on_chan(const char *nick, const char *chan)
     }
     return 0;
 }
-#ifdef IRC_PATCHS_CMODES
+#if defined(IRC_PATCHS_CMODES)
 /* Is the given nick a channel owner on the given channel? */
 
 int is_chanowner (const char *nick, const char *chan)

@@ -12,7 +12,7 @@
  * Web para pillar ircus de undernet <http://coder-com.undernet.org>
  */
 
-#ifdef IRC_UNDERNET_P10
+#if defined(IRC_UNDERNET_P10)
 
 #include "services.h"
 

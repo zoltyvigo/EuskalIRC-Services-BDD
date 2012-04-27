@@ -35,7 +35,7 @@ static void m_away(char *source, int ac, char **av)
 
 /*************************************************************************/
 
-#ifdef IRC_HISPANO
+#if defined(IRC_HISPANO)
 static void m_bmode(char *source, int ac, char **av)
 /* Parseo de los BMODES de services virtual
  * zoltan 24-09-2000 */
@@ -48,7 +48,7 @@ static void m_bmode(char *source, int ac, char **av)
 }
 #endif              
 /*************************************************************************/
-#ifdef IRC_UNDERNET_P10
+#if defined(IRC_UNDERNET_P10)
 static void m_burst(char *source, int ac, char **av)
 {
 
@@ -139,7 +139,7 @@ static void m_kill(char *source, int ac, char **av)
     if (ac != 2)
 	return;
     /* Recover if someone kills us. */
-#ifdef IRC_UNDERNET_P10
+#if defined(IRC_UNDERNET_P10)
     if (stricmp(av[0], s_ChanServP10) == 0) {
         introduce_user(av[0]);
         join_chanserv();
@@ -246,7 +246,7 @@ static void m_nick(char *source, int ac, char **av)
      * user. */
     if (strchr(source, '.'))
 	*source = 0;
-#ifdef IRC_UNDERNET_P10
+#if defined(IRC_UNDERNET_P10)
   /* En P10, el comando nick es mas largo de en otras redes :) */
     if ((ac != 8) && (ac != 9) && (ac != 2)) {
 	if (debug) {
@@ -290,7 +290,7 @@ static void m_ping(char *source, int ac, char **av)
 }
 
 /*************************************************************************/
-#ifdef IRC_UNDERNET_P09
+#if defined(IRC_UNDERNET_P09)
 static void m_count(char *source, int ac, char **av)
 {
 	char *cntbdd;
@@ -376,7 +376,7 @@ static void m_privmsg(char *source, int ac, char **av)
 	    }
 
 
-#ifdef IRC_UNDERNET_P10
+#if defined(IRC_UNDERNET_P10)
     if (stricmp(av[0], s_OperServP10) == 0) {
 #else
     if (stricmp(av[0], s_OperServ) == 0) {
@@ -397,7 +397,7 @@ static void m_privmsg(char *source, int ac, char **av)
                         s_OperServ, source);
 	}
 
-#ifdef IRC_UNDERNET_P10
+#if defined(IRC_UNDERNET_P10)
     } else if (stricmp(av[0], s_NickServP10) == 0) {
         nickserv(source, av[1]);
     } else if (stricmp(av[0], s_ChanServP10) == 0) {
@@ -687,7 +687,7 @@ Message messages[] = {
     { "WHOIS",     m_whois },
     { "GLINE",     NULL }, 
 
-#ifdef IRC_UNDERNET_P10
+#if defined(IRC_UNDERNET_P10)
     { "A",                m_away },
     { "J",                m_join },
     { "K",                m_kick },
@@ -721,14 +721,14 @@ Message messages[] = {
     { "BURST",            m_burst }, 
 #endif
 
-#ifdef IRC_HISPANO
+#if defined(IRC_HISPANO)
     { "BMODE",     m_bmode }, 
     { "DB",        NULL }, 
     { "DBQ",       NULL },
     { "DBH",       NULL },        
     { "CONFIG",    NULL },
 #endif
-#ifdef IRC_TERRA
+#if defined(IRC_TERRA)
     { "SVSNICK",        NULL },
     { "SVSMODE",        NULL },
     { "SVSVHOST",       NULL },

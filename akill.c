@@ -234,7 +234,7 @@ int check_akill(const char *nick, const char *username, const char *host)
 	     * signed on.  This is called before the User structure is
 	     * created.
 	     */
-#ifdef IRC_UNDERNET_P10
+#if defined(IRC_UNDERNET_P10)
 /* En UndernetP10, he cambiado antes en do_umode,
  * en vez de pillar nicks, pilla trios :)
  */
@@ -261,7 +261,7 @@ int check_akill(const char *nick, const char *username, const char *host)
 	    }
 	    *host2++ = 0;
 		    
-#ifdef IRC_UNDERNET_P10
+#if defined(IRC_UNDERNET_P10)
             send_cmd(NULL, 
                     "%c GL * +%s@%s %ld :Estas Baneado de esta RED",
                     convert2y[ServerNumerico], username2, host2,
@@ -297,7 +297,7 @@ void expire_akills(void)
 	    continue;
 	    canalopers(s_OperServ, "AKILL en %s ha expirado", akills[i].mask);
 
-#ifdef IRC_UNDERNET_P10
+#if defined(IRC_UNDERNET_P10)
         send_cmd(NULL,"%c GL * -%s", convert2y[ServerNumerico], akills[i].mask);        	
 #else
         send_cmd(ServerName, "GLINE * -%s", akills[i].mask);
@@ -438,7 +438,7 @@ void do_akill(User *u)
                  return;
             }     	    
 	    add_akill(mask, reason, u->nick, expires);
-#ifdef IRC_UNDERNET_P10
+#if defined(IRC_UNDERNET_P10)
             send_cmd(NULL,"%c GL * +%s %lu :%s", convert2y[ServerNumerico],
                              mask, expires-time(NULL), reason);
 #else
@@ -483,7 +483,7 @@ void do_akill(User *u)
 	if (mask) {
 	    if (del_akill(mask)) {           	                  
 		notice_lang(s_OperServ, u, OPER_AKILL_REMOVED, mask);
-#ifdef IRC_UNDERNET_P10
+#if defined(IRC_UNDERNET_P10)
                 send_cmd(NULL,"%c GL * -%s", convert2y[ServerNumerico], mask);
 #else
                 send_cmd(ServerName, "GLINE * -%s", mask);
@@ -644,7 +644,7 @@ void do_xakill(User *u)
                  return;
             }     	    
 	    add_akill(mask, reason, u->nick, expires);
-#ifdef IRC_UNDERNET_P10
+#if defined(IRC_UNDERNET_P10)
             send_cmd(NULL,"%c GL * +%s %lu :%s", convert2y[ServerNumerico],
                              mask, expires-time(NULL), reason);
 #else
@@ -689,7 +689,7 @@ void do_xakill(User *u)
 	if (mask) {
 	    if (del_akill(mask)) {           	                  
 		notice_lang(s_XServ, u, OPER_AKILL_REMOVED, mask);
-#ifdef IRC_UNDERNET_P10
+#if defined(IRC_UNDERNET_P10)
                 send_cmd(NULL,"%c GL * -%s", convert2y[ServerNumerico], mask);
 #else
                 send_cmd(ServerName, "GLINE * -%s", mask);

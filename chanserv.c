@@ -10,7 +10,7 @@
 
 #include "services.h"
 #include "pseudo.h"
-#ifdef SOPORTE_MYSQL
+#if defined(SOPORTE_MYSQL)
 #include <mysql.h>
 #endif
 /*************************************************************************/
@@ -550,7 +550,7 @@ void chanserv(const char *source, char *buf)
     } else if (stricmp(cmd, "\1PING") == 0) {
 	if (!(s = strtok(NULL, "")))
 	    s = "\1";
-#ifdef IRC_UNDERNET_P10
+#if defined(IRC_UNDERNET_P10)
 	notice(s_ChanServ, u->numerico, "\1PING %s", s);
 #else
         notice(s_ChanServ, source, "\1PING %s", s);
@@ -593,7 +593,7 @@ static void load_old_cs_dbase(dbFILE *f, int ver)
 
     struct {
 	short level;
-#ifdef COMPATIBILITY_V2
+#if defined(COMPATIBILITY_V2)
 	short is_nick;
 #else
 	short in_use;
@@ -663,7 +663,7 @@ static void load_old_cs_dbase(dbFILE *f, int ver)
 			old_channelinfo.last_topic_setter, NICKMAX);
 	    ci->last_topic_time = old_channelinfo.last_topic_time;
 	    ci->flags = old_channelinfo.flags;
-#ifdef USE_ENCRYPTION
+#if defined(USE_ENCRYPTION)
 	    if (!(ci->flags & (CI_ENCRYPTEDPW | CI_VERBOTEN))) {
 		if (debug)
 		    log("debug: %s: password encriptada para %s on load",
@@ -710,7 +710,7 @@ static void load_old_cs_dbase(dbFILE *f, int ver)
 		ci->access = access;
 		for (j = 0; j < ci->accesscount; j++, access++) {
 		    SAFE(read_variable(old_chanaccess, f));
-#ifdef COMPATIBILITY_V2
+#if defined(COMPATIBILITY_V2)
 		    if (old_chanaccess.is_nick < 0)
 			access->in_use = 0;
 		    else
@@ -803,7 +803,7 @@ static void load_old_cs_dbase(dbFILE *f, int ver)
 		ci->levels = NULL;
 		reset_levels(ci);
 		SAFE(read_int16(&n_entries, f));
-#ifdef COMPATIBILITY_V2
+#if defined(COMPATIBILITY_V2)
 		/* Ignore earlier, incompatible levels list */
 		if (n_entries == 6) {
 		    fseek(f, sizeof(short) * n_entries, SEEK_CUR);
@@ -901,7 +901,7 @@ void load_cs_dbase(void)
 		ci->last_topic_time = tmp32;
 		SAFE(read_int32(&ci->flags, f));
 		
-#ifdef USE_ENCRYPTION
+#if defined(USE_ENCRYPTION)
 		if (!(ci->flags & (CI_ENCRYPTEDPW | CI_VERBOTEN))) {
 		    if (debug)
 			log("debug: %s: encrypting password for %s on load",
@@ -1233,7 +1233,7 @@ void check_modes(const char *chan)
     c->chanserv_modecount++;
 
     if (!(ci = c->ci)) {
-#ifdef IRC_TERRA
+#if defined(IRC_TERRA)
 	/* Services _always_ knows who should be +r. If a channel tries to be
 	 * +r and is not registered, send mode -r. This will compensate for
 	 * servers that are split when mode -r is initially sent and then try
@@ -1311,7 +1311,7 @@ void check_modes(const char *chan)
 	c->mode |= CMODE_r;
     }
 #endif
-#ifdef IRC_HISPANO
+#if defined(IRC_HISPANO)
     if (modes & CMODE_A) {
         *end++ = 'A';
         c->mode |= CMODE_A;
@@ -1351,7 +1351,7 @@ void check_modes(const char *chan)
 	set_key = 1;
     } else if (c->key && ci->mlock_key && strcmp(c->key, ci->mlock_key) != 0) {
 	char *av[3];
-#ifdef IRC_UNDERNET_P10
+#if defined(IRC_UNDERNET_P10)
         send_cmd(MODE_SENDER(s_ChanServ), "M %s -k %s", c->name, c->key);
 #else
 	send_cmd(MODE_SENDER(s_ChanServ), "MODE %s -k %s", c->name, c->key);
@@ -1430,7 +1430,7 @@ void check_modes(const char *chan)
         c->mode &= ~CMODE_r;
     }                           
 #endif
-#ifdef IRC_HISPANO
+#if defined(IRC_HISPANO)
     if (modes & CMODE_S) {
         *end++ = 'S';
         c->mode &= ~CMODE_S;
@@ -1452,7 +1452,7 @@ void check_modes(const char *chan)
 	*end++ = 'l';
 	c->limit = 0;
     }
-#ifdef IRC_HISPANO_NO_CHUTA
+#if defined(IRC_HISPANO_NO_CHUTA)
     if (!(c->mode & CMODE_r)) {
   
        int hecho = 0;
@@ -1503,7 +1503,7 @@ void check_modes(const char *chan)
 
             if (c->key || c->limit ||
                   (c->mode & (CMODE_I | CMODE_M 
-#ifdef IRC_HISPANO
+#if defined(IRC_HISPANO)
                     | CMODE_R | CMODE_m | CMODE_A | CMODE_S
 #elif defined (IRC_TERRA)
                     | CMODE_R
@@ -1564,7 +1564,7 @@ int check_valid_op(User *user, const char *chan, int serverop)
 
     if (ci->flags & CI_VERBOTEN) {
 	/* check_kick() will get them out; we needn't explain. */
-#ifdef IRC_UNDERNET_P10
+#if defined(IRC_UNDERNET_P10)
         send_cmd(MODE_SENDER(s_ChanServ), "M %s -o %s", chan, user->numerico);
 #else
 	send_cmd(MODE_SENDER(s_ChanServ), "MODE %s -o %s", chan, user->nick);
@@ -1572,7 +1572,7 @@ int check_valid_op(User *user, const char *chan, int serverop)
 	return 0;
     }
     if (ci->flags & CI_SUSPEND) {
-#ifdef IRC_UNDERNET_P10
+#if defined(IRC_UNDERNET_P10)
         send_cmd(MODE_SENDER(s_ChanServ), "M %s -o %s", chan, user->numerico);
 #else
         send_cmd(MODE_SENDER(s_ChanServ), "MODE %s -o %s", chan, user->nick);    
@@ -1584,7 +1584,7 @@ int check_valid_op(User *user, const char *chan, int serverop)
 /* Quitamos, que floodea mucho e innecesario
 	notice_lang(s_ChanServ, user, CHAN_IS_REGISTERED, s_ChanServ);
 */	
-#ifdef IRC_UNDERNET_P10
+#if defined(IRC_UNDERNET_P10)
         send_cmd(MODE_SENDER(s_ChanServ), "M %s -o %s", chan, user->numerico);
 #else
         send_cmd(MODE_SENDER(s_ChanServ), "MODE %s -o %s", chan, user->nick);
@@ -1597,7 +1597,7 @@ int check_valid_op(User *user, const char *chan, int serverop)
 	 * and stuff. */
 	notice(s_ChanServ, user->nick, CHAN_NOT_ALLOWED_OP, chan);
 #endif
-#ifdef IRC_UNDERNET_P10
+#if defined(IRC_UNDERNET_P10)
         send_cmd(MODE_SENDER(s_ChanServ), "M %s -o %s", chan, user->numerico);
 #else
         send_cmd(MODE_SENDER(s_ChanServ), "MODE %s -o %s", chan, user->nick);
@@ -1626,7 +1626,7 @@ int check_valid_voice(User *user, const char *chan, int serverop)
            
     if (ci->flags & CI_VERBOTEN) {
        /* check_kick() will get them out; we needn't explain. */   
-#ifdef IRC_UNDERNET_P10
+#if defined(IRC_UNDERNET_P10)
         send_cmd(MODE_SENDER(s_ChanServ), "M %s -v %s", chan, user->numerico);
 #else
         send_cmd(MODE_SENDER(s_ChanServ), "MODE %s -v %s", chan, user->nick);
@@ -1636,20 +1636,20 @@ int check_valid_voice(User *user, const char *chan, int serverop)
 
     if (ci->flags & CI_SUSPEND) {
 //      send_cmd(s_ChanServ, "PRIVMSG #opers :DEBUG canal %s esta suspend, veamos a ver ke pasa", ci->name);
-#ifdef IRC_UNDERNET_P10
+#if defined(IRC_UNDERNET_P10)
         send_cmd(MODE_SENDER(s_ChanServ), "M %s -v %s", chan, user->numerico);
 #else
         send_cmd(MODE_SENDER(s_ChanServ), "MODE %s -v %s", chan, user->nick);
 #endif
         return 0;
     }
-#ifdef novalido_autovoice
+#if defined(novalido_autovoice)
     if (serverop && time(NULL)-start_time >= CSRestrictDelay
                                 && !check_access(user, ci, CA_AUTOVOICE)) {
     /* Quitamos, que floodea mucho e innecesario
         notice_lang(s_ChanServ, user, CHAN_IS_REGISTERED, s_ChanServ);
      */
-#ifdef IRC_UNDERNET_P10
+#if defined(IRC_UNDERNET_P10)
         send_cmd(MODE_SENDER(s_ChanServ), "M %s -v %s", chan, user->numerico);
 #else
         send_cmd(MODE_SENDER(s_ChanServ), "MODE %s -v %s", chan, user->nick);
@@ -1663,7 +1663,7 @@ int check_valid_voice(User *user, const char *chan, int serverop)
          * and stuff. */
         notice_lang(s_ChanServ, user->nick, CHAN_NOT_ALLOWED_VOICE, chan);
 #endif
-#ifdef IRC_UNDERNET_P10
+#if defined(IRC_UNDERNET_P10)
         send_cmd(MODE_SENDER(s_ChanServ), "M %s -v %s", chan, user->numerico);
 #else
         send_cmd(MODE_SENDER(s_ChanServ), "MODE %s -v %s", chan, user->nick);
@@ -1674,7 +1674,7 @@ int check_valid_voice(User *user, const char *chan, int serverop)
     return 1;
  send_cmd(s_ChanServ, "PRIVMSG #opers :DEBUG cumple para tener voz");    
 }                                 
-#ifdef IRC_PATCHS_CMODES
+#if defined(IRC_PATCHS_CMODES)
 int check_should_owner(User *user, const char *chan)
 {
     ChannelInfo *ci = cs_findchan(chan);
@@ -1689,7 +1689,7 @@ int check_should_owner(User *user, const char *chan)
 	return 0;
 
     if (is_founder(user, ci)) { 
-#ifdef IRC_UNDERNET_P10
+#if defined(IRC_UNDERNET_P10)
         send_cmd(MODE_SENDER(s_ChanServ), "NOTICE %s :FOUNDER %s", chan, user->numerico);
 #else
         send_cmd(MODE_SENDER(s_ChanServ), "NOTICE  %s :FOUNDER %s", chan, user->nick);
@@ -1732,7 +1732,7 @@ int check_should_op(User *user, const char *chan)
 	return 0;
 
     if (check_access(user, ci, CA_AUTOOP)) {
-#ifdef IRC_UNDERNET_P10
+#if defined(IRC_UNDERNET_P10)
         send_cmd(MODE_SENDER(s_ChanServ), "M %s +o %s", chan, user->numerico);
 #else
         send_cmd(MODE_SENDER(s_ChanServ), "MODE %s +o %s", chan, user->nick);
@@ -1771,7 +1771,7 @@ int check_should_voice(User *user, const char *chan)
 
 
     if (check_access(user, ci, CA_AUTOVOICE)) {
-#ifdef IRC_UNDERNET_P10
+#if defined(IRC_UNDERNET_P10)
         send_cmd(MODE_SENDER(s_ChanServ), "M %s +v %s", chan, user->numerico);
 
 #else
@@ -1816,7 +1816,7 @@ int check_kick(User *user, const char *chan)
 /* Por si se quiere desactivar el akick, quitar los // de abajo */
     //  return 0;
 
-#ifdef NO_USAR
+#if defined(NO_USAR)
 /* Los no admins no pueden entrar en el canal de admins */
 //    if (stricmp(chan, "#admins" == 0) {
       if (chan == "#admins") {
@@ -1912,7 +1912,7 @@ kick:
     free(av[0]);
     free(av[1]);
     free(av[2]);
-#ifdef IRC_UNDERNET_P10
+#if defined(IRC_UNDERNET_P10)
     send_cmd(s_ChanServ, "K %s %s :%s", chan, user->numerico, reason);
 #else
     send_cmd(s_ChanServ, "KICK %s %s :%s", chan, user->nick, reason);
@@ -2074,7 +2074,7 @@ void expire_chans()
                 }
 
                 canalopers(s_ChanServ, "Expirando el canal 12%s", ci->name);
-#ifdef SOPORTE_MYSQL
+#if defined(SOPORTE_MYSQL)
 MYSQL *conn;
 char modifica[BUFSIZE];
  conn = mysql_init(NULL);
@@ -2127,7 +2127,7 @@ void cs_remove_nick(const NickInfo *ni)
                             cr->estado |= CR_EXPIRADO;
                             cr->time_motivo = time(NULL);
                         }
-	#ifdef SOPORTE_MYSQL
+	#if defined(SOPORTE_MYSQL)
 MYSQL *conn;
 char modifica[BUFSIZE];
  conn = mysql_init(NULL);
@@ -2168,7 +2168,7 @@ canaladmins(s_CregServ, "%s\n", mysql_error(conn));
                             cr->estado |= CR_EXPIRADO;
                             cr->time_motivo = time(NULL);
                         }
-		#ifdef SOPORTE_MYSQL
+		#if defined(SOPORTE_MYSQL)
 MYSQL *conn;
 char modifica[BUFSIZE];
  conn = mysql_init(NULL);
@@ -2334,7 +2334,7 @@ void join_chanserv(void)
     for (i = 0; i < canales; i++) { 
        for (ci = chanlists[i]; ci; ci = ci->next) {    
          if (ci->flags & CI_STAY) { 
-#ifdef IRC_UNDERNET_P10
+#if defined(IRC_UNDERNET_P10)
              send_cmd(s_ChanServ, "J %s", ci->name);
              send_cmd(MODE_SENDER(s_ChanServ), "M %s +o %s", ci->name, s_ChanServP10);
 #else
@@ -2367,7 +2367,7 @@ void join_shadow(void)
     if (!u) {
         return;
     }        
-#ifdef IRC_UNDERNET_P10
+#if defined(IRC_UNDERNET_P10)
     destino = u->numerico;
 #else
     destino = u->nick;
@@ -2379,7 +2379,7 @@ void join_shadow(void)
              if (c) {
                  if (c->key || c->limit ||
                               (c->mode & (CMODE_I | CMODE_M
-#ifdef IRC_HISPANO
+#if defined(IRC_HISPANO)
                               | CMODE_R | CMODE_A | CMODE_S 
 #elif defined (IRC_TERRA)
                               | CMODE_R
@@ -2665,7 +2665,7 @@ static void do_register(User *u)
     ChannelInfo *ci;
      CregInfo *cr;
     struct u_chaninfolist *uc;
-#ifdef USE_ENCRYPTION
+#if defined(USE_ENCRYPTION)
     char founderpass[PASSMAX+1];
 #endif
  if (!is_services_cregadmin(u)) {
@@ -2725,7 +2725,7 @@ notice(s_ChanServ, u->nick, "Comando deshabilitado, use 2/msg 12%s ,para los
 	log("%s: makechan() failed for REGISTER %s", s_ChanServ, chan);
 	notice_lang(s_ChanServ, u, CHAN_REGISTRATION_FAILED);
 
-#ifdef USE_ENCRYPTION
+#if defined(USE_ENCRYPTION)
     } else if (strscpy(founderpass, pass, PASSMAX+1),
                encrypt_in_place(founderpass, PASSMAX) < 0) {
 	log("%s: Couldn't encrypt password for %s (REGISTER)",
@@ -2739,7 +2739,7 @@ notice(s_ChanServ, u->nick, "Comando deshabilitado, use 2/msg 12%s ,para los
 	c->ci = ci;
 	ci->c = c;
 	ci->flags = CI_KEEPTOPIC | CI_SECURE;
-#ifdef IRC_TERRA
+#if defined(IRC_TERRA)
 	ci->mlock_on = CMODE_N | CMODE_T | CMODE_r;
 #else
 	ci->mlock_on = CMODE_N | CMODE_T;
@@ -2747,7 +2747,7 @@ notice(s_ChanServ, u->nick, "Comando deshabilitado, use 2/msg 12%s ,para los
 	ci->memos.memomax = MSMaxMemos;
 	ci->last_used = ci->time_registered;
 	ci->founder = u->real_ni;
-#ifdef USE_ENCRYPTION
+#if defined(USE_ENCRYPTION)
 	if (strlen(pass) > PASSMAX)
 	    notice_lang(s_ChanServ, u, PASSWORD_TRUNCATED, PASSMAX);
 	memset(pass, 0, strlen(pass));
@@ -3081,7 +3081,7 @@ static void do_drop(User *u)
     char *chan = strtok(NULL, " ");
     ChannelInfo *ci;
     NickInfo *ni;
-#ifdef IRC_TERRA
+#if defined(IRC_TERRA)
     Channel *c;
 #endif
     int is_servdevel = is_services_devel(u);
@@ -3117,7 +3117,7 @@ static void do_drop(User *u)
 			u->nick, u->username, u->host);
 	delchan(ci);
 	 borra_akick(ci->name);
-#ifdef IRC_TERRA
+#if defined(IRC_TERRA)
 	if ((c = findchan(chan))) {
 	    c->mode &= ~CMODE_r;
 	    send_cmd(s_ChanServ, "MODE %s -r", chan);
@@ -3336,7 +3336,7 @@ static void do_set_successor(User *u, ChannelInfo *ci, char *param)
 
 static void do_set_password(User *u, ChannelInfo *ci, char *param)
 {
-#ifdef USE_ENCRYPTION
+#if defined(USE_ENCRYPTION)
     int len = strlen(param);
     if (len > PASSMAX) {
 	len = PASSMAX;
@@ -3393,7 +3393,7 @@ if ((c = findchan(ci->name)) && (ci->flags & CI_AUTOLIMIT)) {
         char buf[256];
        snprintf(buf, sizeof(buf), "Vaciado para cambio de nombre Canal solicitado por %s",u->nick);
 
-#ifdef IRC_UNDERNET_P10
+#if defined(IRC_UNDERNET_P10)
       
       	 //do_write_bdd(ci->name, 7, "+ntr",ci->name);
                              
@@ -3404,7 +3404,7 @@ if ((c = findchan(ci->name)) && (ci->flags & CI_AUTOLIMIT)) {
         for (cu = c->users; cu; cu = next) {
              next = cu->next;
              av[0] = sstrdup(param);
-#ifdef IRC_UNDERNET_P10             
+#if defined(IRC_UNDERNET_P10)
              av[1] = sstrdup(cu->user->numerico);
 #else
              av[1] = sstrdup(cu->user->nick);
@@ -3703,7 +3703,7 @@ static void do_set_mlock(User *u, ChannelInfo *ci, char *param)
 	    }
 	    break;
 /* #endif */
-#ifdef IRC_HISPANO_NOCHUTA
+#if defined(IRC_HISPANO_NOCHUTA)
           case 'A':
             if (add) {
                 newlock_on |= CMODE_A;
@@ -3960,7 +3960,7 @@ static void do_set_stay(User *u, ChannelInfo *ci, char *param)
   if (stricmp(param, "ON") == 0) {
         ci->flags |= CI_STAY;
         send_cmd(s_ChanServ, "JOIN %s ", ci->name);
-#ifdef IRC_UNDERNET_P10
+#if defined(IRC_UNDERNET_P10)
         send_cmd(MODE_SENDER(s_ChanServ), "MODE %s +o %s", ci->name, s_ChanServP10);
 #else        
         send_cmd(MODE_SENDER(s_ChanServ), "MODE %s +o %s", ci->name, s_ChanServ);
@@ -4037,7 +4037,7 @@ if (!is_services_root(u)) {
 /* `last' is set to the last index this routine was called with
  * `perm' is incremented whenever a permission-denied error occurs
  */
-#ifdef CAPADO 
+#if defined(CAPADO)
 static int access_del(User *u, ChanAccess *access, int *perm, int uacc)
 {
     if (!access->in_use)
@@ -4318,7 +4318,7 @@ static void do_access(User *u)
 	}
 
 	/* Special case: is it a number/list?  Only do search if it isn't. */
-#ifdef CAPADO	
+#if defined(CAPADO)
 	if (isdigit(*nick) && strspn(nick, "1234567890,-") == strlen(nick)) {
 	    int count, deleted, last = -1, perm = 0;
 	    deleted = process_numlist(nick, &count, access_del_callback, u,
@@ -4447,7 +4447,7 @@ static int akick_del(User *u, AutoKick *akick)
     akick->in_use = akick->is_nick = 0;
     return 1;
 }
-#ifdef CAPADO
+#if defined(CAPADO)
 static int akick_del_callback(User *u, int num, va_list args)
 {
     ChannelInfo *ci = va_arg(args, ChannelInfo *);
@@ -4601,12 +4601,12 @@ static void do_akick(User *u)
         }
 //        strscpy(akick->who, u->nick, NICKMAX);
 /* Kickeamos al momento :) */
-#ifdef DESACTIVADO
+#if defined(DESACTIVADO)
         User *u2;
 	u2 = finduser(mask);
         if (u2) {
             if (!is_services_oper(u2)) {
-#ifdef IRC_UNDERNET_P10
+#if defined(IRC_UNDERNET_P10)
                 char *destino = u2->numerico;
 #else
                 char *destino = u2->nick;
@@ -4632,7 +4632,7 @@ NickInfo *ni = findnick(mask);
 	    notice_lang(s_ChanServ, u, CHAN_AKICK_DISABLED);
 	    return;
 	}
-#ifdef CAPADO
+#if defined(CAPADO)
 	/* Special case: is it a number/list?  Only do search if it isn't. */
 	if (isdigit(*mask) && strspn(mask, "1234567890,-") == strlen(mask)) {
 	    int count, deleted, last = -1;
@@ -4865,7 +4865,7 @@ if ((cs_findchan(chan)) && (ci->flags & CI_AUTOLIMIT)) {
 	 expires = time(NULL);
  if (ki->erab > 0 && ki->erab < tramo1)  {
 	 	numero = ki->erab + incr1;
- #ifdef IRC_UNDERNET_P10
+ #if defined(IRC_UNDERNET_P10)
 del_alimit(ki->name);
 add_alimit( ki->name,numero,expires);
  //send_cmd(s_ChanServ, "M %s +l %i", ki->name,numero);
@@ -4876,7 +4876,7 @@ add_alimit( ki->name,numero,expires);
 #endif
 } else if (ki->erab >=tramo1 && ki->erab < tramo2)  {
 	 	numero = ki->erab + incr2;
- #ifdef IRC_UNDERNET_P10
+ #if defined(IRC_UNDERNET_P10)
  send_cmd(s_ChanServ, "M %s +l %i", ki->name,numero);
  #else
 del_alimit(ki->name);
@@ -4885,7 +4885,7 @@ add_alimit( ki->name,numero,expires);
 #endif
 } else if (ki->erab >= tramo3)  {
 	 	numero = ki->erab + incr3;
- #ifdef IRC_UNDERNET_P10
+ #if defined(IRC_UNDERNET_P10)
  send_cmd(s_ChanServ, "M %s +l %i", ki->name,numero);
  #else
 del_alimit(ki->name);
@@ -4917,7 +4917,7 @@ for (u = c->users; u; u = u->next)
 
 if (numero < tramo1)  {
 	 	suma = numero + incr1 -1;
- #ifdef IRC_UNDERNET_P10
+ #if defined(IRC_UNDERNET_P10)
  send_cmd(s_ChanServ, "M %s +l %i", ci->name,suma);
  #else
 del_alimit(ci->name);
@@ -4925,7 +4925,7 @@ send_cmd(MODE_SENDER(s_ChanServ), "MODE %s +l %i", ci->name, suma);
 #endif
 } else if (numero < tramo3)  {
 	 	suma = numero + incr2 -1;
- #ifdef IRC_UNDERNET_P10
+ #if defined(IRC_UNDERNET_P10)
  send_cmd(s_ChanServ, "M %s +l %i", ci->name,suma);
  #else
 del_alimit(ci->name);
@@ -4933,7 +4933,7 @@ send_cmd(MODE_SENDER(s_ChanServ), "MODE %s +l %i", ci->name, suma);
 #endif
 } else if (numero >= tramo3)  {
 	 	suma = numero + incr3 -1;
- #ifdef IRC_UNDERNET_P10
+ #if defined(IRC_UNDERNET_P10)
  send_cmd(s_ChanServ, "M %s +l %i", ci->name,suma);
  #else
 del_alimit(ci->name);
@@ -5534,7 +5534,7 @@ static void do_ckick(User *u)
         char *destino;
         if (u2) {
 /*        me peta :( */
-#ifdef IRC_UNDERNET_P10
+#if defined(IRC_UNDERNET_P10)
             destino = u2->numerico;
             
 #else
@@ -5603,7 +5603,7 @@ static void do_ban(User *u)
                                          
                                                            
 /*************************************************************************/
-#ifdef DESACTIVADO
+#if defined(DESACTIVADO)
 #endif
 static void do_unban(User *u)
 {
@@ -5721,7 +5721,7 @@ static void do_clear(User *u)
 	    next = cu->next;
 	    av[0] = sstrdup(chan);
 	    av[1] = sstrdup("-o");
-#ifdef IRC_UNDERNET_P10
+#if defined(IRC_UNDERNET_P10)
             av[2] = sstrdup(cu->user->numerico);
 #else
 	    av[2] = sstrdup(cu->user->nick);
@@ -5742,7 +5742,7 @@ static void do_clear(User *u)
 	    next = cu->next;
 	    av[0] = sstrdup(chan);
 	    av[1] = sstrdup("-v");
-#ifdef IRC_UNDERNET_P10
+#if defined(IRC_UNDERNET_P10)
             av[2] = sstrdup(cu->user->numerico);
 #else	    
 	    av[2] = sstrdup(cu->user->nick);
@@ -5770,7 +5770,7 @@ static void do_clear(User *u)
 	for (cu = c->users; cu; cu = next) {
 	    next = cu->next;
 	    av[0] = sstrdup(chan);
-#ifdef IRC_UNDERNET_P10
+#if defined(IRC_UNDERNET_P10)
             av[1] = sstrdup(cu->user->numerico);
 #else	    
 	    av[1] = sstrdup(cu->user->nick);
@@ -5828,7 +5828,7 @@ static void do_reset(User *u)
         if (ci->flags & CI_STAY) {
             send_cmd(s_ChanServ, "PART %s ", chan);
             send_cmd(s_ChanServ, "JOIN %s GOD", chan);
-#ifdef IRC_UNDERNET_P10            
+#if defined(IRC_UNDERNET_P10)
             send_cmd(MODE_SENDER(s_ChanServ), "MODE %s +o %s", chan, s_ChanServP10);
 #else
             send_cmd(MODE_SENDER(s_ChanServ), "MODE %s +o %s", chan, s_ChanServ);
@@ -5873,7 +5873,7 @@ static void do_reset(User *u)
              next = cu->next;
              av[0] = sstrdup(chan);
              av[1] = sstrdup("-o");
-#ifdef IRC_UNDERNET_P10
+#if defined(IRC_UNDERNET_P10)
              av[2] = sstrdup(cu->user->numerico);
 #else             
              av[2] = sstrdup(cu->user->nick);
@@ -5892,7 +5892,7 @@ static void do_reset(User *u)
              next  = cu->next;
              av[0] = sstrdup(chan);
              av[1] = sstrdup("-v");
-#ifdef IRC_UNDERNET_P10
+#if defined(IRC_UNDERNET_P10)
              av[2] = sstrdup(cu->user->numerico);
 #else
              av[2] = sstrdup(cu->user->nick);
@@ -5992,7 +5992,7 @@ static void do_getpass(User *u)
 #endif
 
     /* Assumes that permission checking has already been done. */
-#ifdef USE_ENCRYPTION
+#if defined(USE_ENCRYPTION)
     notice_lang(s_ChanServ, u, CHAN_GETPASS_UNAVAILABLE);
 #else
     if (!chan) {

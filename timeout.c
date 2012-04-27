@@ -13,14 +13,14 @@ static Timeout *timeouts = NULL;
 
 /*************************************************************************/
 
-#ifdef DEBUG_COMMANDS
+#if defined(DEBUG_COMMANDS)
 
 /* Send the timeout list to the given user. */
 
 void send_timeout_list(User *u)
 {
     Timeout *to, *last;
-#ifdef IRC_UNDERNET_P10
+#if defined(IRC_UNDERNET_P10)
     char *source = u->numerico;
 #else    
     char *source = u->nick;

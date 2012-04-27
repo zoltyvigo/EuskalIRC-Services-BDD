@@ -28,7 +28,7 @@ void kill_user(const char *source, const char *user, const char *reason)
     snprintf(buf, sizeof(buf), "%s (%s)", source, reason);
     av[0] = sstrdup(user);
     av[1] = buf;
-#ifdef IRC_UNDERNET_P10
+#if defined(IRC_UNDERNET_P10)
     send_cmd(source, "D %s :%s", user, av[1]);
 #else
     send_cmd(source, "KILL %s :%s", user, av[1]);
@@ -56,7 +56,7 @@ void bad_password(User *u)
     u->invalid_pw_count++;
     u->invalid_pw_time = now;
     if (u->invalid_pw_count >= BadPassLimit)
-#ifdef IRC_UNDERNET_P10
+#if defined(IRC_UNDERNET_P10)
         kill_user(NULL, u->numerico, "Demasiadas passwords inválidas");
 #else
 	kill_user(NULL, u->nick, "Demasiadas passwords inválidas");

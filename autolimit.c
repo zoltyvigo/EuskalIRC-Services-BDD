@@ -225,7 +225,7 @@ int expire_alimits(void)
 	    continue;
 	
 
-#ifdef IRC_UNDERNET_P10
+#if defined(IRC_UNDERNET_P10)
         //send_cmd(NULL,"%c P * -%s", convert2y[ServerNumerico], alimits[i].elcanal);        	
 #else
        

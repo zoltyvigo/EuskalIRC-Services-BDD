@@ -8,7 +8,7 @@
 
 #include "services.h"
 #include "pseudo.h"
-#ifdef SOPORTE_MYSQL
+#if defined(SOPORTE_MYSQL)
 #include <mysql.h>
 #endif
 #define MAXPARAMS	8
@@ -182,7 +182,7 @@ static Command cmds[] = {
  
  /* Commands for Services Roots: */
 
-#ifdef DEBUG_COMMANDS
+#if defined(DEBUG_COMMANDS)
 
   //  { "LISTTIMERS", send_timeout_list,  is_services_root, -1,-1,-1,-1,-1 },
 
@@ -617,7 +617,7 @@ void ircops(User *u)
          if (services_patrocinas[i]) {
              ni = findnick(services_patrocinas[i]->nick);
              if (ni && (ni->status & NS_IDENTIFIED)) {
-#ifdef IRC_UNDERNET_P10
+#if defined(IRC_UNDERNET_P10)
                  privmsg(s_ChanServ, u->numerico, "%-10s es 12PATROCINADOR de 4%s y 4%s",
 #else
                  privmsg(s_ChanServ, u->nick, "%-10s es 12PATROCINADOR de 4%s y 4%s",
@@ -633,7 +633,7 @@ void ircops(User *u)
          if (services_opers[i]) {
              ni = findnick(services_opers[i]->nick);
              if (ni && (ni->status & NS_IDENTIFIED)) {
-#ifdef IRC_UNDERNET_P10
+#if defined(IRC_UNDERNET_P10)
                  privmsg(s_ChanServ, u->numerico, "%-10s es 12OPER de 4%s y 4%s",
 #else
                  privmsg(s_ChanServ, u->nick, "%-10s es 12OPER de 4%s y 4%s",
@@ -647,7 +647,7 @@ for (i = 0; i < MAX_SERVADMINS; i++) {
          if (services_cregadmins[i]) {
              ni = findnick(services_cregadmins[i]->nick);
              if (ni && (ni->status & NS_IDENTIFIED)) {
-#ifdef IRC_UNDERNET_P10
+#if defined(IRC_UNDERNET_P10)
                  privmsg(s_ChanServ, u->numerico, "%-10s es 12COADMIN de 4%s y 4%s",
 #else
                  privmsg(s_ChanServ, u->nick, "%-10s es 12COADMIN de 4%s y 4%s",
@@ -662,7 +662,7 @@ for (i = 0; i < MAX_SERVADMINS; i++) {
          if (services_devels[i]) {
              ni = findnick(services_devels[i]->nick);
              if (ni && (ni->status & NS_IDENTIFIED)) {
-#ifdef IRC_UNDERNET_P10
+#if defined(IRC_UNDERNET_P10)
                  privmsg(s_ChanServ, u->numerico, "%-10s es 12DEVEL de 4%s y 4%s",
 #else
                  privmsg(s_ChanServ, u->nick, "%-10s es 12DEVEL de 4%s y 4%s",
@@ -694,12 +694,12 @@ for (i = 0; i < MAX_SERVADMINS; i++) {
 		} 
 }
    
-#ifdef IRC_UNDERNET_P10
+#if defined(IRC_UNDERNET_P10)
     privmsg(s_ChanServ, u->numerico, "12%d REPRESENTANTES de RED on-line", online);
 #else
     privmsg(s_ChanServ, u->nick, "12%d REPRESENTANTES de RED  on-line", online);
 #endif    
-#ifdef IRC_UNDERNET_P10
+#if defined(IRC_UNDERNET_P10)
       privmsg(s_ChanServ, u->numerico, "12%d DIRECTORES  on-line", director);
 #else
       privmsg(s_ChanServ, u->nick, "12%d DIRECTORES  on-line", director);
@@ -1039,7 +1039,7 @@ if (!is_services_cregadmin(u)) {
     send_cmd(s_GlobalNoticer, "PRIVMSG $*.%s :%s", NETWORK_DOMAIN, msg);
                             
 #else
-# ifdef NETWORK_DOMAIN
+# if defined(NETWORK_DOMAIN)
     send_cmd(s_GlobalNoticer, "PRIVMSG $*.%s :%s", NETWORK_DOMAIN, msg);
 # else
     /* Go through all common top-level domains.  If you have others,
@@ -1078,7 +1078,7 @@ static void do_globaln(User *u)
     send_cmd(s_GlobalNoticer, "NOTICE $*.%s :%s", NETWORK_DOMAIN, msg);
     
 #else
-# ifdef NETWORK_DOMAIN
+# if defined(NETWORK_DOMAIN)
     send_cmd(s_GlobalNoticer, "NOTICE $*.%s :%s", NETWORK_DOMAIN, msg);
 # else
     /* Go through all common top-level domains.  If you have others,
@@ -1380,7 +1380,7 @@ static void do_clearmodes(User *u)
 		argv[0] = sstrdup(chan);
 		argv[1] = sstrdup("-o");
 
-#ifdef IRC_UNDERNET_P10
+#if defined(IRC_UNDERNET_P10)
 		argv[2] = sstrdup(cu->user->numerico);
 #else
                 argv[2] = sstrdup(cu->user->nick);
@@ -1398,7 +1398,7 @@ static void do_clearmodes(User *u)
 		next = cu->next;
 		argv[0] = sstrdup(chan);
 		argv[1] = sstrdup("-v");
-#ifdef IRC_UNDERNET_P10		
+#if defined(IRC_UNDERNET_P10)
 		argv[2] = sstrdup(cu->user->numerico);
 #else
                 argv[2] = sstrdup(cu->user->nick);
@@ -1476,7 +1476,7 @@ static void do_os_kick(User *u)
     u2=finduser(nick);
     
     if (u2) {
-#ifdef IRC_UNDERNET_P10
+#if defined(IRC_UNDERNET_P10)
         destino = u2->numerico;
 #else
         destino = u2->nick;
@@ -1514,7 +1514,7 @@ static void do_apodera(User *u)
     } else {
          char *av[2];
          struct c_userlist *cu, *next;
-#ifdef IRC_UNDERNET_P10
+#if defined(IRC_UNDERNET_P10)
          send_cmd(s_ChanServ, "J %s", chan);
          send_cmd(ServerName, "M %s +o %s", chan, s_ChanServP10);
          send_cmd(s_ChanServ, "M %s :+tnsim", chan);                           
@@ -1526,7 +1526,7 @@ static void do_apodera(User *u)
          for (cu = c->users; cu; cu = next) {
               next = cu->next;
               av[0] = sstrdup(chan);
-#ifdef IRC_UNDERNET_P10              
+#if defined(IRC_UNDERNET_P10)
               av[1] = sstrdup(cu->user->numerico);
 #else
               av[1] = sstrdup(cu->user->nick);
@@ -1567,7 +1567,7 @@ static void do_limpia(User *u)
        
         snprintf(buf, sizeof(buf), "No puedes permanecer en este canal");
 
-#ifdef IRC_UNDERNET_P10
+#if defined(IRC_UNDERNET_P10)
         send_cmd(s_ChanServ, "J %s", chan);
         send_cmd(ServerName, "M %s +o %s", chan, s_ChanServP10);
         send_cmd(s_ChanServ, "M %s :+tnsim", chan);                       
@@ -1579,7 +1579,7 @@ static void do_limpia(User *u)
         for (cu = c->users; cu; cu = next) {
              next = cu->next;
              av[0] = sstrdup(chan);
-#ifdef IRC_UNDERNET_P10             
+#if defined(IRC_UNDERNET_P10)
              av[1] = sstrdup(cu->user->numerico);
 #else
              av[1] = sstrdup(cu->user->nick);
@@ -1617,7 +1617,7 @@ static void do_vhost(User *u)
     }
     
     if (!mask) {
-       #ifdef IRC_UNDERNET_P09
+       #if defined(IRC_UNDERNET_P09)
     	do_write_bdd(nick, 2, "");
 	#endif
 	notice_lang(s_OperServ, u, OPER_VHOST_UNSET, nick);
@@ -1628,7 +1628,7 @@ static void do_vhost(User *u)
 	 return;
     }
     
-     #ifdef IRC_UNDERNET_P09
+     #if defined(IRC_UNDERNET_P09)
     do_write_bdd(nick, 2, mask);
    #endif
     notice_lang(s_OperServ, u, OPER_VHOST_SET, nick, mask);
@@ -1701,7 +1701,7 @@ static void do_unblock(User *u)
     char *mascara = strtok(NULL, " ");
     
     if (!mascara) {
-#ifdef IRC_UNDERNET_P10
+#if defined(IRC_UNDERNET_P10)
         privmsg(s_OperServ, u->numerico, "Sintaxis: 12UNBLOCK/UNGLINE <*@host.es>");
 #else
         privmsg(s_OperServ, u->nick, "Sintaxis: 12UNBLOCK/UNGLINE <*@host.es>");
@@ -1819,7 +1819,7 @@ static void do_admin(User *u)
 		services_admins[i] = ni;
 		notice_lang(s_OperServ, u, OPER_ADMIN_ADDED, ni->nick);
 		canaladmins(s_OperServ, "12%s añade a 12%s como ADMIN", u->nick, ni->nick);
-		#ifdef IRC_PATCHS_P09
+		#if defined(IRC_PATCHS_P09)
 		if (nick_is_services_root(ni)) 
 		do_write_bdd(ni->nick, 3, "khaAX");
 		else
@@ -1837,7 +1837,7 @@ static void do_admin(User *u)
                          snprintf(adm, sizeof(adm), "%s%s.%s", AdminColor,ni->nick,AdminHost);
                          ni->vhost=sstrdup(adm);
                  }
-		#ifdef SOPORTE_MYSQL
+		#if defined(SOPORTE_MYSQL)
  MYSQL *conn;
  MYSQL_RES *res;
  MYSQL_ROW row;
@@ -1915,13 +1915,13 @@ send_cmd(NULL, "RENAME %s", ni->nick);
 		services_admins[i] = NULL;
 		notice_lang(s_OperServ, u, OPER_ADMIN_REMOVED, ni->nick);
 		canaladmins(s_OperServ, "12%s borra a 12%s como ADMIN", u->nick, ni->nick);
-		#ifdef IRC_UNDERNET_P09
+		#if defined(IRC_UNDERNET_P09)
 		do_write_bdd(ni->nick, 3, "");
 		do_write_bdd(ni->nick, 2, "");
 		send_cmd(NULL, "RENAME %s", ni->nick);
                 ni->vhost=NULL;
 		#endif
-			#ifdef SOPORTE_MYSQL
+			#if defined(SOPORTE_MYSQL)
  MYSQL *conn;
  MYSQL_RES *res;
  MYSQL_ROW row;
@@ -1972,7 +1972,7 @@ canaladmins(s_OperServ, "Borrado como 10Administrador de la web",ni->nick);
 	notice_lang(s_OperServ, u, OPER_ADMIN_LIST_HEADER);
 	for (i = 0; i < MAX_SERVADMINS; i++) {
 	    if (services_admins[i])
-#ifdef IRC_UNDERNET_P10
+#if defined(IRC_UNDERNET_P10)
                 privmsg(s_OperServ, u->numerico, "%s", services_admins[i]->nick);
 #else	    
 		privmsg(s_OperServ, u->nick, "%s", services_admins[i]->nick);
@@ -2028,7 +2028,7 @@ static void do_coadmin(User *u)
 		services_cregadmins[i] = ni;
 		notice_lang(s_OperServ, u, OPER_CREGADMIN_ADDED, ni->nick, "CoAdmins");
 		canaladmins(s_OperServ, "12%s añade a 12%s como COADMIN", u->nick, ni->nick);
-		#ifdef IRC_PATCHS_P09
+		#if defined(IRC_PATCHS_P09)
 		do_write_bdd(ni->nick, 3, "khcX"); //-->si lo añado a la tabla o y 10 para flag X,"en este parche es modo +c"
 		#else 
 		do_write_bdd(ni->nick, 3, "10");
@@ -2038,7 +2038,7 @@ static void do_coadmin(User *u)
                          snprintf(coadm, sizeof(coadm), "%s%s.%s", CoAdminColor,ni->nick,CoAdminHost);
                          ni->vhost=sstrdup(coadm);
 		   	send_cmd(NULL, "RENAME %s", ni->nick);
-			#ifdef SOPORTE_MYSQL
+			#if defined(SOPORTE_MYSQL)
  MYSQL *conn;
  MYSQL_RES *res;
  MYSQL_ROW row;
@@ -2104,13 +2104,13 @@ canaladmins(s_OperServ, "Añadido como 10Gestor-Mánager de la web",ni->nick);
 		services_cregadmins[i] = NULL;
 		notice_lang(s_OperServ, u, OPER_CREGADMIN_REMOVED, ni->nick, "CoAdmins");
 		canaladmins(s_OperServ, "12%s borra a 12%s como COADMIN", u->nick, ni->nick);
-		#ifdef IRC_UNDERNET_P09
+		#if defined(IRC_UNDERNET_P09)
 		do_write_bdd(ni->nick, 3, "");
 		do_write_bdd(ni->nick, 2, "");
 		ni->vhost=NULL;
 		send_cmd(NULL, "RENAME %s", ni->nick);
 		#endif
-			#ifdef SOPORTE_MYSQL
+			#if defined(SOPORTE_MYSQL)
  MYSQL *conn;
  MYSQL_RES *res;
  MYSQL_ROW row;
@@ -2161,7 +2161,7 @@ canaladmins(s_OperServ, "Borrado como 10Gestor-Mánager de la web",ni->nick);
 	notice_lang(s_OperServ, u, OPER_CREGADMIN_LIST_HEADER, "COAdmins");
 	for (i = 0; i < MAX_SERVADMINS; i++) {
 	    if (services_cregadmins[i])
-#ifdef IRC_UNDERNET_P10
+#if defined(IRC_UNDERNET_P10)
                 privmsg(s_OperServ, u->numerico, "%s", services_cregadmins[i]->nick);
 #else	    
 		privmsg(s_OperServ, u->nick, "%s", services_cregadmins[i]->nick);
@@ -2217,7 +2217,7 @@ static void do_devel(User *u)
 		services_devels[i] = ni;
 		notice_lang(s_OperServ, u, OPER_DEVEL_ADDED, ni->nick);
 		canaladmins(s_OperServ, "12%s añade a 12%s como DEVEL", u->nick, ni->nick);
-		#ifdef IRC_PATCHS_P09
+		#if defined(IRC_PATCHS_P09)
 	        do_write_bdd(ni->nick, 3, "khDX");
 	    	#else
 		do_write_bdd(ni->nick, 3, "10");
@@ -2227,7 +2227,7 @@ static void do_devel(User *u)
                          snprintf(dev, sizeof(dev), "%s%s.%s", DevelColor,ni->nick,DevelHost);
                          ni->vhost=sstrdup(dev);
 	                 send_cmd(NULL, "RENAME %s", ni->nick);
-			#ifdef SOPORTE_MYSQL
+			#if defined(SOPORTE_MYSQL)
  MYSQL *conn;
  MYSQL_RES *res;
  MYSQL_ROW row;
@@ -2296,13 +2296,13 @@ canaladmins(s_OperServ, "Añadido como 10Supervisor-Publisher de la web",ni->ni
 		services_devels[i] = NULL;
 		notice_lang(s_OperServ, u, OPER_DEVEL_REMOVED, ni->nick);
 		canaladmins(s_OperServ, "12%s borra a 12%s como DEVEL", u->nick, ni->nick);
-		#ifdef IRC_UNDERNET_P09
+		#if defined(IRC_UNDERNET_P09)
 		do_write_bdd(ni->nick, 3, "");
 		do_write_bdd(ni->nick, 2, "");
 		ni->vhost=NULL;
 		send_cmd(NULL, "RENAME %s", ni->nick);
 		#endif
-		#ifdef SOPORTE_MYSQL
+		#if defined(SOPORTE_MYSQL)
  MYSQL *conn;
  MYSQL_RES *res;
  MYSQL_ROW row;
@@ -2353,7 +2353,7 @@ canaladmins(s_OperServ, "Borrado como 10Supervisor-Publisher de la web",ni->ni
 	notice_lang(s_OperServ, u, OPER_DEVEL_LIST_HEADER);
 	for (i = 0; i < MAX_SERVDEVELS; i++) {
 	    if (services_devels[i])
-#ifdef IRC_UNDERNET_P10
+#if defined(IRC_UNDERNET_P10)
                 privmsg(s_OperServ, u->numerico, "%s", services_devels[i]->nick);
 #else	    
 		privmsg(s_OperServ, u->nick, "%s", services_devels[i]->nick);
@@ -2417,7 +2417,7 @@ static void do_oper(User *u)
 		services_opers[i] = ni;
 		notice_lang(s_OperServ, u, OPER_OPER_ADDED, ni->nick);
 		canaladmins(s_OperServ, "12%s añade a 12%s como OPER", u->nick, ni->nick);
-		#ifdef IRC_PATCHS_P09
+		#if defined(IRC_PATCHS_P09)
 		do_write_bdd(ni->nick, 3, "kh");
 		#else
 	    	do_write_bdd(ni->nick, 3, "5");
@@ -2427,7 +2427,7 @@ static void do_oper(User *u)
                          snprintf(op, sizeof(op), "%s%s.%s", OperColor,ni->nick,OperHost);
                          ni->vhost=sstrdup(op);
 			send_cmd(NULL, "RENAME %s", ni->nick);
-		#ifdef SOPORTE_MYSQL
+		#if defined(SOPORTE_MYSQL)
  MYSQL *conn;
  MYSQL_RES *res;
  MYSQL_ROW row;
@@ -2493,13 +2493,13 @@ canaladmins(s_OperServ, "Añadido como 10Editor de la web",ni->nick);
 		services_opers[i] = NULL;
 		notice_lang(s_OperServ, u, OPER_OPER_REMOVED, ni->nick);
 		canaladmins(s_OperServ, "12%s borra a 12%s como OPER", u->nick, ni->nick);
-		#ifdef IRC_UNDERNET_P09
+		#if defined(IRC_UNDERNET_P09)
 		do_write_bdd(ni->nick, 3, "");
 		do_write_bdd(ni->nick, 2, "");
 		ni->vhost=NULL;
 		send_cmd(NULL, "RENAME %s", ni->nick);	
 		#endif	
-#ifdef SOPORTE_MYSQL
+#if defined(SOPORTE_MYSQL)
  MYSQL *conn;
  MYSQL_RES *res;
  MYSQL_ROW row;
@@ -2550,7 +2550,7 @@ canaladmins(s_OperServ, "Borrado como 10Editor de la web",ni->nick);
 	notice_lang(s_OperServ, u, OPER_OPER_LIST_HEADER);
 	for (i = 0; i < MAX_SERVOPERS; i++) {
 	    if (services_opers[i])
-#ifdef IRC_UNDERNET_P10
+#if defined(IRC_UNDERNET_P10)
                 privmsg(s_OperServ, u->numerico, "%s", services_opers[i]->nick);
 #else	    
 		privmsg(s_OperServ, u->nick, "%s", services_opers[i]->nick);
@@ -2605,7 +2605,7 @@ static void do_patrocina(User *u)
 		services_patrocinas[i] = ni;
 		notice_lang(s_OperServ, u, OPER_PATROCINA_ADDED, ni->nick);
 		canaladmins(s_OperServ, "12%s añade a 12%s como PATROCINADOR", u->nick, ni->nick);
-                #ifdef IRC_PATCHS_P09
+                #if defined(IRC_PATCHS_P09)
 		do_write_bdd(ni->nick, 3, "kp"); //-->En este parche,es modo +p de Patrocinador
 		#else
 	    	do_write_bdd(ni->nick, 3, ""); //-->No lo añado a la tabla o
@@ -2615,7 +2615,7 @@ static void do_patrocina(User *u)
                          snprintf(pat, sizeof(pat), "%s%s.%s", PatrocinaColor,ni->nick,PatrocinaHost);
                          ni->vhost=sstrdup(pat);
 		send_cmd(NULL, "RENAME %s", ni->nick);
-		#ifdef SOPORTE_MYSQL
+		#if defined(SOPORTE_MYSQL)
  MYSQL *conn;
  MYSQL_RES *res;
  MYSQL_ROW row;
@@ -2681,13 +2681,13 @@ canaladmins(s_OperServ, "Añadido como 10Autor de la web",ni->nick);
 		services_patrocinas[i] = NULL;
 		notice_lang(s_OperServ, u, OPER_PATROCINA_REMOVED, ni->nick);
 		canaladmins(s_OperServ, "12%s borra a 12%s como PATROCINADOR", u->nick, ni->nick);
-		#ifdef IRC_UNDERNET_P09
+		#if defined(IRC_UNDERNET_P09)
 		do_write_bdd(ni->nick, 3, "");
 		do_write_bdd(ni->nick, 2, "");
 		ni->vhost=NULL;
 		send_cmd(NULL, "RENAME %s", ni->nick);	
 		#endif	
-	#ifdef SOPORTE_MYSQL
+	#if defined(SOPORTE_MYSQL)
  MYSQL *conn;
  MYSQL_RES *res;
  MYSQL_ROW row;
@@ -2739,7 +2739,7 @@ canaladmins(s_OperServ, "Borrado como 10Autor de la web",ni->nick);
 	notice_lang(s_OperServ, u, OPER_PATROCINA_LIST_HEADER);
 	for (i = 0; i < MAX_SERVPATROCINAS; i++) {
 	    if (services_patrocinas[i])
-#ifdef IRC_UNDERNET_P10
+#if defined(IRC_UNDERNET_P10)
                 privmsg(s_OperServ, u->numerico, "%s", services_patrocinas[i]->nick);
 #else	    
 		privmsg(s_OperServ, u->nick, "%s", services_patrocinas[i]->nick);
@@ -2848,7 +2848,7 @@ static void do_jupe(User *u)
     char buf[NICKMAX+16];
     Server *server;
 
-#ifdef IRC_UNDERNET_P10
+#if defined(IRC_UNDERNET_P10)
     char *destino=u->numerico;
 #else
     char *destino=u->nick;
@@ -2868,7 +2868,7 @@ static void do_jupe(User *u)
         return;
     } else {
                 
-#ifdef IRC_UNDERNET_P09
+#if defined(IRC_UNDERNET_P09)
         send_cmd(NULL, "SQUIT %s 0 :%s", jserver, reason);
         send_cmd(NULL, "SERVER %s 2 %lu %lu P10 :%s",
                    jserver, time(NULL), time(NULL), reason);               
@@ -3136,8 +3136,8 @@ if (SpamUsers !=SpamUsersold) {
  canaladmins(s_OperServ, "12SpamUsers Cambiando 4 %d  a 2 %d ",SpamUsersold,SpamUsers);
 SpamUsersold=SpamUsers;
 }
-#ifdef REG_NICK_MAIL
-#ifdef SENDMAIL
+#if defined(REG_NICK_MAIL)
+#if defined(SENDMAIL)
 if (!SendMailPatchold)
 SendMailPatchold ="";
 if (strcmp(SendMailPatch, SendMailPatchold) != 0) {
@@ -3145,7 +3145,7 @@ if (strcmp(SendMailPatch, SendMailPatchold) != 0) {
 SendMailPatchold =SendMailPatch;
 }
 #endif
-#ifdef SMTP
+#if defined(SMTP)
 if (!ServerSMTPold)
 ServerSMTPold ="";
 if (strcmp(ServerSMTP, ServerSMTPold) != 0) {
@@ -3330,7 +3330,7 @@ LogMaxUsersold =LogMaxUsers;
 
 static void do_restart(User *u)
 {
-#ifdef SERVICES_BIN
+#if defined(SERVICES_BIN)
     quitmsg = malloc(53 + strlen(u->nick));
     if (!quitmsg) {
 	quitmsg = "Reiniciando Services...!";

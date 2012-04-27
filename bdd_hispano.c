@@ -21,7 +21,7 @@
 #define NUMNICKBASE 64          /* (2 << NUMNICKLOG) */
 #define NUMNICKMASK 63          /* (NUMNICKBASE-1) */
 
-#ifdef IRC_UNDERNET_P10
+#if defined(IRC_UNDERNET_P10)
 
 const char tabla_todas[] = {
 'a', 'b', 'c', 'd', 'e', 'f',

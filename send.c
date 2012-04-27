@@ -149,7 +149,7 @@ void notice_lang(const char *source, User *dest, int message, ...)
 	s += strcspn(s, "\n");
 	if (*s)
 	    *s++ = 0;
-#ifdef IRC_UNDERNET_P10
+#if defined(IRC_UNDERNET_P10)
 	send_cmd(source, "P %s :%s", dest->numerico, *t ? t : " ");
 #else
         send_cmd(source, "PRIVMSG %s :%s", dest->nick, *t ? t : " ");
@@ -189,7 +189,7 @@ void notice_help(const char *source, User *dest, int message, ...)
 	    *s++ = 0;
 	strscpy(outbuf, t, sizeof(outbuf));
 	strnrepl(outbuf, sizeof(outbuf), "\1\1", source);
-#ifdef IRC_UNDERNET_P10
+#if defined(IRC_UNDERNET_P10)
         send_cmd(source, "PRIVMSG %s :%s", dest->numerico, *outbuf ? outbuf : " ");
 #else	
 	send_cmd(source, "PRIVMSG %s :%s", dest->nick, *outbuf ? outbuf : " ");

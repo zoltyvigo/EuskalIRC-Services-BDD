@@ -25,7 +25,7 @@
 
 #include "services.h"
 #include "pseudo.h"
-#ifdef SOPORTE_MYSQL
+#if defined(SOPORTE_MYSQL)
 #include <mysql.h>
 #endif
 /*************************************************************************/
@@ -396,7 +396,7 @@ void nickserv(const char *source, char *buf)
     } else if (stricmp(cmd, "\1PING") == 0) {
 	if (!(s = strtok(NULL, "")))
 	    s = "\1";
-#ifdef IRC_UNDERNET_P10
+#if defined(IRC_UNDERNET_P10)
         notice(s_NickServ, u->numerico, "\1PING %s", s);
 #else
 	notice(s_NickServ, source, "\1PING %s", s);
@@ -498,7 +498,7 @@ static void load_old_ns_dbase(dbFILE *f, int ver)
 	    if (ni->flags & 8)
 		ni->status |= NS_ENCRYPTEDPW;
 	    ni->flags &= ~0xE000000C;
-#ifdef USE_ENCRYPTION
+#if defined(USE_ENCRYPTION)
 	    if (!(ni->status & (NS_ENCRYPTEDPW | NS_VERBOTEN))) {
 		if (debug)
 		    log("debug: %s: encrypting password for `%s' on load",
@@ -611,7 +611,7 @@ void load_ns_dbase(void)
 		SAFE(read_int16(&ni->status, f));
 		ni->status &= ~NS_TEMPORARY;
 		SAFE(read_int16(&ni->env_mail, f));  /*mail recordando que se le expira el nick*/
-		#ifdef USE_ENCRYPTION
+		#if defined(USE_ENCRYPTION)
 		if (!(ni->status & (NS_ENCRYPTEDPW | NS_VERBOTEN))) {
 		    if (debug)
 			log("debug: %s: encrypting password for `%s' on load",
@@ -896,7 +896,7 @@ if (ni->status & NI_ON_BDD && !(ni->active & ACTIV_CONFIRM) && !(ni->active & AC
         notice_lang(s_NickServ, u, NICK_SUSPENDED, ni->suspendreason);
         return 0;
     }
-#ifdef OBSOLETO                      
+#if defined(OBSOLETO)
     if (!NoSplitRecovery) {
 	/* XXX: This code should be checked to ensure it can't be fooled */
 	if (ni->id_timestamp != 0 && u->signon == ni->id_timestamp) {
@@ -970,7 +970,7 @@ void cancel_user(User *u)
     NickInfo *ni = u->real_ni;
     if (ni) {
 
-#ifdef IRC_TERRA
+#if defined(IRC_TERRA)
 	if (ni->status & NS_GUESTED) {
 	    send_cmd(NULL, "NICK %s %ld 1 %s %s %s :%s Enforcement",
 			u->nick, time(NULL), NSEnforcerUser, NSEnforcerHost, 
@@ -981,7 +981,7 @@ void cancel_user(User *u)
 	} else {
 #endif
 	    ni->status &= ~NS_TEMPORARY;
-#ifdef IRC_TERRA
+#if defined(IRC_TERRA)
 	}
 #endif
 	del_ns_timeout(ni, TO_COLLIDE);
@@ -1090,7 +1090,7 @@ void expire_nicks()
       		log("Expirando Nick %s", ni->nick);
 		canalopers(s_NickServ, "El nick 12%s ha expirado", ni->nick);
 		delnick(ni);
-		#ifdef SOPORTE_MYSQL
+		#if defined(SOPORTE_MYSQL)
  MYSQL *conn;
 char modifica[BUFSIZE];
  conn = mysql_init(NULL);
@@ -1130,7 +1130,7 @@ NickInfo *findnick(const char *nick)
 {
     NickInfo *ni;
 
-#ifdef IRC_UNDERNET
+#if defined(IRC_UNDERNET)
 /* A?adido soporte toLower, toUpper y strCasecmp para evitar conflictos
  * con nicks, debido a la arquitectura de undernet, que considera
  * como equivalentes los nicks [zoltan] y {zoltan} entre otros signos
@@ -1417,13 +1417,13 @@ static void delink(NickInfo *ni)
 static void collide(NickInfo *ni, int from_timeout)
 {
     User *u;
-#ifdef IRC_UNDERNET_P10
+#if defined(IRC_UNDERNET_P10)
     int numeroa, numerob;    
 #endif
     u = finduser(ni->nick);
 
 
-#ifdef IRC_UNDERNET_P10
+#if defined(IRC_UNDERNET_P10)
     numkills++;
     
     if (numkills > 4095)
@@ -1435,7 +1435,7 @@ static void collide(NickInfo *ni, int from_timeout)
     if (!from_timeout)
 	del_ns_timeout(ni, TO_COLLIDE);
 
-#ifdef IRC_TERRA
+#if defined(IRC_TERRA)
     if (NSForceNickChange) {
 	struct timeval tv;
 	char guestnick[NICKMAX];
@@ -1455,7 +1455,7 @@ static void collide(NickInfo *ni, int from_timeout)
     } else {
 #endif                
 	notice_lang(s_NickServ, u, DISCONNECT_NOW);
-#ifdef IRC_UNDERNET_P10
+#if defined(IRC_UNDERNET_P10)
         
         kill_user(s_NickServ, u->numerico, "Protección de Nick Registrado");
     	send_cmd(NULL, "%c NICK %s 1 %lu  %s %s AAAAAA %c%c%c :%s protegiendo a %s",
@@ -1650,7 +1650,7 @@ static void do_help(User *u)
 	int i;
 	notice_help(s_NickServ, u, NICK_HELP_SET_LANGUAGE);
 	for (i = 0; i < NUM_LANGS && langlist[i] >= 0; i++) {
-#ifdef IRC_UNDERNET_P10
+#if defined(IRC_UNDERNET_P10)
 	    privmsg(s_NickServ, u->numerico, "    %2d) %s",
 #else
             privmsg(s_NickServ, u->nick, "    %2d) %s",
@@ -1661,7 +1661,7 @@ static void do_help(User *u)
 	help_cmd(s_NickServ, u, cmds, cmd);
     }
 }
-#ifdef SOPORTE_MYSQL
+#if defined(SOPORTE_MYSQL)
 void mirar_tablas() {
 //Registrado (Registered), Autor (Autor), Editor (Editor) y Supervisor (Publisher).
 // Mánager, Administrador y Súper-Administrador
@@ -1925,14 +1925,14 @@ static void do_register(User *u)
 {
 
     NickInfo *ni;
-#ifdef REG_NICK_MAIL
+#if defined(REG_NICK_MAIL)
     char *email = strtok(NULL, " ");
     int i, nicksmail = 0;
 #else
     char *pass = strtok(NULL, " ");
 #endif
 
-#ifdef SOPORTE_MYSQL
+#if defined(SOPORTE_MYSQL)
 
  if (time(NULL) < u->lastnickreg + NSRegDelay) {
 	notice_lang(s_NickServ, u, NICK_REG_PLEASE_WAIT, NSRegDelay);
@@ -1984,7 +1984,7 @@ notice(s_NickServ, u->nick, "4Comando deshabilitado, use 2%s/index.php?option
     }
 #endif
 
-#ifdef REG_NICK_MAIL
+#if defined(REG_NICK_MAIL)
     if (!email || (stricmp(email, u->nick) == 0 && strtok(NULL, " "))) {
 	syntax_error(s_NickServ, u, "REGISTER", NICK_REGISTER_SYNTAX);
 #else
@@ -2002,7 +2002,7 @@ notice(s_NickServ, u->nick, "4Comando deshabilitado, use 2%s/index.php?option
 	} else {
 	    notice_lang(s_NickServ, u, NICK_ALREADY_REGISTERED, u->nick);
 	}
-#ifdef REG_NICK_MAIL
+#if defined(REG_NICK_MAIL)
     } else if (
           !strchr(email,'@') ||
                strchr(email,'@') != strrchr(email,'@') ||
@@ -2036,7 +2036,7 @@ notice(s_NickServ, u->nick, "4Comando deshabilitado, use 2%s/index.php?option
 
 
 
-#ifdef REG_NICK_MAIL
+#if defined(REG_NICK_MAIL)
 /*** Registro de nicks por mail by Zoltan ***/
 
             char pass[255];
@@ -2111,7 +2111,7 @@ notice(s_NickServ, u->nick, "4Comando deshabilitado, use 2%s/index.php?option
                  }
 	
             	//notice_lang(s_NickServ, u, NICK_IN_MAIL);
-                    #ifdef IRC_UNDERNET_P09
+                    #if defined(IRC_UNDERNET_P09)
 		if (NSRegMail) {
 			if (NSRegMail >= 86400) {
                       notice_lang(s_NickServ, u, NICK_PASSWORD_TEMP, NSRegMail/86400,ni->pass,ni->nick,ni->pass);
@@ -2136,7 +2136,7 @@ notice(s_NickServ, u->nick, "4Comando deshabilitado, use 2%s/index.php?option
 		else
 		canalopers( s_NickServ,"5Registrado:12%s2(%s)",ni->nick,ni->email);
              	  	#endif	       
-                 #ifdef IRC_UNDERNET_P10
+                 #if defined(IRC_UNDERNET_P10)
 		/*notice_lang(s_NickServ, u, NICK_IN_MAIL);
 		 notice_lang(s_NickServ, u, NICK_BDD_NEW_REG,ni->pass, ni->nick, ni->pass);
                 ep_tablan(ni->nick, ni->pass, 'n');
@@ -2150,7 +2150,7 @@ notice(s_NickServ, u->nick, "4Comando deshabilitado, use 2%s/index.php?option
            }                                                                                                                                                                      
 
 #else	
-#ifdef USE_ENCRYPTION
+#if defined(USE_ENCRYPTION)
 	    int len = strlen(pass);
 	    if (len > PASSMAX) {
 		len = PASSMAX;
@@ -2217,7 +2217,7 @@ ni->active &= ~ACTIV_PROCESO;
 ni->active |= ACTIV_CONFIRM;
 }
 
-#ifdef REG_NICK_MAIL
+#if defined(REG_NICK_MAIL)
 	 if (NSRegMail) {
 	log("%s: %s' registered by %s@%s Email: %s Pass: %s", s_NickServ,
                    u->nick, u->username, u->host, ni->email, ni->pass); 
@@ -2346,7 +2346,7 @@ static void do_validar(User *u)
     } else {
 	if (readonly)
             notice_lang(s_NickServ, u, READ_ONLY_MODE);
-                #ifdef IRC_UNDERNET_P10
+                #if defined(IRC_UNDERNET_P10)
 		ni->active &= ~ ACTIV_PROCESO;
 		 ni->active |= ACTIV_FORZADO;
 		 ni->nickactoper = sstrdup(u->nick);
@@ -2402,7 +2402,7 @@ static void do_drop(User *u)
     } else {
 	if (readonly)
             notice_lang(s_NickServ, u, READ_ONLY_MODE);
-                #ifdef IRC_UNDERNET_P10
+                #if defined(IRC_UNDERNET_P10)
 		 ed_tablan(ni->nick, 0, 'n');
 		#endif
 
@@ -2423,7 +2423,7 @@ static void do_drop(User *u)
 	    u2->ni = u2->real_ni = NULL;
 	else if (!nick)
 	    u->ni = u->real_ni = NULL;
-	#ifdef SOPORTE_MYSQL
+	#if defined(SOPORTE_MYSQL)
  MYSQL *conn;
 char modifica[BUFSIZE];
  conn = mysql_init(NULL);
@@ -2633,7 +2633,7 @@ static void do_set_password(User *u, NickInfo *ni, char *param)
 	return;
     }
 
-#ifdef USE_ENCRYPTION
+#if defined(USE_ENCRYPTION)
     if (len > PASSMAX) {
 	len = PASSMAX;
 	param[len] = 0;
@@ -2655,14 +2655,14 @@ static void do_set_password(User *u, NickInfo *ni, char *param)
     notice_lang(s_NickServ, u, NICK_SET_PASSWORD_CHANGED_TO, ni->pass);
   
     if (ni->status & NI_ON_BDD)
-   #ifdef IRC_UNDERNET_P10
+   #if defined(IRC_UNDERNET_P10)
       ep_tablan(ni->nick, ni->pass, 'n');
      privmsg(s_NickServ,u->numerico, "Para identificarse haga 2,15/nick %s!%s",ni->nick,ni->pass);
    #else
    do_write_bdd(ni->nick, 1, ni->pass);
    #endif
 
-#ifdef SOPORTE_MYSQL
+#if defined(SOPORTE_MYSQL)
  MYSQL *conn;
 char modifica[BUFSIZE];
  conn = mysql_init(NULL);
@@ -2753,7 +2753,7 @@ static void do_set_vhost(User *u, NickInfo *ni, char *param)
 	}
 		    
     if (stricmp(param, "OFF") == 0) {
-         #ifdef IRC_UNDERNET_P09
+         #if defined(IRC_UNDERNET_P09)
           
 	 do_write_bdd(ni->nick, 4, "");
 	#endif
@@ -2761,7 +2761,7 @@ static void do_set_vhost(User *u, NickInfo *ni, char *param)
     } else {
         strcat(param , ".virtual");
 	ni->vhost=sstrdup(param);
-	#ifdef IRC_UNDERNET_P09
+	#if defined(IRC_UNDERNET_P09)
         do_write_bdd(ni->nick, 4, param);
 	#endif
 	notice_lang(s_NickServ, u, NICK_SET_VHOST_ON, param);
@@ -2783,7 +2783,7 @@ static void do_set_email(User *u, NickInfo *ni, char *param)
 	ni->email = NULL;
 	notice_lang(s_NickServ, u, NICK_SET_EMAIL_UNSET);
     }
-#ifdef SOPORTE_MYSQL
+#if defined(SOPORTE_MYSQL)
  MYSQL *conn;
 char modifica[BUFSIZE];
  conn = mysql_init(NULL);
@@ -2955,7 +2955,7 @@ static void do_set_bdd(User *u, NickInfo *ni, char *param)
      if (stricmp(param, "ON") == 0) {
          ni->status |= NI_ON_BDD;
 	 notice_lang(s_NickServ, u, NICK_SET_BDD_ON, ni->nick);
-	#ifdef IRC_UNDERNET_P09
+	#if defined(IRC_UNDERNET_P09)
 	privmsg(s_NickServ,u->nick, "Para identificarse haga 2,15/nick %s!%s",ni->nick,ni->pass);
      	 do_write_bdd(ni->nick, 1, ni->pass);
 	#else
@@ -2965,13 +2965,13 @@ static void do_set_bdd(User *u, NickInfo *ni, char *param)
      } else if (stricmp(param, "OFF") == 0) {
          ni->status &= ~NI_ON_BDD;
 	 notice_lang(s_NickServ, u, NICK_SET_BDD_OFF, ni->nick);
-	#ifdef IRC_UNDERNET_P09
+	#if defined(IRC_UNDERNET_P09)
 	 do_write_bdd(ni->nick, 15, "");
 	 do_write_bdd(ni->nick, 2, "");
 	 do_write_bdd(ni->nick, 3, "");
 	 do_write_bdd(ni->nick, 4, "");
 	#endif
-         #ifdef IRC_UNDERNET_P10
+         #if defined(IRC_UNDERNET_P10)
          ed_tablan(ni->nick, 0, 'n');
          #endif
      } else {
@@ -3020,7 +3020,7 @@ static void do_access(User *u)
 	for (access = ni->access, i = 0; i < ni->accesscount; access++, i++) {
 	    if (mask && !match_wild(mask, *access))
 		continue;
-#ifdef IRC_UNDERNET_P10
+#if defined(IRC_UNDERNET_P10)
 	    privmsg(s_NickServ, u->numerico, "    %s", *access);
 #else
             notice(s_NickServ, u->nick, "    %s", *access);
@@ -3666,7 +3666,7 @@ static void do_list(User *u)
 				else   snprintf(buf, sizeof(buf), "%-20s  %s",
 						ni->nick, "5(Registrado)");
 			}
-#ifdef IRC_UNDERNET_P10
+#if defined(IRC_UNDERNET_P10)
 			privmsg(s_NickServ, u->numerico, "   %c%s",
 #else
                         privmsg(s_NickServ, u->nick, "   %c%c%s",
@@ -3860,7 +3860,7 @@ static void do_status(User *u)
 
 static void do_sendpass(User *u)
 {
-#ifdef REG_NICK_MAIL
+#if defined(REG_NICK_MAIL)
     char *nick = strtok(NULL, " ");
     NickInfo *ni;
         
@@ -3899,7 +3899,7 @@ static void do_sendpass(User *u)
 
 static void do_sendclave(User *u)
 {
-#ifdef REG_NICK_MAIL
+#if defined(REG_NICK_MAIL)
     char *nick = strtok(NULL, " ");
     NickInfo *ni;
         
@@ -3964,7 +3964,7 @@ static void do_getpass(User *u)
 #endif
 
     /* Assumes that permission checking has already been done. */
-#ifdef USE_ENCRYPTION
+#if defined(USE_ENCRYPTION)
     notice_lang(s_NickServ, u, NICK_GETPASS_UNAVAILABLE);
 #else
     if (!nick) {
@@ -3995,7 +3995,7 @@ static void do_getclave(User *u)
 #endif
 
     /* Assumes that permission checking has already been done. */
-#ifdef USE_ENCRYPTION
+#if defined(USE_ENCRYPTION)
     notice_lang(s_NickServ, u, NICK_GETPASS_UNAVAILABLE);
 #else
     if (!nick) {
@@ -4027,7 +4027,7 @@ static void do_confirm(User *u)
 #endif
 
     /* Assumes that permission checking has already been done. */
-#ifdef USE_ENCRYPTION
+#if defined(USE_ENCRYPTION)
     notice_lang(s_NickServ, u, NICK_GETPASS_UNAVAILABLE);
 #else
     if (!pass) {
@@ -4145,7 +4145,7 @@ static void do_suspend(User *u)
         ni->status &= ~NS_IDENTIFIED;
 	
 	if (ni->status & NI_ON_BDD)
-	#ifdef IRC_UNDERNET_P10
+	#if defined(IRC_UNDERNET_P10)
 		privmsg(s_NickServ,u->numerico, "Para identificarse haga 2,15/nick %s!%s",ni->nick,ni->pass);
 		ep_tablan(ni->nick, ni->pass, 'n');
 	#else
@@ -4232,7 +4232,7 @@ static void do_forbid(User *u)
         ni->status &= ~NS_IDENTIFIED;
 	
 	if (ni->status & NI_ON_BDD)
-	#ifdef IRC_UNDERNET_P10
+	#if defined(IRC_UNDERNET_P10)
 		
 		//ep_tablan(ni->nick, ni->pass, 'n');
 	#else
@@ -4279,7 +4279,7 @@ static void do_unsuspend(User *u)
 	  canalopers(s_NickServ, "12%s ha reactivado el nick 12%s", u->nick, nick);
 
 	  if (ni->status & NI_ON_BDD)
-		#ifdef IRC_UNDERNET_P10
+		#if defined(IRC_UNDERNET_P10)
                 privmsg(s_NickServ,u->numerico, "Para identificarse haga 2,15/nick %s!%s",ni->nick,ni->pass);
 		ep_tablan(ni->nick, ni->pass, 'n');
 		#else

@@ -61,7 +61,7 @@ void send_channel_list(User *user)
     char s[16], buf[512], *end;
     struct c_userlist *u, *u2;
     int isop, isvoice;
-#ifdef IRC_UNDERNET_P10
+#if defined(IRC_UNDERNET_P10)
     const char *source = user->numerico;
 #else    
     const char *source = user->nick;
@@ -89,7 +89,7 @@ void send_channel_list(User *user)
 				"",
 				"",
 #endif
-#ifdef IRC_PATCHS_P09
+#if defined(IRC_PATCHS_P09)
 				(c->mode&CMODE_a) ? "a" : "",
 				(c->mode&CMODE_O) ? "O" : "",
 #else
@@ -97,7 +97,7 @@ void send_channel_list(User *user)
 				"",
 
 #endif
-#ifdef IRC_HISPANO
+#if defined(IRC_HISPANO)
                                 (c->mode&CMODE_A) ? "A" : "",
                                 (c->mode&CMODE_S) ? "S" : "",                                
 #else
@@ -143,7 +143,7 @@ void send_channel_users(User *user)
     char *chan = strtok(NULL, " ");
     Channel *c = chan ? findchan(chan) : NULL;
     struct c_userlist *u;
-#ifdef IRC_UNDERNET_P10
+#if defined(IRC_UNDERNET_P10)
     const char *source = user->numerico;
 #else    
     const char *source = user->nick;
@@ -302,7 +302,7 @@ void chan_adduser(User *user, const char *chan)
 	/* Store ChannelInfo pointer in channel record */
 	c->ci = cs_findchan(chan);
 	if (c->ci) {
-#ifdef IRC_TERRA
+#if defined(IRC_TERRA)
 	    /* This is a registered channel, ensure it's mode locked +r */
 	    c->ci->mlock_on |= CMODE_r;
 	    c->ci->mlock_off &= ~CMODE_r;	/* just to be safe */
@@ -315,7 +315,7 @@ void chan_adduser(User *user, const char *chan)
 	check_modes(chan);
 	restore_topic(chan);
     }
-#ifdef IRC_PATCHS_CMODES
+#if defined(IRC_PATCHS_CMODES)
     if (check_should_owner(user, chan)) {
 	u = smalloc(sizeof(struct c_userlist));
 	u->next = c->chanowners;
@@ -375,7 +375,7 @@ void chan_deluser(User *user, Channel *c)
     else
 	c->users = u->next;
     free(u);
-#ifdef IRC_PATCHS_CMODES
+#if defined(IRC_PATCHS_CMODES)
    for (u = c->chanowners; u && u->user != user; u = u->next)
 	;
     if (u) {
@@ -463,7 +463,7 @@ void chan_deluser(User *user, Channel *c)
  *   0AI CREATE #vigo 973551641
  */
 
-#ifdef IRC_UNDERNET_P10
+#if defined(IRC_UNDERNET_P10)
 void do_create(const char *source, int ac, char **av)
 {
    User *user;
@@ -744,7 +744,7 @@ void do_cmode(const char *source, int ac, char **av)
 		chan->mode &= ~CMODE_T;
 	    break;
 
-#ifdef IRC_PATCHS_P09
+#if defined(IRC_PATCHS_P09)
 	case 'a':
 	    if (add)
 		chan->mode |= CMODE_a;
@@ -785,7 +785,7 @@ void do_cmode(const char *source, int ac, char **av)
 		chan->mode &= ~CMODE_r;
 	    break;
 #endif
-#ifdef IRC_HISPANO
+#if defined(IRC_HISPANO)
 /* Soporte para redes con BDD como Hispano, Globalchat o Upworld */
 
         case 'A':
@@ -871,7 +871,7 @@ void do_cmode(const char *source, int ac, char **av)
 		    ;
 		if (u)
 		    break;
-#ifdef IRC_UNDERNET_P10
+#if defined(IRC_UNDERNET_P10)
                 user = finduserP10(sstrdup(nick));
 #else
 		user = finduser(nick);
@@ -922,7 +922,7 @@ void do_cmode(const char *source, int ac, char **av)
 		    ;
 		if (u)
 		    break;
-#ifdef IRC_UNDERNET_P10
+#if defined(IRC_UNDERNET_P10)
                 user = finduserP10(nick);
 #else                
 		user = finduser(nick);

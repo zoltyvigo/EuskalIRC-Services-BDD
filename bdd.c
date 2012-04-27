@@ -24,7 +24,7 @@
 #include <time.h>
 #include <unistd.h>
 
- #ifdef IRC_UNDERNET_P09
+ #if defined(IRC_UNDERNET_P09)
 
 static const char convert2y[] = {
   'A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P',

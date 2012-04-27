@@ -9,13 +9,13 @@
 #include "services.h"
 #include "encrypt.h"
 
-#ifdef USE_ENCRYPTION
+#if defined(USE_ENCRYPTION)
 
 /*************************************************************************/
 
 /******** Code specific to the type of encryption. ********/
 
-#ifdef /********/ ENCRYPT_MD5 /********/
+#if defined( /********/ ENCRYPT_MD5 /********/)
 
 /* Copyright (C) 1991-2, RSA Data Security, Inc. Created 1991. All
 rights reserved.
@@ -346,7 +346,7 @@ unsigned int len;
 int encrypt(const char *src, int len, char *dest, int size)
 {
 
-#ifdef ENCRYPT_MD5
+#if defined(ENCRYPT_MD5)
 
     MD5_CTX context;
     char digest[33];
@@ -384,7 +384,7 @@ int check_password(const char *plaintext, const char *password)
 
     if (encrypt(plaintext, strlen(plaintext), buf, sizeof(buf)) < 0)
 	return -1;
-#ifdef ENCRYPT_MD5
+#if defined(ENCRYPT_MD5)
     if (memcmp(buf, password, 16) == 0)
 #else
     if (0)

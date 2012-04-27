@@ -3,7 +3,7 @@
 #include "services.h"
 
 
-#ifdef SMTP
+#if defined(SMTP)
 int check_smtp(char buf[BUFSIZE]);
 #endif
 
@@ -14,7 +14,7 @@ con el subject y body pertinentes al destino indicado.
 *************************************************************/
 int enviar_correo(const char * destino, const char *subject, const char *body)
 {
-#ifdef SMTP
+#if defined(SMTP)
 	int sockmail;
 	struct hostent *hp;
 	struct sockaddr_in their_addr;
@@ -49,7 +49,7 @@ int enviar_correo(const char * destino, const char *subject, const char *body)
 	
 }    
 #endif
-#ifdef SENDMAIL
+#if defined(SENDMAIL)
     FILE *p;
     char sendmail[PATH_MAX];
                                                                               
@@ -77,7 +77,7 @@ int enviar_correo(const char * destino, const char *subject, const char *body)
 
 
 
-#ifdef SMTP
+#if defined(SMTP)
 int check_smtp(char buf[BUFSIZE])
 {
 /** Esta funcion recibe la contestacion k recibimos del smtp y nos

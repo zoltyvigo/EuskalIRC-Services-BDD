@@ -593,7 +593,7 @@ privmsg(s_ChanServ, ni->nick, "12ENFORCE 4BAN usado sobre host 4%s",mask);
 
 } //fin if si no es oper
 	
-#ifdef IRC_UNDERNET_P10
+#if defined(IRC_UNDERNET_P10)
     send_cmd(s_ChanServ, "K %s %s :%s", canal, u->user->numerico, achanakicks[i].reason);
 #else
 if (!(is_oper(u->user->nick))) { 
@@ -864,7 +864,7 @@ kick:
     free(av[0]);
     free(av[1]);
     free(av[2]);
-#ifdef IRC_UNDERNET_P10
+#if defined(IRC_UNDERNET_P10)
     send_cmd(s_ChanServ, "K %s %s :%s", chan, user->numerico, reason);
 #else
     send_cmd(s_ChanServ, "KICK %s %s :%s", chan, user->nick, reason);

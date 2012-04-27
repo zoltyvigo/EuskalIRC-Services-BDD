@@ -194,7 +194,7 @@ void do_ipv(User *u)
 
 if (!cmd) {
 	char buf[32];
-	#ifdef IRC_UNDERNET_P10
+	#if defined(IRC_UNDERNET_P10)
 	privmsg(s_IpVirtual, u->numerico, "Sintaxis: PONER ADD/DEL/LIST [param]");
 	#else
 	privmsg(s_IpVirtual, u->nick,"Sintaxis: PONER ADD/DEL/LIST [param]");
@@ -204,7 +204,7 @@ if (!cmd) {
        }
  if (stricmp(cmd, "HELP") == 0) {
 	char buf[32];
-	#ifdef IRC_UNDERNET_P10
+	#if defined(IRC_UNDERNET_P10)
 	privmsg(s_IpVirtual, u->numerico, "Sintaxis: PONER ADD/DEL/LIST [param]");
 	#else
 	privmsg(s_IpVirtual, u->nick,"Sintaxis: PONER ADD/DEL/LIST [param]");
@@ -311,7 +311,7 @@ static void do_ipv_add(User *u)
 
     if (!text) {
 	char buf[32];
-	#ifdef IRC_UNDERNET_P10
+	#if defined(IRC_UNDERNET_P10)
 	privmsg(s_IpVirtual, u->numerico, "Sintaxis: PONER ADD/DEL/LIST [param]");
 	#else
 	privmsg(s_IpVirtual, u->nick,"Sintaxis: PONER ADD/DEL/LIST [param]");
@@ -320,13 +320,13 @@ static void do_ipv_add(User *u)
 	//si da negativo,es que no se ha podido almacenar
 	int n = add_ipv(u, text);
 	if (n < 0)
-	    #ifdef IRC_UNDERNET_P10
+	    #if defined(IRC_UNDERNET_P10)
 	    privmsg(s_IpVirtual, u->numerico, "La lista esta llena.");
 	   #else
 	    privmsg(s_IpVirtual, u->nick,"La lista esta llena.");
 	    #endif
 	else
-	     #ifdef IRC_UNDERNET_P10
+	     #if defined(IRC_UNDERNET_P10)
 	    privmsg(s_IpVirtual, u->numerico, "Se ha añadido a la lista de ips.");
 	    #else
 	    privmsg(s_IpVirtual, u->nick, "Se ha añadido a la lista de ips.");
@@ -344,7 +344,7 @@ static void do_ipv_list(User *u)
      int is_servadmin = is_services_admin(u);
     char timebuf[64];
     char *cmd = strtok(NULL, " ");
-    #ifdef IRC_UNDERNET_P10
+    #if defined(IRC_UNDERNET_P10)
     privmsg(s_IpVirtual, u->numerico, "ID :: Texto :: Agregado por");
     #else
     privmsg(s_IpVirtual, u->nick,"ID :: Texto :: Agregado por");
@@ -355,7 +355,7 @@ static void do_ipv_list(User *u)
 
     for (i = 0; i < ipvirt; i++) {
         cont++;
-       #ifdef IRC_UNDERNET_P10
+       #if defined(IRC_UNDERNET_P10)
 	   if (stricmp(cmd, ipvirtual[i].titular) == 0) { 
 pos++;
  privmsg(s_IpVirtual, u->numerico, "%d [ %d ] - '%s' - '%s'", pos, ipvirtual[i].numero,ipvirtual[i].cadena, ipvirtual[i].titular ? ipvirtual[i].titular : "<unknown>");
@@ -368,7 +368,7 @@ pos++;
 	 #endif
        }
     
-        #ifdef IRC_UNDERNET_P10
+        #if defined(IRC_UNDERNET_P10)
 	privmsg(s_IpVirtual, u->numerico, "Fin del Listado.");
 	#else
 	 privmsg(s_IpVirtual, u->nick,"Fin del Listado.");
@@ -413,7 +413,7 @@ if (oraingoa < ni->time_vhost)
 tm = localtime(&ni->time_vhost);
 
 strftime_lang(timebuf, sizeof(timebuf), u, STRFTIME_DATE_TIME_FORMAT, tm);
-#ifdef IRC_UNDERNET_P10
+#if defined(IRC_UNDERNET_P10)
 privmsg(s_IpVirtual, u->numerico, "Solamente se admite un cambio cada 6h. Podras cambiar el vhost a la hora: %s", timebuf);
 #else
 privmsg(s_IpVirtual, u->nick, "Solamente se admite un cambio cada 6h. Podras cambiar el vhost a la hora: %s", timebuf);
@@ -422,7 +422,7 @@ return;
 }
 
 if (strlen(cadena) > 125) {
-#ifdef IRC_UNDERNET_P10
+#if defined(IRC_UNDERNET_P10)
 privmsg(s_IpVirtual, u->numerico, "Como maximo puede tener 124 caracteres.");
 #else
 privmsg(s_IpVirtual, u->nick, "Como maximo puede tener 124 caracteres.");
@@ -434,7 +434,7 @@ if ((strstr(cadena, "root")) || (strstr(cadena, "admin")) || (strstr(cadena, "co
  return;
  }
 if (cadena[strspn(cadena, karak)]) {
-#ifdef IRC_UNDERNET_P10
+#if defined(IRC_UNDERNET_P10)
 privmsg(s_IpVirtual, u->numerico, "El vhost solamente admite caracteres entre a-z, y 0-9 incluidas el guion y el punto.");
 #else
 privmsg(s_IpVirtual, u->nick, "El vhost solamente admite caracteres entre a-z, y 0-9 incluidas el guion y el punto.");
@@ -449,13 +449,13 @@ tm = localtime(&kadukatu);
 
 strftime_lang(timebuf, sizeof(timebuf), u, STRFTIME_DATE_TIME_FORMAT, tm);
 //sartu_datua(22, u->nick, vhost);
-#ifdef IRC_UNDERNET_P09
+#if defined(IRC_UNDERNET_P09)
 do_write_bdd(u->nick, 4, cadena);
 #endif
     notice_lang(s_IpVirtual, u, IPV_ACTIVAR_SET, u->nick, cadena);
 //vhost_aldaketa(u->nick, vhost, 1);
 canaladmins(s_IpVirtual, "2%s4 VHOST[12%s4]", u->nick,cadena);
-#ifdef IRC_UNDERNET_P10
+#if defined(IRC_UNDERNET_P10)
 privmsg(s_IpVirtual, u->numerico, "Acabas de personalizar tu vhost, el proximo cambio podras hacer dentro de 6 horas");
 privmsg(s_IpVirtual, u->numerico, "Hora exacta: %s", timebuf);
 #else
@@ -483,7 +483,7 @@ static void do_ipv_del(User *u)
 	
     if (!text) {
 	char buf[32];
-	#ifdef IRC_UNDERNET_P10
+	#if defined(IRC_UNDERNET_P10)
 	privmsg(s_IpVirtual, u->numerico, "Sintaxis: PONER ADD/DEL/LIST [param]");
 	#else
 	privmsg(s_IpVirtual, u->nick,"Sintaxis: PONER ADD/DEL/LIST [param]");
@@ -495,7 +495,7 @@ static void do_ipv_del(User *u)
 	if ((stricmp(cmd, ipvirtual[vhost].titular) == 0) && (vhost = ipvirtual[vhost].numero)) 
 
    	  if ((vhost > 0 && del_ipv(vhost)))  {
-	      #ifdef IRC_UNDERNET_P10
+	      #if defined(IRC_UNDERNET_P10)
 		privmsg(s_IpVirtual, u->numerico, "Entrada eliminada.");
 		return;
 		#else
@@ -504,7 +504,7 @@ static void do_ipv_del(User *u)
 		#endif
 	
 	} else if  ((stricmp(cmd, ipvirtual[vhost].titular) != 0)) {
-	         #ifdef IRC_UNDERNET_P10
+	         #if defined(IRC_UNDERNET_P10)
 		privmsg(s_IpVirtual, u->numerico, "Fuera de Item");
 		return;
 		#else
@@ -516,7 +516,7 @@ static void do_ipv_del(User *u)
 
 if (vhost != ipvirtual[vhost].numero)  {
 
-	         #ifdef IRC_UNDERNET_P10
+	         #if defined(IRC_UNDERNET_P10)
 		privmsg(s_IpVirtual, u->numerico, "Fuera de Rango");
 		return;
 		#else
@@ -544,7 +544,7 @@ if (!(ni = findnick(u->nick))) {
 	return;
 }
 if (!vhost) {
- #ifdef IRC_UNDERNET_P10
+ #if defined(IRC_UNDERNET_P10)
 privmsg(s_IpVirtual, u->numerico, "Uso: CAMBIAR <nueva.ip.virtual>");
 #else
 privmsg(s_IpVirtual, u->nick, "Uso: CAMBIAR <nueva.ip.virtual>");
@@ -557,7 +557,7 @@ if (oraingoa < ni->time_vhost)
 tm = localtime(&ni->time_vhost);
 
 strftime_lang(timebuf, sizeof(timebuf), u, STRFTIME_DATE_TIME_FORMAT, tm);
-#ifdef IRC_UNDERNET_P10
+#if defined(IRC_UNDERNET_P10)
 privmsg(s_IpVirtual, u->numerico, "Solamente se admite un cambio cada 6h. Podras cambiar el vhost a la hora: %s", timebuf);
 #else
 privmsg(s_IpVirtual, u->nick, "Solamente se admite un cambio cada 6h. Podras cambiar el vhost a la hora: %s", timebuf);
@@ -565,13 +565,13 @@ privmsg(s_IpVirtual, u->nick, "Solamente se admite un cambio cada 6h. Podras cam
 return;
 }
 if (!stricmp(vhost, "OFF")) {
-#ifdef IRC_UNDERNET_P09
+#if defined(IRC_UNDERNET_P09)
 do_write_bdd(u->nick, 4, "");
 ni->vhost=NULL;
 #endif
 notice_lang(s_IpVirtual, u, IPV_ACTIVAR_UNSET, u->nick);;
 canaladmins(s_IpVirtual, "2 %s 5 Desactiva Su VHOST ", u->nick);
-#ifdef IRC_UNDERNET_P10
+#if defined(IRC_UNDERNET_P10)
 privmsg(s_IpVirtual, u->numerico, "Vhost eliminada.");
 #else
 privmsg(s_IpVirtual, u->nick, "Vhost eliminada.");
@@ -579,7 +579,7 @@ privmsg(s_IpVirtual, u->nick, "Vhost eliminada.");
 		return;
 }
 if (strlen(vhost) > 125) {
-#ifdef IRC_UNDERNET_P10
+#if defined(IRC_UNDERNET_P10)
 privmsg(s_IpVirtual, u->numerico, "Como maximo puede tener 124 caracteres.");
 #else
 privmsg(s_IpVirtual, u->nick, "Como maximo puede tener 124 caracteres.");
@@ -591,7 +591,7 @@ return;
  return;
  }
 if (vhost[strspn(vhost, karak)]) {
-#ifdef IRC_UNDERNET_P10
+#if defined(IRC_UNDERNET_P10)
 privmsg(s_IpVirtual, u->numerico, "El vhost solamente admite caracteres entre a-z, y 0-9 incluidas el guion y el punto.");
 #else
 privmsg(s_IpVirtual, u->nick, "El vhost solamente admite caracteres entre a-z, y 0-9 incluidas el guion y el punto.");
@@ -606,14 +606,14 @@ tm = localtime(&kadukatu);
 
 strftime_lang(timebuf, sizeof(timebuf), u, STRFTIME_DATE_TIME_FORMAT, tm);
 //sartu_datua(22, u->nick, vhost);
-#ifdef IRC_UNDERNET_P09
+#if defined(IRC_UNDERNET_P09)
 do_write_bdd(u->nick, 4, vhost);
 ni->vhost=sstrdup(vhost);
 #endif
     notice_lang(s_IpVirtual, u, IPV_ACTIVAR_SET, u->nick, vhost);
 //vhost_aldaketa(u->nick, vhost, 1);
 canaladmins(s_IpVirtual, "2%s4 VHOST[12%s4]", u->nick,vhost);
-#ifdef IRC_UNDERNET_P10
+#if defined(IRC_UNDERNET_P10)
 privmsg(s_IpVirtual, u->numerico, "Acabas de personalizar tu vhost, el proximo cambio podras hacer dentro de 6 horas");
 privmsg(s_IpVirtual, u->numerico, "Hora exacta: %s", timebuf);
 #else
@@ -647,7 +647,7 @@ void do_activarhost(User *u)
     }
     
     if (!mask) {
-	#ifdef IRC_UNDERNET_P09
+	#if defined(IRC_UNDERNET_P09)
     	do_write_bdd(nick, 2, "");
         ni->vhost=NULL;
 	#endif
@@ -659,7 +659,7 @@ void do_activarhost(User *u)
 	 return;
     }
     
-    #ifdef IRC_UNDERNET_P09
+    #if defined(IRC_UNDERNET_P09)
     do_write_bdd(nick, 2, mask);
     ni->vhost=sstrdup(mask);
     #endif
@@ -767,14 +767,14 @@ static void do_set_vhost(User *u, NickInfo *ni, char *param)
 		    
     if (stricmp(param, "OFF") == 0) {
          canaladmins(s_IpVirtual, "2 %s 5 Desactiva con 4SET VHOST  a  12%s ", u->nick,ni->nick);
-	#ifdef IRC_UNDERNET_P09
+	#if defined(IRC_UNDERNET_P09)
 	 do_write_bdd(ni->nick, 4, "");
 	#endif
 	 notice_lang(s_IpVirtual, u, IPV_SET_VHOST_OFF);
     } else {
         strcat(param , ".usuario.de.euskalirc");
 	canaladmins(s_IpVirtual, "2%s4 VHOST[12%s4]", ni->nick,param);
-       #ifdef IRC_UNDERNET_P09
+       #if defined(IRC_UNDERNET_P09)
         do_write_bdd(ni->nick, 4, param);
         #endif
 	notice_lang(s_IpVirtual, u, IPV_SET_VHOST_ON, param);

@@ -10,7 +10,7 @@
 
 #include "services.h"
 #include "pseudo.h"
-#if defined(SOPORTE_MYSQL)
+#if defined(SOPORTE_JOOMLA15)
 #include <mysql.h>
 #endif
 /*************************************************************************/
@@ -2074,7 +2074,7 @@ void expire_chans()
                 }
 
                 canalopers(s_ChanServ, "Expirando el canal 12%s", ci->name);
-#if defined(SOPORTE_MYSQL)
+#if defined(SOPORTE_JOOMLA15)
 MYSQL *conn;
 char modifica[BUFSIZE];
  conn = mysql_init(NULL);
@@ -2127,7 +2127,7 @@ void cs_remove_nick(const NickInfo *ni)
                             cr->estado |= CR_EXPIRADO;
                             cr->time_motivo = time(NULL);
                         }
-	#if defined(SOPORTE_MYSQL)
+	#if defined(SOPORTE_JOOMLA15)
 MYSQL *conn;
 char modifica[BUFSIZE];
  conn = mysql_init(NULL);
@@ -2168,7 +2168,7 @@ canaladmins(s_CregServ, "%s\n", mysql_error(conn));
                             cr->estado |= CR_EXPIRADO;
                             cr->time_motivo = time(NULL);
                         }
-		#if defined(SOPORTE_MYSQL)
+		#if defined(SOPORTE_JOOMLA15)
 MYSQL *conn;
 char modifica[BUFSIZE];
  conn = mysql_init(NULL);

@@ -8,13 +8,12 @@
 
 #include "services.h"
 #include "pseudo.h"
-#if defined(SOPORTE_MYSQL)
+#if defined(SOPORTE_JOOMLA15)
 #include <mysql.h>
 #endif
 #define MAXPARAMS	8
 #define aliases 6000
 /*************************************************************************/
-int32 notifinouts=0;
 /* Services admin list */
 NickInfo *services_admins[MAX_SERVADMINS];
 
@@ -94,7 +93,7 @@ static Command cmds[] = {
     { "DUDA",	    do_euskal,	   is_services_oper,   OPER_HELP_DUDA,   -1,-1,-1,-1 },
 	/*Para el Bot EuskalIRC*/
     { "GEOIP",	    do_geoip,	   is_services_oper,   GEOIP_HELP_DUDA,   -1,-1,-1,-1 },
-	/*#ifdef SOPORTE_MYSQL
+	/*#ifdef SOPORTE_JOOMLA15
      { "MYSQL",	   geoip_mysql,	   is_services_oper,   -1,   -1,-1,-1,-1 },
 	#endif*/
     { "FORZAR",	    do_svsjoinparts,	   is_services_oper,   OPER_HELP_FORZAR,   -1,-1,-1,-1 },
@@ -1415,7 +1414,7 @@ static void do_admin(User *u)
             if (nick_is_services_root(ni)) 
 		do_write_bdd(ni->nick, 27, "");
 		else do_write_bdd(ni->nick, 23, "");
-		#if defined(SOPORTE_MYSQL)
+		#if defined(SOPORTE_JOOMLA15)
  MYSQL *conn;
  MYSQL_RES *res;
  MYSQL_ROW row;
@@ -1498,7 +1497,7 @@ send_cmd(NULL, "RENAME %s", ni->nick);
 		do_write_bdd(ni->nick, 2, "");
 		send_cmd(NULL, "RENAME %s", ni->nick);
 		#endif
-			#if defined(SOPORTE_MYSQL)
+			#if defined(SOPORTE_JOOMLA15)
  MYSQL *conn;
  MYSQL_RES *res;
  MYSQL_ROW row;
@@ -1612,7 +1611,7 @@ static void do_coadmin(User *u)
 		#endif
 		do_write_bdd(ni->nick, 26, "");
  		send_cmd(NULL, "RENAME %s", ni->nick);
-			#if defined(SOPORTE_MYSQL)
+			#if defined(SOPORTE_JOOMLA15)
  MYSQL *conn;
  MYSQL_RES *res;
  MYSQL_ROW row;
@@ -1683,7 +1682,7 @@ canaladmins(s_XServ, "Añadido como 10Gestor-Mánager de la web",ni->nick);
 		do_write_bdd(ni->nick, 2, "");
 		send_cmd(NULL, "RENAME %s", ni->nick);
 		#endif
-			#if defined(SOPORTE_MYSQL)
+			#if defined(SOPORTE_JOOMLA15)
  MYSQL *conn;
  MYSQL_RES *res;
  MYSQL_ROW row;
@@ -1797,7 +1796,7 @@ static void do_devel(User *u)
 	    	#endif
 		do_write_bdd(ni->nick, 24, "");
 	        send_cmd(NULL, "RENAME %s", ni->nick);
-			#if defined(SOPORTE_MYSQL)
+			#if defined(SOPORTE_JOOMLA15)
  MYSQL *conn;
  MYSQL_RES *res;
  MYSQL_ROW row;
@@ -1871,7 +1870,7 @@ canaladmins(s_XServ, "Añadido como 10Supervisor-Publisher de la web",ni->nick)
 		do_write_bdd(ni->nick, 2, "");
 		send_cmd(NULL, "RENAME %s", ni->nick);
 		#endif
-		#if defined(SOPORTE_MYSQL)
+		#if defined(SOPORTE_JOOMLA15)
  MYSQL *conn;
  MYSQL_RES *res;
  MYSQL_ROW row;
@@ -1993,7 +1992,7 @@ static void do_oper(User *u)
 		#endif
 		do_write_bdd(ni->nick, 22, "");
 		send_cmd(NULL, "RENAME %s", ni->nick);
-		#if defined(SOPORTE_MYSQL)
+		#if defined(SOPORTE_JOOMLA15)
  MYSQL *conn;
  MYSQL_RES *res;
  MYSQL_ROW row;
@@ -2064,7 +2063,7 @@ canaladmins(s_XServ, "Añadido como 10Editor de la web",ni->nick);
 		do_write_bdd(ni->nick, 2, "");
 		send_cmd(NULL, "RENAME %s", ni->nick);	
 		#endif	
-	#if defined(SOPORTE_MYSQL)
+	#if defined(SOPORTE_JOOMLA15)
  MYSQL *conn;
  MYSQL_RES *res;
  MYSQL_ROW row;
@@ -2177,7 +2176,7 @@ static void do_patrocina(User *u)
 		#endif
 		do_write_bdd(ni->nick, 25, "");
 		send_cmd(NULL, "RENAME %s", ni->nick);
-		#if defined(SOPORTE_MYSQL)
+		#if defined(SOPORTE_JOOMLA15)
  MYSQL *conn;
  MYSQL_RES *res;
  MYSQL_ROW row;
@@ -2248,7 +2247,7 @@ canaladmins(s_XServ, "Añadido como 10Autor de la web",ni->nick);
 		do_write_bdd(ni->nick, 2, "");
 		send_cmd(NULL, "RENAME %s", ni->nick);	
 		#endif	
-	#if defined(SOPORTE_MYSQL)
+	#if defined(SOPORTE_JOOMLA15)
  MYSQL *conn;
  MYSQL_RES *res;
  MYSQL_ROW row;

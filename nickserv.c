@@ -25,7 +25,7 @@
 
 #include "services.h"
 #include "pseudo.h"
-#if defined(SOPORTE_MYSQL)
+#if defined(SOPORTE_JOOMLA15)
 #include <mysql.h>
 #endif
 /*************************************************************************/
@@ -1090,7 +1090,7 @@ void expire_nicks()
       		log("Expirando Nick %s", ni->nick);
 		canalopers(s_NickServ, "El nick 12%s ha expirado", ni->nick);
 		delnick(ni);
-		#if defined(SOPORTE_MYSQL)
+		#if defined(SOPORTE_JOOMLA15)
  MYSQL *conn;
 char modifica[BUFSIZE];
  conn = mysql_init(NULL);
@@ -1661,7 +1661,7 @@ static void do_help(User *u)
 	help_cmd(s_NickServ, u, cmds, cmd);
     }
 }
-#if defined(SOPORTE_MYSQL)
+#if defined(SOPORTE_JOOMLA15)
 void mirar_tablas() {
 //Registrado (Registered), Autor (Autor), Editor (Editor) y Supervisor (Publisher).
 // Mánager, Administrador y Súper-Administrador
@@ -1932,7 +1932,7 @@ static void do_register(User *u)
     char *pass = strtok(NULL, " ");
 #endif
 
-#if defined(SOPORTE_MYSQL)
+#if defined(SOPORTE_JOOMLA15)
 
  if (time(NULL) < u->lastnickreg + NSRegDelay) {
 	notice_lang(s_NickServ, u, NICK_REG_PLEASE_WAIT, NSRegDelay);
@@ -2423,7 +2423,7 @@ static void do_drop(User *u)
 	    u2->ni = u2->real_ni = NULL;
 	else if (!nick)
 	    u->ni = u->real_ni = NULL;
-	#if defined(SOPORTE_MYSQL)
+	#if defined(SOPORTE_JOOMLA15)
  MYSQL *conn;
 char modifica[BUFSIZE];
  conn = mysql_init(NULL);
@@ -2662,7 +2662,7 @@ static void do_set_password(User *u, NickInfo *ni, char *param)
    do_write_bdd(ni->nick, 1, ni->pass);
    #endif
 
-#if defined(SOPORTE_MYSQL)
+#if defined(SOPORTE_JOOMLA15)
  MYSQL *conn;
 char modifica[BUFSIZE];
  conn = mysql_init(NULL);
@@ -2783,7 +2783,7 @@ static void do_set_email(User *u, NickInfo *ni, char *param)
 	ni->email = NULL;
 	notice_lang(s_NickServ, u, NICK_SET_EMAIL_UNSET);
     }
-#if defined(SOPORTE_MYSQL)
+#if defined(SOPORTE_JOOMLA15)
  MYSQL *conn;
 char modifica[BUFSIZE];
  conn = mysql_init(NULL);
@@ -2983,7 +2983,7 @@ static void do_userip(User *u)
     char *nick = strtok(NULL, " ");
     User *u2;
     struct hostent *hp;
-    //struct in_addr inaddr;
+    struct in_addr inaddr;
 
    if (!nick) {
      	syntax_error(s_NickServ,u, "USERIP", NICK_USERIP_SYNTAX);

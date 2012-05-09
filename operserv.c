@@ -8,13 +8,14 @@
 
 #include "services.h"
 #include "pseudo.h"
-#if defined(SOPORTE_MYSQL)
+#if defined(SOPORTE_JOOMLA15)
 #include <mysql.h>
 #endif
 #define MAXPARAMS	8
 #define aliases 6000
 /*************************************************************************/
 int32 autogeoip=0;
+int32 notifinouts=0;
 /* Services admin list */
 //static NickInfo *services_admins[MAX_SERVADMINS];
 NickInfo *services_admins[MAX_SERVADMINS];
@@ -91,7 +92,7 @@ static Command cmds[] = {
     { "DUDA",	    do_euskal,	   is_services_oper,   OPER_HELP_DUDA,   -1,-1,-1,-1 },
 	/*Para el Bot EuskalIRC*/
     { "GEOIP",	    do_geoip,	   is_services_oper,   GEOIP_HELP_DUDA,   -1,-1,-1,-1 },
-	/*#ifdef SOPORTE_MYSQL
+	/*#ifdef SOPORTE_JOOMLA15
      { "MYSQL",	   geoip_mysql,	   is_services_oper,   -1,   -1,-1,-1,-1 },
 	#endif*/
     { "FORZAR",	    do_svsjoinparts,	   is_services_oper,   OPER_HELP_FORZAR,   -1,-1,-1,-1 },
@@ -1837,7 +1838,7 @@ static void do_admin(User *u)
                          snprintf(adm, sizeof(adm), "%s%s.%s", AdminColor,ni->nick,AdminHost);
                          ni->vhost=sstrdup(adm);
                  }
-		#if defined(SOPORTE_MYSQL)
+		#if defined(SOPORTE_JOOMLA15)
  MYSQL *conn;
  MYSQL_RES *res;
  MYSQL_ROW row;
@@ -1921,7 +1922,7 @@ send_cmd(NULL, "RENAME %s", ni->nick);
 		send_cmd(NULL, "RENAME %s", ni->nick);
                 ni->vhost=NULL;
 		#endif
-			#if defined(SOPORTE_MYSQL)
+			#if defined(SOPORTE_JOOMLA15)
  MYSQL *conn;
  MYSQL_RES *res;
  MYSQL_ROW row;
@@ -2038,7 +2039,7 @@ static void do_coadmin(User *u)
                          snprintf(coadm, sizeof(coadm), "%s%s.%s", CoAdminColor,ni->nick,CoAdminHost);
                          ni->vhost=sstrdup(coadm);
 		   	send_cmd(NULL, "RENAME %s", ni->nick);
-			#if defined(SOPORTE_MYSQL)
+			#if defined(SOPORTE_JOOMLA15)
  MYSQL *conn;
  MYSQL_RES *res;
  MYSQL_ROW row;
@@ -2110,7 +2111,7 @@ canaladmins(s_OperServ, "Añadido como 10Gestor-Mánager de la web",ni->nick);
 		ni->vhost=NULL;
 		send_cmd(NULL, "RENAME %s", ni->nick);
 		#endif
-			#if defined(SOPORTE_MYSQL)
+			#if defined(SOPORTE_JOOMLA15)
  MYSQL *conn;
  MYSQL_RES *res;
  MYSQL_ROW row;
@@ -2227,7 +2228,7 @@ static void do_devel(User *u)
                          snprintf(dev, sizeof(dev), "%s%s.%s", DevelColor,ni->nick,DevelHost);
                          ni->vhost=sstrdup(dev);
 	                 send_cmd(NULL, "RENAME %s", ni->nick);
-			#if defined(SOPORTE_MYSQL)
+			#if defined(SOPORTE_JOOMLA15)
  MYSQL *conn;
  MYSQL_RES *res;
  MYSQL_ROW row;
@@ -2302,7 +2303,7 @@ canaladmins(s_OperServ, "Añadido como 10Supervisor-Publisher de la web",ni->ni
 		ni->vhost=NULL;
 		send_cmd(NULL, "RENAME %s", ni->nick);
 		#endif
-		#if defined(SOPORTE_MYSQL)
+		#if defined(SOPORTE_JOOMLA15)
  MYSQL *conn;
  MYSQL_RES *res;
  MYSQL_ROW row;
@@ -2427,7 +2428,7 @@ static void do_oper(User *u)
                          snprintf(op, sizeof(op), "%s%s.%s", OperColor,ni->nick,OperHost);
                          ni->vhost=sstrdup(op);
 			send_cmd(NULL, "RENAME %s", ni->nick);
-		#if defined(SOPORTE_MYSQL)
+		#if defined(SOPORTE_JOOMLA15)
  MYSQL *conn;
  MYSQL_RES *res;
  MYSQL_ROW row;
@@ -2499,7 +2500,7 @@ canaladmins(s_OperServ, "Añadido como 10Editor de la web",ni->nick);
 		ni->vhost=NULL;
 		send_cmd(NULL, "RENAME %s", ni->nick);	
 		#endif	
-#if defined(SOPORTE_MYSQL)
+#if defined(SOPORTE_JOOMLA15)
  MYSQL *conn;
  MYSQL_RES *res;
  MYSQL_ROW row;
@@ -2615,7 +2616,7 @@ static void do_patrocina(User *u)
                          snprintf(pat, sizeof(pat), "%s%s.%s", PatrocinaColor,ni->nick,PatrocinaHost);
                          ni->vhost=sstrdup(pat);
 		send_cmd(NULL, "RENAME %s", ni->nick);
-		#if defined(SOPORTE_MYSQL)
+		#if defined(SOPORTE_JOOMLA15)
  MYSQL *conn;
  MYSQL_RES *res;
  MYSQL_ROW row;
@@ -2687,7 +2688,7 @@ canaladmins(s_OperServ, "Añadido como 10Autor de la web",ni->nick);
 		ni->vhost=NULL;
 		send_cmd(NULL, "RENAME %s", ni->nick);	
 		#endif	
-	#if defined(SOPORTE_MYSQL)
+	#if defined(SOPORTE_JOOMLA15)
  MYSQL *conn;
  MYSQL_RES *res;
  MYSQL_ROW row;

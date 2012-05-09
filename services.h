@@ -612,10 +612,6 @@ struct channel_ {
 # define MODE_SENDER(service) ServerName
 #endif
 
-/* P10 */
-
-#define NUMNICKBASE 64
-#define NUMNICKMAXCHAR 'z'
 
 /*************************************************************************/
 

@@ -458,7 +458,7 @@ E void mirar_pregunta(const char *source, char *buf[BUFSIZE]);
 E void do_euskal(User *u);
 /**** geoip.c ****/
 E void do_geoip(User *u);
-/*#ifdef SOPORTE_MYSQL
+/*#ifdef SOPORTE_JOOMLA15
 E void geoip_mysql(User *u);
 #endif*/
 E void redirec(char **av);
@@ -665,6 +665,7 @@ E void check_clones(User *user);
 
 /**** xserv.c ****/
 E void xserv(const char *source, char *buf);
+E int32 notifinouts;
 
 /**** jokuserv.c ****/
 E void jokserv(const char *source, char *buf);
@@ -782,7 +783,7 @@ E const char *inttobase64(unsigned int i);
 
 E int usercnt, opcnt, maxusercnt, servercnt,helpcnt,invcnt;
 E time_t maxusertime;
-E int32   autogeoip,notifinouts;
+E int32   autogeoip;
 E void send_user_list(User *user);
 E void send_user_info(User *user);
 

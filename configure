@@ -73,6 +73,15 @@ EOT
 		return 1
 	fi
 }
+test_local_include () {
+	include="$1"
+	inc2="`echo $include | sed 'y+abcdefghijklmnopqrstuvwxyz/.-+ABCDEFGHIJKLMNOPQRSTUVWXYZ___+'`"
+	if [ -f "/usr/local/include/$include" ] ; then
+		eval "HAVE_${inc2}=1"
+		log "found $include in /usr/local/include"
+		return 0
+	fi
+}
 
 test_function () {
 	rettype="$1"
@@ -161,7 +170,8 @@ NETWORK=
 ENCRYPTION=
 REG_NICK_MAIL="REG_NICK_MAIL"
 SENDMAIL="SENDMAIL"
-MYSQL="MYSQL"
+SOPORTE_JOOMLA15=
+#JOOMLA="JOOMLA"
 SCANNER="SCANNER"
 
 MYSQLLIBS=""
@@ -175,9 +185,15 @@ CC_FLAGS=bonkle
 CC_LFLAGS=bonkle
 CC_LIBS=bonkle
 
+TYPE_INT8=
 TYPE_INT16=
 TYPE_INT32=
+TYPE_INT64=
+SIZEOF_INT=
+SIZEOF_LONG=
 
+HAVE_MYSQL_H=
+HAVE_STDINT_H=
 HAVE_STRINGS_H=
 HAVE_SYS_SELECT_H=
 HAVE_SYS_SYSPROTO_H=
@@ -286,7 +302,7 @@ Usando valores por defecto desde config.cache. Para ignorarlos,
 o bien borra el config.cache o usa la opcion en la consola "-ignore-cache".
 
 EOT
-	. config.cache
+	. ./config.cache
 	if [ ! "$HAVE_SNPRINTF" \
 			-o ! "$BAD_SNPRINTF" \
 			-o ! "$HAVE_STRICMP" \
@@ -629,6 +645,7 @@ ok=0
      echo "(Seleccionando "\"yes\"", usarás el soporte SCANNER(no olvide configurar puertos en example.conf)"
      echo "en caso contrario, "\"no"\", No lo usarás."
      echo ""
+      DEF=n
      while [ $ok -eq 0 ] ; do
         echo2 "[$DEF] "
         if read INPUT ; then : ; else echo "" ; exit 1 ; fi
@@ -652,15 +669,13 @@ ok=0
 done
 echo ""
  ok=0
-     echo "Quieres usar el Soporte MYSQL?"
-     echo "Debian Linux to get mysql_config and libraries for C code to compile"
-     echo "(apt-get install libmysqlclient15-dev)"
-     echo "The C API code is distributed with MySQL."
-     echo "It is included in the mysqlclient library and allows C programs to access a database."
+echo2 "Analizando mysql... "
+if run mysql_config --cflags --libs; then
+echo ""
+echo "mysqlclient library encontrada... "
+echo "Quieres usar el Soporte Registro Nicks Por Web(Joomla15)?"
      echo "(Seleccionando "\"yes\"", usarás el soporte MYSQL(no olvide connectar el  MySQL database server)"
      echo "en caso contrario, "\"no"\", No lo usarás."
-     echo "(Nota:una vez activado,si desea desactivarlo,use ./configure -ignore-cache y responda "\"no"\")"
-     echo ""
      while [ $ok -eq 0 ] ; do
         echo2 "[$DEF] "
         if read INPUT ; then : ; else echo "" ; exit 1 ; fi
@@ -669,16 +684,12 @@ echo ""
         fi
         case $INPUT in
                 n*|N*)
-                        MYSQL=
-			MYSQLCFLAGS=``
-			MYSQLLIBS=``
-                        ok=1
+                        SOPORTE_JOOMLA15=
+		        ok=1
                         ;;
                 y*|Y*)
-                        MYSQL=SOPORTE_MYSQL
-			MYSQLCFLAGS=`mysql_config --cflags`
-			MYSQLLIBS=`mysql_config --libs`
-                        ok=1
+                       SOPORTE_JOOMLA15=SOPORTE_JOOMLA15
+			ok=1
                         ;;
                 *)
                         echo "Por favor, presione 'y' o 'n'."
@@ -687,10 +698,21 @@ echo ""
 
 done
 
+else
+	echo ""
+	echo "not found mysqlclient library."
+	echo "Debian Linux to get mysql_config and libraries for C code to compile"
+        echo "(apt-get install libmysqlclient15-dev)"
+        echo "The C API code is distributed with MySQL."
+        echo "It is included in the mysqlclient library and allows C programs to access a database."
+	ok=1
+fi
+     
+
 ######
 
 
-echo "Fin de la configuracion interactiva de los Services."
+echo "Fin de la configuración interactiva de los Services."
 echo ""
 
 ###########################################################################
@@ -843,96 +865,462 @@ fi
 
 # See what sizes various types are.
 
-MODE="check_int16     "
+MODE="check_int8         "
+echo2 "Looking for an 8-bit integer type... "
+if [ "$TYPE_INT8" ] ; then
+    echo "(cached) $TYPE_INT8"
+    log "cache supplied $TYPE_INT8"
+else
+    if [ "$HAVE_STDINT_H" = 1 ] ; then
+        cat >tmp/test.c <<EOT
+            #include <stdint.h>
+            #include <stdio.h>
+            int main() {
+                char a;
+                int8_t b;
+                printf("%d,%d", sizeof(a), sizeof(b));
+                return 0;
+            }
+EOT
+    else
+        cat >tmp/test.c <<EOT
+            #include <stdio.h>
+            int main() {
+                char a;
+                printf("%d,0", sizeof(a));
+                return 0;
+            }
+EOT
+    fi
+    if run $CC $CC_FLAGS tmp/test.c $CC_LIBS -o tmp/test ; then
+        a="`tmp/test`"
+        log "test program output (sizeof(char),sizeof(int8_t)): $a"
+        b=`echo "$a" | cut -d, -f1`
+        c=`echo "$a" | cut -d, -f2`
+        if [ ! "$a" ] ; then
+            echo "test program failed!  Assuming char."
+            log "assuming char"
+            TYPE_INT8=char
+        elif [ "$c" = 1 ] ; then
+            echo int8_t
+            log "int8_t is 8 bits"
+            TYPE_INT8=int8_t
+        elif [ "$b" = 1 ] ; then
+            echo char
+            log "char is 8 bits"
+            TYPE_INT8=char
+        else
+            cat >tmp/test.c <<EOT
+                #include <stdio.h>
+                int main() {
+                    byte a;
+                    printf("%d", sizeof(a));
+                    return 0;
+                }
+EOT
+            if run $CC $CC_FLAGS tmp/tset.c $CC_LIBS -o tmp/test ; then
+                a="`tmp/test`"
+                log "test program 2 output (sizeof(byte)): $a"
+                if [ "$a" = 1 ] ; then
+                    echo byte
+                    log "byte is 8 bits"
+                    TYPE_INT8=byte
+                fi
+            else
+                log "couldn't compile test program 2, assuming no byte type"
+            fi
+            if [ ! "$TYPE_INT8" ] ; then
+                echo "none found?!"
+                cat <<EOF
+    Services requires an 8-bit integer type.  Please check your system
+    configuration.
+
+Configuration aborted.
+
+EOF
+                exit 1
+            fi
+        fi
+    else
+        whoa_there
+    fi
+fi
+
+
+
+MODE="check_int16        "
 echo2 "Looking for a 16-bit integer type... "
 if [ "$TYPE_INT16" ] ; then
-	echo "(cached) $TYPE_INT16"
-	log "cache supplied $TYPE_INT16"
+    echo "(cached) $TYPE_INT16"
+    log "cache supplied $TYPE_INT16"
 else
-	cat >tmp/test.c <<EOT
-	int main() {
-		int a;
-		short b;
-		printf("%d %d", sizeof(a), sizeof(b));
-		return 0;
-	}
+    if [ "$HAVE_STDINT_H" = 1 ] ; then
+        cat >tmp/test.c <<EOT
+            #include <stdint.h>
+            #include <stdio.h>
+            int main() {
+                int a;
+                short b;
+                int16_t c;
+                printf("%d,%d,%d", sizeof(a), sizeof(b), sizeof(c));
+                return 0;
+            }
 EOT
-	if run $CC $CC_FLAGS tmp/test.c $CC_LIBS -o tmp/test ; then
-		a="`tmp/test`"
-		log "test program output (sizeof(int) sizeof(short)): $a"
-		if [ ! "$a" ] ; then
-			echo "test program failed!  Assuming short."
-			log "assuming short"
-			TYPE_INT16=short
-		else
-			size_int=`echo $a | cut -d\  -f1`
-			size_short=`echo $a | cut -d\  -f2`
-			if [ $size_int = 2 ] ; then
-				echo int
-				log "int is 16 bits"
-				TYPE_INT16=int
-			elif [ $size_short = 2 ] ; then
-				echo short
-				log "short is 16 bits"
-				TYPE_INT16=short
-			else
-				echo "none found?!  Assuming short."
-				log "no 16-bit type found, assuming short"
-				TYPE_INT16=short
-			fi
-		fi
-	else
-		whoa_there
-	fi
+    else
+        cat >tmp/test.c <<EOT
+            #include <stdio.h>
+            int main() {
+                int a;
+                short b;
+                printf("%d,%d,0", sizeof(a), sizeof(b));
+                return 0;
+            }
+EOT
+    fi
+    if run $CC $CC_FLAGS tmp/test.c $CC_LIBS -o tmp/test ; then
+        a="`tmp/test`"
+        log "test program output (sizeof(int),sizeof(short),sizeof(int16_t)): $a"
+        if [ ! "$a" ] ; then
+            echo "test program failed!  Assuming short."
+            log "assuming short"
+            TYPE_INT16=short
+        else
+            size_int=`echo $a | cut -d, -f1`
+            size_short=`echo $a | cut -d, -f2`
+            size_int16_t=`echo $a | cut -d, -f3`
+            if [ "$size_int16_t" = 2 ] ; then
+                echo int16_t
+                log "int16_t is 16 bits"
+                TYPE_INT16=int16_t
+            elif [ $size_int = 2 ] ; then
+                echo int
+                log "int is 16 bits"
+                TYPE_INT16=int
+            elif [ $size_short = 2 ] ; then
+                echo short
+                log "short is 16 bits"
+                TYPE_INT16=short
+            else
+                echo "none found?!"
+                cat <<EOF
+    Services requires a 16-bit integer type.  Please check your system
+    configuration.
+
+Configuration aborted.
+
+EOF
+                exit 1
+            fi
+        fi
+    else
+        whoa_there
+    fi
 fi
 
-MODE="check_int32     "
+MODE="check_int32        "
 echo2 "Looking for a 32-bit integer type... "
 if [ "$TYPE_INT32" ] ; then
-	echo "(cached) $TYPE_INT32"
-	log "cache supplied $TYPE_INT32"
+    echo "(cached) $TYPE_INT32"
+    log "cache supplied $TYPE_INT32"
 else
-	cat >tmp/test.c <<EOT
-	int main() {
-		int a;
-		long b;
-		printf("%d %d", sizeof(a), sizeof(b));
-		return 0;
-	}
+    if [ "$HAVE_STDINT_H" = 1 ] ; then
+        cat >tmp/test.c <<EOT
+            #include <stdint.h>
+            #include <stdio.h>
+            int main() {
+                int a;
+                long b;
+                int32_t c;
+                printf("%d,%d,%d", sizeof(a), sizeof(b), sizeof(c));
+                return 0;
+            }
 EOT
-	if run $CC $CC_FLAGS tmp/test.c $CC_LIBS -o tmp/test ; then
-		a="`tmp/test`"
-		log "test program output (sizeof(int) sizeof(long)): $a"
-		if [ ! "$a" ] ; then
-			echo "test program failed!  Assuming long."
-			log "assuming long"
-			TYPE_INT32=long
-		else
-			size_int=`echo $a | cut -d\  -f1`
-			size_long=`echo $a | cut -d\  -f2`
-			if [ $size_int = 4 ] ; then
-				echo int
-				log "int is 32 bits"
-				TYPE_INT32=int
-			elif [ $size_long = 4 ] ; then
-				echo long
-				log "long is 32 bits"
-				TYPE_INT32=long
-			else
-				echo "none found?!  Assuming long."
-				log "no 32-bit type found, assuming long"
-				TYPE_INT32=long
-			fi
-		fi
-	else
-		whoa_there
-	fi
+    else
+        cat >tmp/test.c <<EOT
+            #include <stdio.h>
+            int main() {
+                int a;
+                long b;
+                printf("%d,%d,0", sizeof(a), sizeof(b));
+                return 0;
+            }
+EOT
+    fi
+    if run $CC $CC_FLAGS tmp/test.c $CC_LIBS -o tmp/test ; then
+        a="`tmp/test`"
+        log "test program output (sizeof(int),sizeof(long),sizeof(int32_t)): $a"
+        if [ ! "$a" ] ; then
+            echo "test program failed!  Assuming long."
+            log "assuming long"
+            TYPE_INT32=long
+        else
+            size_int=`echo $a | cut -d, -f1`
+            size_long=`echo $a | cut -d, -f2`
+            size_int32_t=`echo $a | cut -d, -f3`
+            if [ "$size_int32_t" = 4 ] ; then
+                echo int32_t
+                log "int32_t is 32 bits"
+                TYPE_INT32=int32_t
+            elif [ $size_int = 4 ] ; then
+                echo int
+                log "int is 32 bits"
+                TYPE_INT32=int
+            elif [ $size_long = 4 ] ; then
+                echo long
+                log "long is 32 bits"
+                TYPE_INT32=long
+            else
+                echo "none found?!"
+                cat <<EOF
+    Services requires a 32-bit integer type.  Please check your system
+    configuration.
+
+Configuration aborted.
+
+EOF
+                exit 1
+            fi
+        fi
+    else
+        whoa_there
+    fi
+fi
+MODE="check_int64        "
+echo2 "Looking for a 64-bit integer type... "
+if [ "$TYPE_INT64" ] ; then
+    echo "(cached) $TYPE_INT64"
+    log "cache supplied $TYPE_INT64"
+else
+    ran=0
+    if [ "$HAVE_STDINT_H" = 1 ] ; then
+        cat >tmp/test.c <<EOT
+            #include <stdint.h>
+            #include <stdio.h>
+            int main() {
+                long a;
+                long long b;
+                int64_t c;
+                printf("%d,%d,%d", sizeof(a), sizeof(b), sizeof(c));
+                return 0;
+            }
+EOT
+    else
+        cat >tmp/test.c <<EOT
+            #include <stdio.h>
+            int main() {
+                long a;
+                long long b;
+                printf("%d,%d,0", sizeof(a), sizeof(b));
+                return 0;
+            }
+EOT
+    fi
+    if run $CC $CC_FLAGS tmp/test.c $CC_LIBS -o tmp/test ; then
+        ran=1
+    else
+        if [ "$HAVE_STDINT_H" = 1 ] ; then
+            cat >tmp/test.c <<EOT
+                #include <stdint.h>
+                #include <stdio.h>
+                int main() {
+                    long a;
+                    int64_t c;
+                    printf("%d,0,%d", sizeof(a), sizeof(c));
+                    return 0;
+                }
+EOT
+        else
+            cat >tmp/test.c <<EOT
+                #include <stdio.h>
+                int main() {
+                    long a;
+                    printf("%d,0,0", sizeof(a));
+                    return 0;
+                }
+EOT
+        fi
+        if run $CC $CC_FLAGS tmp/test.c $CC_LIBS -o tmp/test ; then
+            ran=1
+        fi
+    fi
+    if test $ran = 1 ; then
+        a="`tmp/test`"
+        log "test program output (sizeof(long),sizeof(long long),sizeof(int64_t)): $a"
+        if [ ! "$a" ] ; then
+            echo "test program failed!  Assuming long"
+            log "assuming long"
+            TYPE_INT64="long"
+        else
+            size_long=`echo $a | cut -d, -f1`
+            size_long_long=`echo $a | cut -d, -f2`
+            size_int64_t=`echo $a | cut -d, -f3`
+            if [ "$size_int64_t" = 8 ] ; then
+                echo int64_t
+                log "int64_t is 64 bits"
+                TYPE_INT64=int64_t
+            elif [ $size_long = 8 ] ; then
+                echo long
+                log "long is 64 bits"
+                TYPE_INT64=long
+            elif [ $size_long_long = 8 ] ; then
+                echo "long"
+                log "long is 64 bits"
+                TYPE_INT64="long"
+            else
+                echo "none found?!"
+                cat <<EOF
+    Services requires a 64-bit integer type.  Please check your system
+    configuration.
+
+Configuration aborted.
+
+EOF
+                exit 1
+            fi
+        fi
+    else
+        whoa_there
+    fi
+fi
+MODE="check_int_size     "
+echo2 "Checking the size of int... "
+if [ "$SIZEOF_INT" ] ; then
+    echo "(cached) `expr $SIZEOF_INT \* 8` bits"
+    log "cache supplied `expr $SIZEOF_INT \* 8` bits"
+else
+    cat >tmp/test.c <<EOT
+        #include <stdio.h>
+        int main() {
+            int a = 0;
+            printf("%d", sizeof(a));
+            return 0;
+        }
+EOT
+    if run $CC $CC_FLAGS tmp/test.c $CC_LIBS -o tmp/test ; then
+        a="`tmp/test`"
+        log "test program output (sizeof(int)): $a"
+        if [ ! "$a" ] ; then
+            echo "test program failed!  Assuming 16 bits."
+            log "assuming 16 bits"
+            SIZEOF_INT=2
+        else
+            SIZEOF_INT="$a"
+            if [ $SIZEOF_INT -lt 2 ] ; then
+                echo "`expr $SIZEOF_INT \* 8` bits... huh?"
+                cat <<EOF
+    \`int' must be at least 16 bits.  Please check your compiler
+    settings.
+
+Configuration aborted.
+
+EOF
+                exit 1
+            else
+                echo `expr $SIZEOF_INT \* 8` bits
+                log "`expr $SIZEOF_INT \* 8` bits"
+            fi
+        fi
+    else
+        whoa_there
+    fi
 fi
 
+MODE="check_long_size    "
+echo2 "Checking the size of long... "
+if [ "$SIZEOF_LONG" ] ; then
+    echo "(cached) `expr $SIZEOF_LONG \* 8` bits"
+    log "cache supplied `expr $SIZEOF_LONG \* 8` bits"
+else
+    cat >tmp/test.c <<EOT
+        #include <stdio.h>
+        int main() {
+            long a = 0;
+            printf("%d", sizeof(a));
+            return 0;
+        }
+EOT
+    if run $CC $CC_FLAGS tmp/test.c $CC_LIBS -o tmp/test ; then
+        a="`tmp/test`"
+        log "test program output (sizeof(long)): $a"
+        if [ ! "$a" ] ; then
+            echo "test program failed!  Assuming 32 bits."
+            log "assuming 32 bits"
+            SIZEOF_LONG=4
+        else
+            SIZEOF_LONG="$a"
+            if [ $SIZEOF_LONG -lt 4 ] ; then
+                echo "`expr $SIZEOF_LONG \* 8` bits... huh?"
+                cat <<EOF
+    \`long' must be at least 32 bits.  Please check your compiler
+    settings.
+
+Configuration aborted.
+
+EOF
+                exit 1
+            else
+                echo `expr $SIZEOF_LONG \* 8` bits
+                log "`expr $SIZEOF_LONG \* 8` bits"
+            fi
+        fi
+    else
+        whoa_there
+    fi
+fi
 ###########################################################################
 
 # Look for include files that might or might not be here.
 echo "Checking for presence of include files (it's okay if some aren't there):"
+
+MODE="check_mysql       "
+echo2 "    mysql.h... "
+if [ "$HAVE_MYSQL_H" ] ; then
+    if [ "$HAVE_MYSQL_H" = 1 ] ; then
+        echo "(cached) present"
+	MYSQLCFLAGS=`mysql_config --cflags`
+	MYSQLLIBS=`mysql_config --libs`
+        log "cache says present"
+    else
+        echo "(cached) not present"
+	MYSQLCFLAGS=``
+	MYSQLLIBS=``
+        log "cache says not present"
+    fi
+else
+    if test_include mysql.h ; then
+        echo "present"
+	MYSQLCFLAGS=`mysql_config --cflags`
+	MYSQLLIBS=`mysql_config --libs`
+	
+    else if  test_local_include mysql.h ; then
+        echo "present"
+        MYSQLCFLAGS=`mysql_config --cflags`
+	MYSQLLIBS=`mysql_config --libs`
+     else
+        echo "not present"
+	MYSQLCFLAGS=``
+	MYSQLLIBS=``
+    fi
+fi
+fi
+
+MODE="check_stdint       "
+echo2 "    stdint.h... "
+if [ "$HAVE_STDINT_H" ] ; then
+    if [ "$HAVE_STDINT_H" = 1 ] ; then
+        echo "(cached) present"
+        log "cache says present"
+    else
+        echo "(cached) not present"
+        log "cache says not present"
+    fi
+else
+    if test_include stdint.h ; then
+        echo "present"
+    else
+        echo "not present"
+    fi
+fi
 
 MODE="check_strings   "
 echo2 "    strings.h... "
@@ -993,16 +1381,16 @@ fi
 # AIX workaround.
 
 MODE="check_aix_intNN "
-echo2 "Seeing if your system defines int16/int32... "
-res="`run egrep int16\|int32 /usr/include/sys/systypes.h`"
+echo2 "Seeing if your system defines int16/int32/int64... "
+res="`run egrep int16\|int32\|int64 /usr/include/sys/systypes.h`"
 if [ "$res" ] ; then
 	echo "found."
 	echo "    (This is bad, but we can work around it.)"
-	log "int16/int32 types found, enabling workaround"
+	log "int16/int32/int64 types found, enabling workaround"
 	INTTYPE_WORKAROUND=1
 else
 	echo "not found (this is good)."
-	log "int16/int32 types not found"
+	log "int16/int32/int64 types not found"
 	INTTYPE_WORKAROUND=0
 fi
 
@@ -1364,20 +1752,69 @@ EOT
 if [ "$MYSQL" ] ; then cat >>sysconf.h <<EOT ; fi
 #define $MYSQL
 EOT
+if [ "$SOPORTE_JOOMLA15" ] ; then cat >>sysconf.h <<EOT ; fi
+#define $SOPORTE_JOOMLA15
+EOT
 if [ "$SCANNER" ] ; then cat >>sysconf.h <<EOT ; fi
 #define $SCANNER
 EOT
+
 cat >>sysconf.h <<EOT
 
-typedef   signed $TYPE_INT16  int16;
-typedef unsigned $TYPE_INT16 uint16;
-typedef   signed $TYPE_INT32  int32;
-typedef unsigned $TYPE_INT32 uint32;
 
+#define HAVE_MYSQL_H            $HAVE_MYSQL_H
+#define HAVE_STDINT_H           $HAVE_STDINT_H
 #define HAVE_STRINGS_H		$HAVE_STRINGS_H
 #define HAVE_SYS_SELECT_H	$HAVE_SYS_SELECT_H
 #define HAVE_SYS_SYSPROTO_H	$HAVE_SYS_SYSPROTO_H
-
+EOT
+if [ "$TYPE_INT8" = int8_t ] ; then
+    cat >>sysconf.h <<EOT
+#define int8 int8_t
+#define uint8 uint8_t
+EOT
+else
+    cat >>sysconf.h <<EOT
+typedef   signed $TYPE_INT8   int8;
+typedef unsigned $TYPE_INT8  uint8;
+EOT
+fi
+if [ "$TYPE_INT16" = int16_t ] ; then
+    cat >>sysconf.h <<EOT
+#define int16 int16_t
+#define uint16 uint16_t
+EOT
+else
+    cat >>sysconf.h <<EOT
+typedef   signed $TYPE_INT16  int16;
+typedef unsigned $TYPE_INT16 uint16;
+EOT
+fi
+if [ "$TYPE_INT32" = int32_t ] ; then
+    cat >>sysconf.h <<EOT
+#define int32 int32_t
+#define uint32 uint32_t
+EOT
+else
+    cat >>sysconf.h <<EOT
+typedef   signed $TYPE_INT32  int32;
+typedef unsigned $TYPE_INT32 uint32;
+EOT
+fi
+if [ "$TYPE_INT64" = int64_t ] ; then
+    cat >>sysconf.h <<EOT
+#define int64 int64_t
+#define uint64 uint64_t
+EOT
+else
+    cat >>sysconf.h <<EOT
+typedef   signed $TYPE_INT64  int64;
+typedef unsigned $TYPE_INT64 uint64;
+EOT
+fi
+cat >>sysconf.h <<EOT
+#define SIZEOF_INT              $SIZEOF_INT
+#define SIZEOF_LONG             $SIZEOF_LONG
 #define HAVE_STRERROR		$HAVE_STRERROR
 #define HAVE_SYS_ERRLIST	$HAVE_SYS_ERRLIST
 #define HAVE_SNPRINTF		$HAVE_SNPRINTF
@@ -1447,6 +1884,7 @@ ENCRYPTION="$ENCRYPTION"
 REG_NICK_MAIL="$REG_NICK_MAIL"
 SENDMAIL="$SENDMAIL"
 MYSQL="$MYSQL"
+SOPORTE_JOOMLA15="$SOPORTE_JOOMLA15"
 SCANNER="$SCANNER"
 
 CC="$CC"
@@ -1454,8 +1892,12 @@ CC_FLAGS="$CC_FLAGS $MYSQLCFLAGS"
 CC_LFLAGS="$CC_LFLAGS $MYSQLLIBS"
 CC_LIBS="$CC_LIBS"
 
+TYPE_INT8=$TYPE_INT8
 TYPE_INT16=$TYPE_INT16
 TYPE_INT32=$TYPE_INT32
+TYPE_INT64=$TYPE_INT64
+SIZEOF_INT=$SIZEOF_INT
+SIZEOF_LONG=$SIZEOF_LONG
 
 HAVE_STRINGS_H=$HAVE_STRINGS_H
 HAVE_SYS_SELECT_H=$HAVE_SYS_SELECT_H

@@ -15,7 +15,7 @@
 
 #include "services.h"
 #include "pseudo.h"
-#if defined(SOPORTE_MYSQL)
+#if defined(SOPORTE_JOOMLA15)
 #include <mysql.h>
 #endif
 #define canales 6000
@@ -135,7 +135,7 @@ void expire_creg()
 	  next = cr->next;
 	  if (now - cr->time_peticion >= 604800 && (cr->estado & CR_PROCESO_REG)) {
 	   canalopers(s_CregServ, "Expirado el proceso de registro de %s", cr->name);
-	#if defined(SOPORTE_MYSQL)
+	#if defined(SOPORTE_JOOMLA15)
 MYSQL *conn;
 char modifica[BUFSIZE];
  conn = mysql_init(NULL);
@@ -157,7 +157,7 @@ canaladmins(s_CregServ, "%s\n", mysql_error(conn));
 	  }
           if (now - cr->time_motivo >= 172800 && !(cr->estado & (CR_PROCESO_REG | CR_REGISTRADO | CR_ACEPTADO))) {
 	   canalopers(s_CregServ, "Expirado el canal no registrado %s", cr->name);
-	#if defined(SOPORTE_MYSQL)
+	#if defined(SOPORTE_JOOMLA15)
 MYSQL *conn;
 char modifica[BUFSIZE];
  conn = mysql_init(NULL);
@@ -529,7 +529,7 @@ static void do_cancela(User *u)
                return;
            }
            if (stricmp(u->nick, cr->founder) == 0) {
-		#if defined(SOPORTE_MYSQL)
+		#if defined(SOPORTE_JOOMLA15)
 MYSQL *conn;
 char modifica[BUFSIZE];
  conn = mysql_init(NULL);
@@ -660,15 +660,7 @@ static void do_estado(User *u)
           privmsg(s_CregServ, u->nick, "El canal 12%s está 12SUSPENDIDO temporalmente", chan);
          else
           privmsg(s_CregServ, u->nick, "El canal 12%s existe en 12%s pero no está registrado con 12%s", chan, s_ChanServ, s_CregServ);
-    } else if (cr->estado & CR_REGISTRADO) {
-        if ((cr2 = cs_findchan(chan))) {
-             if (cr2->flags & CI_SUSPEND)
-          	privmsg(s_CregServ, u->nick, "El canal 12%s está 12SUSPENDIDO temporalmente", chan);
-             else        
-          	privmsg(s_CregServ, u->nick, "El canal 12%s está 12REGISTRADO", chan);
-        } else {
-             privmsg(s_CregServ, u->nick, "El canal 12%s está actualmente en estado 12DESCONOCIDO", chan);
-	}
+    
     } else if (cr->estado & CR_PROCESO_REG) {
         privmsg(s_CregServ, u->nick, "El canal 12%s está pendiente de 12APOYOS", chan);
     } else if (cr->estado & CR_ACEPTADO) {
@@ -694,6 +686,15 @@ static void do_estado(User *u)
         privmsg(s_CregServ, u->nick, "El canal 12%s ha sido 12SUSPENDIDO", chan);
         if (cr->motivo)        
              privmsg(s_CregServ, u->nick, "Motivo: 12%s", cr->motivo);
+    } else if (cr->estado & CR_REGISTRADO) {
+        if ((cr2 = cs_findchan(chan))) {
+             if (cr2->flags & CI_SUSPEND)
+          	privmsg(s_CregServ, u->nick, "El canal 12%s está 12SUSPENDIDO temporalmente", chan);
+             else        
+          	privmsg(s_CregServ, u->nick, "El canal 12%s está 12REGISTRADO", chan);
+        } else {
+             privmsg(s_CregServ, u->nick, "El canal 12%s está actualmente en estado 12DESCONOCIDO", chan);
+	}
     } else if (cr->estado & CR_EXPIRADO) {
         privmsg(s_CregServ, u->nick, "El canal 12%s es un canal 12EXPIRADO en %s", chan, s_ChanServ);
       } else {
@@ -1001,7 +1002,7 @@ static void do_registra(User *u)
 	      		  		{ cr->geo = CR_NAV; }
 					
 					
-	#if defined(SOPORTE_MYSQL)
+	#if defined(SOPORTE_JOOMLA15)
 /*id           | int(11)      | NO   | PRI | NULL       | auto_increment |
 | seccion      | varchar(3)      | NO   |     | 0          |                |
 | canal        | varchar(150) | NO   | MUL |            |                |
@@ -1123,7 +1124,7 @@ static void do_reg(User *u)
 	         else if (stricmp(tipo, "REP") == 0)
 	      		  { cr->tipo = CR_REP; }
 			   					    
-	#if defined(SOPORTE_MYSQL)
+	#if defined(SOPORTE_JOOMLA15)
 /*id           | int(11)      | NO   | PRI | NULL       | auto_increment |
 | seccion (*)  | varchar(3)   | NO   |     | 0          |                |
 | canal        | varchar(150) | NO   | MUL |            |                |
@@ -1393,31 +1394,32 @@ static MemoInfo *getmemoinfo(const char *name, int *ischan)
 	    return NULL;
     }
 }
-/***********************DENEGACION DE UN CANAL*******************/
-
-static void do_deniega(User *u)
+/******************ACEPTACION DE UN CANAL Y REG EN CHAN**********/
+static void do_acepta(User *u)
 {
     char *chan = strtok(NULL, " ");
-    char *razon = strtok(NULL, "");
     CregInfo *cr;
-     NickInfo *ni;
+    NickInfo *ni;
 
-    if (!razon) {
-        privmsg(s_CregServ, u->nick, "Sintaxis: 12DENIEGA <canal> <razón>");
+    if (!chan) {
+        privmsg(s_CregServ, u->nick, "Sintaxis: 12ACEPTA <canal>");
     } else if (!(cr = cr_findcreg(chan))) {
         privmsg(s_CregServ, u->nick, "El canal 12%s no registrado en CReG", chan);
+    } else if (!(ni = findnick(cr->founder))) {
+        privmsg(s_CregServ, u->nick, "El fundador del canal 12%s no tiene el nick registrado", chan);
     } else if (!(cr->estado & CR_ACEPTADO)) {                                           
-        privmsg(s_CregServ, u->nick, "El canal 12%s no está pendiente de aprobación", chan); 
+        privmsg(s_CregServ, u->nick, "El canal 12%s no está pendiente de aprobacion", chan); 
+    /*} else if (!is_chanop(u->nick, chan)) {                                           
+        privmsg(s_CregServ, u->nick, "Debes estar en el canal 12%s y tener OP para aceptarlo", chan);
+    */} else if (!registra_con_creg(u, ni, cr->name, cr->founderpass, cr->desc)) {
+        privmsg(s_CregServ, u->nick, "El registro del canal 12%s en %s ha fallado", chan, s_ChanServ); 
     } else {
-        cr->motivo = sstrdup(razon);
+        cr=cr_findcreg(chan);
         cr->time_motivo = time(NULL);
         cr->nickoper = sstrdup(u->nick);
         cr->estado = 0;
-        cr->estado |= CR_RECHAZADO;
-        privmsg(s_CregServ, u->nick, "Al canal 12%s se le ha denegado el registro", chan);
-        canalopers(s_CregServ, "4%s ha denegado el registro de 12%s", u->nick, chan);
-	send_cmd(s_CregServ,"TOPIC %s :Este canal ha sido 5RECHAZADO en su Registro(12%s)", chan,razon);
-#if defined(SOPORTE_MYSQL)
+        cr->estado |= CR_REGISTRADO;
+#if defined(SOPORTE_JOOMLA15)
  MYSQL *conn;
 char actualiza[BUFSIZE];
  conn = mysql_init(NULL);
@@ -1428,15 +1430,119 @@ char actualiza[BUFSIZE];
        canaladmins(s_CregServ,"%s\n", mysql_error(conn));
          return;
    }
-snprintf(actualiza, sizeof(actualiza), "update jos_chans set status ='RECHAZADO' where canal ='%s';",chan);
+snprintf(actualiza, sizeof(actualiza), "update jos_chans set status ='Registrado' where canal ='%s';",chan);
 
 if (mysql_query(conn,actualiza)) 
 canaladmins(s_CregServ, "%s\n", mysql_error(conn));
  mysql_close(conn);
 
 #endif
+         
+ 
+        canalopers(s_CregServ, "4%s ha aceptado el canal 12%s", u->nick, chan);
+        privmsg(s_CregServ, u->nick, "12%s ha sido aceptado en %s", chan, s_ChanServ); 
+	send_cmd(s_CregServ,"TOPIC %s :Este canal ha sido 12ACEPTADO en su Registro", chan);
 
-	/*soporte envio de memos a los candidatos a founders de los canales solicitados que han sido denegados*/
+       	/*soporte envio de memos a los founders de los nuevos canales registrados que han sido aceptados*/
+          
+       MemoInfo *mi;
+       Memo *m;
+	int ischan;
+        /*if (!(mi = getmemoinfo(cr->founder, &ischan))) 
+	notice_lang(s_MemoServ, u,
+		ischan ? CHAN_X_NOT_REGISTERED : NICK_X_NOT_REGISTERED, cr->founder);*/
+        mi = getmemoinfo(cr->founder, &ischan);
+        time_t now = time(NULL);
+        u->lastmemosend = now;
+	char *source =  u->nick;
+        mi->memocount++;
+        mi->memos = srealloc(mi->memos, sizeof(Memo) * mi->memocount);
+	m = &mi->memos[mi->memocount-1];
+	strscpy(m->sender, source, NICKMAX);
+	if (mi->memocount > 1) {
+	    m->number = m[-1].number + 1;
+	    if (m->number < 1) {
+		int i;
+		for (i = 0; i < mi->memocount; i++)
+		    mi->memos[i].number = i+1;
+	    }
+	} else {
+	    m->number = 1;
+	}
+	m->time = time(NULL);
+	char text[BUFSIZE];
+    	snprintf(text, sizeof(text), "Nos Complace comunicarle, que la admnistración de canales de la red, despues de haber revisado su solicitud,ha resuelto darle por 3ACEPTADO su petición de registro, de su nuevo canal 2%#s .No dude si lo considera necesario, solicitar soporte en el canal 4#%s .Un Saludo", chan,CanalAyuda);
+	m->text =sstrdup(text);
+	m->flags = MF_UNREAD;
+  
+
+	    if (ni->flags & NI_MEMO_RECEIVE) {
+		if (MSNotifyAll) {
+		    for (u = firstuser(); u; u = nextuser()) {
+			if (u->real_ni == ni) {
+			    notice_lang(s_MemoServ, u, MEMO_NEW_MEMO_ARRIVED,
+					source, s_MemoServ, m->number);
+			}
+		    }
+		
+		} /* if (MSNotifyAll) */
+	    } /* if (flags & MEMO_RECEIVE) */
+    }
+}
+
+
+/******************ACEPTACION DE UN CANAL Y REG EN CHAN**********/
+static void do_deniega(User *u)
+{
+    char *chan = strtok(NULL, " ");
+    char *razon = strtok(NULL, "");
+    CregInfo *cr;
+    NickInfo *ni;
+     if ( (!chan) || (!razon)) {
+	
+       privmsg(s_CregServ, u->nick, " Sintáxis: 12DENIEGA <canal> <razón>");
+    	return;
+    
+    } else if (!(cr = cr_findcreg(chan))) {
+        privmsg(s_CregServ, u->nick, "El canal 12%s no registrado en CReG", chan);
+    } else if (!(ni = findnick(cr->founder))) {
+        privmsg(s_CregServ, u->nick, "El fundador del canal 12%s no tiene el nick registrado", chan);
+    } else if (!(cr->estado & CR_ACEPTADO)) {                                           
+        privmsg(s_CregServ, u->nick, "El canal 12%s no está pendiente de aprobación", chan); 
+    /*} else if (!is_chanop(u->nick, chan)) {                                           
+        privmsg(s_CregServ, u->nick, "Debes estar en el canal 12%s y tener OP para aceptarlo", chan);
+    */
+    } else {
+        cr=cr_findcreg(chan);
+        cr->time_motivo = time(NULL);
+        cr->nickoper = sstrdup(u->nick);
+        cr->estado = 0;
+        cr->estado |= CR_RECHAZADO;
+#if defined(SOPORTE_JOOMLA15)
+ MYSQL *conn;
+char actualiza[BUFSIZE];
+ conn = mysql_init(NULL);
+ char buf[BUFSIZE];
+   /* Connect to database */
+   if (!mysql_real_connect(conn, MYSQL_SERVER,
+         MYSQL_USER,MYSQL_PASS,MYSQL_DATABASE, 0, NULL, 0)) {
+       canaladmins(s_CregServ,"%s\n", mysql_error(conn));
+         return;
+   }
+snprintf(actualiza, sizeof(actualiza), "update jos_chans set status ='Denegado' where canal ='%s';",chan);
+
+if (mysql_query(conn,actualiza)) 
+canaladmins(s_CregServ, "%s\n", mysql_error(conn));
+ mysql_close(conn);
+
+#endif
+         
+ 
+        canalopers(s_CregServ, "4%s ha denegado el canal 12%s", u->nick, chan);
+        privmsg(s_CregServ, u->nick, "12%s ha sido denegado en %s", chan, s_ChanServ); 
+	send_cmd(s_CregServ,"TOPIC %s :Este canal ha sido 5RECHAZADO en su Registro ( 12%s )", chan,razon);
+
+       	/*soporte envio de memos a los founders de los nuevos canales registrados que han sido aceptados*/
           
        MemoInfo *mi;
        Memo *m;
@@ -1466,6 +1572,7 @@ canaladmins(s_CregServ, "%s\n", mysql_error(conn));
 	char text[BUFSIZE];
     	snprintf(text, sizeof(text), "Lamentamos comunicarle,que la admnistración de canales de la red, despues de haber revisado su solicitud,ha resuelto darle por 4DENEGADO su petición de registro,del canal 2%#s .Motivo 5%s.Un Saludo", chan,razon);
 	m->text =sstrdup(text);
+	m->text =sstrdup(text);
 	m->flags = MF_UNREAD;
   
 
@@ -1480,8 +1587,12 @@ canaladmins(s_CregServ, "%s\n", mysql_error(conn));
 		
 		} /* if (MSNotifyAll) */
 	    } /* if (flags & MEMO_RECEIVE) */
-    } 
-}                                                                        
+    }
+}
+
+
+
+
 /******************MARCADO DE UN CANAL *********/
 static void do_marcar(User *u)
 {
@@ -1489,9 +1600,9 @@ static void do_marcar(User *u)
     char *razon = strtok(NULL, "");
     CregInfo *cr;
      NickInfo *ni;
-
-    if (!razon) {
-        privmsg(s_CregServ, u->nick, "Sintaxis: 12MARCAR <canal> 2 <motivo>");
+    if ( (!chan) || (!razon)) {
+      privmsg(s_CregServ, u->nick, "Sintaxis: 12MARCAR <canal> 2 <motivo>");
+    	return;
     } else if (!(cr = cr_findcreg(chan))) {
         privmsg(s_CregServ, u->nick, "El canal 12%s no está registrado en CReG", chan);
     } else if ((cr->estado & CR_PROCESO_REG))  {
@@ -1578,7 +1689,7 @@ static void do_suspend(User *u)
         cr->estado |= CR_SUSPENDIDO;
         privmsg(s_CregServ, u->nick, "Al canal 12%s se le ha SUSPENDIDO", chan);
         canaladmins(s_CregServ, "4%s ha SUSPENDIDO el Canal  12%s", u->nick, chan);
-#if defined(SOPORTE_MYSQL)
+#if defined(SOPORTE_JOOMLA15)
  MYSQL *conn;
 char actualiza[BUFSIZE];
  conn = mysql_init(NULL);
@@ -1627,7 +1738,7 @@ static void do_unsuspend(User *u)
         privmsg(s_CregServ, u->nick, "Al canal 12%s se le ha REACTIVADO", chan);
         canaladmins(s_CregServ, "4%s ha REACTIVADO el Canal  12%s", u->nick, chan);
 	
- #if defined(SOPORTE_MYSQL)
+ #if defined(SOPORTE_JOOMLA15)
  MYSQL *conn;
 char actualiza[BUFSIZE];
  conn = mysql_init(NULL);
@@ -1650,103 +1761,6 @@ canaladmins(s_CregServ, "%s\n", mysql_error(conn));
 
 
 
-/******************ACEPTACION DE UN CANAL Y REG EN CHAN**********/
-static void do_acepta(User *u)
-{
-    char *chan = strtok(NULL, " ");
-    CregInfo *cr;
-    NickInfo *ni;
-
-    if (!chan) {
-        privmsg(s_CregServ, u->nick, "Sintaxis: 12ACEPTA <canal>");
-    } else if (!(cr = cr_findcreg(chan))) {
-        privmsg(s_CregServ, u->nick, "El canal 12%s no registrado en CReG", chan);
-    } else if (!(ni = findnick(cr->founder))) {
-        privmsg(s_CregServ, u->nick, "El fundador del canal 12%s no tiene el nick registrado", chan);
-    } else if (!(cr->estado & CR_ACEPTADO)) {                                           
-        privmsg(s_CregServ, u->nick, "El canal 12%s no está pendiente de aprobacion", chan); 
-    /*} else if (!is_chanop(u->nick, chan)) {                                           
-        privmsg(s_CregServ, u->nick, "Debes estar en el canal 12%s y tener OP para aceptarlo", chan);
-    */} else if (!registra_con_creg(u, ni, cr->name, cr->founderpass, cr->desc)) {
-        privmsg(s_CregServ, u->nick, "El registro del canal 12%s en %s ha fallado", chan, s_ChanServ); 
-    } else {
-        cr=cr_findcreg(chan);
-        cr->time_motivo = time(NULL);
-        cr->nickoper = sstrdup(u->nick);
-        cr->estado = 0;
-        cr->estado |= CR_REGISTRADO;
-#if defined(SOPORTE_MYSQL)
- MYSQL *conn;
-char actualiza[BUFSIZE];
- conn = mysql_init(NULL);
- char buf[BUFSIZE];
-   /* Connect to database */
-   if (!mysql_real_connect(conn, MYSQL_SERVER,
-         MYSQL_USER,MYSQL_PASS,MYSQL_DATABASE, 0, NULL, 0)) {
-       canaladmins(s_CregServ,"%s\n", mysql_error(conn));
-         return;
-   }
-snprintf(actualiza, sizeof(actualiza), "update jos_chans set status ='Registrado' where canal ='%s';",chan);
-
-if (mysql_query(conn,actualiza)) 
-canaladmins(s_CregServ, "%s\n", mysql_error(conn));
- mysql_close(conn);
-
-#endif
-         
- 
-        canalopers(s_CregServ, "4%s ha aceptado el canal 12%s", u->nick, chan);
-        privmsg(s_CregServ, u->nick, "12%s ha sido aceptado en %s", chan, s_ChanServ); 
-	send_cmd(s_CregServ,"TOPIC %s :Este canal ha sido 12ACEPTADO en su Registro", chan);
-
-       	/*soporte envio de memos a los founders de los nuevos canales registrados que han sido aceptados*/
-          
-       MemoInfo *mi;
-       Memo *m;
-	int ischan;
-        /*if (!(mi = getmemoinfo(cr->founder, &ischan))) 
-	notice_lang(s_MemoServ, u,
-		ischan ? CHAN_X_NOT_REGISTERED : NICK_X_NOT_REGISTERED, cr->founder);*/
-        mi = getmemoinfo(cr->founder, &ischan);
-        time_t now = time(NULL);
-        u->lastmemosend = now;
-	char *source =  u->nick;
-        mi->memocount++;
-        mi->memos = srealloc(mi->memos, sizeof(Memo) * mi->memocount);
-	m = &mi->memos[mi->memocount-1];
-	strscpy(m->sender, source, NICKMAX);
-	if (mi->memocount > 1) {
-	    m->number = m[-1].number + 1;
-	    if (m->number < 1) {
-		int i;
-		for (i = 0; i < mi->memocount; i++)
-		    mi->memos[i].number = i+1;
-	    }
-	} else {
-	    m->number = 1;
-	}
-	m->time = time(NULL);
-	char text[BUFSIZE];
-    	snprintf(text, sizeof(text), "Nos Complace comunicarle, que la admnistración de canales de la red, despues de haber revisado su solicitud,ha resuelto darle por 3ACEPTADO su petición de registro, de su nuevo canal 2%#s .No dude si lo considera necesario, solicitar soporte en el canal 4#%s .Un Saludo", chan,CanalAyuda);
-	m->text =sstrdup(text);
-	m->flags = MF_UNREAD;
-  
-
-	    if (ni->flags & NI_MEMO_RECEIVE) {
-		if (MSNotifyAll) {
-		    for (u = firstuser(); u; u = nextuser()) {
-			if (u->real_ni == ni) {
-			    notice_lang(s_MemoServ, u, MEMO_NEW_MEMO_ARRIVED,
-					source, s_MemoServ, m->number);
-			}
-		    }
-		
-		} /* if (MSNotifyAll) */
-	    } /* if (flags & MEMO_RECEIVE) */
-    }
-}
-
-
 
 static void do_drop(User *u)
 {
@@ -1766,7 +1780,7 @@ static void do_drop(User *u)
         delcreg(cr);    
         privmsg(s_CregServ, u->nick, "El canal 12%s ha sido dropado de CReG", chan); 
         canalopers(s_CregServ, "4%s ha dropado el canal 12%s", u->nick, chan);
-	#if defined(SOPORTE_MYSQL)
+	#if defined(SOPORTE_JOOMLA15)
 MYSQL *conn;
 char modifica[BUFSIZE];
  conn = mysql_init(NULL);
@@ -1819,7 +1833,7 @@ static void do_fuerza(User *u)
 	canalopers(s_CregServ, "4%s ha forzado la aceptación del canal 12%s", u->nick, chan);
         privmsg(s_CregServ, u->nick, "12%s ha sido registrado en %s", chan, s_ChanServ);
 
-#if defined(SOPORTE_MYSQL)
+#if defined(SOPORTE_JOOMLA15)
  MYSQL *conn;
 char actualiza[BUFSIZE];
  conn = mysql_init(NULL);

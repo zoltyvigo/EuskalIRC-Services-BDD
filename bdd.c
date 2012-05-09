@@ -11,7 +11,7 @@
  * (las rutinas de TEA)
  */
 #define NUMNICKLOG 6
-#define NICKLEN 15
+#define NICKLEN 30
 #define NUMNICKBASE 64          /* (2 << NUMNICKLOG) */
 #define NUMNICKMASK 63          /* (NUMNICKBASE-1) */
 #include "services.h"
@@ -145,29 +145,27 @@ void do_write_bdd(char *entrada, int tabla, const char *valor, ...)
 {
     
     unsigned int v[2], k[2], x[2];
-    int conts = (NICKLEN + 8) / 8;
-    char tmpnick[8 * ((NICKLEN + 8) / 8) + 1];
+    
+    char *nick = entrada;
+    int longitud_nick = strlen(nick);
+    /* Para nicks <16 uso cont 2 para el resto lo calculo */
+    int cont=(longitud_nick < 16) ? 2 : ((longitud_nick + 8) / 8);
+    char tmpnick[8 * cont + 1];
     char tmppass[12 + 1];
-    unsigned int *ps = (unsigned int *)tmpnick; /* int == 32 bits */
+    unsigned int *p = (unsigned int *)tmpnick; /* int == 32 bits */
 
-    char nicks[NICKLEN + 1];    /* Nick normalizado */
     char clave[12 + 1];                /* Clave encriptada */
-    int ir = 0;
+    int i = 0;
 
-
-
-
-    strcpy(nicks, entrada);
-    nicks[NICKLEN] = '\0';
-
-    while (nicks[ir] != 0)
+    /* Normalizar nick */
+    while (nick[i] != 0)
     {
-       nicks[ir] = stoLower(nicks[ir]);
-       ir++;
+       nick[i] = toLower((int) nick[i]);
+       i++;
     }
 
     memset(tmpnick, 0, sizeof(tmpnick));
-    strncpy(tmpnick, nicks ,sizeof(tmpnick) - 1);
+    strncpy(tmpnick, nick ,sizeof(tmpnick) - 1);
 
     memset(tmppass, 0, sizeof(tmppass));
     strncpy(tmppass, valor, sizeof(tmppass) - 1);
@@ -181,75 +179,54 @@ void do_write_bdd(char *entrada, int tabla, const char *valor, ...)
     tmppass[6] = '\0';
     k[0] = base64toint(tmppass);
 
-    memset(tmpnick, 0, sizeof(tmpnick));
-    strncpy(tmpnick, nicks ,sizeof(tmpnick) - 1);
-
-    memset(tmppass, 0, sizeof(tmppass));
-    strncpy(tmppass, valor, sizeof(tmppass) - 1);
-
-    /* relleno   ->   123456789012 */
-    strncat(tmppass, "AAAAAAAAAAAA", sizeof(tmppass) - strlen(tmppass) -1);
-
-    x[0] = x[1] = 0;
-
-    k[1] = base64toint(tmppass + 6);
-    tmppass[6] = '\0';
-    k[0] = base64toint(tmppass);
-
-    while(conts--)
+    while(cont--)
     {
-      v[0] = ntohl(*ps++);      /* 32 bits */
-      v[1] = ntohl(*ps++);      /* 32 bits */
+      v[0] = ntohl(*p++);      /* 32 bits */
+      v[1] = ntohl(*p++);      /* 32 bits */
       tea(v, k, x);
     }
 
     inttobase64(clave, x[0], 6);
     inttobase64(clave + 6, x[1], 6);
-
-
-
+    
 	 if (tabla == 1) {
-		send_cmd(NULL, "DB * %d n %s :%s", tabla_n, nicks, clave);
-/*		tab[0] = 'n';
-		reg = tabla_n;
-		ent = nicks;
-		val = clave; */
+		send_cmd(NULL, "DB * %d n %s :%s", tabla_n, nick, clave);
 	 	tabla_n++;
 	 } else if (tabla == 15) {
-                send_cmd(NULL, "DB * %d n %s :", tabla_n, nicks);
+                send_cmd(NULL, "DB * %d n %s :", tabla_n, nick);
 	 	tabla_n++;
 	 } else if (tabla == 16) {
-	 	send_cmd(NULL, "DB * %d n %s :%s+", tabla_n, nicks, clave);
+	 	send_cmd(NULL, "DB * %d n %s :%s+", tabla_n, nick, clave);
 	 	tabla_n++;
 	 } else if (tabla == 17) {
-	 	send_cmd(NULL, "DB * %d n %s :AAAAAAAAA", tabla_n, nicks);
+	 	send_cmd(NULL, "DB * %d n %s :AAAAAAAAA", tabla_n, nick);
 		tabla_n++;
 	 } else if (tabla == 2) {
-	 	send_cmd(NULL, "DB * %d v %s :%s", tabla_v, nicks, valor);
+	 	send_cmd(NULL, "DB * %d v %s :%s", tabla_v, nick, valor);
 		tabla_v++;
 	 } else if (tabla == 22) {
-		send_cmd(NULL, "DB * %d v %s :%s%s.%s", tabla_v, nicks, OperColor,nicks, OperHost); 
+		send_cmd(NULL, "DB * %d v %s :%s%s.%s", tabla_v, nick, OperColor,nick, OperHost); 
 	        tabla_v++;
 	 } else if (tabla == 23){
-	 	send_cmd(NULL, "DB * %d v %s :%s%s.%s", tabla_v, nicks,AdminColor, nicks, AdminHost);
+	 	send_cmd(NULL, "DB * %d v %s :%s%s.%s", tabla_v, nick,AdminColor, nick, AdminHost);
 	 	tabla_v++;
 	 } else if (tabla == 24){
-	 	send_cmd(NULL, "DB * %d v %s :%s%s.%s", tabla_v, nicks,DevelColor, nicks, DevelHost);
+	 	send_cmd(NULL, "DB * %d v %s :%s%s.%s", tabla_v, nick,DevelColor, nick, DevelHost);
 		tabla_v++;
 	  } else if (tabla == 25){
-	 	send_cmd(NULL, "DB * %d v %s :%s%s.%s", tabla_v, nicks,PatrocinaColor, nicks, PatrocinaHost);
+	 	send_cmd(NULL, "DB * %d v %s :%s%s.%s", tabla_v, nick,PatrocinaColor, nick, PatrocinaHost);
 	 	tabla_v++;
 	  } else if (tabla == 26){
-	 	send_cmd(NULL, "DB * %d v %s :%s%s.%s", tabla_v, nicks, CoAdminColor,nicks, CoAdminHost);
+	 	send_cmd(NULL, "DB * %d v %s :%s%s.%s", tabla_v, nick, CoAdminColor,nick, CoAdminHost);
 	 	tabla_v++;
 	 } else if (tabla == 27){
-	 	send_cmd(NULL, "DB * %d v %s :%s%s.%s", tabla_v, nicks, RootColor,nicks, RootHost);
+	 	send_cmd(NULL, "DB * %d v %s :%s%s.%s", tabla_v, nick, RootColor,nick, RootHost);
 	 	tabla_v++;
 	 } else if (tabla == 3) {
-	 	send_cmd(NULL, "DB * %d o %s :%s", tabla_o, nicks, valor);
+	 	send_cmd(NULL, "DB * %d o %s :%s", tabla_o, nick, valor);
 		tabla_o++;
 	 } else  if (tabla == 4) {
-	 	send_cmd(NULL, "DB * %d w %s :%s", tabla_w, nicks, valor);
+	 	send_cmd(NULL, "DB * %d w %s :%s", tabla_w, nick, valor);
 		tabla_w++;
 	 } else  if (tabla == 5) {
 	 	send_cmd(NULL, "DB * %d i %s :%s", tabla_i, entrada, valor);

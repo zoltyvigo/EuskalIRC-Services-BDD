@@ -9,7 +9,7 @@
 #define BUILD	"1"
 
 const char version_branchstatus[] = "ALPHA-RELEASE";
-const char version_number[] = "0.6";
+const char version_number[] = "0.62";
 const char version_upworld[] = "";
 const char version_build[] =
 	"build #" BUILD ", compilado " __DATE__ " " __TIME__;

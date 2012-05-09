@@ -39,6 +39,8 @@ E int read_int16(uint16 *ret, dbFILE *f);
 E int write_int16(uint16 val, dbFILE *f);
 E int read_int32(uint32 *ret, dbFILE *f);
 E int write_int32(uint32 val, dbFILE *f);
+E int read_int64(uint64 *ret, dbFILE *f);
+E int write_int64(uint64 val, dbFILE *f);
 E int read_ptr(void **ret, dbFILE *f);
 E int write_ptr(const void *ptr, dbFILE *f);
 E int read_string(char **ret, dbFILE *f);

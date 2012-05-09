@@ -118,6 +118,8 @@ void sighandler(int signum)
 		          break;
 		case -22: snprintf(buf, sizeof(buf), "expiring channels");
 		          break;
+	        case -24: snprintf(buf, sizeof(buf), "saving %s", XDBName);
+		          break;
 		case -25: snprintf(buf, sizeof(buf), "expiring autokills");
 		          break;
 		default : snprintf(buf, sizeof(buf), "waiting=%d", waiting);
@@ -210,7 +212,7 @@ int main(int ac, char **av, char **envp)
 		log("debug: Running expire routines");
 //            canalopers(ServerName, "Ejecutando rutinas de expiracion");
 	    if (!skeleton) {
-		#if defined(SOPORTE_MYSQL)
+		#if defined(SOPORTE_JOOMLA15)
 		waiting = -20;
 	    mirar_tablas();
 	    #endif
@@ -266,6 +268,8 @@ int main(int ac, char **av, char **envp)
 	  save_anick();
 	  waiting = -23;
 	  save_achanakick();
+	  waiting = -24;
+          save_x_dbase();
              
 	    if (save_data < 0)
 		break;	/* out of main loop */

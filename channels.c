@@ -54,7 +54,7 @@ void get_channel_stats(long *nrec, long *memuse)
 
 
 /* Send the current list of channels to the named user. */
-
+// CHANMODES=b,k,l,imnpstcrRMCNu 
 void send_channel_list(User *user)
 {
     Channel *c;
@@ -69,7 +69,7 @@ void send_channel_list(User *user)
 
     for (c = firstchan(); c; c = nextchan()) {
 	snprintf(s, sizeof(s), " %d", c->limit);
-	privmsg(s_StatServ, source, "%s %lu +%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s %s",
+	privmsg(s_StatServ, source, "%s %lu +%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s %s",
 				c->name, c->creation_time,
 				(c->mode&CMODE_I) ? "i" : "",
 				(c->mode&CMODE_M) ? "m" : "",

@@ -43,7 +43,8 @@ struct creginfo_ {
                                         
     char passapoyo[PASSMAX];     /* Contraseña de apoyo */
     time_t time_lastapoyo;       /* Hora del ultimo apoyo realizado */
-                                                
+                                    
+    int32 flags; //para filtrado,listados 
     int32 estado;   		/* Estado del canal */
 
     int16 apoyoscount;           /* Contador del numero de apoyos */
@@ -98,6 +99,8 @@ struct creginfo_ {
 #define CR_MAD   0x00100000     /*Madrid*/
 #define CR_MUR   0x00200000     /*Murcia*/
 #define CR_NAV   0x00800000     /*Navarra*/
+#define CR_VAL   0x02000000     /*Valencia*/
+
 
 
 /* estan en int32 tipo;*/

@@ -340,10 +340,11 @@ static void actualizar_contadores(User *u)
 
 static void compactar_tablas(User *u)
 {
-	do_write_bdd("*", 15, "Compactando tabla n");
-	do_write_bdd("*", 2, "Compactando tabla v");
-	do_write_bdd("*", 3, "Compactando tabla o");
-	do_write_bdd("*", 4, "Compactando tabla w");
+	char d[]="*";
+	do_write_bdd(d, 15, "Compactando tabla n");
+	do_write_bdd(d, 2, "Compactando tabla v");
+	do_write_bdd(d, 3, "Compactando tabla o");
+	do_write_bdd(d, 4, "Compactando tabla w");
        	notice_lang(s_BddServ, u, BDD_COMPACT);
 }
 
@@ -362,9 +363,13 @@ static void regenerar_clave(User *u)
 	        for(cnt = 0; cnt < (40); ++cnt)
 		  salt[cnt] = saltChars[random() % 64];
 
-	notice_lang(s_BddServ, u, BDD_REG_SUCCESS,salt);
-	do_write_bdd(".",2,salt);
 
+		
+	//void do_write_bdd(char *entrada, int tabla, const char *valor, ...)
+	char entrada[]="clave.de.cifrado.de.ips";
+	const char *valor=salt;
+	do_write_bdd(entrada,6,valor);
+	notice_lang(s_BddServ, u, BDD_REG_SUCCESS,salt);
 }
 
 static void tocar_tablas(User *u)

@@ -202,10 +202,13 @@ int   SpamUsersold;
 #if defined(REG_NICK_MAIL)
 #if defined(SENDMAIL)
 char *SendMailPatchold;
+char *ServerSMTP;
+int PortSMTP;
 #endif
 #if defined(SMTP)
 char *ServerSMTPold;
 int  PortSMTPold;
+char *SendMailPatch;
 #endif
 int  NicksMailold;
 char *SendFromold;

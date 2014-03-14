@@ -789,6 +789,8 @@ static void do_estado(User *u)
         privmsg(s_CregServ, u->nick, "El canal 12%s está en la Sección Geográfica de Murcia", chan);
 	} else if (cr->geo & CR_NAV) {
     	 privmsg(s_CregServ, u->nick, "El canal 12%s está en la Sección Geográfica de Navarra", chan);
+    } else if (cr->geo & CR_VAL) {
+    	 privmsg(s_CregServ, u->nick, "El canal 12%s está en la Sección Geográfica de Valencia", chan);
 	}
 
        
@@ -912,7 +914,19 @@ static void do_registra(User *u)
         }
     } else if ((cr2 = cr_findcreg(chan))) {
         privmsg(s_CregServ, u->nick, "El canal ya existe en %s. Teclee \00312/msg %s ESTADO %s\003 para ver su estado.", s_CregServ, s_CregServ, chan);     
-    } else if ((stricmp(seccion, "SOC") != 0) &&  (stricmp(seccion, "INF") != 0) &&  (stricmp(seccion, "CIE") != 0) &&  (stricmp(seccion, "AYU") != 0) && (stricmp(seccion, "ADU") != 0) &&  (stricmp(seccion, "PRO") != 0) &&  (stricmp(seccion, "CUH") != 0) &&  (stricmp(seccion, "DEP") != 0) &&  (stricmp(seccion, "LCT") != 0) &&  (stricmp(seccion, "MUS") != 0) &&  (stricmp(seccion, "OCI") != 0) &&  (stricmp(seccion, "PAI") != 0) &&  (stricmp(seccion, "PRF") != 0)  &&  (stricmp(seccion, "AMO") != 0) &&  (stricmp(seccion, "SEX") != 0) &&  (stricmp(seccion, "RAD") != 0) &&  (stricmp(seccion, "JUE") != 0) &&  (stricmp(seccion, "AND") != 0) &&  (stricmp(seccion, "ARA") != 0) &&  (stricmp(seccion, "AST") != 0) &&  (stricmp(seccion, "BAL") != 0) &&  (stricmp(seccion, "ICA") != 0)&&  (stricmp(seccion, "CAN") != 0) &&  (stricmp(seccion, "CAT") != 0) &&  (stricmp(seccion, "CAM") != 0) &&  (stricmp(seccion, "CAL") != 0) &&  (stricmp(seccion, "CEM") != 0) &&  (stricmp(seccion, "EUS") != 0) &&  (stricmp(seccion, "EXT") != 0) &&  (stricmp(seccion, "GAE") != 0) &&  (stricmp(seccion, "LRI") != 0) &&  (stricmp(seccion, "MAD") != 0) &&  (stricmp(seccion, "MUR") != 0) &&  (stricmp(seccion, "NAV") != 0) && (stricmp(seccion, "JUE") != 0)) {
+    } else if ((stricmp(seccion, "SOC") != 0) &&  (stricmp(seccion, "INF") != 0) &&  (stricmp(seccion, "CIE") != 0) 
+    &&  (stricmp(seccion, "AYU") != 0) && (stricmp(seccion, "ADU") != 0) &&  (stricmp(seccion, "PRO") != 0) 
+    &&  (stricmp(seccion, "CUH") != 0) &&  (stricmp(seccion, "DEP") != 0) &&  (stricmp(seccion, "LCT") != 0)
+    &&  (stricmp(seccion, "MUS") != 0) &&  (stricmp(seccion, "OCI") != 0) &&  (stricmp(seccion, "PAI") != 0) 
+    &&  (stricmp(seccion, "PRF") != 0) &&  (stricmp(seccion, "AMO") != 0) &&  (stricmp(seccion, "SEX") != 0) 
+    &&  (stricmp(seccion, "RAD") != 0) &&  (stricmp(seccion, "JUE") != 0) 
+    &&  (stricmp(seccion, "AND") != 0) 
+    &&  (stricmp(seccion, "ARA") != 0) &&  (stricmp(seccion, "AST") != 0) &&  (stricmp(seccion, "BAL") != 0)
+    &&  (stricmp(seccion, "ICA") != 0) &&  (stricmp(seccion, "CAN") != 0) &&  (stricmp(seccion, "CAT") != 0) 
+    &&  (stricmp(seccion, "CAM") != 0) &&  (stricmp(seccion, "CAL") != 0) &&  (stricmp(seccion, "CEM") != 0)
+    &&  (stricmp(seccion, "EUS") != 0) &&  (stricmp(seccion, "EXT") != 0) &&  (stricmp(seccion, "GAE") != 0) 
+    &&  (stricmp(seccion, "LRI") != 0) &&  (stricmp(seccion, "MAD") != 0) &&  (stricmp(seccion, "MUR") != 0) 
+    &&  (stricmp(seccion, "NAV") != 0) && (stricmp(seccion, "VAL") != 0)) {
        privmsg(s_CregServ, u->nick, "Seccion InCorrecta,teclea \00312/msg CREG seccion\003 para ver las disponibles"); 
        } /*
    else if (ni->channelmax > 0 && ni->channelcount >= ni->channelmax) {
@@ -1000,6 +1014,8 @@ static void do_registra(User *u)
 	      		  		{ cr->geo = CR_MUR; }
 					else if (stricmp(seccion, "NAV") == 0)
 	      		  		{ cr->geo = CR_NAV; }
+	      		  	else if (stricmp(seccion, "VAL") == 0)
+	      		  		{ cr->geo = CR_VAL; }
 					
 					
 	#if defined(SOPORTE_JOOMLA15)
@@ -1197,24 +1213,29 @@ static void do_list(User *u)
 	        matchflags |= CR_REGISTRADO;
 	    if (stricmp(keyword, "PENDIENTE") == 0)
 	        matchflags |= CR_ACEPTADO;
-	    if (stricmp(keyword, "DROPADO") == 0)
-	        matchflags |= CR_DROPADO;
-	    if (stricmp(keyword, "DENEGADO") == 0)
+	   if (stricmp(keyword, "DENEGADO") == 0)
 	        matchflags |= CR_RECHAZADO;
 	    if (stricmp(keyword, "MARCADO") == 0)
 	        matchflags |= CR_MARCADO;
+	     if (stricmp(keyword, "SUSPENDIDO") == 0)  
+	        matchflags |=CR_SUSPENDIDO;
 	    if (stricmp(keyword, "EXPIRADO") == 0)
 	        matchflags |= CR_EXPIRADO;
-	    if (stricmp(keyword, "COMERCIAL") == 0)
-	        matchflags |= CR_COM;
-	    if (stricmp(keyword, "OFICIAL") == 0)
-	        matchflags |= CR_OFI;
-	    if (stricmp(keyword, "REPRES") == 0)
-	        matchflags |= CR_REP;
+	 
 	}                
 	notice_lang(s_CregServ, u, CHAN_LIST_HEADER, pattern);
 	for (i = 0; i < canales; i++) {
 	    for (cr = creglists[i]; cr; cr = cr->next) {
+		if (!is_servoper & ((cr->flags & CR_PROCESO_REG)
+		                              || (cr->flags & CR_REGISTRADO)
+		                              || (cr->flags & CR_ACEPTADO)
+		                              || (cr->flags & CR_DROPADO)
+		                              || (cr->flags & CR_RECHAZADO)
+		                              || (cr->flags & CR_MARCADO)
+		                              || (cr->flags & CR_EXPIRADO)
+		                              	                              
+		                              ))
+		    continue;
 		if ((matchflags != 0) && !(cr->estado & matchflags))
 		    continue;
 		        
@@ -1238,9 +1259,14 @@ static void do_list(User *u)
 			if (cr->estado & CR_RECHAZADO) {
                             snprintf(buf, sizeof(buf), "%-20s [RECHAZADO] %s",
                                         cr->name, cr->desc);
-                        }	
-			if (cr->estado & CR_MARCADO) {
-                            snprintf(buf, sizeof(buf), "%-20s [MARCADO] %s",
+                                       
+                        }
+             if (cr->estado & CR_RECHAZADO) {
+                            snprintf(buf, sizeof(buf), "%-20s [RECHAZADO] %s",
+                                        cr->name, cr->desc);
+              }	
+			if (cr->estado & CR_SUSPENDIDO) {
+                            snprintf(buf, sizeof(buf), "%-20s [SUSPENDIDO] %s",
                                         cr->name, cr->desc);
                         }		                       
 			if (cr->estado & CR_DROPADO) {

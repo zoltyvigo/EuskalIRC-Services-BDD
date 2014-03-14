@@ -5195,7 +5195,7 @@ static void do_info(User *u)
 	if (*buf)
 	    notice_lang(s_ChanServ, u, CHAN_INFO_MODE_LOCK, buf);
 
-        if ((ci->flags & CI_NO_EXPIRE) && show_all)
+        if ((ci->flags & CI_NO_EXPIRE) /*&& show_all*/)
 	                notice_lang(s_ChanServ, u, CHAN_INFO_NO_EXPIRE);
     }
 }
@@ -5248,11 +5248,11 @@ static void do_list(User *u)
 			if (is_servoper && (ci->flags & CI_NO_EXPIRE))
 			    noexpire_char = '!';
 		        if (ci->flags & CI_VERBOTEN) {
-		            snprintf(buf, sizeof(buf), "%s-20s [PROHIBIDO]",
+		            snprintf(buf, sizeof(buf), "%-20s [PROHIBIDO] %s",
 		                        ci->name);
 		        }
                         if (ci->flags & CI_SUSPEND) {
-                            snprintf(buf, sizeof(buf), "%s-20s [SUSPENDIDO]",
+                            snprintf(buf, sizeof(buf), "%-20s [SUSPENDIDO] %s",
                                         ci->name);
                         }		                       
 			privmsg(s_ChanServ, u->nick, "  %c%s",

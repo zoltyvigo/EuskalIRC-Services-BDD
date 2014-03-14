@@ -5145,6 +5145,7 @@ CREG_HELP_GEO
 	2MAD  Madrid
 	2MUR  Murcia
 	2NAV  Navarra
+	2VAL  Valencia
 
 CREG_HELP_REGISTRA
 	Sintaxis: 12REGISTRA <Canal> <Clave> <Sección> <Descripción>

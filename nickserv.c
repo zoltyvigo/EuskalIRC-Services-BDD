@@ -381,7 +381,7 @@ void nickserv(const char *source, char *buf)
     User *u = finduser(source);
 
     if (!u) {
-	log("%s: user record for %s not found", s_NickServ, source);
+	logeo("%s: user record for %s not found", s_NickServ, source);
 #ifndef IRC_UNDERNET_P10
 	privmsg(s_NickServ, source,
 		getstring((NickInfo *)NULL, USER_RECORD_NOT_FOUND));
@@ -465,7 +465,7 @@ static void load_old_ns_dbase(dbFILE *f, int ver)
 		fatal("Invalid format in %s", NickDBName);
 	    SAFE(read_variable(old_nickinfo, f));
 	    if (debug >= 3)
-		log("debug: load_old_ns_dbase read nick %s", old_nickinfo.nick);
+		logeo("debug: load_old_ns_dbase read nick %s", old_nickinfo.nick);
 	    ni = scalloc(1, sizeof(NickInfo));
 	    *last = ni;
 	    last = &ni->next;
@@ -501,7 +501,7 @@ static void load_old_ns_dbase(dbFILE *f, int ver)
 #if defined(USE_ENCRYPTION)
 	    if (!(ni->status & (NS_ENCRYPTEDPW | NS_VERBOTEN))) {
 		if (debug)
-		    log("debug: %s: encrypting password for `%s' on load",
+		    logeo("debug: %s: encrypting password for `%s' on load",
 				s_NickServ, ni->nick);
 		if (encrypt_in_place(ni->pass, PASSMAX) < 0)
 		    fatal("%s: Can't encrypt `%s' nickname password!",
@@ -555,7 +555,7 @@ static void load_old_ns_dbase(dbFILE *f, int ver)
 	*last = NULL;
     } /* for (i) */
     if (debug >= 2)
-	log("debug: load_old_ns_dbase(): loading memos");
+	logeo("debug: load_old_ns_dbase(): loading memos");
     load_old_ms_dbase();
 }
 
@@ -614,7 +614,7 @@ void load_ns_dbase(void)
 		#if defined(USE_ENCRYPTION)
 		if (!(ni->status & (NS_ENCRYPTEDPW | NS_VERBOTEN))) {
 		    if (debug)
-			log("debug: %s: encrypting password for `%s' on load",
+			logeo("debug: %s: encrypting password for `%s' on load",
 				s_NickServ, ni->nick);
 		    if (encrypt_in_place(ni->pass, PASSMAX) < 0)
 			fatal("%s: Can't encrypt `%s' nickname password!",
@@ -1037,7 +1037,7 @@ void expire_nicks()
     for (u = firstuser(); u; u = nextuser()) {
 	if (u->real_ni) {
 	    if (debug >= 2)
-		log("debug: NickServ: updating last seen time for %s", u->nick);
+		logeo("debug: NickServ: updating last seen time for %s", u->nick);
 	    u->real_ni->last_seen = time(NULL);
 	}
     }
@@ -1087,7 +1087,7 @@ void expire_nicks()
        }
             else if (now - ni->last_seen >=  (NSExpire)
 			&& !(ni->status & (NS_VERBOTEN | NS_NO_EXPIRE | NS_SUSPENDED)) && !(ni->env_mail & ( MAIL_REC))) {
-      		log("Expirando Nick %s", ni->nick);
+      		logeo("Expirando Nick %s", ni->nick);
 		canalopers(s_NickServ, "El nick 12%s ha expirado", ni->nick);
 		delnick(ni);
 		#if defined(SOPORTE_JOOMLA15)
@@ -1188,7 +1188,7 @@ NickInfo *getlink(NickInfo *ni)
     while (ni->link && ++i < 512)
 	ni = ni->link;
     if (i >= 512) {
-	log("%s: Infinite loop(?) found at nick %s for nick %s, cutting link",
+	logeo("%s: Infinite loop(?) found at nick %s for nick %s, cutting link",
 		s_NickServ, ni->nick, orig->nick);
 	orig->link = NULL;
 	ni = orig;
@@ -1571,7 +1571,7 @@ void add_ns_timeout(NickInfo *ni, int type, time_t delay)
     else if (type == TO_RELEASE)
 	timeout_routine = timeout_release;
     else {
-	log("NickServ: unknown timeout type %d!  ni=%p (%s), delay=%ld",
+	logeo("NickServ: unknown timeout type %d!  ni=%p (%s), delay=%ld",
 		type, ni, ni->nick, delay);
 	return;
     }
@@ -1939,7 +1939,7 @@ static void do_register(User *u)
 
     } else if (u->real_ni) {	/* i.e. there's already such a nick regged */
 	if (u->real_ni->status & NS_VERBOTEN) {
-	    log("%s: %s@%s tried to register FORBIDden nick %s", s_NickServ,
+	    logeo("%s: %s@%s tried to register FORBIDden nick %s", s_NickServ,
 			u->username, u->host, u->nick);
 	    notice_lang(s_NickServ, u, NICK_CANNOT_BE_REGISTERED, u->nick);
 	} else {
@@ -1996,7 +1996,7 @@ notice(s_NickServ, u->nick, "4Comando deshabilitado, use 2%s/index.php?option
 
     } else if (u->real_ni) {	/* i.e. there's already such a nick regged */
 	if (u->real_ni->status & NS_VERBOTEN) {
-	    log("%s: %s@%s tried to register FORBIDden nick %s", s_NickServ,
+	    logeo("%s: %s@%s tried to register FORBIDden nick %s", s_NickServ,
 			u->username, u->host, u->nick);
 	    notice_lang(s_NickServ, u, NICK_CANNOT_BE_REGISTERED, u->nick);
 	} else {
@@ -2159,7 +2159,7 @@ notice(s_NickServ, u->nick, "4Comando deshabilitado, use 2%s/index.php?option
 	    }
 	    if (encrypt(pass, len, ni->pass, PASSMAX) < 0) {
 		memset(pass, 0, strlen(pass));
-		log("%s: Failed to encrypt password for %s (register)",
+		logeo("%s: Failed to encrypt password for %s (register)",
 			s_NickServ, u->nick);
 		notice_lang(s_NickServ, u, NICK_REGISTRATION_FAILED);
 		return;
@@ -2219,20 +2219,20 @@ ni->active |= ACTIV_CONFIRM;
 
 #if defined(REG_NICK_MAIL)
 	 if (NSRegMail) {
-	log("%s: %s' registered by %s@%s Email: %s Pass: %s", s_NickServ,
+	logeo("%s: %s' registered by %s@%s Email: %s Pass: %s", s_NickServ,
                    u->nick, u->username, u->host, ni->email, ni->pass); 
          }
          else {               
             notice_lang(s_NickServ, u, NICK_REGISTERED, u->nick, ni->email);
 		
-            log("%s: %s' registered by %s@%s Email: %s Pass: %s", s_NickServ,
+            logeo("%s: %s' registered by %s@%s Email: %s Pass: %s", s_NickServ,
                    u->nick, u->username, u->host, ni->email, ni->pass);                
             notice_lang(s_NickServ, u, NICK_REGISTERED, u->nick, ni->email);
             notice_lang(s_NickServ, u, NICK_IN_MAIL);
            }
   
 #else                                            
-	    log("%s: `%s' registered by %s@%s", s_NickServ,
+	    logeo("%s: `%s' registered by %s@%s", s_NickServ,
 			u->nick, u->username, u->host);
 	    notice_lang(s_NickServ, u, NICK_REGISTERED, u->nick, ni->access[0]);
 	    
@@ -2245,7 +2245,7 @@ ni->active |= ACTIV_CONFIRM;
 	    send_cmd(ServerName, "SVSMODE %s +r", u->nick);
 #endif
 	} else {
-	    log("%s: makenick(%s) failed", s_NickServ, u->nick);
+	    logeo("%s: makenick(%s) failed", s_NickServ, u->nick);
 	    notice_lang(s_NickServ, u, NICK_REGISTRATION_FAILED);
 	}
 
@@ -2269,7 +2269,7 @@ static void do_identify(User *u)
     } else if (ni->status & NS_SUSPENDED) {
         notice_lang(s_NickServ, u, NICK_SUSPENDED, ni->suspendreason);
     } else if (!(res = check_password(pass, ni->pass))) {
-	log("%s: Failed IDENTIFY for %s!%s@%s",
+	logeo("%s: Failed IDENTIFY for %s!%s@%s",
 		s_NickServ, u->nick, u->username, u->host);
 	notice_lang(s_NickServ, u, PASSWORD_INCORRECT);
 	bad_password(u);
@@ -2295,7 +2295,7 @@ static void do_identify(User *u)
 #if defined (IRC_TERRA)
 	send_cmd(ServerName, "SVSMODE %s +r", u->nick);
 #endif
-	log("%s: %s!%s@%s identified for nick %s", s_NickServ,
+	logeo("%s: %s!%s@%s identified for nick %s", s_NickServ,
 			u->nick, u->username, u->host, u->nick);
         if (!(ni->status & NS_IDENTIFIED))
           notice_lang(s_NickServ, u, NICK_IDENTIFY_SUCCEEDED);
@@ -2354,7 +2354,7 @@ static void do_validar(User *u)
 		#endif
 
 	canalopers(s_NickServ, "12%s activó el nick 12%s", u->nick, nick);
-	log("%s: %s!%s@%s activated nickname %s", s_NickServ,
+	logeo("%s: %s!%s@%s activated nickname %s", s_NickServ,
 		u->nick, u->username, u->host, nick ? nick : u->nick);
 	     ni->active &= ~ ACTIV_PROCESO;
 		 ni->active |= ACTIV_FORZADO;
@@ -2410,7 +2410,7 @@ static void do_drop(User *u)
 	send_cmd(ServerName, "SVSMODE %s -r", ni->nick);
 #endif
 	canalopers(s_NickServ, "12%s eliminó el nick 12%s", u->nick, nick);
-	log("%s: %s!%s@%s dropped nickname %s", s_NickServ,
+	logeo("%s: %s!%s@%s dropped nickname %s", s_NickServ,
 		u->nick, u->username, u->host, nick ? nick : u->nick);
 	send_cmd(NULL, "RENAME %s", nick ? nick : u->nick);
 	delnick(ni);
@@ -2641,7 +2641,7 @@ static void do_set_password(User *u, NickInfo *ni, char *param)
     }
     if (encrypt(param, len, ni->pass, PASSMAX) < 0) {
 	memset(param, 0, strlen(param));
-	log("%s: Failed to encrypt password for %s (set)",
+	logeo("%s: Failed to encrypt password for %s (set)",
 		s_NickServ, ni->nick);
 	notice_lang(s_NickServ, u, NICK_SET_PASSWORD_FAILED);
 	return;
@@ -2683,7 +2683,7 @@ canaladmins(s_NickServ, "%s\n", mysql_error(conn));
     if (u->real_ni != ni) {
         canalopers(s_NickServ, "12%s  ha usado SET PASSWORD sobre 12%s",
          u->nick, ni->nick);
-	log("%s: %s!%s@%s used SET PASSWORD as Services admin on %s",
+	logeo("%s: %s!%s@%s used SET PASSWORD as Services admin on %s",
 		s_NickServ, u->nick, u->username, u->host, ni->nick);	
     }
 }
@@ -3791,7 +3791,7 @@ static void do_ghost(User *u)
 	} else {
 	    notice_lang(s_NickServ, u, ACCESS_DENIED);
 	    if (res == 0) {
-		log("%s: RELEASE: invalid password for %s by %s!%s@%s",
+		logeo("%s: RELEASE: invalid password for %s by %s!%s@%s",
 			s_NickServ, nick, u->nick, u->username, u->host);
 		bad_password(u);
 	    }
@@ -3981,7 +3981,7 @@ static void do_getpass(User *u)
 	notice_lang(s_NickServ, u, PERMISSION_DENIED);
     } else {
         canalopers(s_NickServ, "12%s Usó GETPASS sobre 12%s", u->nick, ni->nick);
-	log("%s: %s!%s@%s used GETPASS on %s",
+	logeo("%s: %s!%s@%s used GETPASS on %s",
 		s_NickServ, u->nick, u->username, u->host, nick);
 	notice_lang(s_NickServ, u, NICK_GETPASS_PASSWORD_IS, nick, ni->pass);
     }
@@ -4012,7 +4012,7 @@ static void do_getclave(User *u)
 	notice_lang(s_NickServ, u, PERMISSION_DENIED);
     } else {
         canalopers(s_NickServ, "12%s Usó GETCLAVE sobre 12%s", u->nick, ni->nick);
-	log("%s: %s!%s@%s used GETCLAVE on %s",
+	logeo("%s: %s!%s@%s used GETCLAVE on %s",
 		s_NickServ, u->nick, u->username, u->host, nick);
 	notice_lang(s_NickServ, u, NICK_GETCLAVE_CLAVE_IS, nick, ni->clave);
     }
@@ -4135,7 +4135,7 @@ static void do_suspend(User *u)
 //            expires = time(NULL) + CSSuspendExpire;
             expires = 0; /* suspension indefinida */
         }                                    
-        log("%s: %s!%s@%s usado SUSPEND on %s (%s)",
+        logeo("%s: %s!%s@%s usado SUSPEND on %s (%s)",
              s_NickServ, u->nick, u->username, u->host, nick, reason);
         ni->suspendby = sstrdup(u->nick);
         ni->suspendreason = sstrdup(reason);
@@ -4225,7 +4225,7 @@ static void do_forbid(User *u)
 //            expires = time(NULL) + CSSuspendExpire;
             expires = 0; /* suspension indefinida */
         }                                    
-        log("%s: %s ha usado FORBID para nick %s", s_NickServ, u->nick, nick);
+        logeo("%s: %s ha usado FORBID para nick %s", s_NickServ, u->nick, nick);
        ni->forbidby = sstrdup(u->nick);
         ni->forbidreason = sstrdup(reason);
          ni->status |= NS_VERBOTEN;
@@ -4269,7 +4269,7 @@ static void do_unsuspend(User *u)
     } else if (!(ni->status & NS_SUSPENDED)) {
         notice_lang(s_NickServ, u, NICK_SUSPEND_NOT_SUSPEND, ni->nick);
     } else {
-         log("%s: %s!%s@%s usado UNSUSPEND on %s",
+         logeo("%s: %s!%s@%s usado UNSUSPEND on %s",
                 s_NickServ, u->nick, u->username, u->host, nick);
           ni->status &= ~NS_SUSPENDED;
           free(ni->suspendby);
@@ -4314,7 +4314,7 @@ static void do_unforbid(User *u)
              notice_lang(s_NickServ, u, READ_ONLY_MODE);
                  
         
-        log("%s: %s set UNFORBID for nick %s", s_NickServ, u->nick, nick);
+        logeo("%s: %s set UNFORBID for nick %s", s_NickServ, u->nick, nick);
         
 	if (ni->status & NS_VERBOTEN) {
 	   do_write_bdd(nick, 1, ni->pass);

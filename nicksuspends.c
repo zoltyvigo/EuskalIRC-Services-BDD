@@ -262,7 +262,7 @@ int expire_anicks(void)
 void add_anick(const char *elnick,const char *reason,time_t expiry)
 {
     if (nanick >= 32767) {
-	log("%s: Intento para añadir ANICKSUSPENDS a la lista llena!", s_ChanServ);
+	logeo("%s: Intento para añadir ANICKSUSPENDS a la lista llena!", s_ChanServ);
 	return;
     }
     if (nanick >= anick_size) {

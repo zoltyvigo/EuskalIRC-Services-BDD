@@ -58,13 +58,13 @@ void statserv(const char *source, char *buf)
     User *u = finduser(source);
 
     if (!u) {
-	log("%s: user record for %s not found", s_StatServ, source);
+	logeo("%s: user record for %s not found", s_StatServ, source);
 	notice(s_StatServ, source,
 		getstring((NickInfo *)NULL, USER_RECORD_NOT_FOUND));
 	return;
     }
 
-    log("%s: %s: %s", s_StatServ, source, buf);
+    logeo("%s: %s: %s", s_StatServ, source, buf);
 
     cmd = strtok(buf, " ");
     if (!cmd) {

@@ -60,13 +60,13 @@ int rename_log(User *u, const char *newname)
             canalopers(NULL, "WARNING: Could not rename logfile, a file with "
 			"the name \2%s\2 already exists!", newname);
 	}
-	log("ERROR: Could not rename logfile, a file with the name \2%s\2 "
+	logeo("ERROR: Could not rename logfile, a file with the name \2%s\2 "
 			"already exists!", newname);
 	return 0;
     }
 
     if (debug)
-	log("Renaming logfile from %s to %s ...", log_filename, newname);
+	logeo("Renaming logfile from %s to %s ...", log_filename, newname);
 
     close_log();
 
@@ -108,14 +108,14 @@ int rename_log(User *u, const char *newname)
     }
 
     if (debug && !success)
-	log("Logfile could not be renamed: %s", strerror(errno));
+	logeo("Logfile could not be renamed: %s", strerror(errno));
 
     if (success) {
-	log("Fresh logfile started. Previous logfile has been renamed to: %s",
+	logeo("Fresh logfile started. Previous logfile has been renamed to: %s",
 			 newname);
     } else if (debug) {
 	/* pointless if open_log() fails */
-	log("ERROR: Logfile could not be renamed: %s", strerror(errno));
+	logeo("ERROR: Logfile could not be renamed: %s", strerror(errno));
     }
 
     return success;
@@ -149,7 +149,7 @@ void rotate_log(User *u)
  * preserved by this routine and log_perror().
  */
 
-void log(const char *fmt, ...)
+void logeo(const char *fmt, ...)
 {
     va_list args;
     time_t t;

@@ -58,7 +58,7 @@ int enviar_correo(const char * destino, const char *subject, const char *body)
                                                                                            
     if (!(p = popen(sendmail, "w"))) {
 //        privmsg(s_NickServ, u->nick, "mail jodido");
-        log("mail jodio");
+        logeo("mail jodio");
         return 0;
     }
 
@@ -116,7 +116,7 @@ error. ***/
             break;            
             
         default:
-            log("SMTP ERROR(%d) : %s",codigo,buf);
+            logeo("SMTP ERROR(%d) : %s",codigo,buf);
             return 0;
     }            
     return 0;
@@ -136,7 +136,7 @@ int enviar_web(const char *desde, const char *body)
                                                                                            
     if (!(p = popen(cat, "w"))) {
 //        privmsg(s_NickServ, u->nick, "mail jodido");
-        log("editor jodio");
+        logeo("editor jodio");
         return 0;
     }
 fprintf(p,"<!DOCTYPE HTML PUBLIC -//W3C//DTD HTML 4.01 Transitional//EN\"><html>");

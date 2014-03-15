@@ -51,7 +51,7 @@ static User *new_user(const char *nick)
 	maxusertime = time(NULL);
 	if (LogMaxUsers)
 	    canalopers(s_StatServ, "user: Nuevo record de usuarios: %d", maxusercnt);
-	    log("user: Nuevo record de usuarios: %d", maxusercnt);
+	    logeo("user: Nuevo record de usuarios: %d", maxusercnt);
     }
     return user;
 }
@@ -96,7 +96,7 @@ void delete_user(User *user)
     Server *server = find_servername(user->server);
 
     if (debug >= 2)
-	log("debug: delete_user() called");
+	logeo("debug: delete_user() called");
     if (server)
         server->users--;	
     usercnt--;
@@ -106,7 +106,7 @@ void delete_user(User *user)
 	helpcnt--;
     cancel_user(user);
     if (debug >= 2)
-	log("debug: delete_user(): free user data");
+	logeo("debug: delete_user(): free user data");
 #if defined(IRC_UNDERNET_P10)
     free(user->numerico);
 #endif    
@@ -115,7 +115,7 @@ void delete_user(User *user)
     free(user->realname);
     free(user->server);
     if (debug >= 2)
-	log("debug: delete_user(): remove from channels");
+	logeo("debug: delete_user(): remove from channels");
     c = user->chans;
     while (c) {
 	c2 = c->next;
@@ -124,7 +124,7 @@ void delete_user(User *user)
 	c = c2;
     }
     if (debug >= 2)
-	log("debug: delete_user(): free founder data");
+	logeo("debug: delete_user(): free founder data");
     ci = user->founder_chans;
     while (ci) {
 	ci2 = ci->next;
@@ -132,7 +132,7 @@ void delete_user(User *user)
 	ci = ci2;
     }
     if (debug >= 2)
-	log("debug: delete_user(): delete from list");
+	logeo("debug: delete_user(): delete from list");
     if (user->prev)
 	user->prev->next = user->next;
     else
@@ -140,10 +140,10 @@ void delete_user(User *user)
     if (user->next)
 	user->next->prev = user->prev;
     if (debug >= 2)
-	log("debug: delete_user(): free user structure");
+	logeo("debug: delete_user(): free user structure");
     free(user);
     if (debug >= 2)
-	log("debug: delete_user() done");
+	logeo("debug: delete_user() done");
 }
 /*************************************************************************/
 void del_users_server(Server *server)
@@ -372,12 +372,12 @@ User *finduser(const char *nick)
     User *user;
 
     if (debug >= 3)
-	log("debug: finduser(%p)", nick);
+	logeo("debug: finduser(%p)", nick);
     user = userlist[HASH(nick)];
     while (user && stricmp(user->nick, nick) != 0)
 	user = user->next;
     if (debug >= 3)
-	log("debug: finduser(%s) -> %p", nick, user);
+	logeo("debug: finduser(%s) -> %p", nick, user);
 #if defined(IRC_UNDERNET_P10)
     if (user)
         return user;
@@ -398,7 +398,7 @@ User *finduserP10(const char *numerico)
     int n; 
     
     if (debug)
-        log("debug: Buscando numerico: (%s)", numerico);
+        logeo("debug: Buscando numerico: (%s)", numerico);
           
     for (n=0 ; n<1024; n++) {
         for (user = userlist[n]; user; user = user->next) {
@@ -407,7 +407,7 @@ User *finduserP10(const char *numerico)
         }
     }    
     if (debug)
-        log("debug: YaW>> Estoy frustrado, no encontre el numerico(%s) :'(",numerico);
+        logeo("debug: YaW>> Estoy frustrado, no encontre el numerico(%s) :'(",numerico);
     return NULL;
 }
 #endif
@@ -424,7 +424,7 @@ User *firstuser(void)
     while (next_index < 1024 && current == NULL)
 	current = userlist[next_index++];
     if (debug >= 3)
-	log("debug: firstuser() returning %s",
+	logeo("debug: firstuser() returning %s",
 			current ? current->nick : "NULL (end of list)");
     return current;
 }
@@ -438,7 +438,7 @@ User *nextuser(void)
 	    current = userlist[next_index++];
     }
     if (debug >= 3)
-	log("debug: nextuser() returning %s",
+	logeo("debug: nextuser() returning %s",
 			current ? current->nick : "NULL (end of list)");
     return current;
 }
@@ -674,7 +674,7 @@ for (x=0; x<=PuertoNumber; x++) {
 	user = finduser(source);
 	
 	if (!user) {
-	    log("user: NICK from nonexistent nick %s: %s", source,
+	    logeo("user: NICK from nonexistent nick %s: %s", source,
 							merge_args(ac, av));
 	    return;
 	}
@@ -742,7 +742,7 @@ snprintf(ayu, sizeof(ayu), "#%s", CanalAyuda);
    
     user = finduser(source);
     if (!user) {
-	log("user: JOIN from nonexistent user %s: %s", source,
+	logeo("user: JOIN from nonexistent user %s: %s", source,
 							merge_args(ac, av));
 	return;
     }
@@ -820,7 +820,7 @@ void do_part(const char *source, int ac, char **av)
 
     user = finduser(source);
     if (!user) {
-	log("user: PART from nonexistent user %s: %s", source,
+	logeo("user: PART from nonexistent user %s: %s", source,
 							merge_args(ac, av));
 	return;
     }
@@ -838,7 +838,7 @@ void do_part(const char *source, int ac, char **av)
 	    ;
 	if (c) {
 	    if (!c->chan) {
-		log("user: BUG parting %s: channel entry found but c->chan NULL"
+		logeo("user: BUG parting %s: channel entry found but c->chan NULL"
 			, s);
 		return;
 	    }
@@ -879,12 +879,12 @@ void do_kick(const char *source, int ac, char **av)
         user = finduser(s);
 #endif	
 	if (!user) {
-	    log("user: KICK for nonexistent user %s on %s: %s", s, av[0],
+	    logeo("user: KICK for nonexistent user %s on %s: %s", s, av[0],
 						merge_args(ac-2, av+2));
 	    continue;
 	}
 	if (debug)
-	    log("debug: kicking %s from %s", user->nick, av[0]);
+	    logeo("debug: kicking %s from %s", user->nick, av[0]);
 	for (c = user->chans; c && stricmp(av[0], c->chan->name) != 0;
 								c = c->next)
 	    ;
@@ -918,19 +918,19 @@ void do_umode(const char *source, int ac, char **av)
     int add = 1;		/* 1 if adding modes, 0 if deleting */
 
     if (stricmp(source, av[0]) != 0) {
-	log("user: MODE %s %s from different nick %s!", av[0], av[1], source);
+	logeo("user: MODE %s %s from different nick %s!", av[0], av[1], source);
 	canalopers(NULL, "%s Intenta Cambiar Modo %s de %s",
 		source, av[1], av[0]);
 	return;
     }
     user = finduser(source);
     if (!user) {
-	log("user: MODE %s for nonexistent nick %s: %s", av[1], source,
+	logeo("user: MODE %s for nonexistent nick %s: %s", av[1], source,
 							merge_args(ac, av));
 	return;
     }
     if (debug)
-	log("debug: Changing mode for %s to %s", source, av[1]);
+	logeo("debug: Changing mode for %s to %s", source, av[1]);
     s = av[1];
     while (*s) {
 	switch (*s++) {
@@ -1021,7 +1021,7 @@ void do_umode(const char *source, int ac, char **av)
                                 free(new_ni->last_realname);
                             new_ni->last_realname = sstrdup(user->realname);
                         }
-                        log("%s: %s!%s@%s AUTO-identified for nick %s", s_NickServ,
+                        logeo("%s: %s!%s@%s AUTO-identified for nick %s", s_NickServ,
                         user->nick, user->username, user->host, user->nick);
                         /* notice_lang(s_NickServ, user, NICK_IDENTIFY_X_MODE_R);*/
 			if (!notifinouts)
@@ -1089,7 +1089,7 @@ void do_quit(const char *source, int ac, char **av)
 	/* Reportedly Undernet IRC servers will sometimes send duplicate
 	 * QUIT messages for quitting users, so suppress the log warning. */
 #ifndef IRC_UNDERNET
-	log("user: QUIT from nonexistent user %s: %s", source,
+	logeo("user: QUIT from nonexistent user %s: %s", source,
 							merge_args(ac, av));
 #endif
 	return;

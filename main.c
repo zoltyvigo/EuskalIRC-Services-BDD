@@ -75,7 +75,7 @@ void sighandler(int signum)
 	if (signum == SIGHUP) {  /* SIGHUP = save databases and restart */
 	    save_data = -2;
 	    signal(SIGHUP, SIG_IGN);
-	    log("Recibido SIGHUP, reiniciando.");
+	    logeo("Recibido SIGHUP, reiniciando.");
 	    if (!quitmsg)
 		quitmsg = "Reiniciando por señal SIGHUP";
 	    longjmp(panic_jmp, 1);
@@ -84,13 +84,13 @@ void sighandler(int signum)
 	    delayed_quit = 1;
 	    signal(SIGTERM, SIG_IGN);
 	    signal(SIGHUP, SIG_IGN);
-	    log("Recibido SIGTERM, saliendo.");
+	    logeo("Recibido SIGTERM, saliendo.");
 	    quitmsg = "Cierre conexion por señal SIGTERM";
 	    longjmp(panic_jmp, 1);
 	} else if (signum == SIGINT || signum == SIGQUIT) {
 	    /* nothing -- terminate below */
 	} else if (!waiting) {
-	    log("PANIC! buffer = %s", inbuf);
+	    logeo("PANIC! buffer = %s", inbuf);
 	    /* Cut off if this would make IRC command >510 characters. */
 	    if (strlen(inbuf) > 448) {
 		inbuf[446] = '>';
@@ -125,7 +125,7 @@ void sighandler(int signum)
 		default : snprintf(buf, sizeof(buf), "waiting=%d", waiting);
 	    }
 	    canalopers(NULL, "PANIC! %s (%s)", buf, strsignal(signum));
-	    log("PANIC! %s (%s)", buf, strsignal(signum));
+	    logeo("PANIC! %s (%s)", buf, strsignal(signum));
 	}
     }
     if (signum == SIGUSR1 || !(quitmsg = malloc(BUFSIZE))) {
@@ -142,7 +142,7 @@ void sighandler(int signum)
     if (started)
 	longjmp(panic_jmp, 1);
     else {
-	log("%s", quitmsg);
+	logeo("%s", quitmsg);
 	if (isatty(2))
 	    fprintf(stderr, "%s\n", quitmsg);
 	exit(1);
@@ -205,11 +205,11 @@ int main(int ac, char **av, char **envp)
 	time_t t = time(NULL);
 
 	if (debug >= 2)
-	    log("debug: Top of main loop");
+	    logeo("debug: Top of main loop");
 	if (!readonly && (save_data || t-last_expire >= ExpireTimeout)) {
 	 	       
 	    if (debug)
-		log("debug: Running expire routines");
+		logeo("debug: Running expire routines");
 //            canalopers(ServerName, "Ejecutando rutinas de expiracion");
 	    if (!skeleton) {
 		#if defined(SOPORTE_JOOMLA15)
@@ -221,7 +221,7 @@ int main(int ac, char **av, char **envp)
 		waiting = -22;
 		expire_chans();
 		waiting = -23;
-                expire_creg();
+                /*expire_creg();*/
 	    }
 	    waiting = -25;
 	    expire_akills();
@@ -237,8 +237,8 @@ int main(int ac, char **av, char **envp)
 	    waiting = -2;
               
 	    if (debug)
-		log("debug: Saving databases");
-	   // canalopers(ServerName, "Grabando DB's");	
+		logeo("debug: Saving databases");
+	   /* canalopers(ServerName, "Grabando DB's"); */	
 	    if (!skeleton) {
 		waiting = -11;
 		save_ns_dbase();
@@ -269,7 +269,7 @@ int main(int ac, char **av, char **envp)
 	  waiting = -23;
 	  save_achanakick();
 	  waiting = -24;
-          save_x_dbase();
+          /*save_x_dbase();*/
              
 	    if (save_data < 0)
 		break;	/* out of main loop */
@@ -307,7 +307,7 @@ int main(int ac, char **av, char **envp)
     /* Check for restart instead of exit */
     if (save_data == -2) {
 #if defined(SERVICES_BIN)
-	log("Reiniciando");
+	logeo("Reiniciando");
 	if (!quitmsg)
 	    quitmsg = "Reiniciando";
 	send_cmd(ServerName, "SQUIT %s 0 :%s", ServerName, quitmsg);
@@ -328,7 +328,7 @@ int main(int ac, char **av, char **envp)
     /* Disconnect and exit */
     if (!quitmsg)
 	quitmsg = "Services ha terminado, razón desconocida";
-    log("%s", quitmsg);
+    logeo("%s", quitmsg);
     if (started)
         send_cmd(ServerName, "SQUIT %s 0 :%s", ServerName, quitmsg);
     disconn(servsock);

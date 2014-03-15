@@ -244,7 +244,7 @@ int expire_alimits(void)
 void add_alimit(const char *elcanal,int elnumero, time_t expiry)
 {
     if (nalimit >= 32767) {
-	log("%s: Intento para añadir ALIMIT a la lista llena!", s_ChanServ);
+	logeo("%s: Intento para añadir ALIMIT a la lista llena!", s_ChanServ);
 	return;
     }
     if (nalimit >= alimit_size) {

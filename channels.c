@@ -226,7 +226,7 @@ Channel *findchan(const char *chan)
     Channel *c;
 
     if (debug >= 3)
-	log("debug: findchan(%p)", chan);
+	logeo("debug: findchan(%p)", chan);
     c = chanlist[HASH(chan)];
     while (c) {
 	if (stricmp(c->name, chan) == 0)
@@ -234,7 +234,7 @@ Channel *findchan(const char *chan)
 	c = c->next;
     }
     if (debug >= 3)
-	log("debug: findchan(%s) -> %p", chan, c);
+	logeo("debug: findchan(%s) -> %p", chan, c);
     return NULL;
 }
 
@@ -253,7 +253,7 @@ Channel *firstchan(void)
     while (next_index < 1024 && current == NULL)
 	current = chanlist[next_index++];
     if (debug >= 3)
-	log("debug: firstchan() returning %s",
+	logeo("debug: firstchan() returning %s",
 			current ? current->name : "NULL (fin de la lista)");
     return current;
 }
@@ -267,7 +267,7 @@ Channel *nextchan(void)
 	    current = chanlist[next_index++];
     }
     if (debug >= 3)
-	log("debug: nextchan() returning %s",
+	logeo("debug: nextchan() returning %s",
 			current ? current->name : "NULL (fin de la lista)");
     return current;
 }
@@ -289,7 +289,7 @@ void chan_adduser(User *user, const char *chan)
 
     if (newchan) {
 	if (debug)
-	    log("debug: Creando canal %s", chan);
+	    logeo("debug: Creando canal %s", chan);
 	/* Allocate pre-cleared memory */
 	c = scalloc(sizeof(Channel), 1);
 	strscpy(c->name, chan, sizeof(c->name));
@@ -412,7 +412,7 @@ void chan_deluser(User *user, Channel *c)
     }
     if (!c->users) {
 	if (debug)
-	    log("debug: Borrando canal %s", c->name);
+	    logeo("debug: Borrando canal %s", c->name);
 	if (c->ci)
 	    c->ci->c = NULL;
 	if (c->topic)
@@ -423,12 +423,12 @@ void chan_deluser(User *user, Channel *c)
 	    if (c->bans[i])
 		free(c->bans[i]);
 	    else
-		log("Canales: BUG freeing %s: bans[%d] es NULL!", c->name, i);
+		logeo("Canales: BUG freeing %s: bans[%d] es NULL!", c->name, i);
 	}
 	if (c->bansize)
 	    free(c->bans);
 	if (c->chanops || c->voices)
-	    log("Canales: Memory leak freeing %s: %s%s%s %s no es NULL!",
+	    logeo("Canales: Memory leak freeing %s: %s%s%s %s no es NULL!",
 			c->name,
 			c->chanops ? "c->chanops" : "",
 			c->chanops && c->voices ? " y " : "",
@@ -471,7 +471,7 @@ void do_create(const char *source, int ac, char **av)
    user = finduser(source);
 
    if (debug)
-       log("debug: %s crea el canal %s", user->nick, av[0]);
+       logeo("debug: %s crea el canal %s", user->nick, av[0]);
           
    do_join(user->nick, ac, av);
    av[0] = sstrdup(av[0]);
@@ -597,7 +597,7 @@ void do_burst(const char *source, int ac, char **av)
 
                     if (u) {
                         if (debug)
-                            log("Canales: Usuario %s entra al canal %s", u->nick, av[0]);
+                            logeo("Canales: Usuario %s entra al canal %s", u->nick, av[0]);
                         do_join(u->nick, 1, av);
                         if (first && mod_num) {
                             do_cmode(source, mod_num, modes);
@@ -627,7 +627,7 @@ void do_burst(const char *source, int ac, char **av)
                             }
                         }    
                     } else
-                        log("channel: No se encuentra user %s en canal %s", nick, av[0]);
+                        logeo("channel: No se encuentra user %s en canal %s", nick, av[0]);
                 }
             }                         /* <-- Next parameter if any */    
         }    /* Swith de la linea de burst */
@@ -804,7 +804,7 @@ void do_cmode(const char *source, int ac, char **av)
 #endif
 	case 'k':
 	    if (--ac < 0) {
-		log("Canales: MODE %s %s: falta parametro para %ck",
+		logeo("Canales: MODE %s %s: falta parametro para %ck",
 					chan->name, modestr, add ? '+' : '-');
 		break;
 	    }
@@ -819,7 +819,7 @@ void do_cmode(const char *source, int ac, char **av)
 	case 'l':
 	    if (add) {
 		if (--ac < 0) {
-		    log("Canales: MODE %s %s: falta parametro para +l",
+		    logeo("Canales: MODE %s %s: falta parametro para +l",
 							chan->name, modestr);
 		    break;
 		}
@@ -831,7 +831,7 @@ void do_cmode(const char *source, int ac, char **av)
 
 	case 'b':
 	    if (--ac < 0) {
-		log("Canales: MODE %s %s: falta parametro para %cb",
+		logeo("Canales: MODE %s %s: falta parametro para %cb",
 					chan->name, modestr, add ? '+' : '-');
 		break;
 	    }
@@ -860,7 +860,7 @@ void do_cmode(const char *source, int ac, char **av)
 
 	case 'o':
 	    if (--ac < 0) {
-		log("Canales: MODE %s %s: falta parametro para %co",
+		logeo("Canales: MODE %s %s: falta parametro para %co",
 					chan->name, modestr, add ? '+' : '-');
 		break;
 	    }
@@ -877,12 +877,12 @@ void do_cmode(const char *source, int ac, char **av)
 		user = finduser(nick);
 #endif 		
 		if (!user) {
-		    log("Canales: MODE %s +o para usuario inexistente %s",
+		    logeo("Canales: MODE %s +o para usuario inexistente %s",
 							chan->name, nick);
 		    break;
 		}
 		if (debug)
-		    log("debug: Setting +o on %s for %s", chan->name, user->nick);
+		    logeo("debug: Setting +o on %s for %s", chan->name, user->nick);
 		if (!check_valid_op(user, chan->name, !!strchr(source, '.')))
 		    break;
 		u = smalloc(sizeof(*u));
@@ -911,7 +911,7 @@ void do_cmode(const char *source, int ac, char **av)
 
 	case 'v':
 	    if (--ac < 0) {
-		log("Canales: MODE %s %s: falta parametro para %cv",
+		logeo("Canales: MODE %s %s: falta parametro para %cv",
 					chan->name, modestr, add ? '+' : '-');
 		break;
 	    }
@@ -928,12 +928,12 @@ void do_cmode(const char *source, int ac, char **av)
 		user = finduser(nick);
 #endif		
 		if (!user) {
-		    log("channe: MODE %s +v para usuario inexistente %s",
+		    logeo("channe: MODE %s +v para usuario inexistente %s",
 							chan->name, nick);
 		    break;
 		}
 		if (debug)
-		    log("debug: Setting +v on %s for %s", chan->name, user->nick);
+		    logeo("debug: Setting +v on %s for %s", chan->name, user->nick);
  
                 if (!check_valid_voice(user, chan->name, !!strchr(source, '.')))
                     break;

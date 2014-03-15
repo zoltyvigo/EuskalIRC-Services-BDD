@@ -472,7 +472,7 @@ int process_numlist(const char *numstr, int *count_ret,
         numcount++;
         res = callback(u, i, args);
         if (debug)
-            log("debug: process_numlist: tried to do %d; result = %d", i, res);
+            logeo("debug: process_numlist: tried to do %d; result = %d", i, res);
         if (res < 0)
             break;
         retval += res;

@@ -58,7 +58,7 @@ static void load_lang(int index, const char *filename)
     int num, i;
 
     if (debug) {
-	log("debug: Cargando idioma %d del archivo `languages/%s'",
+	logeo("debug: Cargando idioma %d del archivo `languages/%s'",
 		index, filename);
     }
     snprintf(buf, sizeof(buf), "languages/%s", filename);
@@ -66,11 +66,11 @@ static void load_lang(int index, const char *filename)
 	log_perror("Failed to load language %d (%s)", index, filename);
 	return;
     } else if (read_int32(&num, f) < 0) {
-	log("Failed to read number of strings for language %d (%s)",
+	logeo("Failed to read number of strings for language %d (%s)",
 		index, filename);
 	return;
     } else if (num != NUM_STRINGS) {
-	log("Warning: Bad number of strings (%d, wanted %d) "
+	logeo("Warning: Bad number of strings (%d, wanted %d) "
 	    "for language %d (%s)", num, NUM_STRINGS, index, filename);
     }
     langtexts[index] = scalloc(sizeof(char *), NUM_STRINGS);
@@ -80,7 +80,7 @@ static void load_lang(int index, const char *filename)
 	int32 pos, len;
 	fseek(f, i*8+4, SEEK_SET);
 	if (read_int32(&pos, f) < 0 || read_int32(&len, f) < 0) {
-	    log("Failed to read entry %d in language %d (%s) TOC",
+	    logeo("Failed to read entry %d in language %d (%s) TOC",
 			i, index, filename);
 	    while (--i >= 0) {
 		if (langtexts[index][i])
@@ -93,7 +93,7 @@ static void load_lang(int index, const char *filename)
 	if (len == 0) {
 	    langtexts[index][i] = NULL;
 	} else if (len >= 65536) {
-	    log("Entry %d in language %d (%s) is too long (over 64k)--"
+	    logeo("Entry %d in language %d (%s) is too long (over 64k)--"
 		"corrupt TOC?", i, index, filename);
 	    while (--i >= 0) {
 		if (langtexts[index][i])
@@ -103,7 +103,7 @@ static void load_lang(int index, const char *filename)
 	    langtexts[index] = NULL;
 	    return;
 	} else if (len < 0) {
-	    log("Entry %d in language %d (%s) has negative length--"
+	    logeo("Entry %d in language %d (%s) has negative length--"
 		"corrupt TOC?", i, index, filename);
 	    while (--i >= 0) {
 		if (langtexts[index][i])
@@ -116,7 +116,7 @@ static void load_lang(int index, const char *filename)
 	    langtexts[index][i] = smalloc(len+1);
 	    fseek(f, pos, SEEK_SET);
 	    if (fread(langtexts[index][i], 1, len, f) != len) {
-		log("Failed to read string %d in language %d (%s)",
+		logeo("Failed to read string %d in language %d (%s)",
 			i, index, filename);
 		while (--i >= 0) {
 		    if (langtexts[index][i])

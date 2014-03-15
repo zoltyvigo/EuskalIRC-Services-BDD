@@ -50,7 +50,7 @@ const char version_protocol[] =
         "desconocido"
 #endif
 #if defined(SERVICES_BDD)
-	"con soporte para ircuh más modernos"
+	"(para ircuh más modernos)"
 #elif defined(IRC_HISPANO)
 	"con soporte para ESNET-Hispano"
 #elif defined(IRC_TERRA)

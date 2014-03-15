@@ -495,7 +495,7 @@ E void do_listchans(int ac, char **av);
 
 E int open_log(void);
 E void close_log(void);
-E void log(const char *fmt, ...)		FORMAT(printf,1,2);
+E void logeo(const char *fmt, ...)		FORMAT(printf,1,2);
 E void log_perror(const char *fmt, ...)		FORMAT(printf,1,2);
 E void fatal(const char *fmt, ...)		FORMAT(printf,1,2);
 E void fatal_perror(const char *fmt, ...)	FORMAT(printf,1,2);

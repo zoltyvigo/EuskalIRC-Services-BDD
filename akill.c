@@ -257,7 +257,7 @@ int check_akill(const char *nick, const char *username, const char *host)
 		 * play with null pointers.  Yell and bail out.
 		 */
 		canalopers(NULL, "Encontrado @ en el AKILL: %s", akills[i].mask);
-		log("Encontrado @ en el AKILL: %s", akills[i].mask);		continue;
+		logeo("Encontrado @ en el AKILL: %s", akills[i].mask);		continue;
 	    }
 	    *host2++ = 0;
 		    
@@ -326,7 +326,7 @@ void add_akill(const char *mask, const char *reason, const char *who,
 		      const time_t expiry)
 {
     if (nakill >= 32767) {
-	log("%s: Intento para añadir AKILL a la lista llena!", s_OperServ);
+	logeo("%s: Intento para añadir AKILL a la lista llena!", s_OperServ);
 	return;
     }
     if (nakill >= akill_size) {

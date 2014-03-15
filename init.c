@@ -478,7 +478,7 @@ static int set_group(void)
 	setgid(gr->gr_gid);
 	return 0;
     } else {
-	log("Grupo desconocido `%s'\n", RUNGROUP);
+	logeo("Grupo desconocido `%s'\n", RUNGROUP);
 	return -1;
     }
 #else
@@ -817,12 +817,12 @@ LogMaxUsersold=LogMaxUsers;
 
     /* Announce ourselves to the logfile. */
     if (debug || readonly || skeleton) {
-	log("euskalirc-services-bdd %s (compilados para %s) iniciados (opciones:%s%s%s)",
+	logeo("euskalirc-services-bdd %s (compilados para %s) iniciados (opciones:%s%s%s)",
 		version_number, version_protocol,
 		debug ? " debug" : "", readonly ? " readonly" : "",
 		skeleton ? " skeleton" : "");
     } else {
-	log("euskalirc-services-bdd %s (compilados para %s) iniciados.",
+	logeo("euskalirc-services-bdd %s compilados para %s iniciados.",
 		version_number, version_protocol);
     }
     start_time = time(NULL);
@@ -860,7 +860,7 @@ LogMaxUsersold=LogMaxUsers;
     /* Initialize multi-language support */
     lang_init();
     if (debug)
-	log("debug: Cargando lenguajes");
+	logeo("debug: Cargando lenguajes");
 
     /* Initialiize subservices */
     ns_init();
@@ -877,35 +877,35 @@ LogMaxUsersold=LogMaxUsers;
     if (!skeleton) {
 	load_ns_dbase();
 	if (debug)
-	    log("debug: Cargando la DB de %s (1/7)", s_NickServ);
+	    logeo("debug: Cargando la DB de %s (1/7)", s_NickServ);
 	load_cs_dbase();
 	if (debug)
-	    log("debug: Cargando la DB de %s (2/7)", s_ChanServ);
+	    logeo("debug: Cargando la DB de %s (2/7)", s_ChanServ);
 	    load_cr_dbase();
 	if (debug)
-	    log("debug: Cargando la DB de %s (3/7)", s_CregServ);
+	    logeo("debug: Cargando la DB de %s (3/7)", s_CregServ);
     }
 	
     load_os_dbase();
 load_jok_dbase();
     if (debug)
-	log("debug: Cargando la DB de %s (4/7)", s_OperServ);
+	logeo("debug: Cargando la DB de %s (4/7)", s_OperServ);
     load_akill();
      //load_aregistra();
 	
     if (debug)
-	log("debug: Cargando la DB de GLINES (5/7)");
+	logeo("debug: Cargando la DB de GLINES (5/7)");
     load_news();
     if (debug)
-	log("debug: Cargando la DB de NOTICIAS (6/7)");
+	logeo("debug: Cargando la DB de NOTICIAS (6/7)");
    
     if (debug)
-	log("debug: Cargando la DB de SPAM (7/7)");
+	logeo("debug: Cargando la DB de SPAM (7/7)");
     load_cr_dbase();
     load_ipv();
     load_achanakick();
     load_X_dbase();
-    log("Cargadas las bases de datos");
+    logeo("Cargadas las bases de datos");
 
     /* Connect to the remote server */
     servsock = conn(RemoteServer, RemotePort, LocalHost, LocalPort);

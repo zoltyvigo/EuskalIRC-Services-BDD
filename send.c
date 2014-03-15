@@ -30,11 +30,11 @@ void vsend_cmd(const char *source, const char *fmt, va_list args)
     if (source) {
 	sockprintf(servsock, ":%s %s\r\n", source, buf);
 	if (debug)
-	    log("debug: Sent: :%s %s", source, buf);
+	    logeo("debug: Sent: :%s %s", source, buf);
     } else {
 	sockprintf(servsock, "%s\r\n", buf);
 	if (debug)
-	    log("debug: Sent: %s", buf);
+	    logeo("debug: Sent: %s", buf);
     }
 }
 

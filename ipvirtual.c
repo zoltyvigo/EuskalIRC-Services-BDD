@@ -70,13 +70,13 @@ void ipvserv(const char *source, char *buf)
     User *u = finduser(source);
 
     if (!u) {
-	log("%s: user record for %s not found", s_IpVirtual, source);
+	logeo("%s: user record for %s not found", s_IpVirtual, source);
 	notice(s_IpVirtual, source,
 		getstring((NickInfo *)NULL, USER_RECORD_NOT_FOUND));
 	return;
     }
 
-    log("%s: %s: %s", s_IpVirtual, source, buf);
+    logeo("%s: %s: %s", s_IpVirtual, source, buf);
 
     cmd = strtok(buf, " ");
     if (!cmd) {

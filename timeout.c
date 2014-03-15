@@ -49,7 +49,7 @@ void check_timeouts(void)
     time_t t = time(NULL);
 
     if (debug >= 2)
-	log("debug: Checking timeouts at %ld", t);
+	logeo("debug: Checking timeouts at %ld", t);
 
     to = timeouts;
     while (to) {
@@ -58,7 +58,7 @@ void check_timeouts(void)
 	    continue;
 	}
 	if (debug >= 4) {
-	    log("debug: Running timeout %p (code=%p repeat=%d)",
+	    logeo("debug: Running timeout %p (code=%p repeat=%d)",
 			to, to->code, to->repeat);
 	}
 	to->code(to);
@@ -77,7 +77,7 @@ void check_timeouts(void)
 	to = to2;
     }
     if (debug >= 2)
-	log("debug: Finished timeout list");
+	logeo("debug: Finished timeout list");
 }
 
 /*************************************************************************/

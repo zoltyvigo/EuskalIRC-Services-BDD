@@ -9,7 +9,7 @@
 #define BUILD	"1"
 
 const char version_branchstatus[] = "ALPHA-RELEASE";
-const char version_number[] = "0.62";
+const char version_number[] = "0.6";
 const char version_upworld[] = "";
 const char version_build[] =
 	"build #" BUILD ", compilado " __DATE__ " " __TIME__;
@@ -28,7 +28,7 @@ const char version_protocol[] =
         "desconocido"
 #endif
 #if defined(SERVICES_BDD)
-	"con soporte para ircuh más modernos"
+	"(para ircuh más modernos)"
 #elif defined(IRC_HISPANO)
 	"con soporte para ESNET-Hispano"
 #elif defined(IRC_TERRA)

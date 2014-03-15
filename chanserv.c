@@ -534,7 +534,7 @@ void chanserv(const char *source, char *buf)
     User *u = finduser(source);
 
     if (!u) {
-	log("%s: registro de usuario para %s no encontrado", s_ChanServ, source);
+	logeo("%s: registro de usuario para %s no encontrado", s_ChanServ, source);
 #ifndef IRC_UNDERNET_P10
 /* En undernet P10, no sabremos el trio, y por lo tanto innecesario */
 	privmsg(s_NickServ, source,
@@ -646,7 +646,7 @@ static void load_old_cs_dbase(dbFILE *f, int ver)
 		fatal("Invalid format in %s", ChanDBName);
 	    SAFE(read_variable(old_channelinfo, f));
 	    if (debug >= 3)
-		log("debug: load_old_cs_dbase: leyendo canal %s",
+		logeo("debug: load_old_cs_dbase: leyendo canal %s",
 			old_channelinfo.name);
 	    ci = scalloc(1, sizeof(ChannelInfo));
 	    strscpy(ci->name, old_channelinfo.name, CHANMAX);
@@ -666,7 +666,7 @@ static void load_old_cs_dbase(dbFILE *f, int ver)
 #if defined(USE_ENCRYPTION)
 	    if (!(ci->flags & (CI_ENCRYPTEDPW | CI_VERBOTEN))) {
 		if (debug)
-		    log("debug: %s: password encriptada para %s on load",
+		    logeo("debug: %s: password encriptada para %s on load",
 				s_ChanServ, ci->name);
 		if (encrypt_in_place(ci->founderpass, PASSMAX) < 0)
 		    fatal("%s: load database: No est� encriptada la password de %s!",
@@ -904,7 +904,7 @@ void load_cs_dbase(void)
 #if defined(USE_ENCRYPTION)
 		if (!(ci->flags & (CI_ENCRYPTEDPW | CI_VERBOTEN))) {
 		    if (debug)
-			log("debug: %s: encrypting password for %s on load",
+			logeo("debug: %s: encrypting password for %s on load",
 				s_ChanServ, ci->name);
 		    if (encrypt_in_place(ci->founderpass, PASSMAX) < 0)
 			fatal("%s: load database: Can't encrypt %s password!",
@@ -1059,7 +1059,7 @@ void load_cs_dbase(void)
 	    next = ci->next;
 	    if (!(ci->flags & CI_VERBOTEN) && !ci->founder) {
 //                canalopers(s_ChanServ, "El canal 12%s no tiene founder. Borrando..", ci->name); 
-		log("%s: Carga DB: Borrando canal %s por no tener founder",
+		logeo("%s: Carga DB: Borrando canal %s por no tener founder",
 			s_ChanServ, ci->name);
 		delchan(ci);
 		 borra_akick(ci->name);
@@ -1221,7 +1221,7 @@ void check_modes(const char *chan)
     if (c->server_modecount >= 3 && c->chanserv_modecount >= 3) {
 	canalopers(NULL, "Desincronizacion detectada en el canal %s. "
 		"Las U-Lines de los servidores tan bien configuradas?", chan);
-	log("%s: Bouncy modes on channel %s", s_ChanServ, c->name);
+	logeo("%s: Bouncy modes on channel %s", s_ChanServ, c->name);
 	c->bouncy_modes = 1;
 	return;
     }
@@ -1888,7 +1888,7 @@ int check_kick(User *user, const char *chan)
 kick:
 
     if (debug) {
-	log("debug: channel: AutoKicking %s!%s@%s",
+	logeo("debug: channel: AutoKicking %s!%s@%s",
 		user->nick, user->username, user->host);
     }
 
@@ -2064,7 +2064,7 @@ void expire_chans()
 }
       else if (now - ci->last_used >=  (CSExpire)
 			&& !(ci->flags & (CI_VERBOTEN | CI_NO_EXPIRE | CI_SUSPEND)) && !(ci->flags & ( CI_MAIL_REC))) {
-		log("Expirando canal %s", ci->name);
+		logeo("Expirando canal %s", ci->name);
 		do_write_bdd(ci->name, 7, "",ci->name);
         	part_shadow_chan(ci->name);
                 if ((cr = cr_findcreg(ci->name))) {
@@ -2116,7 +2116,7 @@ void cs_remove_nick(const NickInfo *ni)
 		    if (ni2->channelcount >= ni2->channelmax) {
 		        canalopers(s_ChanServ, "Borrando canal 12%s, sucesor 12%s"
 		         " tiene demasiados canales", ci->name, ni2->nick);
-			log("%s: Successor (%s) of %s owns too many channels, "
+			logeo("%s: Successor (%s) of %s owns too many channels, "
 			    "deleting channel",
 			    s_ChanServ, ni2->nick, ci->name);
 				do_write_bdd(ci->name, 7, "",ci->name);
@@ -2148,7 +2148,7 @@ canaladmins(s_CregServ, "%s\n", mysql_error(conn));
 		    } else {
 		        canalopers(s_ChanServ, "Transferiendo el founder de 12%s,"
 		        " del nick borrado  12%s al sucesor 12%s", ci->name, ni->nick, ni2->nick);
-			log("%s: Transferring foundership of %s from deleted "
+			logeo("%s: Transferring foundership of %s from deleted "
 			    "nick %s to successor %s",
 			    s_ChanServ, ci->name, ni->nick, ni2->nick);
 			ci->founder = ni2;
@@ -2159,7 +2159,7 @@ canaladmins(s_CregServ, "%s\n", mysql_error(conn));
 		} else {
                     canalopers(s_ChanServ, "Borrando canal 12%s propiedad del"
                      " nick 12%s", ci->name, ni->nick);
-		    log("%s: Deleting channel %s owned by deleted nick %s",
+		    logeo("%s: Deleting channel %s owned by deleted nick %s",
 				s_ChanServ, ci->name, ni->nick);
 		do_write_bdd(ci->name, 7, "",ci->name);
         	part_shadow_chan(ci->name);
@@ -2697,7 +2697,7 @@ notice(s_ChanServ, u->nick, "Comando deshabilitado, use 2/msg 12%s ,para los
 
     } else if ((ci = cs_findchan(chan)) != NULL) {
 	if (ci->flags & CI_VERBOTEN) {
-	    log("%s: Attempt to register FORBIDden channel %s by %s!%s@%s",
+	    logeo("%s: Attempt to register FORBIDden channel %s by %s!%s@%s",
 			s_ChanServ, ci->name, u->nick, u->username, u->host);
 	    notice_lang(s_ChanServ, u, CHAN_MAY_NOT_BE_REGISTERED, chan);
 	} else {
@@ -2718,17 +2718,17 @@ notice(s_ChanServ, u->nick, "Comando deshabilitado, use 2/msg 12%s ,para los
 		ni->channelmax);
 
     } else if (!(c = findchan(chan))) {
-	log("%s: Channel %s not found for REGISTER", s_ChanServ, chan);
+	logeo("%s: Channel %s not found for REGISTER", s_ChanServ, chan);
 	notice_lang(s_ChanServ, u, CHAN_REGISTRATION_FAILED);
 
     } else if (!(ci = makechan(chan))) {
-	log("%s: makechan() failed for REGISTER %s", s_ChanServ, chan);
+	logeo("%s: makechan() failed for REGISTER %s", s_ChanServ, chan);
 	notice_lang(s_ChanServ, u, CHAN_REGISTRATION_FAILED);
 
 #if defined(USE_ENCRYPTION)
     } else if (strscpy(founderpass, pass, PASSMAX+1),
                encrypt_in_place(founderpass, PASSMAX) < 0) {
-	log("%s: Couldn't encrypt password for %s (REGISTER)",
+	logeo("%s: Couldn't encrypt password for %s (REGISTER)",
 		s_ChanServ, chan);
 	notice_lang(s_ChanServ, u, CHAN_REGISTRATION_FAILED);
 	delchan(ci);
@@ -2772,7 +2772,7 @@ notice(s_ChanServ, u->nick, "Comando deshabilitado, use 2/msg 12%s ,para los
 	}
 	ci->entry_message =  DEntryMsg;
 	canalopers(s_ChanServ, "Canal 12%s registrado por 12%s", chan, u->nick);
-	log("%s: Canal %s registrado por %s!%s@%s", s_ChanServ, chan,
+	logeo("%s: Canal %s registrado por %s!%s@%s", s_ChanServ, chan,
 		u->nick, u->username, u->host);
 	notice_lang(s_ChanServ, u, CHAN_REGISTERED, chan, u->nick);
 	do_write_bdd(ci->name, 7, "+ntr",ci->name);
@@ -2809,11 +2809,11 @@ int registra_con_creg(User *u, NickInfo *ni, const char *chan, const char *pass,
     } else if ((ci = cs_findchan(chan)) != NULL) {
 	return 0;
     } else if (!(c = findchan(chan))) {
-	log("%s: Channel %s not found for REGISTER", s_ChanServ, chan);
+	logeo("%s: Channel %s not found for REGISTER", s_ChanServ, chan);
 	return 0;
     } else if (!(ci = makechan(chan))) {
 	send_cmd(s_ChanServ, "JOIN %s", ci->name);
-	log("%s: makechan() failed for REGISTER %s", s_ChanServ, chan);
+	logeo("%s: makechan() failed for REGISTER %s", s_ChanServ, chan);
 	return 1;
     } else {
 	c->ci = ci;
@@ -2837,7 +2837,7 @@ int registra_con_creg(User *u, NickInfo *ni, const char *chan, const char *pass,
 
 	ci->entry_message =  DEntryMsg;
 	canalopers(s_ChanServ, "Canal 12%s aprobado por 4%s en %s (FUNDADOR: 3%s)",chan, u->nick, s_ChanServ, ni->nick);
-	log("%s: Canal %s registrado por %s!%s@%s", s_ChanServ, chan, u->nick, u->username, u->host);
+	logeo("%s: Canal %s registrado por %s!%s@%s", s_ChanServ, chan, u->nick, u->username, u->host);
 
 	do_write_bdd(ci->name, 7, "+ntr",chan);
 
@@ -2889,7 +2889,7 @@ int dropado_con_creg(User *u, const char *chan)
 		ni->channelcount--;
 	}
         canalopers(s_ChanServ, "12%s elimino el canal 12%s", u->nick, ci->name);
-	log("%s: Channel %s dropped by %s!%s@%s", s_ChanServ, ci->name,
+	logeo("%s: Channel %s dropped by %s!%s@%s", s_ChanServ, ci->name,
 			u->nick, u->username, u->host);
 	do_write_bdd(ci->name, 7, "",chan);
 	delchan(ci);
@@ -2951,7 +2951,7 @@ int suspende_con_creg(User *u, const char *chan, const char *desc)
 //            expires = time(NULL) + CSSuspendExpire;
             expires = 0; /* suspension indefinida */                  
         }    
-        log("%s: %s!%s@%s SUSPENDi� el canal %s, Motivo: %s",
+        logeo("%s: %s!%s@%s SUSPENDi� el canal %s, Motivo: %s",
                  s_ChanServ, u->nick, u->username, u->host, chan, desc);                              
         ci->suspendby = sstrdup(u->nick);
         ci->suspendreason = sstrdup(desc);
@@ -3007,7 +3007,7 @@ int reactiva_con_creg(User *u, const char *chan)
         return 0;
 //    } else if (nick_is_services_admin(ci->suspendby) && !is_services_admin(u)) {
     } else {
-        log("%s: %s!%s@%s ha usado UNSUSPEND on %s",
+        logeo("%s: %s!%s@%s ha usado UNSUSPEND on %s",
                 s_ChanServ, u->nick, u->username, u->host, chan);
         free(ci->suspendby);
         free(ci->suspendreason);
@@ -3052,18 +3052,18 @@ static void do_identify(User *u)
 		    u->founder_chans->prev = uc;
 		u->founder_chans = uc;
 		uc->chan = ci;
-		log("%s: %s!%s@%s identified for %s", s_ChanServ,
+		logeo("%s: %s!%s@%s identified for %s", s_ChanServ,
 			u->nick, u->username, u->host, ci->name);
 	    }
             notice(s_ChanServ, chan, "4ATENCION!!! %s se identifica como "
                               "FUNDADOR del canal.", u->nick);                              
 	    notice_lang(s_ChanServ, u, CHAN_IDENTIFY_SUCCEEDED, chan);
 	} else if (res < 0) {
-	    log("%s: check_password failed for %s", s_ChanServ, ci->name);
+	    logeo("%s: check_password failed for %s", s_ChanServ, ci->name);
             notice(s_ChanServ, chan, "4ATENCION!!! Autentificaci�n ilegal de %s", u->nick);
 	    notice_lang(s_ChanServ, u, CHAN_IDENTIFY_FAILED);
 	} else {
-	    log("%s: Failed IDENTIFY for %s by %s!%s@%s",
+	    logeo("%s: Failed IDENTIFY for %s by %s!%s@%s",
 			s_ChanServ, ci->name, u->nick, u->username, u->host);
             notice(s_ChanServ, chan, "4ATENCION!!! Autentificaci�n con clave "
                              "incorrecta de %s.", u->nick);                              
@@ -3113,7 +3113,7 @@ static void do_drop(User *u)
 		ni->channelcount--;
 	}
         canalopers(s_ChanServ, "12%s elimino el canal 12%s", u->nick, ci->name);
-	log("%s: Channel %s dropped by %s!%s@%s", s_ChanServ, ci->name,
+	logeo("%s: Channel %s dropped by %s!%s@%s", s_ChanServ, ci->name,
 			u->nick, u->username, u->host);
 	delchan(ci);
 	 borra_akick(ci->name);
@@ -3299,7 +3299,7 @@ static void do_set_founder(User *u, ChannelInfo *ci, char *param)
     ni = getlink(ni);
     if (ni != ci->founder && ni->channelcount+1 > ni->channelcount)
 	ni->channelcount++;
-    log("%s: Cambiando el founder de %s a %s por %s!%s@%s", s_ChanServ,
+    logeo("%s: Cambiando el founder de %s a %s por %s!%s@%s", s_ChanServ,
 		ci->name, param, u->nick, u->username, u->host);
     canalopers(s_ChanServ, "12%s cambia founder canal 12%s a 12%s (Antiguo founder: %s)",
            u->nick, ci->name, ci->founder->nick, antiguo);           		
@@ -3345,7 +3345,7 @@ static void do_set_password(User *u, ChannelInfo *ci, char *param)
     }
     if (encrypt(param, len, ci->founderpass, PASSMAX) < 0) {
 	memset(param, 0, strlen(param));
-	log("%s: Failed to encrypt password for %s (set)",
+	logeo("%s: Failed to encrypt password for %s (set)",
 		s_ChanServ, ci->name);
 	notice_lang(s_ChanServ, u, CHAN_SET_PASSWORD_FAILED);
 	return;
@@ -3362,7 +3362,7 @@ static void do_set_password(User *u, ChannelInfo *ci, char *param)
     if (get_access(u, ci) < ACCESS_FOUNDER) {
         canalopers(s_ChanServ, "12%s ha usado SET PASSWORD (como OPER) en el canal 12%s",
                   u->nick, ci->name);
-	log("%s: %s!%s@%s set password as Services admin for %s",
+	logeo("%s: %s!%s@%s set password as Services admin for %s",
 		s_ChanServ, u->nick, u->username, u->host, ci->name);
     }
 }
@@ -6002,7 +6002,7 @@ static void do_getpass(User *u)
     } else if (ci->flags & CI_VERBOTEN) {
 	notice_lang(s_ChanServ, u, CHAN_X_FORBIDDEN, chan);
     } else {
-	log("%s: %s!%s@%s uso GETPASS sobre %s",
+	logeo("%s: %s!%s@%s uso GETPASS sobre %s",
 		s_ChanServ, u->nick, u->username, u->host, ci->name);
         canalopers(s_ChanServ, "12%s ha usado GETPASS en 12%s (Founder: %s).",
              u->nick, chan, ci->founder->nick);         
@@ -6065,7 +6065,7 @@ static void do_suspend(User *u)
 //            expires = time(NULL) + CSSuspendExpire;
             expires = 0; /* suspension indefinida */                  
         }    
-        log("%s: %s!%s@%s SUSPENDido el canal %s, Motivo: %s",
+        logeo("%s: %s!%s@%s SUSPENDido el canal %s, Motivo: %s",
                  s_ChanServ, u->nick, u->username, u->host, chan, reason);                              
         ci->suspendby = sstrdup(u->nick);
         ci->suspendreason = sstrdup(reason);
@@ -6120,7 +6120,7 @@ static void do_unsuspend(User *u)
         privmsg(s_ChanServ, u->nick, "El canal no esta suspendido");
 //    } else if (nick_is_services_admin(ci->suspendby) && !is_services_admin(u)) {
     } else {
-        log("%s: %s!%s@%s ha usado UNSUSPEND on %s",
+        logeo("%s: %s!%s@%s ha usado UNSUSPEND on %s",
                 s_ChanServ, u->nick, u->username, u->host, chan);
         free(ci->suspendby);
         free(ci->suspendreason);
@@ -6164,7 +6164,7 @@ static void do_forbid(User *u)
 	}
     ci = makechan(chan);
     if (ci) {
-	log("%s: %s set FORBID for channel %s", s_ChanServ, u->nick,
+	logeo("%s: %s set FORBID for channel %s", s_ChanServ, u->nick,
 		ci->name);
 	ci->flags |= CI_VERBOTEN;
         ci->forbidby = sstrdup(u->nick);
@@ -6173,7 +6173,7 @@ static void do_forbid(User *u)
         canalopers(s_ChanServ, "12%s ha FORBIDeado el canal 12%s",
                   u->nick, ci->name);                  	
     } else {
-	log("%s: Valid FORBID for %s by %s failed", s_ChanServ, ci->name,
+	logeo("%s: Valid FORBID for %s by %s failed", s_ChanServ, ci->name,
 		u->nick);
 	notice_lang(s_ChanServ, u, CHAN_FORBID_FAILED, chan);
     }
@@ -6196,13 +6196,13 @@ static void do_unforbid(User *u)
     if ((ci = cs_findchan(chan)) != NULL && (ci->flags & CI_VERBOTEN)) {
         delchan(ci);
 	 borra_akick(ci->name);
-        log("%s: %s!%s@%s used UNFORBID on %s",
+        logeo("%s: %s!%s@%s used UNFORBID on %s",
                       s_ChanServ, u->nick, u->username, u->host, chan);                      
         privmsg(s_ChanServ, u->nick, "Canal 12%s UNFORBIDeado.", chan);
         canalopers(s_ChanServ, "12%s ha UNFORBIDeado el canal 12%s",
                 u->nick, chan);
     } else {
-        log("%s: Valid UNFORBID for %s by %s failed", s_ChanServ, chan,
+        logeo("%s: Valid UNFORBID for %s by %s failed", s_ChanServ, chan,
                         u->nick);
         privmsg(s_ChanServ, u->nick, "UNFORBID para 12%s fallido", chan);   
     }
@@ -6258,7 +6258,7 @@ static void do_say(User *u)
     } else if (!(c = findchan(chan))) {
         notice_lang(s_ChanServ, u, CHAN_X_NOT_IN_USE, chan);
     } else {
-        log("%s: %s!%s@%s usado SAY on %s (%s)",
+        logeo("%s: %s!%s@%s usado SAY on %s (%s)",
                       s_ChanServ, u->nick, u->username, u->host, chan, text);                            
         send_cmd(s_ChanServ, "PRIVMSG %s :%s", chan, text);
         canalopers(s_ChanServ, "12%s ha usado SAY en 12%s (%s)", u->nick, chan, text);

@@ -250,7 +250,7 @@ static void m_nick(char *source, int ac, char **av)
   /* En P10, el comando nick es mas largo de en otras redes :) */
     if ((ac != 8) && (ac != 9) && (ac != 2)) {
 	if (debug) {
-	    log("debug: NICK message: expecting 2, 8 or 9 parameters after "
+	    logeo("debug: NICK message: expecting 2, 8 or 9 parameters after "
 	        "parsing; got %d, source=`%s'", ac, source);
 	}
 	return;
@@ -262,7 +262,7 @@ if (ac >= 9) {
 #else
     if ((!*source && ac != 7) || (*source && ac != 2)) {
         if (debug) {
-            log("debug: NICK message: expecting 2 or 7 parameters after "
+            logeo("debug: NICK message: expecting 2 or 7 parameters after "
                 "parsing; got %d, source=%s'", ac, source);
         }
         return;

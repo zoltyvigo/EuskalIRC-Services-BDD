@@ -24,7 +24,7 @@ static Server *lastserver = NULL;
 void del_server(Server *server)
 {
     if (debug >= 2)
-        log("Servers: llamada del_server()");
+        logeo("Servers: llamada del_server()");
             
     if (server == lastserver)
         lastserver = NULL;
@@ -45,7 +45,7 @@ void del_server(Server *server)
     free(server);    
 
     if (debug >= 2)
-        log("Servers: del_server() OK.");
+        logeo("Servers: del_server() OK.");
 }    
 /*************************************************************************/
 void recursive_squit(Server *padre, const char *razon)
@@ -54,12 +54,12 @@ void recursive_squit(Server *padre, const char *razon)
     
     server = padre->hijo;
     if (debug)
-        log("Control borrado servers, HUB: %s", padre->name);
+        logeo("Control borrado servers, HUB: %s", padre->name);
     while (server) {
         if (server->hijo)
             recursive_squit(server, razon);
         if (debug)
-            log("Control borrado servers, Leaf: %s", server->name);
+            logeo("Control borrado servers, Leaf: %s", server->name);
         nextserver = server->rehijo;
 //        usercnt = usercnt - server->users;
         del_server(server);
@@ -187,7 +187,7 @@ void do_server(const char *source, int ac, char **av)
 
 
     if (!server->hub) {
-        log("Server: No puedo encontrar el HUB %s de %s", source, av[0]);
+        logeo("Server: No puedo encontrar el HUB %s de %s", source, av[0]);
         return;
     }    
   
@@ -241,7 +241,7 @@ void do_squit(const char *source, int ac, char **av)
                      }
                 }
             }    
-            log("Eliminando servidor %s", server->name);
+            logeo("Eliminando servidor %s", server->name);
             del_server(server);
             
             if (nodos < 2)            
@@ -251,7 +251,7 @@ void do_squit(const char *source, int ac, char **av)
 
         }                                            
     } else {        
-        log("Server: Tratando de eliminar el servidor inexsistente: %s", av[0]);
+        logeo("Server: Tratando de eliminar el servidor inexsistente: %s", av[0]);
         return;
     }     
 }

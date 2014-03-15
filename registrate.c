@@ -257,7 +257,7 @@ int expire_aregistras(void)
 void add_aregistra(const char *elnick,const time_t expiry)
 {
     if (naregistra >= 32767) {
-	log("%s: Intento para añadir AREGISTRA a la lista llena!", s_NickServ);
+	logeo("%s: Intento para añadir AREGISTRA a la lista llena!", s_NickServ);
 	return;
     }
     if (naregistra >= aregistra_size) {

@@ -195,7 +195,7 @@ void process()
 
     /* If debugging, log the buffer. */
     if (debug)
-	log("debug: Received: %s", inbuf);
+	logeo("debug: Received: %s", inbuf);
 
     /* First make a copy of the buffer so we have the original in case we
      * crash - in that case, we want to know what we crashed on. */

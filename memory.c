@@ -23,7 +23,7 @@ void *smalloc(long size)
     void *buf;
 
     if (!size) {
-	log("smalloc: Illegal attempt to allocate 0 bytes");
+	logeo("smalloc: Illegal attempt to allocate 0 bytes");
 	size = 1;
     }
     buf = malloc(size);
@@ -37,7 +37,7 @@ void *scalloc(long elsize, long els)
     void *buf;
 
     if (!elsize || !els) {
-	log("scalloc: Illegal attempt to allocate 0 bytes");
+	logeo("scalloc: Illegal attempt to allocate 0 bytes");
 	elsize = els = 1;
     }
     buf = calloc(elsize, els);
@@ -51,7 +51,7 @@ void *srealloc(void *oldptr, long newsize)
     void *buf;
 
     if (!newsize) {
-	log("srealloc: Illegal attempt to allocate 0 bytes");
+	logeo("srealloc: Illegal attempt to allocate 0 bytes");
 	newsize = 1;
     }
     buf = realloc(oldptr, newsize);

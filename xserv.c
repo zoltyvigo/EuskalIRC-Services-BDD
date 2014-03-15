@@ -228,13 +228,13 @@ void xserv(const char *source, char *buf)
     User *u = finduser(source);
 
     if (!u) {
-	log("%s: user record for %s not found", s_XServ, source);
+	logeo("%s: user record for %s not found", s_XServ, source);
 	notice(s_XServ, source,
 		getstring((NickInfo *)NULL, USER_RECORD_NOT_FOUND));
 	return;
     }
 
-    log("%s: %s: %s", s_XServ, source, buf);
+    logeo("%s: %s: %s", s_XServ, source, buf);
 
     cmd = strtok(buf, " ");
     if (!cmd) {
@@ -2339,13 +2339,13 @@ static void do_set(User *u)
     } else if (stricmp(option, "READONLY") == 0) {
 	if (stricmp(setting, "on") == 0) {
 	    readonly = 1;
-	    log("Read-only mode activated");
+	    logeo("Read-only mode activated");
 	    close_log();
 	    notice_lang(s_XServ, u, OPER_SET_READONLY_ON);
 	} else if (stricmp(setting, "off") == 0) {
 	    readonly = 0;
 	    open_log();
-	    log("Read-only mode deactivated");
+	    logeo("Read-only mode deactivated");
 	    notice_lang(s_XServ, u, OPER_SET_READONLY_OFF);
 	} else {
 	    notice_lang(s_XServ, u, OPER_SET_READONLY_ERROR);
@@ -2354,16 +2354,16 @@ static void do_set(User *u)
     } else if (stricmp(option, "DEBUG") == 0) {
 	if (stricmp(setting, "on") == 0) {
 	    debug = 1;
-	    log("Debug mode activated");
+	    logeo("Debug mode activated");
 	    notice_lang(s_XServ, u, OPER_SET_DEBUG_ON);
 	} else if (stricmp(setting, "off") == 0 ||
 				(*setting == '0' && atoi(setting) == 0)) {
-	    log("Debug mode deactivated");
+	    logeo("Debug mode deactivated");
 	    debug = 0;
 	    notice_lang(s_XServ, u, OPER_SET_DEBUG_OFF);
 	} else if (isdigit(*setting) && atoi(setting) > 0) {
 	    debug = atoi(setting);
-	    log("Debug mode activated (level %d)", debug);
+	    logeo("Debug mode activated (level %d)", debug);
 	    notice_lang(s_XServ, u, OPER_SET_DEBUG_LEVEL, debug);
 	} else {
 	    notice_lang(s_XServ, u, OPER_SET_DEBUG_ERROR);
@@ -2419,7 +2419,7 @@ static void do_jupe(User *u)
         privmsg(s_XServ, destino, "Has JUPEado el servidor 12%s", jserver);
         canalopers(s_XServ, "12JUPE  de %s por 12%s.",
                                jserver, u->nick);        
-        log("%s: %s!%s@%s ha JUPEado a %s (%s)", s_XServ, u->nick, u->realname, u->host,
+        logeo("%s: %s!%s@%s ha JUPEado a %s (%s)", s_XServ, u->nick, u->realname, u->host,
             jserver, reason);
                                 
     }

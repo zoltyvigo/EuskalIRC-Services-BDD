@@ -240,7 +240,7 @@ void display_news(User *u, int16 type)
     } else if (type == NEWS_OPER) {
 	msg = NEWS_OPER_TEXT;
     } else {
-	log("news: Invalid type (%d) to display_news()", type);
+	logeo("news: Invalid type (%d) to display_news()", type);
 	return;
     }
 
@@ -291,7 +291,7 @@ void do_news(User *u, short type)
 
     msgs = findmsgs(type, &typename);
     if (!msgs) {
-	log("news: Invalid type to do_news()");
+	logeo("news: Invalid type to do_news()");
 	return;
     }
 

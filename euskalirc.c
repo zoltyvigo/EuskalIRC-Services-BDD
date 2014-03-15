@@ -146,7 +146,7 @@ void euskalserv(const char *source, char *buf)
 snprintf(ayu, sizeof(ayu), "#%s", CanalAyuda);
 
     if (!u) {
-	log("%s: user record for %s not found", s_EuskalIRCServ, source);
+	logeo("%s: user record for %s not found", s_EuskalIRCServ, source);
 	notice(s_EuskalIRCServ, source,
 		getstring((NickInfo *)NULL, USER_RECORD_NOT_FOUND));
 	return;

@@ -80,13 +80,13 @@ void jokserv(const char *source, char *buf)
     User *u = finduser(source);
 
     if (!u) {
-	log("%s: user record for %s not found", s_JokuServ, source);
+	logeo("%s: user record for %s not found", s_JokuServ, source);
 	notice(s_JokuServ, source,
 		getstring((NickInfo *)NULL, USER_RECORD_NOT_FOUND));
 	return;
     }
 
-    log("%s: %s: %s", s_JokuServ, source, buf);
+    logeo("%s: %s: %s", s_JokuServ, source, buf);
 
     cmd = strtok(buf, " ");
     if (!cmd) {

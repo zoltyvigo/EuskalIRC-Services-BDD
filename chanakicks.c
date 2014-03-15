@@ -234,7 +234,7 @@ void save_achanakick(void)
 void add_achanakick(const char *canal, const char *nick,const char *reason, const char *who)
 {
     if (nachanakick >= 32767) {
-	log("%s: Intento para añadir ACHANAKICK a la lista llena!", s_ChanServ);
+	logeo("%s: Intento para añadir ACHANAKICK a la lista llena!", s_ChanServ);
 	return;
     }
     if (nachanakick >= achanakick_size) {
@@ -840,7 +840,7 @@ if (time(NULL)-start_time >= CSRestrictDelay
 kick:
    
     if (debug) {
-	log("debug: channel: AutoKicking %s!%s@%s",
+	logeo("debug: channel: AutoKicking %s!%s@%s",
 		user->nick, user->username, user->host);
    }
 

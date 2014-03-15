@@ -477,9 +477,9 @@ void error(int linenum, char *message, ...)
     vsnprintf(buf, sizeof(buf), message, args);
 #ifndef NOT_MAIN
     if (linenum)
-	log("%s:%d: %s", SERVICES_CONF, linenum, buf);
+	logeo("%s:%d: %s", SERVICES_CONF, linenum, buf);
     else
-	log("%s: %s", SERVICES_CONF, buf);
+	logeo("%s: %s", SERVICES_CONF, buf);
     if (!nofork && isatty(2)) {
 #endif
 	if (linenum)

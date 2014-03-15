@@ -340,7 +340,7 @@ void cregserv(const char *source, char *buf)
     User *u = finduser(source);
         
     if (!u) {
-        log("%s: user record for %s not found", s_CregServ, source);
+        logeo("%s: user record for %s not found", s_CregServ, source);
         notice(s_CregServ, source,
             getstring((NickInfo *)NULL, USER_RECORD_NOT_FOUND));
         return;
@@ -933,7 +933,7 @@ static void do_registra(User *u)
         notice_lang(s_CregServ, u, ni->channelcount > ni->channelmax ? CHAN_EXCEEDED_CHANNEL_LIMIT : CHAN_REACHED_CHANNEL_LIMIT, ni->channelmax);
 
     } */else if (!(cr = makecreg(chan))) {
-        log("%s: makecreg() failed for REGISTER %s", s_CregServ, chan);
+        logeo("%s: makecreg() failed for REGISTER %s", s_CregServ, chan);
         notice_lang(s_CregServ, u, CHAN_REGISTRATION_FAILED);                             
     }  
     
@@ -1120,7 +1120,7 @@ static void do_reg(User *u)
         notice_lang(s_CregServ, u, ni->channelcount > ni->channelmax ? CHAN_EXCEEDED_CHANNEL_LIMIT : CHAN_REACHED_CHANNEL_LIMIT, ni->channelmax);
 
     } else if (!(cr = makecreg(chan))) {
-        log("%s: makecreg() failed for REGISTER %s", s_CregServ, chan);
+        logeo("%s: makecreg() failed for REGISTER %s", s_CregServ, chan);
         notice_lang(s_CregServ, u, CHAN_REGISTRATION_FAILED);                             
     }  
     

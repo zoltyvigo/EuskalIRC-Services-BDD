@@ -77,7 +77,7 @@ void memoserv(const char *source, char *buf)
     User *u = finduser(source);
 
     if (!u) {
-	log("%s: user record for %s not found", s_MemoServ, source);
+	logeo("%s: user record for %s not found", s_MemoServ, source);
 #ifndef IRC_UNDERNET_P10
 	privmsg(s_MemoServ, source,
 		getstring((NickInfo *)NULL, USER_RECORD_NOT_FOUND));
@@ -156,7 +156,7 @@ void load_old_ms_dbase(void)
 		    fatal("Invalid format in memo.db");
 		SAFE(read_variable(old_memolist, f));
 		if (debug >= 3)
-		    log("debug: load_old_ms_dbase: got memolist for %s",
+		    logeo("debug: load_old_ms_dbase: got memolist for %s",
 				old_memolist.nick);
 		old_memolist.memos = memos =
 				smalloc(sizeof(Memo) * old_memolist.n_memos);

@@ -29,13 +29,13 @@ int get_file_version(dbFILE *f)
 	return 0;
     } else if (feof(fp)) {
 #ifndef NOT_MAIN
-	log("Error reading version number on %s: End of file detected",
+	logeo("Error reading version number on %s: End of file detected",
 		f->filename);
 #endif
 	return 0;
     } else if (version > FILE_VERSION || version < 1) {
 #ifndef NOT_MAIN
-	log("Invalid version number (%d) on %s", version, f->filename);
+	logeo("Invalid version number (%d) on %s", version, f->filename);
 #endif
 	return 0;
     }
@@ -121,7 +121,7 @@ static dbFILE *open_db_write(const char *service, const char *filename)
     if (!*f->backupname || strcmp(f->backupname, filename) == 0) {
 	int errno_save = errno;
 #ifndef NOT_MAIN
-	log("Opening %s database %s for write: Filename too long",
+	logeo("Opening %s database %s for write: Filename too long",
 		service, filename);
 #endif
 	free(f);

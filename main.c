@@ -210,7 +210,7 @@ int main(int ac, char **av, char **envp)
 	 	       
 	    if (debug)
 		logeo("debug: Running expire routines");
-//            canalopers(ServerName, "Ejecutando rutinas de expiracion");
+/*          canalopers(ServerName, "Ejecutando rutinas de expiracion");*/
 	    if (!skeleton) {
 		#if defined(SOPORTE_JOOMLA15)
 		waiting = -20;

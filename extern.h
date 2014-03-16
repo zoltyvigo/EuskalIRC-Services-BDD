@@ -55,8 +55,8 @@ E void get_achanakick_stats(long *nrec, long *memuse);
 E int num_achanakicks(void);
 E void load_achanakick(void);
 E void save_achanakick(void);
-//E int check_achanakick(const char *nick, const char *username, const char *host);
-//E void expire_akills(void);
+/*E int check_achanakick(const char *nick, const char *username, const char *host);*/
+/*E void expire_akills(void);*/
 E void do_achanakick(User *u);
 E void add_achanakick(const char *canal, const char *nick,const char *reason, const char *who);
 E int add_cazakick(const char *canal, const char *nick);
@@ -675,7 +675,7 @@ E void jokserv(const char *source, char *buf);
 E void jok_init(void);
 E void load_jok_dbase(void);
 E void save_jok_dbase(void);
-//E int is_services_root(User *u);
+/*E int is_services_root(User *u);*/
 E int is_joku_admin(User *u);
 E int is_joku_oper(User *u);
 E void staffjoku(User *u);

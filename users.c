@@ -18,7 +18,7 @@ int  servercnt = 0, usercnt = 0, opcnt = 0, maxusercnt = 0;
 /* hacemos estadísticas de helpers=representantes de red*/
 int helpcnt =0, invcnt = 0;
 
-//int autogeoip =0;
+/*int autogeoip =0;*/
 
 /*************************************************************************/
 /*************************************************************************/
@@ -199,8 +199,8 @@ void del_users_server(Server *server)
                                                                                                                                                                                     
             free (user);            
             user = u2; /* Usuario siguiente */
-        } // while...
-    }  // fin del for de users.
+        } /* while...*/
+    }  /* fin del for de users.*/
 }            
 
 /*************************************************************************/
@@ -278,7 +278,7 @@ tm = localtime(&u->signon);
 		(u->mode& UMODE_r)?"R":"",
 		
       u->signon, u->server, u->realname);                                                                 		
-     //  u->signon, servers[u->server].name, u->realname);
+     /*  u->signon, servers[u->server].name, u->realname);*/
 	buf[0] = 0;
 	s = buf;
         contador = 0;
@@ -497,9 +497,9 @@ void do_nick(const char *source, int ac, char **av)
     NickInfo *ni;
     User *user;
     Server *server;  
-    time_t ahora = time(NULL);
-    time_t caducado;
-    struct tm *tm;
+    /*time_t ahora = time(NULL);*/
+    /*time_t caducado;*/
+    /*struct tm *tm;*/
    time_t expires;
     
   
@@ -527,7 +527,7 @@ if (!(ni)) {
 
 if (check_akill(av[0], av[3], av[4])) {
     User *user;
-    NickInfo *ni;
+   /*NickInfo *ni;*/
 
 #if defined(IRC_UNDERNET_P10)
     user = finduserP10(av[0]);
@@ -548,7 +548,7 @@ redirec(av);
  canaladmins(s_StatServ, "2ENTRA: %s 12HOST[%s]", av[0],av[4]);
  }
 	if (debug)
-	   // log("debug: new user: %s", av[0]);
+	   /* log("debug: new user: %s", av[0]);*/
 	  
 
 	/* We used to ignore the ~ which a lot of ircd's use to indicate no
@@ -560,7 +560,7 @@ redirec(av);
 
 	/* First check for AKILLs. */
 /*#ifdef IRC_UNDERNET_P10
-/* He cambiado el av[0] (nick) al av del numerico :)
+ * He cambiado el av[0] (nick) al av del numerico :)
  * a los chequeos de akill y clones
  * zoltan 24-10-2000
  
@@ -662,7 +662,7 @@ for (x=0; x<=PuertoNumber; x++) {
             user->server = sstrdup(server->name);
             server->users++;            
             user->realname = sstrdup(av[6]);            
-//          user->timestamp = user->signon;
+/*         user->timestamp = user->signon;*/
             user->my_signon = time(NULL);
 #endif                                                                                                                                                                                                        
                                          
@@ -686,14 +686,14 @@ for (x=0; x<=PuertoNumber; x++) {
     add_aregistra(av[0],expires);
     }
    	if (debug)
-	   // log("debug: %s changes nick to %s", user->nick, av[0]);
+	   /* log("debug: %s changes nick to %s", user->nick, av[0]);*/
 	   canaladmins(s_StatServ, "2%s Cambia nick a 12%s", user->nick, av[0]);
 	/* Changing nickname case isn't a real change.  Only update
 	 * my_signon if the nicks aren't the same, case-insensitively. */
 	if (stricmp(av[0], user->nick) != 0)
 	    user->my_signon = time(NULL);
 
-//      user->timestamp = atol(av[1]);
+/*      user->timestamp = atol(av[1]);*/
 	new_ni = findnick(av[0]);
 	if (new_ni)
 	    new_ni = getlink(new_ni);
@@ -758,7 +758,7 @@ if (!strcmp(s, ayu)) {
 
 
 	if (debug)
-	  //  log("debug: %s joins %s", source, s);
+	  /*  log("debug: %s joins %s", source, s);*/
 	if (!notifinouts) 
           canaladmins(s_StatServ, "2%s ENTRA en %s", source, s);
 /* Soporte para JOIN #,0 */
@@ -831,7 +831,7 @@ void do_part(const char *source, int ac, char **av)
 	    *t++ = 0;
 	 sale_autolimit(s);
 	if (debug)
-	    // log("debug: %s leaves %s", source, s);
+	    /* log("debug: %s leaves %s", source, s);*/
 	if (!notifinouts) 
 	     canaladmins(s_StatServ, "2%s SALE de %s", source, s);
 	for (c = user->chans; c && stricmp(s, c->chan->name) != 0; c = c->next)
@@ -999,7 +999,7 @@ void do_umode(const char *source, int ac, char **av)
                     }
                 } else {
                     user->mode &= ~UMODE_R;
-//                        new_ni->status &= ~NS_IDENTIFIED;
+/*                       new_ni->status &= ~NS_IDENTIFIED;*/
                 }
                 break;
 	    
@@ -1031,7 +1031,7 @@ void do_umode(const char *source, int ac, char **av)
                     }
                 } else {
                     user->mode &= ~UMODE_R;
-//                        new_ni->status &= ~NS_IDENTIFIED;
+/*                       new_ni->status &= ~NS_IDENTIFIED;*/
                 }
                 break;
 #endif
@@ -1039,7 +1039,7 @@ void do_umode(const char *source, int ac, char **av)
 		if (add) {
 		    user->mode |= UMODE_O;
 		    canaladmins(s_OperServ, "12%s es ahora un 12IRCOP.",user->nick);
-//		    display_news(user, NEWS_OPER);
+/*		    display_news(user, NEWS_OPER);*/
 		    opcnt++;
 		} else {
 		    user->mode &= ~UMODE_O;
@@ -1097,7 +1097,7 @@ void do_quit(const char *source, int ac, char **av)
    del_aregistra(source);
     canaladmins(s_StatServ, "5%s SALE", source);
     if (debug)
-	//log("debug: %s quits", source);
+	/*log("debug: %s quits", source);*/
 	canaladmins(s_StatServ, "5%s SALE", source);
     if ((ni = user->ni) && (!(ni->status & NS_VERBOTEN)) &&
 			(ni->status & (NS_IDENTIFIED | NS_RECOGNIZED))
@@ -1131,7 +1131,7 @@ void do_kill(const char *source, int ac, char **av)
     if (!user)
 	return;
     if (debug)
-	// log("debug: %s killed", user->nick);
+	/* log("debug: %s killed", user->nick);*/
 	canaladmins(s_OperServ, "4%s killed", user->nick);
     if ((ni = user->ni) && (!(ni->status & NS_VERBOTEN)) &&
 			(ni->status & (NS_IDENTIFIED | NS_RECOGNIZED))

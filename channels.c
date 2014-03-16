@@ -54,7 +54,7 @@ void get_channel_stats(long *nrec, long *memuse)
 
 
 /* Send the current list of channels to the named user. */
-// CHANMODES=b,k,l,imnpstcrRMCNu 
+/* CHANMODES=b,k,l,imnpstcrRMCNu */
 void send_channel_list(User *user)
 {
     Channel *c;
@@ -166,11 +166,11 @@ void send_channel_users(User *user)
 }
 void send_helperchan_users(const char *source)
 {
-    User *user;
+    /*User *user;*/
     char ayu[BUFSIZE];
      snprintf(ayu, sizeof(ayu), "#%s", CanalOpers);
     Channel *c = ayu ? findchan(ayu) : NULL;
-    struct c_userlist *u;
+    /*struct c_userlist *u;*/
 User *u2 = finduser(source);
 NickInfo *ni;
 ni = findnick(source);
@@ -181,7 +181,7 @@ if (!c) {
 	ni->in_ayu |= AYU_RECHAZA ;
 	notice_lang(s_EuskalIRCServ, u2, EUSKALIRC_INDISPONIBLE,source);
     } else
-         { //canaladmins(s_StatServ, "2 Entra Usuario %s y SI Hay HELPERs disponibles",source);
+         { /*canaladmins(s_StatServ, "2 Entra Usuario %s y SI Hay HELPERs disponibles",source);*/
 	   notice_lang(s_EuskalIRCServ, u2, EUSKALIRC_MENSAJE_ENTRADA,source);
           }
 
@@ -191,7 +191,7 @@ void send_helpers_aviso(const char *source)
    User *u = finduser(source);
 char ayu[BUFSIZE];
      snprintf(ayu, sizeof(ayu), "#%s", CanalAyuda);
-    Channel *c = ayu ? findchan(ayu) : NULL;
+    /*Channel *c = ayu ? findchan(ayu) : NULL;*/
     if   (is_services_root(u))  {
     privmsg(s_EuskalIRCServ,ayu, "Hola 4%s,BienVenido/a 5Director de Red ",source);
     return;
@@ -359,9 +359,9 @@ void chan_adduser(User *user, const char *chan)
 
 void chan_deluser(User *user, Channel *c)
 {
-     ChannelInfo *ki;
+     /*ChannelInfo *ki;*/
     struct c_userlist *u;
-    ChannelInfo *ci;
+    /*ChannelInfo *ci;*/
     int i;
 
     for (u = c->users; u && u->user != user; u = u->next)
@@ -553,7 +553,7 @@ void do_burst(const char *source, int ac, char **av)
                      * ha sido ChanServ :)
                      */                
                     do_cmode(s_ChanServ, 3, ax);
-//                    free(ax);
+/*                    free(ax);*/
                 }
                 break;                /* Done bans part */
             }                     

@@ -240,7 +240,7 @@ static void do_stats(User *u)
 }
 static void do_sendweb(User *u)
 {
-    NickInfo *ni;
+    /*NickInfo *ni;*/
     
    struct tm *tm;
    char timebuf[64]; 

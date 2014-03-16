@@ -17,23 +17,23 @@
 int32 autogeoip=0;
 int32 notifinouts=0;
 /* Services admin list */
-//static NickInfo *services_admins[MAX_SERVADMINS];
+/*static NickInfo *services_admins[MAX_SERVADMINS];*/
 NickInfo *services_admins[MAX_SERVADMINS];
 /* Services devel list */
-//static NickInfo *services_devels[MAX_SERVDEVELS];
+/*static NickInfo *services_devels[MAX_SERVDEVELS];*/
 NickInfo *services_devels[MAX_SERVDEVELS];
 /* Services operator list */
-//static NickInfo *services_opers[MAX_SERVOPERS];
+/*static NickInfo *services_opers[MAX_SERVOPERS];*/
 NickInfo *services_opers[MAX_SERVOPERS];
 /* Services patrocinadores list */
-//static NickInfo *services_patrocinas[MAX_SERVPATROCINAS];
+/*static NickInfo *services_patrocinas[MAX_SERVPATROCINAS];*/
 NickInfo *services_patrocinas[MAX_SERVPATROCINAS];
 
 /* Services bots list */
-//static NickInfo *services_bots[MAX_SERVOPERS];
+/*static NickInfo *services_bots[MAX_SERVOPERS];*/
 NickInfo *services_bots[MAX_SERVOPERS];
 /* Services cregadmins-coadmins list */
-//static NickInfo *services_cregadmins[MAX_SERVADMINS];
+/*static NickInfo *services_cregadmins[MAX_SERVADMINS];*/
 NickInfo *services_cregadmins[MAX_SERVADMINS];
 
 /*************************************************************************/
@@ -176,7 +176,7 @@ static Command cmds[] = {
 	-1,-1,-1,-1, -1 },	
     { "DEBUGSERV", do_debugserv, is_services_root,
 	-1,-1,-1,-1, -1 },
-   // { "MATCHWILD",  do_matchwild,       is_services_root, -1,-1,-1,-1,-1 },
+   /* { "MATCHWILD",  do_matchwild,       is_services_root, -1,-1,-1,-1,-1 },*/
 { "ROTATELOG",  rotate_log,  is_services_root, -1,-1,-1,-1,
 	OPER_HELP_ROTATELOG },
   
@@ -359,6 +359,7 @@ void load_os_dbase(void)
  	SAFE(read_int32(&allow_ignore, f));
 	SAFE(read_int32(&autogeoip, f));
 	SAFE(read_int32(&maxusercnt, f));
+	SAFE(read_int32(&notifinouts, f));
 	SAFE(read_int32(&tmp32, f));
 	maxusertime = tmp32;
 	break;
@@ -452,6 +453,7 @@ void save_os_dbase(void)
     SAFE(write_int32(allow_ignore, f));
     SAFE(write_int32(autogeoip, f));
     SAFE(write_int32(maxusercnt, f));
+     SAFE(write_int32(notifinouts, f));
     SAFE(write_int32(maxusertime, f));
     close_db(f);
 }
@@ -609,10 +611,10 @@ int is_a_service(char *nick)
 
 void ircops(User *u)
 {
-    int i,j,valor;
+    int i,j/*,valor*/;
     int online=0;
     int director=0;
-    NickInfo *ni, *ni2;
+    NickInfo *ni/*, *ni2*/;
     
      for (i = 0; i < MAX_SERVPATROCINAS; i++) {
          if (services_patrocinas[i]) {
@@ -897,7 +899,7 @@ void do_svsmodes(User *u)
         char *nick, *modos;
         nick = strtok(NULL, " ");
         modos = strtok(NULL, " ");
-        NickInfo *ni;
+       /* NickInfo *ni;*/
 	User *u2;
      
     if (!nick) {
@@ -905,8 +907,8 @@ void do_svsmodes(User *u)
     	return;
     } /* else if (!(ni = findnick(nick))) {
 	notice_lang(s_OperServ, u, NICK_X_NOT_REGISTERED, nick);
-	return;    
-	}/*permito que se pueda cambiar los modos a los nicks no registrados*/
+	return;*/  
+/*	} permito que se pueda cambiar los modos a los nicks no registrados*/
 	 else if (!(u2 = finduser(nick)))  {  
          
          privmsg(s_OperServ,u->nick, "El Nick 5%s No esta ONLINE.",nick);
@@ -936,8 +938,8 @@ void do_svsjoinparts(User *u)
 	User *u2;
 	Channel *c = canal ? findchan(canal) : NULL;
 	  struct c_userlist *usuario;
-        NickInfo *ni;
-        ChannelInfo *ci;
+        /*NickInfo *ni;*/
+        /*ChannelInfo *ci;*/
         int cont = 0;
     if (!c) {
 	privmsg(s_OperServ, u->nick, "Canal %s no encontrado!",
@@ -963,9 +965,9 @@ void do_svsjoinparts(User *u)
     	return;
     } /*else if (!(ni = findnick(nick))) {
 	notice_lang(s_OperServ, u, NICK_X_NOT_REGISTERED, nick);
-	return;
+	return;*/
    
-    } /*permito que se pueda forzar la entrada/salida a los nicks no registrados*/
+   /* } permito que se pueda forzar la entrada/salida a los nicks no registrados*/
 
       
       if (stricmp(cmd, "ENTRADA") == 0) {
@@ -1107,8 +1109,8 @@ static void do_globaln(User *u)
 static void do_os_op(User *u)
 {
     char *chan = strtok(NULL, " ");
-    //char *op_params = strtok(NULL, " ");
-     char *op_params;
+    /*char *op_params = strtok(NULL, " ");*/
+     /*char *op_params;*/
     char *argv[3];
      int i = 0;
     Channel *c;
@@ -1119,8 +1121,8 @@ static void do_os_op(User *u)
     } else if (!(c = findchan(chan))) {
         notice_lang(s_OperServ, u, CHAN_X_NOT_IN_USE, chan);
     } else {
-        //char *destino;
-        //User *u2 =finduser(op_params);
+        /*char *destino;*/
+        /*User *u2 =finduser(op_params);*/
          while ((destino = strtok(NULL, " ")) && (i++ < MAXPARAMS)) {
         if (is_on_chan(destino,chan)) { 
 		 send_cmd(ServerName, "MODE %s +o %s", chan, destino); 
@@ -1155,10 +1157,10 @@ static void do_os_op(User *u)
 static void do_os_deop(User *u)
 {
     char *chan = strtok(NULL, " ");
-    //char *deop_params = strtok(NULL, " ");
+    /*char *deop_params = strtok(NULL, " ");*/
     char *argv[3];
       int i = 0;
-    char *deop_params;
+    /*char *deop_params;*/
     char *destino;
     Channel *c;
 
@@ -1168,7 +1170,7 @@ static void do_os_deop(User *u)
         notice_lang(s_OperServ, u, CHAN_X_NOT_IN_USE, chan);
     } else {
  while ((destino = strtok(NULL, " ")) && (i++ < MAXPARAMS)) {
-	     //User *u2 =finduser(deop_params);
+	     /*User *u2 =finduser(deop_params);*/
 
         if (is_on_chan(destino,chan)) { 
 	    send_cmd(ServerName, "MODE %s -o %s", chan, destino);
@@ -1201,8 +1203,8 @@ static void do_os_deop(User *u)
 static void do_os_voice(User *u)
 {
     char *chan = strtok(NULL, " ");
-    //char *op_params = strtok(NULL, " ");
-     char *op_params;
+    /*char *op_params = strtok(NULL, " ");*/
+     /*char *op_params;*/
     char *argv[3];
      int i = 0;
     Channel *c;
@@ -1213,8 +1215,8 @@ static void do_os_voice(User *u)
     } else if (!(c = findchan(chan))) {
         notice_lang(s_OperServ, u, CHAN_X_NOT_IN_USE, chan);
     } else {
-        //char *destino;
-        //User *u2 =finduser(op_params);
+        /*char *destino;*/
+        /*User *u2 =finduser(op_params);*/
          while ((destino = strtok(NULL, " ")) && (i++ < MAXPARAMS)) {
         if (is_on_chan(destino,chan)) { 
 		 send_cmd(ServerName, "MODE %s +v %s", chan, destino); 
@@ -1248,10 +1250,10 @@ static void do_os_voice(User *u)
 static void do_os_devoice(User *u)
 {
     char *chan = strtok(NULL, " ");
-    //char *deop_params = strtok(NULL, " ");
+    /*char *deop_params = strtok(NULL, " ");*/
     char *argv[3];
       int i = 0;
-    char *deop_params;
+    /*char *deop_params;*/
     char *destino;
     Channel *c;
 
@@ -1261,7 +1263,7 @@ static void do_os_devoice(User *u)
         notice_lang(s_OperServ, u, CHAN_X_NOT_IN_USE, chan);
     } else {
  while ((destino = strtok(NULL, " ")) && (i++ < MAXPARAMS)) {
-	     //User *u2 =finduser(deop_params);
+	     /*User *u2 =finduser(deop_params);*/
 
         if (is_on_chan(destino,chan)) { 
 	    send_cmd(ServerName, "MODE %s -v %s", chan, destino);
@@ -1750,9 +1752,9 @@ static void do_settime(User *u)
 
 static void do_director(User *u)
 {
-    char *cmd, *nick;
-    NickInfo *ni;
-    int i,gid;
+    char *cmd/*, *nick*/;
+    /*NickInfo *ni;*/
+    int i/*,gid*/;
 
     /*if (skeleton) {
 	notice_lang(s_OperServ, u, OPER_ADMIN_SKELETON);
@@ -1784,7 +1786,7 @@ static void do_admin(User *u)
 {
     char *cmd, *nick;
     NickInfo *ni;
-    int i,gid;
+    int i/*,gid*/;
 
     if (skeleton) {
 	notice_lang(s_OperServ, u, OPER_ADMIN_SKELETON);
@@ -2607,9 +2609,9 @@ static void do_patrocina(User *u)
 		notice_lang(s_OperServ, u, OPER_PATROCINA_ADDED, ni->nick);
 		canaladmins(s_OperServ, "12%s añade a 12%s como PATROCINADOR", u->nick, ni->nick);
                 #if defined(IRC_PATCHS_P09)
-		do_write_bdd(ni->nick, 3, "kp"); //-->En este parche,es modo +p de Patrocinador
+		do_write_bdd(ni->nick, 3, "kp"); /*-->En este parche,es modo +p de Patrocinador*/
 		#else
-	    	do_write_bdd(ni->nick, 3, ""); //-->No lo añado a la tabla o
+	    	do_write_bdd(ni->nick, 3, ""); /*-->No lo añado a la tabla o*/
 		#endif
 		do_write_bdd(ni->nick, 25, "");
                          char pat[BUFSIZE];
@@ -2873,7 +2875,7 @@ static void do_jupe(User *u)
         send_cmd(NULL, "SQUIT %s 0 :%s", jserver, reason);
         send_cmd(NULL, "SERVER %s 2 %lu %lu P10 :%s",
                    jserver, time(NULL), time(NULL), reason);               
-        //canalopers(s_OperServ, "argv[0] ya! y completado!");        
+        /*canalopers(s_OperServ, "argv[0] ya! y completado!");  */
      
 #elif defined (IRC_UNDERNET_P10)
         send_cmd(NULL, "%c SQ %s 0 :%s", convert2y[ServerNumerico], jserver, reason);
@@ -2923,7 +2925,7 @@ static void do_os_quit(User *u)
 	quitmsg = "Aieee! QUITing Services...!";
     else
 	sprintf(quitmsg, "Aieee! Services ha recibido una orden de QUIT de %s", u->nick);
-//    canaladmins(s_OperServ, "%s", quitmsg);
+/*    canaladmins(s_OperServ, "%s", quitmsg);*/
     quitting = 1;
 }
 
@@ -2937,7 +2939,7 @@ static void do_shutdown(User *u)
 	quitmsg = "Cerrando Services...!";
     else
 	sprintf(quitmsg, "Services ha recibido una orden de SHUTDOWN de %s", u->nick);
-//    canaladmins(s_OperServ, "%s", quitmsg);
+/*   canaladmins(s_OperServ, "%s", quitmsg);*/
     save_data = 1;
     delayed_quit = 1;
 }
@@ -2953,7 +2955,7 @@ if (!read_config()) {
 
  privmsg(s_OperServ, u->nick, "12Reloading Hecho");
 
-// uso stricmp cuando no importa case sensitive
+/* uso stricmp cuando no importa case sensitive*/
 
 if (!RootHostold)
 RootHostold ="";
@@ -3342,7 +3344,7 @@ static void do_restart(User *u)
     save_data = 1;
     canaladmins(s_OperServ, "Actualizando bases de datos..");
   save_data = -2;
-   //raise(SIGHUP);
+   /*raise(SIGHUP);*/
  #else
     notice_lang(s_OperServ, u, OPER_CANNOT_RESTART);
 #endif
@@ -3358,11 +3360,11 @@ static void do_restart(User *u)
 static void do_listignore(User *u)
 {
     char *pattern = strtok(NULL, " ");
-    char buf[BUFSIZE];
+    /*char buf[BUFSIZE];*/
     int sent_header = 0;
     IgnoreData *id;
     int nnicks, i;
-    int is_director = is_services_root(u);
+    /*int is_director = is_services_root(u);*/
   struct tm *tm;
  char timebuf[64];
     if (!pattern) {
@@ -3399,11 +3401,11 @@ if (!sent_header)
 static void do_debugserv(User *u)
 {
     char *pattern = strtok(NULL, " ");
-    char buf[BUFSIZE];
+    /*char buf[BUFSIZE];*/
     int sent_header = 0;
     DebugData *id;
     int nnicks, i;
-    int is_director = is_services_root(u);
+    /*int is_director = is_services_root(u);*/
   struct tm *tm;
  char timebuf[64];
     if (!pattern) {

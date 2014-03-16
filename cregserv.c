@@ -1625,7 +1625,7 @@ static void do_marcar(User *u)
    char *chan = strtok(NULL, " ");
     char *razon = strtok(NULL, "");
     CregInfo *cr;
-     NickInfo *ni;
+     /*NickInfo *ni;*/
     if ( (!chan) || (!razon)) {
       privmsg(s_CregServ, u->nick, "Sintaxis: 12MARCAR <canal> 2 <motivo>");
     	return;
@@ -1663,7 +1663,7 @@ static void do_desmarcar(User *u)
 {
    char *chan = strtok(NULL, " ");
       CregInfo *cr;
-     NickInfo *ni;
+     /*NickInfo *ni;*/
   
     if (!chan) {
         privmsg(s_CregServ, u->nick, "Sintaxis: 12DESMARCAR <canal>");
@@ -1695,7 +1695,7 @@ static void do_suspend(User *u)
    char *chan = strtok(NULL, " ");
     char *razon = strtok(NULL, "");
     CregInfo *cr;
-     NickInfo *ni;
+    /*NickInfo *ni;*/
 
     if (!razon) {
         privmsg(s_CregServ, u->nick, "Sintaxis: 12SUSPEND <canal> 2 <motivo>");
@@ -1740,7 +1740,7 @@ static void do_unsuspend(User *u)
 {
    char *chan = strtok(NULL, " ");
       CregInfo *cr;
-     NickInfo *ni;
+     /*NickInfo *ni;*/
   
     if (!chan) {
         privmsg(s_CregServ, u->nick, "Sintaxis: 12UNSUSPEND <canal>");

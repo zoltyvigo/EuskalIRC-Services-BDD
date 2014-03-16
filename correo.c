@@ -54,10 +54,10 @@ int enviar_correo(const char * destino, const char *subject, const char *body)
     char sendmail[PATH_MAX];
                                                                               
     snprintf(sendmail, sizeof(sendmail), SendMailPatch, destino);
-//    snprintf(sendmail, sizeof(sendmail), "/usr/sbin/sendmail masakresoft@wanadoo.es");
+/*   snprintf(sendmail, sizeof(sendmail), "/usr/sbin/sendmail masakresoft@wanadoo.es");*/
                                                                                            
     if (!(p = popen(sendmail, "w"))) {
-//        privmsg(s_NickServ, u->nick, "mail jodido");
+/*        privmsg(s_NickServ, u->nick, "mail jodido");*/
         logeo("mail jodio");
         return 0;
     }
@@ -70,7 +70,7 @@ int enviar_correo(const char * destino, const char *subject, const char *body)
     fprintf(p, "\n.\n");
          
     pclose(p);    
-//    log("Parece que funciona!! - %s - %s - %s", destino, subject, body);
+/*    log("Parece que funciona!! - %s - %s - %s", destino, subject, body);*/
     return 1;    
 }    
 #endif
@@ -87,16 +87,16 @@ error. ***/
     char cod[5];
     int codigo;
         
-  //log("SMTP = %s",buf);
+  /*log("SMTP = %s",buf);*/
     strncpy(cod,buf,4);
-  //log("strncpy....");
+  /*log("strncpy....");*/
     codigo = strlen(cod);
     cod[codigo] = '\0';
-  //log("asignado cod..");
+  /*log("asignado cod..");*/
     if (cod) codigo = atoi(cod);
     else codigo = 500;
     
-  //log("Codigo SMTP = %d",codigo);
+  /*log("Codigo SMTP = %d",codigo);*/
 
     switch(codigo) {
         case 220:
@@ -123,7 +123,7 @@ error. ***/
 }
 #endif
 
-// #endif /* #ifdef A_TOMAR_POR_EL_CULO */
+/* #endif  #ifdef A_TOMAR_POR_EL_CULO */
 
 int enviar_web(const char *desde, const char *body)
 {
@@ -132,10 +132,10 @@ int enviar_web(const char *desde, const char *body)
     char cat[PATH_MAX];
                                                                               
     snprintf(cat, sizeof(cat), "cat - > web.html");
-//    snprintf(sendmail, sizeof(sendmail), "/usr/sbin/sendmail masakresoft@wanadoo.es");
+/*   snprintf(sendmail, sizeof(sendmail), "/usr/sbin/sendmail masakresoft@wanadoo.es");*/
                                                                                            
     if (!(p = popen(cat, "w"))) {
-//        privmsg(s_NickServ, u->nick, "mail jodido");
+/*        privmsg(s_NickServ, u->nick, "mail jodido");*/
         logeo("editor jodio");
         return 0;
     }
@@ -165,7 +165,7 @@ fprintf(p, "Desde: %s\n<br>", desde);
 fprintf(p, "%s\n<br>", body);
 fprintf(p, "\n.\n<br></html>");
  pclose(p);    
-//    log("Parece que funciona!! - %s - %s - %s", destino, subject, body);
+/*    log("Parece que funciona!! - %s - %s - %s", destino, subject, body);*/
     return 1;    
 }    
 

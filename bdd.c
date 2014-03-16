@@ -251,7 +251,7 @@ void do_write_bdd(char *entrada, int tabla, const char *valor, ...)
 	 
 	 }
 	 
-//send_cmd(NULL, "DB * %d %s %s :%s", reg, tab, ent, val);
+/*send_cmd(NULL, "DB * %d %s %s :%s", reg, tab, ent, val);*/
 send_cmd(s_BddServ, "STATS b");	
 
 }
@@ -354,7 +354,7 @@ static void regenerar_clave(User *u)
             unsigned long long xi;
 	    /* char salt[ilevel + 2]; */
 	    char salt[41];
-	    //salt = (char *) malloc((ilevel+1)*sizeof(char));
+	    /*salt = (char *) malloc((ilevel+1)*sizeof(char));*/
 	    int cnt = 0;
 	    salt[40] = '\0';
             __asm__ volatile (".byte 0x0f, 0x31" : "=A" (xi));
@@ -365,7 +365,7 @@ static void regenerar_clave(User *u)
 
 
 		
-	//void do_write_bdd(char *entrada, int tabla, const char *valor, ...)
+	/*void do_write_bdd(char *entrada, int tabla, const char *valor, ...)*/
 	char entrada[]="clave.de.cifrado.de.ips";
 	const char *valor=salt;
 	do_write_bdd(entrada,6,valor);

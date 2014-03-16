@@ -891,7 +891,7 @@ load_jok_dbase();
     if (debug)
 	logeo("debug: Cargando la DB de %s (4/7)", s_OperServ);
     load_akill();
-     //load_aregistra();
+     /*load_aregistra();*/
 	
     if (debug)
 	logeo("debug: Cargando la DB de GLINES (5/7)");
@@ -947,7 +947,7 @@ load_jok_dbase();
 # ifdef NETWORK_DOMAIN
     send_cmd(s_OperServ, "NOTICE $*.%s :Establecidos los servicios de la RED.", NETWORK_DOMAIN);
 # else
-    /*Go through all common top-level domains.  If you have others,
+    Go through all common top-level domains.  If you have others,
      add them here.
      
     send_cmd(s_OperServ, "NOTICE $*.es :Establecidos los servicios de la RED.");
@@ -958,8 +958,8 @@ load_jok_dbase();
     send_cmd(s_OperServ, "NOTICE $*.cat :Establecidos los servicios de la RED.");
     send_cmd(s_OperServ, "NOTICE $*.eus :Establecidos los servicios de la RED.");
     send_cmd(s_OperServ, "NOTICE $*.tk :Establecidos los servicios de la RED.");
-# endif
-#endif*/
+ #endif
+ #endif*/
         
     join_chanserv();
      join_jokuserv(); 

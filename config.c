@@ -8,6 +8,7 @@
 
 #include "services.h"
 
+
 /*************************************************************************/
 
 /* Configurable variables: */
@@ -784,7 +785,7 @@ int read_config()
     CHECK(CanalAyuda);
     CHECK(CanalCybers);
     CHECK(CanalSpamers);
-    //CHECK(ServicesRoot);
+    /*CHECK(ServicesRoot);*/
     CHECK(AutokillExpiry);
     CHECK(GlinePscannerExpiry);
     CHECK(AutoregistraExpiry);

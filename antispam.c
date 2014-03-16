@@ -10,7 +10,7 @@
  #include "services.h"
  #include "pseudo.h"
 
- // SpamServ estruktura
+ /* SpamServ estruktura*/
 
 typedef struct spam_ SpamInfo;
 struct spam_ {
@@ -24,11 +24,11 @@ static int32 sspam = 0;
 static int32 spam_size = 0;
 static SpamInfo *spam = NULL;
 
-// SpamServ Funtzioak.
+/* SpamServ Funtzioak.*/
 static void do_spam_list(User *u);
 static void do_spam_add(User *u);
 static int add_spam(User *u, const char *text);
-static void do_spam_del(User *u); // externu
+static void do_spam_del(User *u); /*externu*/
 static int del_spam(int num);
 /*************************************************************************/
 /*********************** Spam item loading/saving ************************/
@@ -48,7 +48,7 @@ void load_spam()
     dbFILE *f;
     int i;
     int16 n;
-    int32 tmp32;
+   /* int32 tmp32;*/
 
     if (!(f = open_db(s_OperServ, SpamDBName, "r")))
 	return;
@@ -131,8 +131,8 @@ void do_spam(User *u)
 {
     int is_servadmin = is_services_admin(u);
     char *cmd = strtok(NULL, " ");
-    char *typename;
-    int *msgs;
+    /*char *typename;*/
+    /*int *msgs;*/
    
 
     if (!cmd)
@@ -223,7 +223,7 @@ static void do_spam_del(User *u)
     char *text = strtok(NULL, " ");
 
     if (!text) {
-	char buf[32];
+	/*char buf[32];*/
 	#if defined(IRC_UNDERNET_P10)
 	         privmsg(s_OperServ, u->numerico, "Sintaxis: SPAM ADD/DEL/LIST/STATUS [param]");
                 
@@ -301,7 +301,7 @@ static void do_spam_add(User *u)
     char *text = strtok(NULL, "");
 
     if (!text) {
-	char buf[32];
+	/*char buf[32];*/
 	#if defined(IRC_UNDERNET_P10)
 	privmsg(s_OperServ, u->numerico, "Sintaxis: SPAM ADD/DEL/LIST/STATUS [param]");
 	#else
@@ -330,8 +330,8 @@ static void do_spam_add(User *u)
 static void do_spam_list(User *u)
 {
     int i, count = 0;
-    char timebuf[64];
-    struct tm *tm;
+    /*char timebuf[64];*/
+    /*struct tm *tm;*/
 
     for (i = 0; i < sspam; i++) {
 	    if (count == 0)
@@ -355,7 +355,7 @@ static void do_spam_list(User *u)
 	
 }
 
-// Kanaletik sartu edo irten
+/* Kanaletik sartu edo irten*/
 void spam_ikusi(Channel *ci)
 {
 char adm_kanala[BUFSIZE];
@@ -369,7 +369,7 @@ return;
 
 if (!strcmp(ci->name, adm_kanala) || !strcmp(ci->name, opr_kanala)) return;
 
-//pertsonak = atoi(ci->erab);
+/*pertsonak = atoi(ci->erab);*/
 if (ci->erab == 0)
  canaladmins(s_SpamServ, "Saliendo de %s, usuarios: %d", ci->name, ci->erab);
 if (ci->erab == 0) 
@@ -408,7 +408,7 @@ if   (ci->erab  == SpamUsers-1)
 }
 
 
-// Spam detektorea
+/* Spam detektorea*/
 void eskaneatu_kanala(char *zein,char *kanala, char *testua)
 {
 int i, count = 0;
@@ -451,7 +451,7 @@ snprintf(adm_canal, sizeof(adm_canal), "#%s", CanalAdmins);
 snprintf(op_canal, sizeof(op_canal), "#%s", CanalOpers);
   User *u = finduser(source);
 
-char *mask, *reason, *expiry;
+/*char *mask, *reason, expiry*/;
     time_t expires;
 
 expires = GlinePscannerExpiry;
@@ -471,7 +471,7 @@ for (i = 0; i < sspam; i++) {
  		 return;
 		}
 		if (!spamgline) {
-		// privmsg(s_SpamServ, chan, "Ey! %s dijo 4%s !!", source,spam[i].hitza);
+		/* privmsg(s_SpamServ, chan, "Ey! %s dijo 4%s !!", source,spam[i].hitza);*/
 		send_cmd(s_SpamServ, "MODE %s +b :%s", chan , source);
 	        send_cmd(s_SpamServ, "KICK %s %s : _antispam 4(Publicidad No Autorizada.Forma Parte Del Listado Censurado Por La Red)", chan, source);
 		send_cmd(ServerName, "SVSJOIN  %s #%s", source,CanalSpamers);

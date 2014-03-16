@@ -17,7 +17,7 @@ void do_euskal(User *u) /*la colocamos en extern.h y asi la llamamos desde oper*
         nick = strtok(NULL, " ");
         NickInfo *ni;
   
-    char adm[BUFSIZE];
+    /*char adm[BUFSIZE];*/
       
   
 
@@ -135,10 +135,10 @@ if ((stricmp(cmd, "ACEPTA") == 0) && !(ni->in_ayu & AYU_PROCESO))  {
 
 void euskalserv(const char *source, char *buf)
 {
-    int num;
+    /*int num;*/
     NickInfo *ni;
-    char *cmd;
-    char *s;
+    /*char *cmd;*/
+    /*char *s;*/
     User *u = finduser(source);
 
     ni = findnick(source);
@@ -152,7 +152,7 @@ snprintf(ayu, sizeof(ayu), "#%s", CanalAyuda);
 	return;
     }
 
-    //log("yiha %s: %s: %s", s_EuskalIRCServ, source, buf);
+    /*log("yiha %s: %s: %s", s_EuskalIRCServ, source, buf);*/
   
    if ((ni = u->real_ni)) {
    if (ni->in_ayu & AYU_ENTRA) {

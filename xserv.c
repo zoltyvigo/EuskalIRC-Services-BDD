@@ -467,7 +467,7 @@ void do_svsmodes(User *u)
         char *nick, *modos;
         nick = strtok(NULL, " ");
         modos = strtok(NULL, " ");
-        NickInfo *ni;
+        /*NickInfo *ni;*/
 	User *u2;
      
     if (!nick) {
@@ -475,8 +475,8 @@ void do_svsmodes(User *u)
     	return;
     } /* else if (!(ni = findnick(nick))) {
 	notice_lang(s_OperServ, u, NICK_X_NOT_REGISTERED, nick);
-	return;    
-	}/*permito que se pueda cambiar los modos a los nicks no registrados*/
+	return; */ 
+/*	}permito que se pueda cambiar los modos a los nicks no registrados*/
 	 else if (!(u2 = finduser(nick)))  {  
          
          privmsg(s_XServ,u->nick, "El Nick 5%s No esta ONLINE.",nick);
@@ -500,7 +500,7 @@ void do_xsvsmodes(User *u)
         char *modos;
         modos = strtok(NULL, " ");
         NickInfo *ni;
-	User *u2;
+	/*User *u2;*/
         ni = findnick(u->nick);
      char *nick = ni->nick;
 
@@ -519,8 +519,8 @@ void do_svsjoinparts(User *u)
 	User *u2;
 	Channel *c = canal ? findchan(canal) : NULL;
 	  struct c_userlist *usuario;
-        NickInfo *ni;
-        ChannelInfo *ci;
+        /*NickInfo *ni;*/
+        /*ChannelInfo *ci;*/
         int cont = 0;
     if (!c) {
 	privmsg(s_XServ, u->nick, "Canal %s no encontrado!",
@@ -546,9 +546,9 @@ void do_svsjoinparts(User *u)
     	return;
     } /*else if (!(ni = findnick(nick))) {
 	notice_lang(s_OperServ, u, NICK_X_NOT_REGISTERED, nick);
-	return;
+	return;*/
    
-    } /*permito que se pueda forzar la entrada/salida a los nicks no registrados*/
+  /*  } permito que se pueda forzar la entrada/salida a los nicks no registrados*/
 
       
       if (stricmp(cmd, "ENTRADA") == 0) {
@@ -690,8 +690,8 @@ static void do_globaln(User *u)
 static void do_os_op(User *u)
 {
     char *chan = strtok(NULL, " ");
-    //char *op_params = strtok(NULL, " ");
-     char *op_params;
+    /*char *op_params = strtok(NULL, " ");*/
+     /*char *op_params;*/
     char *argv[3];
      int i = 0;
     Channel *c;
@@ -740,7 +740,7 @@ static void do_os_deop(User *u)
     //char *deop_params = strtok(NULL, " ");
     char *argv[3];
       int i = 0;
-    char *deop_params;
+    /*char *deop_params;*/
     char *destino;
     Channel *c;
 
@@ -782,8 +782,8 @@ static void do_os_deop(User *u)
 static void do_os_voice(User *u)
 {
     char *chan = strtok(NULL, " ");
-    //char *op_params = strtok(NULL, " ");
-     char *op_params;
+    /*char *op_params = strtok(NULL, " ");*/
+     /*char *op_params;*/
     char *argv[3];
      int i = 0;
     Channel *c;
@@ -832,7 +832,7 @@ static void do_os_devoice(User *u)
     //char *deop_params = strtok(NULL, " ");
     char *argv[3];
       int i = 0;
-    char *deop_params;
+/*    char *deop_params;*/
     char *destino;
     Channel *c;
 
@@ -1333,9 +1333,9 @@ static void do_settime(User *u)
 
 static void do_director(User *u)
 {
-    char *cmd, *nick;
-    NickInfo *ni;
-    int i,gid;
+    char *cmd/*, *nick*/;
+   /* NickInfo *ni;*/
+    int i/*,gid*/;
 
     /*if (skeleton) {
 	notice_lang(s_OperServ, u, OPER_ADMIN_SKELETON);
@@ -1367,7 +1367,7 @@ static void do_admin(User *u)
 {
     char *cmd, *nick;
     NickInfo *ni;
-    int i,gid;
+    int i/*,gid*/;
 
     if (skeleton) {
 	notice_lang(s_XServ, u, OPER_ADMIN_SKELETON);
@@ -2892,11 +2892,11 @@ static void do_restart(User *u)
 static void do_listignore(User *u)
 {
     char *pattern = strtok(NULL, " ");
-    char buf[BUFSIZE];
+/*    char buf[BUFSIZE];*/
     int sent_header = 0;
     IgnoreData *id;
     int nnicks, i;
-    int is_director = is_services_root(u);
+    /*int is_director = is_services_root(u);*/
   struct tm *tm;
  char timebuf[64];
     if (!pattern) {
@@ -2933,11 +2933,11 @@ if (!sent_header)
 static void do_debugserv(User *u)
 {
     char *pattern = strtok(NULL, " ");
-    char buf[BUFSIZE];
+    /*char buf[BUFSIZE];*/
     int sent_header = 0;
     DebugData *id;
     int nnicks, i;
-    int is_director = is_services_root(u);
+    /*int is_director = is_services_root(u);*/
   struct tm *tm;
  char timebuf[64];
     if (!pattern) {

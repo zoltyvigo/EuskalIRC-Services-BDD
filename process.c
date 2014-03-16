@@ -35,7 +35,7 @@ void add_ignore(const char *nick, time_t delta,const char *servicio,const char *
     strscpy(who, nick, NICKMAX);
     for (ign = *whichlist; ign; ign = ign->next) {
 	if (stricmp(ign->who, who) == 0)
-	//if (ign->time <  (now -300))
+	/*if (ign->time <  (now -300))*/
 	    break;
     }
     if (ign) {
@@ -63,7 +63,7 @@ void almacena_debugserv(const char *nick, time_t delta,const char *servicio,cons
 
     strscpy(who, nick, NICKMAX);
     for (ign = *whichlist; ign; ign = ign->next) {
-	//if (stricmp(ign->who, who) == 0)
+	/*if (stricmp(ign->who, who) == 0)*/
 	if (ign->time <  (now -300))
 	    break;
     }
@@ -98,7 +98,7 @@ IgnoreData *get_ignore(const char *nick)
 
     for (ign = *whichlist, prev = NULL; ign; prev = ign, ign = ign->next) {
 	if (stricmp(ign->who, nick) == 0)
-	//if (ign->time <  (now -300))
+	/*if (ign->time <  (now -300))*/
 	    break;
     }
     if (ign && ign->time <= now) {
@@ -118,7 +118,7 @@ DebugData *get_debugserv(const char *nick)
     DebugData **whichlist = &debugserv[tolower(nick[0])];
 
     for (igndebug = *whichlist, prev = NULL; igndebug; prev = igndebug, igndebug = igndebug->next) {
-	//if (stricmp(ign->who, nick) == 0)
+	/*if (stricmp(ign->who, nick) == 0)*/
 	if (igndebug->time <  (now -300))
 	    break;
     }
@@ -253,8 +253,8 @@ void process()
 	if (m->func)
 	    m->func(source, ac, av);
     } else {
-     //  log("unknown message from server (%s)", inbuf); 
-//send_cmd(ServerName, "PRIVMSG #Debug :DEBUG: %s",inbuf);
+     /*  log("unknown message from server (%s)", inbuf); */
+/*send_cmd(ServerName, "PRIVMSG #Debug :DEBUG: %s",inbuf);*/
 
     }
 

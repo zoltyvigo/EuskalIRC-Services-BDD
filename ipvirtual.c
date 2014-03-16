@@ -111,7 +111,7 @@ void load_ipv()
     dbFILE *f;
     int i;
     int16 n;
-    int32 tmp32;
+    /*int32 tmp32;*/
 
     if (!(f = open_db(s_IpVirtual, IpVirtualDBName, "r")))
 	return;
@@ -132,7 +132,7 @@ void load_ipv()
 	    return;
 	}
 	for (i = 0; i < ipvirt; i++) {
-	    SAFE(read_int32(&ipvirtual[i].numero, f));  //posiciones totales
+	    SAFE(read_int32(&ipvirtual[i].numero, f));  /*posiciones totales*/
 	    SAFE(read_buffer(ipvirtual[i].titular, f));
 	    SAFE(read_string(&ipvirtual[i].cadena, f));
 	  
@@ -185,15 +185,15 @@ void save_ipv()
 
 void do_ipv(User *u)
 {
-    int is_servadmin = is_services_admin(u);
+    /*int is_servadmin = is_services_admin(u);*/
     char *cmd = strtok(NULL, " ");
-    char *typename;
-    int *msgs;
+    /*char *typename;*/
+    /*int *msgs;*/
     NickInfo *ni;
-    char  *nick;
+    /*char  *nick;*/
 
 if (!cmd) {
-	char buf[32];
+	/*char buf[32];*/
 	#if defined(IRC_UNDERNET_P10)
 	privmsg(s_IpVirtual, u->numerico, "Sintaxis: PONER ADD/DEL/LIST [param]");
 	#else
@@ -203,7 +203,7 @@ if (!cmd) {
 	return;
        }
  if (stricmp(cmd, "HELP") == 0) {
-	char buf[32];
+	/*char buf[32];*/
 	#if defined(IRC_UNDERNET_P10)
 	privmsg(s_IpVirtual, u->numerico, "Sintaxis: PONER ADD/DEL/LIST [param]");
 	#else
@@ -310,14 +310,14 @@ static void do_ipv_add(User *u)
     char *text = strtok(NULL, "");
 
     if (!text) {
-	char buf[32];
+	/*char buf[32];*/
 	#if defined(IRC_UNDERNET_P10)
 	privmsg(s_IpVirtual, u->numerico, "Sintaxis: PONER ADD/DEL/LIST [param]");
 	#else
 	privmsg(s_IpVirtual, u->nick,"Sintaxis: PONER ADD/DEL/LIST [param]");
 	#endif
     } else {
-	//si da negativo,es que no se ha podido almacenar
+	/*si da negativo,es que no se ha podido almacenar*/
 	int n = add_ipv(u, text);
 	if (n < 0)
 	    #if defined(IRC_UNDERNET_P10)
@@ -342,7 +342,7 @@ static void do_ipv_list(User *u)
     int i = 0;
     int cont,pos;
      int is_servadmin = is_services_admin(u);
-    char timebuf[64];
+    /*char timebuf[64];*/
     char *cmd = strtok(NULL, " ");
     #if defined(IRC_UNDERNET_P10)
     privmsg(s_IpVirtual, u->numerico, "ID :: Texto :: Agregado por");
@@ -378,7 +378,7 @@ pos++;
 }
 static void do_ipv_usar(User *u)
 {
-     int i = 0;
+     /*int i = 0;*/
     static const char karak[] = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-.";
     time_t oraingoa = time(NULL);
     time_t kadukatu;
@@ -399,12 +399,12 @@ static void do_ipv_usar(User *u)
        cmd = u->nick;
        vhost=atoi(text);
 	vhost--;
-	 cadena=ipvirtual[vhost].cadena; //para que no tenga que copiar toda la linea
+	 cadena=ipvirtual[vhost].cadena; /*para que no tenga que copiar toda la linea*/
 
        if (stricmp(cmd, ipvirtual[vhost].titular) == 0) {
           
         
-        //do_usar_vhost(cmd,ipvirtual[vhost].cadena);
+        /*do_usar_vhost(cmd,ipvirtual[vhost].cadena);*/
  ni = findnick(cmd);
    
 if (oraingoa < ni->time_vhost)
@@ -448,12 +448,12 @@ tm = localtime(&kadukatu);
 
 
 strftime_lang(timebuf, sizeof(timebuf), u, STRFTIME_DATE_TIME_FORMAT, tm);
-//sartu_datua(22, u->nick, vhost);
+/*sartu_datua(22, u->nick, vhost);*/
 #if defined(IRC_UNDERNET_P09)
 do_write_bdd(u->nick, 4, cadena);
 #endif
     notice_lang(s_IpVirtual, u, IPV_ACTIVAR_SET, u->nick, cadena);
-//vhost_aldaketa(u->nick, vhost, 1);
+/*vhost_aldaketa(u->nick, vhost, 1);*/
 canaladmins(s_IpVirtual, "2%s4 VHOST[12%s4]", u->nick,cadena);
 #if defined(IRC_UNDERNET_P10)
 privmsg(s_IpVirtual, u->numerico, "Acabas de personalizar tu vhost, el proximo cambio podras hacer dentro de 6 horas");
@@ -476,13 +476,13 @@ static void do_ipv_del(User *u)
 {
  char *text = strtok(NULL, " ");
  char *cmd;
- char *cadena;
+ /*char *cadena;*/
  int vhost=0;
 
 
 	
     if (!text) {
-	char buf[32];
+	/*char buf[32];*/
 	#if defined(IRC_UNDERNET_P10)
 	privmsg(s_IpVirtual, u->numerico, "Sintaxis: PONER ADD/DEL/LIST [param]");
 	#else
@@ -605,13 +605,13 @@ tm = localtime(&kadukatu);
 
 
 strftime_lang(timebuf, sizeof(timebuf), u, STRFTIME_DATE_TIME_FORMAT, tm);
-//sartu_datua(22, u->nick, vhost);
+/*sartu_datua(22, u->nick, vhost);*/
 #if defined(IRC_UNDERNET_P09)
 do_write_bdd(u->nick, 4, vhost);
 ni->vhost=sstrdup(vhost);
 #endif
     notice_lang(s_IpVirtual, u, IPV_ACTIVAR_SET, u->nick, vhost);
-//vhost_aldaketa(u->nick, vhost, 1);
+/*vhost_aldaketa(u->nick, vhost, 1);*/
 canaladmins(s_IpVirtual, "2%s4 VHOST[12%s4]", u->nick,vhost);
 #if defined(IRC_UNDERNET_P10)
 privmsg(s_IpVirtual, u->numerico, "Acabas de personalizar tu vhost, el proximo cambio podras hacer dentro de 6 horas");

@@ -13,7 +13,7 @@ struct achanakick {
     char who[NICKMAX];
     time_t time;
     time_t caza_akick;
-    //time_t expires;	/* or 0 for no expiry */
+    /*time_t expires;	 or 0 for no expiry */
 };
 
 static int32 nachanakick = 0;
@@ -110,7 +110,7 @@ void load_achanakick(void)
 	    char who[NICKMAX];
 	    time_t time;
 	     time_t caza_akick;
-	    //time_t expires;
+	    /*time_t expires;*/
 	    long reserved[4];
 	} old_achanakick;
 
@@ -119,7 +119,7 @@ void load_achanakick(void)
 	    strscpy(achanakicks[i].who, old_achanakick.who, NICKMAX);
 	    achanakicks[i].time = old_achanakick.time;
 	    achanakicks[i].caza_akick = old_achanakick.caza_akick;
-	    //achanakicks[i].expires = old_achanakick.expires;
+	    /*achanakicks[i].expires = old_achanakick.expires;*/
 	}
 	for (i = 0; i < nachanakick; i++) {
 	    SAFE(read_string(&achanakicks[i].canal, f));
@@ -145,7 +145,7 @@ void load_achanakick(void)
 	    achanakicks[i].time = old_achanakick.time;
 	    achanakicks[i].caza_akick = old_achanakick.caza_akick;
 	    strscpy(achanakicks[i].who, old_achanakick.who, sizeof(achanakicks[i].who));
-	    //achanakicks[i].expires = 0;
+	    /*achanakicks[i].expires = 0;*/
 	}
 	for (i = 0; i < nachanakick; i++) {
 	    SAFE(read_string(&achanakicks[i].canal, f));
@@ -171,7 +171,7 @@ void load_achanakick(void)
 	    achanakicks[i].time = old_achanakick.time;
 	     achanakicks[i].caza_akick = old_achanakick.caza_akick;
 	    achanakicks[i].who[0] = 0;
-	    //achanakicks[i].expires = 0;
+	    /*achanakicks[i].expires = 0;*/
 	}
 	for (i = 0; i < nachanakick; i++) {
 	    SAFE(read_string(&achanakicks[i].canal, f));
@@ -221,7 +221,7 @@ void save_achanakick(void)
 	SAFE(write_buffer(achanakicks[i].who, f));
 	SAFE(write_int32(achanakicks[i].time, f));
         SAFE(write_int32(achanakicks[i].caza_akick, f));
-	//SAFE(write_int32(achanakicks[i].expires, f));
+	/*SAFE(write_int32(achanakicks[i].expires, f));*/
     }
     close_db(f);
 }
@@ -248,7 +248,7 @@ void add_achanakick(const char *canal, const char *nick,const char *reason, cons
     achanakicks[nachanakick].nick = sstrdup(nick);
      achanakicks[nachanakick].reason = sstrdup(reason);
     achanakicks[nachanakick].time = time(NULL);
-    //achanakicks[nachanakick].expires = expiry;
+    /*achanakicks[nachanakick].expires = expiry;*/
     strscpy(achanakicks[nachanakick].who, who, NICKMAX);
 
     nachanakick++;
@@ -270,7 +270,7 @@ static int del_achanakick(const char *mask,const char *canal,User *u)
 if (isdigit(*mask)) {
 int i=0;
 	int cont=0;
-	//notice_lang(s_ChanServ, u, CHAN_AKICK_LIST_HEADER, canal);
+	/*notice_lang(s_ChanServ, u, CHAN_AKICK_LIST_HEADER, canal);*/
         while (i < nachanakick )  {
 	    if ((stricmp(achanakicks[i].canal, canal) == 0)) {
 	cont++;
@@ -378,11 +378,11 @@ void do_achanakick(User *u)
     char *cmd    = strtok(NULL, " ");
     char *mask   = strtok(NULL, " ");
     char *reason = strtok(NULL, "");
-    //char *s = strtok(NULL, "");
+    /*char *s = strtok(NULL, "");*/
 NickInfo *ni = findnick(u->nick);
     ChannelInfo *ci;
     int i,cont;
-      //AutoKick *akick;    
+      /*AutoKick *akick;*/
 
     if (!cmd || (!mask && 
 		(stricmp(cmd, "ADD") == 0 || stricmp(cmd, "DEL") == 0 ))) {
@@ -413,9 +413,9 @@ NickInfo *ni = findnick(u->nick);
 		cont=0;
 	       for (i = 0; i < nachanakick; i++) {
 	    if (stricmp(achanakicks[i].canal, canal) == 0) {
-	//privmsg(s_ChanServ, u->nick, "%s-->%s",achanakicks[i].nick,achanakicks[i].who);	
+	/*privmsg(s_ChanServ, u->nick, "%s-->%s",achanakicks[i].nick,achanakicks[i].who);*/
 cont++;
-//return;
+/*return;*/
 	    }
 }
 	if (cont >=CSAutokickMax) {
@@ -443,7 +443,7 @@ cont++;
             
 for (i = 0; i < nachanakick; i++) {
 	      if ((stricmp(achanakicks[i].canal, canal) == 0 && (stricmp(achanakicks[i].nick, mask) == 0))) {
-	//privmsg(s_ChanServ, u->nick, "%s-->%s",achanakicks[i].nick,achanakicks[i].who);	
+	/*privmsg(s_ChanServ, u->nick, "%s-->%s",achanakicks[i].nick,achanakicks[i].who);*/	
 notice_lang(s_ChanServ, u, CHAN_AKICK_ALREADY_EXISTS,
 			achanakicks[i].nick,canal);
 
@@ -464,11 +464,11 @@ notice_lang(s_ChanServ, u, CHAN_AKICK_ADDED,mask, canal);
 
 Channel *c = canal ? findchan(canal) : NULL;
     struct c_userlist *u;
-const char *source = nick;
+/*const char *source = nick;*/
  char buf[BUFSIZE];
    snprintf(buf, sizeof(buf), "%s!*@*",nick);
 
-   //mask = create_mask(user);
+   /*mask = create_mask(user);*/
 
 
 
@@ -551,7 +551,7 @@ check_akick(u->user, canal);
          }
 	Channel *c = canal ? findchan(canal) : NULL;
     struct c_userlist *u;
-char *nick, *user, *host;
+/*char *nick, *user, *host;*/
 
 int count = 0;
 
@@ -561,7 +561,7 @@ if (!c) {
     }
 i=0;
 cont=0;
-char *av[3];
+/*char *av[3];*/
 
 char mascara[BUFSIZE];
 char masknickuserip[BUFSIZE];
@@ -588,10 +588,10 @@ mask = create_mask(u->user);
 if (!(is_oper(u->user->nick))) { 
 	 send_cmd(s_ChanServ, "MODE %s +b %s  %lu", canal, mask, time(NULL));
 privmsg(s_ChanServ, ni->nick, "12ENFORCE 4BAN usado sobre host 4%s",mask);
-   // send_cmd(s_ChanServ, "MODE %s +b %s  %lu", canal, u->user->host, time(NULL)); <---da el host completo
-//privmsg(s_ChanServ, ni->nick, "ENFORCE BAN en %s usado sobre host %s",canal,u->user->host,cont);
+   /* send_cmd(s_ChanServ, "MODE %s +b %s  %lu", canal, u->user->host, time(NULL)); <---da el host completo*/
+/*privmsg(s_ChanServ, ni->nick, "ENFORCE BAN en %s usado sobre host %s",canal,u->user->host,cont);*/
 
-} //fin if si no es oper
+} /*fin if si no es oper*/
 	
 #if defined(IRC_UNDERNET_P10)
     send_cmd(s_ChanServ, "K %s %s :%s", canal, u->user->numerico, achanakicks[i].reason);
@@ -603,13 +603,13 @@ count++;
 #endif
 
 } else { 
-//solo si el que ejecuta comando es OPER,revelo que en el ENFORCE cazó a un OPER
+/*solo si el que ejecuta comando es OPER,revelo que en el ENFORCE cazó a un OPER*/
    if (is_oper(ni->nick))
     privmsg(s_ChanServ,ni->nick, "12ENFORCE 5BAN/KICK No usado sobre OPER 5%s",u->user->nick);
 
-} //fin if si no es oper
+} /*fin if si no es oper*/
 
-    //return 1;
+    /*return 1;*/
 	    }
  
 i++;
@@ -633,7 +633,7 @@ i++;
 	  if (!mask) {
 		 mask ="*";		
 			}
-	//notice_lang(s_ChanServ, u, CHAN_AKICK_LIST_HEADER, canal);
+	/*notice_lang(s_ChanServ, u, CHAN_AKICK_LIST_HEADER, canal);*/
 
 
         while (i < nachanakick )  {
@@ -658,7 +658,7 @@ privmsg(s_ChanServ, u->nick, " El canal %s tiene %d entradas en su lista de auto
             return;
             }
          }
-	//expire_achanakicks();
+	/*expire_achanakicks();*/
 	 if (!mask) {
 		 mask ="*";		
 				}
@@ -680,7 +680,7 @@ if (strchr(mask, '@'))
 	cont++;
 	
 	privmsg(s_ChanServ, u->nick, "%d: %s(%s)-->%s",cont,achanakicks[i].nick,achanakicks[i].reason,achanakicks[i].who);
- //privmsg(s_ChanServ, u->nick, "%s", buf);
+ /*privmsg(s_ChanServ, u->nick, "%s", buf);*/
 
 	    }
 	i++;
@@ -696,7 +696,7 @@ if (strchr(mask, '@'))
             return;
             }
          }
-	//expire_achanakicks();
+	/*expire_achanakicks();*/
 	 if (!mask) {
 		 mask ="*";		
 				}
@@ -712,11 +712,11 @@ if (strchr(mask, '@'))
 
   if ((stricmp(achanakicks[i].canal, canal) == 0 &&  (!mask ||
 	match_wild(mask, achanakicks[i].nick)))) { 
-	   char timebuf[32],timecaza[32],tcazakick[32],buf[BUFSIZE];	
+	   char timebuf[32],/*timecaza[32],*/tcazakick[32],buf[BUFSIZE];	
 		struct tm tm;
 		struct tm tv;
 		time_t t = time(NULL);
-		time_t v;
+		/*time_t v;*/
 		tm = *localtime(achanakicks[i].time ? &achanakicks[i].time : &t);
 		strftime_lang(timebuf, sizeof(timebuf),
 			u, STRFTIME_DATE_TIME_FORMAT, &tm);
@@ -773,12 +773,12 @@ if (!c) {
 int check_akick(User *user, const char *chan)
 {
     ChannelInfo *ci = cs_findchan(chan);
-    AutoKick *akick;
+    /*AutoKick *akick;*/
     int i;
     NickInfo *ni;
     char *av[3], *mask;
     const char *reason;
-    Timeout *t;
+    /*Timeout *t;*/
     int stay;
 
 

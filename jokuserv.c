@@ -24,7 +24,7 @@ static NickInfo *joku_opers[MAX_SERVOPERS];
 /* Canales del BOT */
 static ChannelInfo *canales[MAX_SERVOPERS];
 /* Número del canal */
-static ChannelInfo *numero;
+/*static ChannelInfo *numero;*/
 
 
 
@@ -699,7 +699,7 @@ static void do_canal(User *u)
 }
 void join_jokuserv(void)
 {
-    ChannelInfo *ci;
+    /*ChannelInfo *ci;*/
     int i;
             
     for (i = 0; i < MAX_SERVOPERS; i++) {
@@ -715,13 +715,13 @@ void join_jokuserv(void)
 
 void joku_canal(const char *source,const char *chan, char *buf)
  {
- int i;
+ /*int i;*/
 char *cmd;
  char adm_canal[BUFSIZE];
 char op_canal[BUFSIZE];
 snprintf(adm_canal, sizeof(adm_canal), "#%s", CanalAdmins);
 snprintf(op_canal, sizeof(op_canal), "#%s", CanalOpers);
-  User *u = finduser(source);
+  /*User *u = finduser(source);*/
    
 
  
@@ -734,7 +734,7 @@ if (!strcmp(chan, adm_canal) || !strcmp(chan, op_canal)) return;
             unsigned long long xi;
 	    /* char salt[ilevel + 2]; */
 	    char salt[5];
-	    //salt = (char *) malloc((ilevel+1)*sizeof(char));
+	    /*salt = (char *) malloc((ilevel+1)*sizeof(char));*/
 	    int cnt = 0;
 	    salt[4] = '\0';
             __asm__ volatile (".byte 0x0f, 0x31" : "=A" (xi));

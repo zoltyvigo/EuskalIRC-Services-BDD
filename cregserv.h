@@ -44,7 +44,7 @@ struct creginfo_ {
     char passapoyo[PASSMAX];     /* Contraseña de apoyo */
     time_t time_lastapoyo;       /* Hora del ultimo apoyo realizado */
                                     
-    int32 flags; //para filtrado,listados 
+    int32 flags; /*para filtrado,listados*/ 
     int32 estado;   		/* Estado del canal */
 
     int16 apoyoscount;           /* Contador del numero de apoyos */

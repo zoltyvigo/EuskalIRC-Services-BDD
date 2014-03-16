@@ -868,8 +868,8 @@ int validate_user(User *u)
             return 1;
            }
 if (ni->status & NI_ON_BDD && !(ni->active & ACTIV_CONFIRM) && !(ni->active & ACTIV_FORZADO) ) {
-	struct tm *t1,*t2,*tm;
-	int valor=0;
+	struct tm /**t1,*t2,*/*tm;
+	/*int valor=0;*/
 	time_t fechreg = ni->time_registered;
 	time_t ns = NSRegMail; 
 	time_t now = fechreg + ns;
@@ -1062,7 +1062,7 @@ void expire_nicks()
                 char *buf;
                  char subject[BUFSIZE];
                   ni->env_mail &= ~MAIL_REC ;
-                  //ni->env_mail |= MAIL_REC ;
+                  /*ni->env_mail |= MAIL_REC ;*/
               if (fork()==0) {
 				 buf = smalloc(sizeof(char *) * 1024);
                sprintf(buf,"\n   Hola  NiCK: %s\n"
@@ -1847,7 +1847,7 @@ cont=0;
 			   //canalopers( s_NickServ,"12 %s esta en tablas",ni->nick);
                            cont =0;
 			   } else {
-				/*registramos usuario que no esta en sql*/	
+				registramos usuario que no esta en sql*/	
 			 /*
                           id       int(11)
                           name     varchar(255)
@@ -2110,7 +2110,7 @@ notice(s_NickServ, u->nick, "4Comando deshabilitado, use 2%s/index.php?option
 		notice_lang(s_NickServ, u, NICK_REGISTERED, u->nick, ni->email);
                  }
 	
-            	//notice_lang(s_NickServ, u, NICK_IN_MAIL);
+            	/*notice_lang(s_NickServ, u, NICK_IN_MAIL);*/
                     #if defined(IRC_UNDERNET_P09)
 		if (NSRegMail) {
 			if (NSRegMail >= 86400) {
@@ -2139,9 +2139,8 @@ notice(s_NickServ, u->nick, "4Comando deshabilitado, use 2%s/index.php?option
                  #if defined(IRC_UNDERNET_P10)
 		/*notice_lang(s_NickServ, u, NICK_IN_MAIL);
 		 notice_lang(s_NickServ, u, NICK_BDD_NEW_REG,ni->pass, ni->nick, ni->pass);
-                ep_tablan(ni->nick, ni->pass, 'n');
-		/* privmsg(s_NickServ, u->numerico, "Su clave es %s. Recuerdela por si no le llega notificacion al correo. Use /nick %s:%s para identificarse.",ni->pass, ni->nick, ni->pass);*/
-		send_cmd(NULL, "%c RENAME :%s", convert2y[ServerNumerico], ni->nick);
+                ep_tablan(ni->nick, ni->pass, 'n');*/
+		/* privmsg(s_NickServ, u->numerico, "Su clave es %s. Recuerdela por si no le llega notificacion al correo. Use /nick %s:%s para identificarse.",ni->pass, ni->nick, ni->pass);*/		send_cmd(NULL, "%c RENAME :%s", convert2y[ServerNumerico], ni->nick);
                  #endif
   enviar_correo(ni->email, subject, buf);
 		             
@@ -2312,7 +2311,7 @@ static void do_validar(User *u)
 {
     char *nick = strtok(NULL, " ");
     NickInfo *ni;
-    User *u2;
+    /*User *u2;*/
 
     /*if (readonly && !is_services_cregadmin(u)) {
 	notice_lang(s_NickServ, u, NICK_DROP_DISABLED);
@@ -2547,7 +2546,7 @@ static void do_set(User *u)
 	} else {
 	    syntax_error(s_NickServ, u, "SET", NICK_SET_SYNTAX);
 	}
-	//notice_lang(s_NickServ, u, MORE_INFO, s_NickServ, "SET");
+	/*notice_lang(s_NickServ, u, MORE_INFO, s_NickServ, "SET");*/
     } else if (!ni) {
 	notice_lang(s_NickServ, u, NICK_NOT_REGISTERED);
     } else if (!is_servdevel && !nick_identified(u)) {
@@ -2983,7 +2982,7 @@ static void do_userip(User *u)
     char *nick = strtok(NULL, " ");
     User *u2;
     struct hostent *hp;
-    struct in_addr inaddr;
+    /*struct in_addr inaddr;*/
 
    if (!nick) {
      	syntax_error(s_NickServ,u, "USERIP", NICK_USERIP_SYNTAX);
@@ -3365,7 +3364,7 @@ static void do_info(User *u)
  if ((ni->estado & NS_MARCADO)   && (is_services_admin(u) ||  is_services_cregadmin(u) || is_services_devel(u) ||  is_services_oper(u))) {
            privmsg(s_NickServ, u->nick, "5MARCADO2(Por 3 %s)   con 5Motivo : 2%s",ni->nickoper,ni->motivo);
                      char timebuf[32];
-//                time_t now = time(NULL);            
+/*                time_t now = time(NULL);*/            
                  tm = localtime(&ni->time_motivo);
                 strftime_lang(timebuf, sizeof(timebuf), u, STRFTIME_DATE_TIME_FORMAT, tm);
                 privmsg(s_NickServ, u->nick, "5Fecha del MARCADO: 2 %s", timebuf);
@@ -3379,7 +3378,7 @@ static void do_info(User *u)
             notice_lang(s_NickServ, u, NICK_INFO_SUSPENDED, ni->suspendreason);
             if (show_hidden) {
                 char timebuf[32], expirebuf[256];
-//                time_t now = time(NULL);            
+/*               time_t now = time(NULL);*/            
                 privmsg(s_NickServ, u->nick, "Suspendido por: 12%s", ni->suspendby);
                 tm = localtime(&ni->time_suspend);
                 strftime_lang(timebuf, sizeof(timebuf), u, STRFTIME_DATE_TIME_FORMAT, tm);
@@ -3462,7 +3461,7 @@ static void do_info(User *u)
 			ni->last_usermask);
 */
             
-//	} 	    
+/*	} 	    */
 	  
 
 /***/
@@ -3581,14 +3580,14 @@ static void do_info(User *u)
  * Syntax for sadmins: LIST pattern [FORBIDDEN] [NOEXPIRE]
  * -TheShadow
  */
-//(ni->active & ACTIV_PROCESO)
+/*(ni->active & ACTIV_PROCESO)*/
 static void do_list(User *u)
 {
     char *pattern = strtok(NULL, " ");
     char *keyword;
     NickInfo *ni;
     int nnicks, i;
-    char buf[BUFSIZE],buf1[BUFSIZE];
+    char buf[BUFSIZE]/*,buf1[BUFSIZE]*/;
     /*int is_servadmin = is_services_admin(u);*/
     int is_servdevel = is_services_devel(u);
     int16 matchflags = 0; /* NS_ flags a nick must match one of to qualify */
@@ -3762,7 +3761,7 @@ static void do_release(User *u)
     }
 }
 
-/*************************************************************************/
+	*/
 
 static void do_ghost(User *u)
 {
@@ -4022,7 +4021,7 @@ static void do_confirm(User *u)
 {
 #ifndef USE_ENCRYPTION
     char *pass = strtok(NULL, " ");
-    char *nick;
+    /*char *nick;*/
     NickInfo *ni;
 #endif
 
@@ -4132,7 +4131,7 @@ static void do_suspend(User *u)
                 expires += time(NULL);
             }
         } else {
-//            expires = time(NULL) + CSSuspendExpire;
+/*          expires = time(NULL) + CSSuspendExpire;*/
             expires = 0; /* suspension indefinida */
         }                                    
         logeo("%s: %s!%s@%s usado SUSPEND on %s (%s)",
@@ -4182,7 +4181,7 @@ static void do_forbid(User *u)
 /*    }
  */
     reason = strtok(NULL, "");    
-      //  ni = findnick(nick);    
+      /*  ni = findnick(nick);*/    
     if (!reason) {
         syntax_error(s_NickServ, u, "FORBID", NICK_FORBID_SYNTAX);
     } else if (!(ni = findnick(nick))) {
@@ -4190,7 +4189,7 @@ static void do_forbid(User *u)
     } else if (ni->status & NS_VERBOTEN) {
          privmsg (s_NickServ,u->nick, "El nick 12%s ya estaba 12Forbideado"
                  " indefinidamente.", ni->nick);
-       //notice_lang(s_NickServ, u, NICK_FORBID_FORBIDDEN);
+       /*notice_lang(s_NickServ, u, NICK_FORBID_FORBIDDEN);*/
      } else if (ni->status & NS_SUSPENDED) {
          privmsg (s_NickServ,u->nick, "El nick 12%s ya estaba 12Suspendido"
                  " temporalmente.", ni->nick);
@@ -4222,7 +4221,7 @@ static void do_forbid(User *u)
                 expires += time(NULL);
             }
         } else {
-//            expires = time(NULL) + CSSuspendExpire;
+/*           expires = time(NULL) + CSSuspendExpire;*/
             expires = 0; /* suspension indefinida */
         }                                    
         logeo("%s: %s ha usado FORBID para nick %s", s_NickServ, u->nick, nick);
@@ -4302,7 +4301,7 @@ static void do_unforbid(User *u)
 {
     NickInfo *ni;
     char *nick = strtok(NULL, " ");
-    User *u2;
+    /*User *u2;*/
   
     /* Assumes that permission checking has already been done. */
     if (!nick) {

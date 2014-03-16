@@ -343,13 +343,13 @@ static void m_privmsg(char *source, int ac, char **av)
     /* Check if we should ignore.  Operators always get through. */
     if (allow_ignore && !is_oper(source)) {
 	IgnoreData *ign = get_ignore(source);
-	DebugData *igndebug = get_debugserv(source);
+	/*DebugData *igndebug = get_debugserv(source);*/
 	if (ign && ign->time > time(NULL) +8) {
-	    //log("Ignored message from %s: \"%s\"", source, inbuf);
+	    /*log("Ignored message from %s: \"%s\"", source, inbuf);*/
 		 send_cmd(av[0], "KILL %s :¡No Flodee a los Servicios!", source);
 	        
 	} else if (ign && ign->time > time(NULL) +4) {
-	    //log("Ignored message from %s: \"%s\"", source, inbuf);
+	    /*log("Ignored message from %s: \"%s\"", source, inbuf);*/
 		privmsg(av[0], source, "4Espere Varios Segundos.Mensaje Ignorado.");
 	    return;
 	}

@@ -3060,12 +3060,12 @@ static void do_identify(User *u)
 	    notice_lang(s_ChanServ, u, CHAN_IDENTIFY_SUCCEEDED, chan);
 	} else if (res < 0) {
 	    logeo("%s: check_password failed for %s", s_ChanServ, ci->name);
-            notice(s_ChanServ, chan, "4ATENCION!!! Autentificaciï¿½n ilegal de %s", u->nick);
+            notice(s_ChanServ, chan, "4ATENCION!!! Autentificación ilegal de %s", u->nick);
 	    notice_lang(s_ChanServ, u, CHAN_IDENTIFY_FAILED);
 	} else {
 	    logeo("%s: Failed IDENTIFY for %s by %s!%s@%s",
 			s_ChanServ, ci->name, u->nick, u->username, u->host);
-            notice(s_ChanServ, chan, "4ATENCION!!! Autentificaciï¿½n con clave "
+            notice(s_ChanServ, chan, "4ATENCION!!! Autentificación con clave "
                              "incorrecta de %s.", u->nick);                              
 	    notice_lang(s_ChanServ, u, PASSWORD_INCORRECT);
 	    bad_password(u);

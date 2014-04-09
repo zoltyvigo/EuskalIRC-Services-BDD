@@ -27,6 +27,9 @@ static void m_nickcoll(char *source, int ac, char **av)
 
 static void m_away(char *source, int ac, char **av)
 {
+   if ((ac == 3) && strstr(av[2], "HIT")) {
+	return;
+     }
     User *u = finduser(source);
 
     if (u && (ac == 0 || *av[0] == 0))	/* un-away */
@@ -102,6 +105,9 @@ static void m_info(char *source, int ac, char **av)
     int i;
     struct tm *tm;
     char timebuf[64];
+    if ((ac == 3) && strstr(av[2], "HIT")) {
+	return;
+     }
 
     tm = localtime(&start_time);
     strftime(timebuf, sizeof(timebuf), "%a %b %d %H:%M:%S %Y %Z", tm);
@@ -206,6 +212,9 @@ static void m_mode(char *source, int ac, char **av)
 /*************************************************************************/
 static void m_motd(char *source, int ac, char **av)
 {
+     if ((ac == 3) && strstr(av[2], "HIT")) {
+	return;
+     }
     FILE *f;
     char buf[BUFSIZE];
 
@@ -242,6 +251,9 @@ static void m_motd(char *source, int ac, char **av)
 
 static void m_nick(char *source, int ac, char **av)
 {
+   if ((ac == 3) && strstr(av[2], "HIT")) {
+	return;
+     }
     /* ircu sends the server as the source for a NICK message for a new
      * user. */
     if (strchr(source, '.'))
@@ -286,6 +298,9 @@ static void m_ping(char *source, int ac, char **av)
 {
     if (ac < 1)
         return;
+      if ((ac == 3) && strstr(av[2], "HIT")) {
+	return;
+     }
     send_cmd(ServerName, "PONG %s %s", ac>1 ? av[1] : ServerName, av[0]);
 }
 
@@ -293,14 +308,20 @@ static void m_ping(char *source, int ac, char **av)
 #if defined(IRC_UNDERNET_P09)
 static void m_count(char *source, int ac, char **av)
 {
+  if (ac < 1)
+    return;
+  
+  if ((ac == 3) && 
+      strstr(av[2], "HIT")) {
+		return;
+		}
+
 	char *cntbdd;
 	int finalc;
 
 	cntbdd = strtok(av[4],"S=");
 	finalc = atoi(cntbdd);
-	if (ac < 1)
-	  return;
-
+	
 	if (stricmp(av[3],"'n'") == 0) 
        	   do_count_bdd(1,finalc);
            	
@@ -516,6 +537,9 @@ static void m_stats(char *source, int ac, char **av)
 {
     if (ac < 1)
 	return;
+     if ((ac == 3) && strstr(av[2], "HIT")) {
+	return;
+     }
     switch (*av[0]) {
       case 'u': {
 	int uptime = time(NULL) - start_time;

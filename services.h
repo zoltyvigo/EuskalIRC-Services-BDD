@@ -23,7 +23,7 @@
 # define int16 builtin_int16
 # define int32 builtin_int32
 #endif
-
+#include <arpa/inet.h>
 #include <stdarg.h>
 #include <stdio.h>
 #include <stdlib.h>

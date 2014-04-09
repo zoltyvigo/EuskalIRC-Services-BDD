@@ -2160,7 +2160,7 @@ static void do_patrocina(User *u)
             }
 	    
 	    for (i = 0; i < MAX_SERVPATROCINAS; i++) {
-		if (!services_opers[i] || services_opers[i] == ni)
+		if (!services_patrocinas[i] || services_patrocinas[i] == ni)
 		    break;
 	    }
 	    if (services_patrocinas[i] == ni) {

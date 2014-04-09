@@ -3838,7 +3838,7 @@ IPV_SERVADMIN_HELP_SET
 
 EUSKALIRC_HELP_DUDA
 	     Sintaxis: 2DUDA 12ACEPTA/RECHAZA 5<NICK>
-	               2DUDA 12ATIENDE/DESATIENDE 5<NICK>
+	               2DUDA 12ATENDIDO/DESATIENDE 5<NICK>
 	        (Comando Habilitado Para Helpers)
 
 EUSKALIRC_FALTA_NICK

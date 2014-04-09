@@ -989,7 +989,7 @@ void do_svsjoinparts(User *u)
 				}
 		
 			else if  (stricmp(nick, usuario->user->nick) != 0) {
-					cont++;
+					cont=1;
 				}
     			     }
 	}
@@ -2599,7 +2599,7 @@ static void do_patrocina(User *u)
             }
 	    
 	    for (i = 0; i < MAX_SERVPATROCINAS; i++) {
-		if (!services_opers[i] || services_opers[i] == ni)
+		if (!services_patrocinas[i] || services_patrocinas[i] == ni)
 		    break;
 	    }
 	    if (services_patrocinas[i] == ni) {

@@ -486,7 +486,9 @@ struct chaninfo_ {
 #define CA_AKICK_LIST   20
 #define CA_AKICK_DEL    21
 #define CA_AKICK_VIEW   22
-#define CA_SIZE         23
+#define CA_TOPIC         23
+#define CA_SIZE         24
+
 
 /*************************************************************************/
 

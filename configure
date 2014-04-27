@@ -670,7 +670,10 @@ done
 echo ""
  ok=0
 echo2 "Analizando mysql... "
-if run mysql_config --cflags --libs; then
+#if run mysql_config --cflags --libs; then
+MYSQLCFLAGS=`mysql_config --cflags`
+#MYSQLLIBS=`mysql_config --libs` #antiguo y en desuso
+if [ "$MYSQLLIBS" ] ; then
 echo ""
 echo "mysqlclient library encontrada... "
 echo "Quieres usar el Soporte Registro Nicks Por Web(Joomla15)?"
@@ -699,12 +702,12 @@ echo "Quieres usar el Soporte Registro Nicks Por Web(Joomla15)?"
 done
 
 else
-	echo ""
-	echo "not found mysqlclient library."
-	echo "Debian Linux to get mysql_config and libraries for C code to compile"
-        echo "(apt-get install libmysqlclient15-dev)"
-        echo "The C API code is distributed with MySQL."
-        echo "It is included in the mysqlclient library and allows C programs to access a database."
+	#echo ""
+	#echo "not found mysqlclient library."
+	#echo "Debian Linux to get mysql_config and libraries for C code to compile"
+        #echo "(apt-get install libmysqlclient15-dev)"
+        #echo "The C API code is distributed with MySQL."
+        #echo "It is included in the mysqlclient library and allows C programs to access a database."
 	ok=1
 fi
      
@@ -742,7 +745,7 @@ elif [ "$CC" ] ; then
 elif run gcc --version ; then
 	echo "great, encontrado gcc!"
 	CC=gcc
-	DEF_CC_FLAGS=-O9 -fomit-frame-pointer -ffast-math -fexpensive-optimizations 
+	#DEF_CC_FLAGS=-O9 -fomit-frame-pointer -ffast-math -fexpensive-optimizations 
 	log using \`gcc\'
 else
 	echo "gcc no encontrado."

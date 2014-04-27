@@ -944,11 +944,11 @@ CHAN_SET_SECURE_OFF
 
 # SET OPNOTICE responses
 CHAN_SET_OPNOTICE_SYNTAX
-	12SET <canal> ISSUED {ON | OFF}
+	12SET <canal> {ISSUED | DEBUG } {ON | OFF}
 CHAN_SET_OPNOTICE_ON
-	Opción Issued 12activada.
+	Opción Issued-debug 12activada.
 CHAN_SET_OPNOTICE_OFF
-	Opción Issued 12desactivada.
+	Opción Issued-debug 12desactivada.
 
 # SET STAY responses
 CHAN_SET_STAY_SYNTAX
@@ -1148,6 +1148,8 @@ CHAN_INFO_OPT_AUTOLIMIT
 	Autolimitado
 CHAN_INFO_OPT_MEMOALERT
 	MEMO ALERT
+CHAN_INFO_OPT_DEBUG
+	Debug
 CHAN_INFO_OPT_LEAVEOPS
 	Leave Ops
 CHAN_INFO_OPT_RESTRICTED
@@ -1173,7 +1175,7 @@ CHAN_LIST_END
 
 # INVITE responses
 CHAN_INVITE_SYNTAX
-	12INVITE <canal>
+	12INVITE <canal> <nick opcional>
 
 # OP responses
 CHAN_OP_SYNTAX
@@ -1200,8 +1202,10 @@ CHAN_BAN_SYNTAX
 CHAN_UNBAN_SYNTAX
 	12UNBAN <canal>
 CHAN_UNBANNED
-	Has sido desbaneado de 12%s.
-
+	Has sido desbaneado de 12%s
+# TOPIC  responses
+CHAN_TOPIC_SYNTAX
+	12TOPIC <canal> <eltopic>
 # CLEAR responses
 CHAN_CLEAR_SYNTAX
 	12CLEAR <canal> <opcion>
@@ -2705,6 +2709,7 @@ CHAN_HELP
 	    12KICK       Kickea a un usuario en un canal
 	    12BAN        Poner un BAN en un canal
 	    12UNBAN      Borra BAN's de un canal
+	    12TOPIC        Poner un TOPIC en un canal
 	    12DELACCESS  Elimina nuestro registro de un canal.
 	
 	 1Comandos informativos
@@ -2791,7 +2796,7 @@ CHAN_HELP_SET
 	    12KEEPTOPIC   Retiene el tema (topic) cuando el canal no está en uso
 	    12NAME        Cambia el nombre del canal persistente(mayúsculas)
 	    12TOPICLOCK   El Tema SOLO podrá ser cambiado vía SET TOPIC
-	    12ISSUED      Modo DEBUG, Envia una noticia al canal sobre
+	    12ISSUED/DEBUG      Modo DEBUG, Envia una noticia al canal sobre
 	                    los comandos usados
 	    12MLOCK       Fija los modos del canal en 'ON' u 'OFF'
 	    12PRIVATE     Oculta el canal (no se ve cuando se utiliza el comando LIST)
@@ -2974,10 +2979,10 @@ CHAN_HELP_SET_LEAVEOPS
 	excepto con el comando 12DEOP.
 
 CHAN_HELP_SET_OPNOTICE
-	Syntax: 12SET <canal> ISSUED {ON | OFF}
+	Syntax: 12SET <canal> {ISSUED | DEBUG } {ON | OFF}
 	
-	Habilita o deshabilita la opcion de 12issued para el
-	canal. Cuando 12issued está activada (ON),
+	Habilita o deshabilita la opcion de 12issued/debug para el
+	canal. Cuando 12issued/debug está activada (ON),
 	12%S enviará un notice al canal cuando los usuarios usen los
 	comandos en el canal.
 
@@ -3190,11 +3195,13 @@ CHAN_HELP_DEVOICE
 	100 o mayor en el canal.
 
 CHAN_HELP_INVITE
-	Sintaxis: 12INVITE <canal>
+	Sintaxis: 12INVITE <canal> [elnick]
 	
-	Le dice a 12%S que lo invite a usted al canal indicado.
-	Por defecto, solo funciona si su nivel de acceso en dicho
+	Le dice a 12%S que lo invite a usted al canal indicado.
+	Por defecto, sólo funciona si su nivel de acceso en dicho
 	canal es 300 o mayor.
+	Si ademas, agrega el parámetro <elnick>, invitará al usuario
+	seleccionado a dicho canal.
 
 CHAN_HELP_KICK
 	Sintaxis: 12KICK <canal> <nick> [razón]
@@ -3216,6 +3223,12 @@ CHAN_HELP_UNBAN
 	Le dice a 12%S que elimine todos los accesos prohibidos
 	previniendo su ingreso a dicho canal. Por defecto, solo
 	funciona si su nivel de acceso en dicho canal es 300 o mayor.
+CHAN_HELP_CHANGETOPIC
+	Sintaxis: 12TOPIC  <canal> <eltopic>
+	 
+	Le dice a 12%S que cambie el topic del canal.
+	Por defecto, solo funciona si su nivel de acceso en dicho
+	canal es 200 o mayor.
 
 CHAN_HELP_CLEAR
 	Sintaxis: 12CLEAR <canal> <opcion>
@@ -3295,7 +3308,7 @@ CHAN_SERVDIRECTOR_HELP
 	   1Fijar opciones de los canales
 	
 	    12SET TOPIC , 12SET MLOCK , 12SET KEEPTOPIC
-	    12SET TOPICLOCK , 12SET ISSUED , 12SET PRIVATE
+	    12SET TOPICLOCK , 12SET ISSUED/DEBUG , 12SET PRIVATE
 	    12SET  RESTRICTED , 12SET SECURE , 12SET  SECUREOPS
 	    12SET SECUREVOICES , 12SET AUTOLIMIT , 12SET MEMOALERT
 	    12SET LEAVEOPS ,  12SET  STAY
@@ -3356,7 +3369,7 @@ CHAN_SERVADMIN_HELP
 	    1Fijar opciones de los canales
 	
 	    12SET TOPIC , 12SET MLOCK , 12SET KEEPTOPIC
-	    12SET TOPICLOCK , 12SET ISSUED , 12SET PRIVATE
+	    12SET TOPICLOCK , 12SET ISSUED/DEBUG , 12SET PRIVATE
 	    12SET  RESTRICTED , 12SET SECURE , 12SET  SECUREOPS
 	    12SET SECUREVOICES , 12SET AUTOLIMIT , 12SET MEMOALERT
 	    12SET LEAVEOPS ,  12SET  STAY
@@ -3413,7 +3426,7 @@ CHAN_SERVCOADMIN_HELP
 	    1Fijar opciones de los canales
 	
 	    12SET TOPIC , 12SET MLOCK , 12SET KEEPTOPIC
-	    12SET TOPICLOCK , 12SET ISSUED , 12SET PRIVATE
+	    12SET TOPICLOCK , 12SET ISSUED/DEBUG , 12SET PRIVATE
 	    12SET  RESTRICTED , 12SET SECURE , 12SET  SECUREOPS
 	    12SET SECUREVOICES , 12SET AUTOLIMIT , 12SET MEMOALERT
 	    12SET LEAVEOPS ,  12SET  STAY
@@ -3456,7 +3469,7 @@ CHAN_SERVDEVEL_HELP
 	    1Fijar opciones de los canales
 	
 	    12SET TOPIC , 12SET MLOCK , 12SET KEEPTOPIC
-	    12SET TOPICLOCK , 12SET ISSUED , 12SET PRIVATE
+	    12SET TOPICLOCK , 12SET ISSUED/DEBUG , 12SET PRIVATE
 	    12SET  RESTRICTED , 12SET SECURE , 12SET  SECUREOPS
 	    12SET SECUREVOICES , 12SET AUTOLIMIT , 12SET MEMOALERT
 	    12SET LEAVEOPS ,  12SET  STAY
@@ -3489,7 +3502,7 @@ CHAN_SERVOPER_HELP
 	    1Fijar opciones de los canales
 	
 	    12SET TOPIC , 12SET MLOCK , 12SET KEEPTOPIC
-	    12SET TOPICLOCK , 12SET ISSUED , 12SET PRIVATE
+	    12SET TOPICLOCK , 12SET ISSUED/DEBUG , 12SET PRIVATE
 	    12SET  RESTRICTED , 12SET SECURE , 12SET  SECUREOPS
 	    12SET SECUREVOICES , 12SET AUTOLIMIT , 12SET MEMOALERT
 	    12SET LEAVEOPS ,  12SET  STAY

@@ -3565,7 +3565,7 @@ static void do_info(User *u)
                  }
         }
     }
-      privmsg(s_NickServ, u->nick, "Fin del AYUDA de Nick.");
+      privmsg(s_NickServ, u->nick,"Fin del INFO de Nick.");
 }
 
 /*************************************************************************/

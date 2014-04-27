@@ -42,6 +42,7 @@ static int def_levels[][2] = {
     { CA_AKICK_LIST,         200},
     { CA_AKICK_DEL,         400},
     { CA_AKICK_VIEW,         300},
+    { CA_TOPIC,        200},
     { -1 }
 };
 
@@ -52,6 +53,7 @@ typedef struct {
 } LevelInfo;
 static LevelInfo levelinfo[] = {
     { CA_INVITE,        "INVITE",     CHAN_LEVEL_INVITE },
+    { CA_TOPIC,        "TOPIC",     CHAN_LEVEL_TOPIC },
     { CA_AKICK,         "AKICK",      CHAN_LEVEL_AKICK },
     { CA_SET,           "SET",        CHAN_LEVEL_SET },
     { CA_UNBAN,         "UNBAN",      CHAN_LEVEL_UNBAN }, 
@@ -134,6 +136,7 @@ static void do_devoice(User *u);
 static void do_ckick(User *u);
 static void do_ban(User *u);
 static void do_unban(User *u);
+static void do_changetopic(User *u);
 static void do_clear(User *u);
 static void do_reset(User *u);
 static void do_verify(User *u);
@@ -219,6 +222,7 @@ static Command cmds[] = {
     { "KICK",     do_ckick,    NULL,  CHAN_HELP_KICK,           -1,-1,-1,-1 },
     { "BAN",      do_ban,      NULL,  CHAN_HELP_BAN,            -1,-1,-1,-1 },        
     { "UNBAN",    do_unban,    NULL,  CHAN_HELP_UNBAN,          -1,-1,-1,-1 },
+     { "TOPIC",      do_changetopic,      NULL,  CHAN_HELP_CHANGETOPIC,            -1,-1,-1,-1 }, 
     { "CLEAR",    do_clear,    NULL,  CHAN_HELP_CLEAR,          -1,-1,-1,-1 },
     { "RESET",    do_reset,    NULL,  CHAN_HELP_RESET,          -1,-1,-1,-1 },
     { "VERIFY",   do_verify,   NULL,  CHAN_HELP_VERIFY,         -1,-1,-1,-1 },        
@@ -5128,6 +5132,13 @@ static void do_info(User *u)
 			getstring(u->ni, CHAN_INFO_OPT_MEMOALERT));
 	    need_comma = 1;
 	}
+	if (ci->flags & CI_OPNOTICE) {
+	    end += snprintf(end, sizeof(buf)-(end-buf), "%s%s",
+			need_comma ? commastr : "",
+			getstring(u->ni, CHAN_INFO_OPT_DEBUG));
+	    need_comma = 1;
+	}
+	
 	notice_lang(s_ChanServ, u, CHAN_INFO_OPTIONS,
 		*buf ? buf : getstring(u->ni, CHAN_INFO_OPT_NONE));
 	end = buf;
@@ -5272,9 +5283,11 @@ static void do_list(User *u)
 static void do_invite(User *u)
 {
     char *chan = strtok(NULL, " ");
+    char *elnick = strtok(NULL, " ");
     Channel *c;
     ChannelInfo *ci;
-
+    struct c_userlist *usuario;
+    
     if (!chan) {
 	syntax_error(s_ChanServ, u, "INVITE", CHAN_INVITE_SYNTAX);
     } else if (!(c = findchan(chan))) {
@@ -5288,11 +5301,29 @@ static void do_invite(User *u)
     } else if (!u || (!check_access(u, ci, CA_INVITE)  && !is_services_oper(u))) {
 	notice_lang(s_ChanServ, u, PERMISSION_DENIED);
     } else {
+        if (!elnick) {
+	   for (usuario = c->users; usuario; usuario = usuario->next)
+			 if (stricmp(u->nick, usuario->user->nick) == 0) {
+			privmsg(s_ChanServ,u->nick, "Ya te encuentras en el Canal %s !.",chan);
+			return;
+				}
         if (ci->flags & CI_OPNOTICE) {
             notice(s_ChanServ, chan, "%s se invita al canal.", u->nick);
         }
        	send_cmd(s_ChanServ, "INVITE %s %s", u->nick, chan);
     }
+    else {
+       for (usuario = c->users; usuario; usuario = usuario->next)
+			 if (stricmp(elnick, usuario->user->nick) == 0) {
+			privmsg(s_ChanServ,u->nick, "%s Ya se encuentra en el Canal %s !.",elnick,chan);
+			return;
+				}
+    	 if (ci->flags & CI_OPNOTICE) 
+            notice(s_ChanServ, chan, "se le invita al canal a %s", elnick);
+           send_cmd(s_ChanServ, "INVITE %s %s", elnick, chan);
+    }
+}
+
 }
 
 /*************************************************************************/
@@ -5601,7 +5632,38 @@ static void do_ban(User *u)
         }
 }
                                          
-                                                           
+ /*************************************************************************/
+
+static void do_changetopic(User *u)
+{
+
+    char *chan = strtok(NULL, " ");
+    char *eltopic = strtok(NULL, "");
+        
+    Channel *c;
+    ChannelInfo *ci;
+                                                                                                                                                                                             
+    if (!eltopic) {
+        syntax_error(s_ChanServ, u, "TOPIC", CHAN_TOPIC_SYNTAX);
+    } else if (!(c = findchan(chan))) {
+        notice_lang(s_ChanServ, u, CHAN_X_NOT_IN_USE, chan);
+    } else if (!(ci = c->ci)) {
+        notice_lang(s_ChanServ, u, CHAN_X_NOT_REGISTERED, chan);
+    } else if (ci->flags & CI_VERBOTEN) {
+        notice_lang(s_ChanServ, u, CHAN_X_FORBIDDEN, chan);
+    } else if (ci->flags & CI_SUSPEND) {
+        notice_lang(s_ChanServ, u, CHAN_X_SUSPENDED, chan);
+    } else if (!u || (!check_access(u, ci, CA_TOPIC) && !is_services_oper(u))) {
+        notice_lang(s_ChanServ, u, PERMISSION_DENIED);
+    } else {
+              
+        send_cmd(MODE_SENDER(s_ChanServ), "TOPIC %s :%s", chan, eltopic);
+                 
+        if (ci->flags & CI_OPNOTICE)
+            notice(s_ChanServ, chan, "%s ha cambiado el Topic en el canal por %s", u->nick,eltopic);
+        }
+}
+                                                               
 /*************************************************************************/
 #if defined(DESACTIVADO)
 #endif

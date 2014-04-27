@@ -1844,6 +1844,7 @@ static void do_admin(User *u)
  MYSQL *conn;
  MYSQL_RES *res;
  MYSQL_ROW row;
+ int gid;
 char modifica[BUFSIZE],consulta[BUFSIZE];
  conn = mysql_init(NULL);
 

@@ -293,7 +293,9 @@ NICK_IDENTIFY_X_MODE_R
 	3Contraseña aceptada. Bienvenid@ a casa ;)12 [identificado por +r]
 NICK_IS_IDENTIFIED
 	3Ya estabas identificad@ ;)
-
+NICK_IDENTIFICADO_EXITO
+	Has sido reconocido como propietario del nick. Recuerda que para una mayor seguridad, debes cambiar periodicamente tu clave  con el comando /msg nick set password.Si necesitas ayuda, contacta con nosotros en el canal 4#%s .
+	Recuerda: Puedes encontrar cualquier tipo de ayuda sobre la Red,así como foros de discusión y tutoriales en nuestra web 12%s .
 # DROP/VALIDAR responses
 NICK_DROP_SYNTAX
 	12DROP [nick]
@@ -442,6 +444,8 @@ NICK_INFO_SERV_DEVEL
 	Es un  4PROGRAMAdor  4DEVEL 1de los servicios de RED
 NICK_INFO_SERV_PATROCINA
 	Es un  3PATROCINAdor 3SPONSOR 1de los servicios de RED
+NICK_INFO_SERV_PREOP
+	Es un  3PREOPERAdor de los servicios de RED
 NICK_INFO_SERV_ROOT
 	Es el  4ROOT de la RED
 NICK_INFO_SERV_DIRECTOR
@@ -1722,6 +1726,26 @@ OPER_PATROCINA_NOT_FOUND
 	12%s no fue encontrado en la lista de Patrocinadores de Services.
 OPER_PATROCINA_LIST_HEADER
 	Lista de Patrocinadores de Services:
+# PREOP responses
+OPER_PREOP_SYNTAX
+	12PREOP {ADD | DEL | LIST} [nick]
+OPER_PREOP_ADD_SYNTAX
+	12PREOP ADD <nick>
+OPER_PREOP_DEL_SYNTAX
+	12PREOP DEL <nick>
+OPER_PREOP_EXISTS
+	12%s ya estaba en la lista de Preoperadores de Services.
+OPER_PREOP_ADDED
+	12%s agregado a la lista de Preoperadores de Services.
+OPER_PREOP_TOO_MANY
+	Muchas entradas (12%d) en la lista de Preoperadores de Services; no se pueden agregar mas.
+OPER_PREOP_REMOVED
+	12%s borrado de la lista de Preoperadores de Services.
+OPER_PREOP_NOT_FOUND
+	12%s no fue encontrado en la lista de Preoperadores de Services.
+OPER_PREOP_LIST_HEADER
+	Lista de Preoperadores de Services:
+
 # DEVEL responses
 OPER_DEVEL_SYNTAX
 	12DEVEL {ADD | DEL | LIST} [nick]
@@ -4075,11 +4099,24 @@ X_PATROCINA_HELP
 	
 	4Aviso: TODOS los comandos enviados a 12%S son
 	registrados! (log)
+	
+X_PREOP_HELP
+	3%S -  7%s
+	
+	    2Comandos disponibles solo para 3Preoperadores 1de Servicios:
+	
+	    12UP Se otorga modo +k desde un Service(En desuso)
+	    
+	    Los Preops tienen flag +h,siendo helpers desde la versión
+	    "u2.10.H.10.200" ,por lo que pueden ponerse modo +k sin pseudoservices
+	
+	4Aviso: TODOS los comandos enviados a 12%S son
+	registrados! (log)
 
 OPER_HELP
 	3%S -  7%s
 	
-	    12PATROCINA LIST  Lista todos los Patrocinadores-Sponsors de Servicios
+	    12PATROCINA/PREOP LIST  Lista todos los Patrocinadores-Sponsors/Preops de Servicios
 	    12OPER LIST   Lista todos los Operadores de los Servicios
 	    12DEVEL LIST  Lista todos los Desarrolladores de Servicios
 	    12COADMIN LIST  Lista todos los CO-Administradores de Servicios
@@ -4107,13 +4144,13 @@ OPER_HELP
 X_OPER_HELP
 	3%S -  7%s
 	
-	    2Comandos disponibles solo para 3Patrocinadores 1de Servicios:
+	    2Comandos disponibles solo para 3Patrocinadores/Preops 1de Servicios:
 	
-	    12UP Se otorga modo +k desde un Service
+	    12UP Se otorga modo +k desde un Service(en desuso)
 	
 	    2Comandos disponibles solo para 12Representantes 1de Servicios:
 	
-	    12PATROCINA LIST  Lista todos los Patrocinadores-Sponsors de Servicios
+	    12PATROCINA/PREOP LIST  Lista todos los Patrocinadores-Sponsors/Preops de Servicios
 	    12OPER LIST   Lista todos los Operadores de los Servicios
 	    12DEVEL LIST  Lista todos los Desarrolladores de Servicios
 	    12COADMIN LIST  Lista todos los CO-Administradores de Servicios
@@ -4142,7 +4179,7 @@ X_OPER_HELP
 OPER_DEVEL_HELP
 	3%S -  7%s
 	
-	    12PATROCINA LIST  Lista todos los Patrocinadores-Sponsors de Servicios
+	    12PATROCINA/PREOP LIST  Lista todos los Patrocinadores-Sponsors/Preops de Servicios
 	    12OPER LIST   Lista todos los Operadores de los Servicios
 	    12DEVEL LIST  Lista todos los Desarrolladores de Servicios
 	    12COADMIN LIST  Lista todos los CO-Administradores de Servicios
@@ -4169,7 +4206,7 @@ OPER_DEVEL_HELP
 	4Servicios:
 	
 	12OPER        Modifica la lista de Operadores de Servicios
-	12PATROCINA   Modifica la lista de Patrocinadores de Servicios
+	12PATROCINA/PREOP   Modifica la lista de Patrocinadores/Preoperadores de Servicios
 	12LOGONNEWS   Añade un LOGONNEWS
 	12OPERNNEWS   Añade un OPERNNEWS
 	
@@ -4179,13 +4216,13 @@ OPER_DEVEL_HELP
 X_DEVEL_HELP
 	3%S -  7%s
 	
-	    2Comandos disponibles solo para 3Patrocinadores 1de Servicios:
+	    2Comandos disponibles solo para 3Patrocinadores/Preoperadores 1de Servicios:
 	
-	    12UP Se otorga modo +k desde un Service
+	    12UP Se otorga modo +k desde un Service(En desuso)
 	
 	    2Comandos disponibles solo para 12Representantes 1de Servicios:
 	
-	    12PATROCINA LIST  Lista todos los Patrocinadores-Sponsors de Servicios
+	    12PATROCINA/PREOP LIST  Lista todos los Patrocinadores-Sponsors/Preoperadores de Servicios
 	    12OPER LIST   Lista todos los Operadores de los Servicios
 	    12DEVEL LIST  Lista todos los Desarrolladores de Servicios
 	    12COADMIN LIST  Lista todos los CO-Administradores de Servicios
@@ -4212,7 +4249,7 @@ X_DEVEL_HELP
 	4 Servicios:
 	
 	12OPER        Modifica la lista de Operadores de Servicios
-	12PATROCINA   Modifica la lista de Patrocinadores de Servicios
+	12PATROCINA/PREOP   Modifica la lista de Patrocinadores/Preoperadores de Servicios
 	
 	4Aviso: TODOS los comandos enviados a 12%S son
 	registrados! (log)
@@ -4220,7 +4257,7 @@ X_DEVEL_HELP
 OPER_COADMIN_HELP
 	    3%S -  7%s
 	
-	    12PATROCINA LIST  Lista todos los Patrocinadores-Sponsors de Servicios
+	    12PATROCINA/PREOP LIST  Lista todos los Patrocinadores-Sponsors/Preops de Servicios
 	    12OPER LIST   Lista todos los Operadores de los Servicios
 	    12DEVEL LIST  Lista todos los Desarrolladores de Servicios
 	    12COADMIN LIST  Lista todos los CO-Administradores de Servicios
@@ -4247,7 +4284,7 @@ OPER_COADMIN_HELP
 	4Servicios:
 	
 	12OPER        Modifica la lista de Operadores de Servicios
-	12PATROCINA   Modifica la lista de Patrocinadores de Servicios
+	12PATROCINA/PREOP   Modifica la lista de Patrocinadores/Preops de Servicios
 	12LOGONNEWS   Añade un LOGONNEWS
 	12OPERNNEWS   Añade un OPERNNEWS
 	
@@ -4266,13 +4303,13 @@ OPER_COADMIN_HELP
 X_COADMIN_HELP
 	3%S -  7%s
 	
-	    2Comandos disponibles solo para 3Patrocinadores 1de Servicios:
+	    2Comandos disponibles solo para 3Patrocinadores/Preoperadores 1de Servicios:
 	
-	    12UP Se otorga modo +k desde un Service
+	    12UP Se otorga modo +k desde un Service(En desuso)
 	
 	    2Comandos disponibles solo para 12Representantes 1de Servicios:
 	
-	    12PATROCINA LIST  Lista todos los Patrocinadores-Sponsors de Servicios
+	    12PATROCINA/PREOP LIST  Lista todos los Patrocinadores-Sponsors/Preops de Servicios
 	    12OPER LIST   Lista todos los Operadores de los Servicios
 	    12DEVEL LIST  Lista todos los Desarrolladores de Servicios
 	    12COADMIN LIST  Lista todos los CO-Administradores de Servicios
@@ -4299,7 +4336,7 @@ X_COADMIN_HELP
 	4 Servicios:
 	
 	12OPER        Modifica la lista de Operadores de Servicios
-	12PATROCINA   Modifica la lista de Patrocinadores de Servicios
+	12PATROCINA/PREOP   Modifica la lista de Patrocinadores/Preoperadores de Servicios
 	
 	2Comandos disponibles solo para los 4CoAdministradores  de
 	4Servicios:
@@ -4315,7 +4352,7 @@ X_COADMIN_HELP
 OPER_ADMIN_HELP
 	3%S -  7%s
 	
-	    12PATROCINA LIST  Lista todos los Patrocinadores-Sponsors de Servicios
+	    12PATROCINA/PREOP LIST  Lista todos los Patrocinadores-Sponsors/Preops de Servicios
 	    12OPER LIST   Lista todos los Operadores de los Servicios
 	    12DEVEL LIST  Lista todos los Desarrolladores de Servicios
 	    12COADMIN LIST  Lista todos los CO-Administradores de Servicios
@@ -4342,7 +4379,7 @@ OPER_ADMIN_HELP
 	4Servicios:
 	
 	12OPER        Modifica la lista de Operadores de Servicios
-	12PATROCINA   Modifica la lista de Patrocinadores de Servicios
+	12PATROCINA/PREOP   Modifica la lista de Patrocinadores/Preoperadores de Servicios
 	12LOGONNEWS   Añade un LOGONNEWS
 	12OPERNNEWS   Añade un OPERNNEWS
 	
@@ -4373,13 +4410,13 @@ OPER_ADMIN_HELP
 X_ADMIN_HELP
 	3%S -  7%s
 	
-	    2Comandos disponibles solo para 3Patrocinadores 1de Servicios:
+	    2Comandos disponibles solo para 3Patrocinadores/Preoperadores 1de Servicios:
 	
-	    12UP Se otorga modo +k desde un Service
+	    12UP Se otorga modo +k desde un Service(En desuso)
 	
 	    2Comandos disponibles solo para 12Representantes 1de Servicios:
 	
-	    12PATROCINA LIST  Lista todos los Patrocinadores-Sponsors de Servicios
+	    12PATROCINA/PREOP LIST  Lista todos los Patrocinadores-Sponsors/Preops de Servicios
 	    12OPER LIST   Lista todos los Operadores de los Servicios
 	    12DEVEL LIST  Lista todos los Desarrolladores de Servicios
 	    12COADMIN LIST  Lista todos los CO-Administradores de Servicios
@@ -4406,7 +4443,7 @@ X_ADMIN_HELP
 	4 Servicios:
 	
 	12OPER        Modifica la lista de Operadores de Servicios
-	12PATROCINA   Modifica la lista de Patrocinadores de Servicios
+	12PATROCINA/PREOP   Modifica la lista de Patrocinadores/Preoperadores de Servicios
 	
 	2Comandos disponibles solo para los 4CoAdministradores  de
 	4Servicios:
@@ -4428,7 +4465,7 @@ X_ADMIN_HELP
 OPER_ROOT_HELP
 	3%S -  7%s
 	
-	    12PATROCINA LIST  Lista todos los Patrocinadores-Sponsors de Servicios
+	    12PATROCINA/PREOP LIST  Lista todos los Patrocinadores-Sponsors/Preops de Servicios
 	    12OPER LIST   Lista todos los Operadores de los Servicios
 	    12DEVEL LIST  Lista todos los Desarrolladores de Servicios
 	    12COADMIN LIST  Lista todos los CO-Administradores de Servicios
@@ -4455,7 +4492,7 @@ OPER_ROOT_HELP
 	4 Servicios:
 	
 	12OPER        Modifica la lista de Operadores de Servicios
-	12PATROCINA   Modifica la lista de Patrocinadores de Servicios
+	12PATROCINA/PREOP   Modifica la lista de Patrocinadores/Preoperadores de Servicios
 	12LOGONNEWS   Añade un LOGONNEWS
 	12OPERNNEWS   Añade un OPERNNEWS
 	
@@ -4507,13 +4544,13 @@ OPER_ROOT_HELP
 X_ROOT_HELP
 	3%S -  7%s
 	
-	    2Comandos disponibles solo para 3Patrocinadores 1de Servicios:
+	    2Comandos disponibles solo para 3Patrocinadores/Preoperadores 1de Servicios:
 	
-	    12UP Se otorga modo +k desde un Service
+	    12UP Se otorga modo +k desde un Service(En desuso)
 	
 	    2Comandos disponibles solo para 12Representantes 1de Servicios:
 	
-	    12PATROCINA LIST  Lista todos los Patrocinadores-Sponsors de Servicios
+	    12PATROCINA/PREOP LIST  Lista todos los Patrocinadores-Sponsors/Preops de Servicios
 	    12OPER LIST   Lista todos los Operadores de los Servicios
 	    12DEVEL LIST  Lista todos los Desarrolladores de Servicios
 	    12COADMIN LIST  Lista todos los CO-Administradores de Servicios
@@ -4540,7 +4577,7 @@ X_ROOT_HELP
 	4 Servicios:
 	
 	12OPER        Modifica la lista de Operadores de Servicios
-	12PATROCINA   Modifica la lista de Patrocinadores de Servicios
+	12PATROCINA/PREOP   Modifica la lista de Patrocinadores/Preoperadores de Servicios
 	
 	2Comandos disponibles solo para los 4CoAdministradores  de
 	4Servicios:
@@ -4680,8 +4717,24 @@ OPER_HELP_PATROCINA
 	a los comandos de Patrocinador de Servicios.
 	
 	Cualquiera de los operadores de IRC (IRCops) puede utilizar
-	el comando 12PATROCINA LIST. Todos los otros comandos solo pueden
+	el comando 12PATROCINA LIST. Todos los otros comandos sólo pueden
 	ser utilizados por los 4Directores,Admins,CoAdmins y Devels.
+	
+OPER_HELP_PREOP
+	Sintaxis: 12PREOP ADD <nick>
+	          12PREOP DEL <nick>
+	          12PREOP LIST
+	
+	Habilita a los4Administradores de Servicios para agregar
+	(ADD), borrar (DEL) o listar (LIST) usuarios de la lista de
+	Preoperadores. Un usuario que se encuentre en la lista de
+	Preoperadores y que se identifique ante 12%s podrá acceder
+	a los comandos de Preoperador de Servicios.
+	
+	Cualquiera de los operadores de IRC (IRCops) puede utilizar
+	el comando 12PREOP LIST. Todos los otros comandos sólo pueden
+	ser utilizados por los 4Directores,Admins,CoAdmins y Devels.
+
 
 OPER_HELP_OPER
 	Sintaxis: 12OPER ADD <nick>

@@ -467,7 +467,8 @@ ok=0
 #echo "    20)  TerraIrcu 2.23 o superior Soporte P9"
 #echo "    21)  TerraIrcu 2.23 o superior Soporte P10"
 #echo "    30) ESNET-Hispano 2.10.H.02.50 o superior, Soporte P9"
-echo "    30) ESNET-Hispano ircd-u2.10.H.10.77, Soporte P9"
+echo "    29) ESNET-Hispano u2.10.H.10.77-u2.10.H.10.185, Soporte P9"
+echo "    30) ChatHispano u2.10.H.10.200-En Adelante, Soporte P9"
 echo "    31) ESNET-Hispano ircd-u2.10.H.10.77+PATCHS, Soporte P09"
 while [ $ok -eq 0 ] ; do
 	echo2 "[$IRCTYPE] "
@@ -507,9 +508,16 @@ while [ $ok -eq 0 ] ; do
 #                         NETWORK="IRC_TERRA"
 # 			ok=1
 # 			;;
- 		30)
+ 		29)
                          IRCTYPE_DEF="IRC_UNDERNET"
                          IRCTYPE_DEF2="IRC_UNDERNET_P09"
+                         NETWORK="IRC_HISPANO"
+			ok=1
+			;;
+		30)
+                         IRCTYPE_DEF="IRC_UNDERNET_P09"
+                         IRCTYPE_DEF2="IRC_SVSNICK"
+                         IRCTYPE_DEF3="IRC_UNDERNET"
                          NETWORK="IRC_HISPANO"
 			ok=1
 			;;
@@ -521,7 +529,7 @@ while [ $ok -eq 0 ] ; do
 			ok=1
                         ;;
 		*)
-			echo "Por favor, escoja un numero de opcion valida."
+			echo "Por favor, escoja un número de opción válida."
 			;;
 	esac
 done

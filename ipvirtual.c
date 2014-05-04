@@ -450,7 +450,11 @@ tm = localtime(&kadukatu);
 strftime_lang(timebuf, sizeof(timebuf), u, STRFTIME_DATE_TIME_FORMAT, tm);
 /*sartu_datua(22, u->nick, vhost);*/
 #if defined(IRC_UNDERNET_P09)
+ #if defined (IRC_SVSNICK)
+do_write_bdd(u->nick, 2, cadena);
+#else
 do_write_bdd(u->nick, 4, cadena);
+#endif
 #endif
     notice_lang(s_IpVirtual, u, IPV_ACTIVAR_SET, u->nick, cadena);
 /*vhost_aldaketa(u->nick, vhost, 1);*/
@@ -566,7 +570,11 @@ return;
 }
 if (!stricmp(vhost, "OFF")) {
 #if defined(IRC_UNDERNET_P09)
+   #if defined (IRC_SVSNICK)
+do_write_bdd(u->nick, 2, "");
+#else
 do_write_bdd(u->nick, 4, "");
+#endif
 ni->vhost=NULL;
 #endif
 notice_lang(s_IpVirtual, u, IPV_ACTIVAR_UNSET, u->nick);;
@@ -607,7 +615,11 @@ tm = localtime(&kadukatu);
 strftime_lang(timebuf, sizeof(timebuf), u, STRFTIME_DATE_TIME_FORMAT, tm);
 /*sartu_datua(22, u->nick, vhost);*/
 #if defined(IRC_UNDERNET_P09)
+#if defined (IRC_SVSNICK)
+do_write_bdd(u->nick, 2, vhost);
+#else
 do_write_bdd(u->nick, 4, vhost);
+#endif
 ni->vhost=sstrdup(vhost);
 #endif
     notice_lang(s_IpVirtual, u, IPV_ACTIVAR_SET, u->nick, vhost);
@@ -768,14 +780,22 @@ static void do_set_vhost(User *u, NickInfo *ni, char *param)
     if (stricmp(param, "OFF") == 0) {
          canaladmins(s_IpVirtual, "2 %s 5 Desactiva con 4SET VHOST  a  12%s ", u->nick,ni->nick);
 	#if defined(IRC_UNDERNET_P09)
+	  #if defined (IRC_SVSNICK)
+	 do_write_bdd(ni->nick, 2, "");
+	#else
 	 do_write_bdd(ni->nick, 4, "");
+	#endif
 	#endif
 	 notice_lang(s_IpVirtual, u, IPV_SET_VHOST_OFF);
     } else {
         strcat(param , ".usuario.de.euskalirc");
 	canaladmins(s_IpVirtual, "2%s4 VHOST[12%s4]", ni->nick,param);
        #if defined(IRC_UNDERNET_P09)
-        do_write_bdd(ni->nick, 4, param);
+	 #if defined (IRC_SVSNICK)
+        do_write_bdd(ni->nick, 2, param);
+	#else
+	do_write_bdd(ni->nick, 4, param);
+	#endif
         #endif
 	notice_lang(s_IpVirtual, u, IPV_SET_VHOST_ON, param);
     }

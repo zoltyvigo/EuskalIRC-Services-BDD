@@ -114,7 +114,11 @@ static Command cmds[] = {
     { "DEVEL",      do_devel,      NULL,  OPER_HELP_DEVEL,      -1,-1,-1,-1 },
     { "OPER",       do_oper,       NULL,  OPER_HELP_OPER,       -1,-1,-1,-1 },
     { "COADMIN",  do_coadmin,  NULL,  CREG_SERVADMIN_HELP,      -1,-1,-1,-1 },
+    #if defined (IRC_SVSNICK)
+    { "PREOP",       do_patrocina,       NULL,  OPER_HELP_PREOP,       -1,-1,-1,-1 },
+    #else
     { "PATROCINA",       do_patrocina,       NULL,  OPER_HELP_PATROCINA,       -1,-1,-1,-1 },
+    #endif
          /* Similarly, anyone can use *NEWS LIST, but *NEWS {ADD,DEL} are
      * reserved for Services admins. */
     { "LOGONNEWS",  do_logonnews,  NULL,  NEWS_HELP_LOGON,      -1,-1,-1,-1 },
@@ -623,7 +627,11 @@ void ircops(User *u)
 #if defined(IRC_UNDERNET_P10)
                  privmsg(s_ChanServ, u->numerico, "%-10s es 12PATROCINADOR de 4%s y 4%s",
 #else
+			 #if defined (IRC_SVSNICK)
                  privmsg(s_ChanServ, u->nick, "%-10s es 12PATROCINADOR de 4%s y 4%s",
+			#else
+	          privmsg(s_ChanServ, u->nick, "%-10s es 12PREOPERADOR de 4%s y 4%s",
+		    #endif
 #endif
                      services_patrocinas[i]->nick, s_NickServ, s_ChanServ);
                  online++;
@@ -1828,7 +1836,12 @@ static void do_admin(User *u)
 		else
 	    	do_write_bdd(ni->nick, 3, "khaX");
 	    	#else
-		do_write_bdd(ni->nick, 3, "10");
+		#if defined (IRC_SVSNICK)
+		  do_write_bdd(ni->nick, 3, "a");
+		#else
+		  do_write_bdd(ni->nick, 3, "10");
+		#endif
+		
 	    	#endif
             if (nick_is_services_root(ni)) {
 		do_write_bdd(ni->nick, 27, "");
@@ -1889,7 +1902,12 @@ canaladmins(s_OperServ, "Añadido como 10Administrador de la web",ni->nick);
  mysql_close(conn);
 
      #endif
-send_cmd(NULL, "RENAME %s", ni->nick);
+ #if defined (IRC_SVSNICK)
+    send_cmd(NULL, "SVSNICK %s", ni->nick);
+      #else
+	 send_cmd(NULL, "RENAME %s", ni->nick);
+      #endif
+
 	    } else {
 		notice_lang(s_OperServ, u, OPER_ADMIN_TOO_MANY, MAX_SERVADMINS);
 	    }
@@ -1922,7 +1940,11 @@ send_cmd(NULL, "RENAME %s", ni->nick);
 		#if defined(IRC_UNDERNET_P09)
 		do_write_bdd(ni->nick, 3, "");
 		do_write_bdd(ni->nick, 2, "");
-		send_cmd(NULL, "RENAME %s", ni->nick);
+		 #if defined (IRC_SVSNICK)
+		send_cmd(NULL, "SVSNICK %s", ni->nick);
+		  #else
+		    send_cmd(NULL, "RENAME %s", ni->nick);
+		    #endif
                 ni->vhost=NULL;
 		#endif
 			#if defined(SOPORTE_JOOMLA15)
@@ -2035,13 +2057,22 @@ static void do_coadmin(User *u)
 		#if defined(IRC_PATCHS_P09)
 		do_write_bdd(ni->nick, 3, "khcX"); //-->si lo añado a la tabla o y 10 para flag X,"en este parche es modo +c"
 		#else 
-		do_write_bdd(ni->nick, 3, "10");
+		#if defined (IRC_SVSNICK)
+		  do_write_bdd(ni->nick, 3, "a");
+		#else
+		  do_write_bdd(ni->nick, 3, "10");
+		#endif
 		#endif
 		do_write_bdd(ni->nick, 26, "");
                          char coadm[BUFSIZE];
                          snprintf(coadm, sizeof(coadm), "%s%s.%s", CoAdminColor,ni->nick,CoAdminHost);
                          ni->vhost=sstrdup(coadm);
-		   	send_cmd(NULL, "RENAME %s", ni->nick);
+			  #if defined (IRC_SVSNICK)
+			    send_cmd(NULL, "SVSNICK %s", ni->nick);
+			  #else
+			    send_cmd(NULL, "RENAME %s", ni->nick);
+			  #endif
+		   	
 			#if defined(SOPORTE_JOOMLA15)
  MYSQL *conn;
  MYSQL_RES *res;
@@ -2112,7 +2143,11 @@ canaladmins(s_OperServ, "Añadido como 10Gestor-Mánager de la web",ni->nick);
 		do_write_bdd(ni->nick, 3, "");
 		do_write_bdd(ni->nick, 2, "");
 		ni->vhost=NULL;
-		send_cmd(NULL, "RENAME %s", ni->nick);
+		#if defined (IRC_SVSNICK)
+		    send_cmd(NULL, "SVSNICK %s", ni->nick);
+		  #else
+		    send_cmd(NULL, "RENAME %s", ni->nick);
+		    #endif
 		#endif
 			#if defined(SOPORTE_JOOMLA15)
  MYSQL *conn;
@@ -2224,13 +2259,23 @@ static void do_devel(User *u)
 		#if defined(IRC_PATCHS_P09)
 	        do_write_bdd(ni->nick, 3, "khDX");
 	    	#else
+		#if defined (IRC_SVSNICK)
+		  do_write_bdd(ni->nick, 3, "c");
+		#else
+		  do_write_bdd(ni->nick, 3, "10");
+		#endif
 		do_write_bdd(ni->nick, 3, "10");
 	    	#endif
 		do_write_bdd(ni->nick, 24, "");
 		         char dev[BUFSIZE];
                          snprintf(dev, sizeof(dev), "%s%s.%s", DevelColor,ni->nick,DevelHost);
                          ni->vhost=sstrdup(dev);
-	                 send_cmd(NULL, "RENAME %s", ni->nick);
+			  #if defined (IRC_SVSNICK)
+			    send_cmd(NULL, "SVSNICK %s", ni->nick);
+			    #else
+			      send_cmd(NULL, "RENAME %s", ni->nick);
+			      #endif
+	                
 			#if defined(SOPORTE_JOOMLA15)
  MYSQL *conn;
  MYSQL_RES *res;
@@ -2304,8 +2349,14 @@ canaladmins(s_OperServ, "Añadido como 10Supervisor-Publisher de la web",ni->ni
 		do_write_bdd(ni->nick, 3, "");
 		do_write_bdd(ni->nick, 2, "");
 		ni->vhost=NULL;
-		send_cmd(NULL, "RENAME %s", ni->nick);
+		#if defined (IRC_SVSNICK)
+		   send_cmd(NULL, "SVSNICK %s", ni->nick);
+		#else
+		    send_cmd(NULL, "RENAME %s", ni->nick);
 		#endif
+		    
+		#endif
+		    
 		#if defined(SOPORTE_JOOMLA15)
  MYSQL *conn;
  MYSQL_RES *res;
@@ -2424,13 +2475,23 @@ static void do_oper(User *u)
 		#if defined(IRC_PATCHS_P09)
 		do_write_bdd(ni->nick, 3, "kh");
 		#else
-	    	do_write_bdd(ni->nick, 3, "5");
+		#if defined (IRC_SVSNICK)
+		  do_write_bdd(ni->nick, 3, "h");
+		#else
+		 do_write_bdd(ni->nick, 3, "5");
+		#endif
+	    	
 		#endif
 		do_write_bdd(ni->nick, 22, "");
                          char op[BUFSIZE];
                          snprintf(op, sizeof(op), "%s%s.%s", OperColor,ni->nick,OperHost);
                          ni->vhost=sstrdup(op);
-			send_cmd(NULL, "RENAME %s", ni->nick);
+			 #if defined (IRC_SVSNICK)
+			  send_cmd(NULL, "SVSNICK %s", ni->nick);
+			  #else
+			      send_cmd(NULL, "RENAME %s", ni->nick);
+			    #endif
+			
 		#if defined(SOPORTE_JOOMLA15)
  MYSQL *conn;
  MYSQL_RES *res;
@@ -2501,7 +2562,12 @@ canaladmins(s_OperServ, "Añadido como 10Editor de la web",ni->nick);
 		do_write_bdd(ni->nick, 3, "");
 		do_write_bdd(ni->nick, 2, "");
 		ni->vhost=NULL;
-		send_cmd(NULL, "RENAME %s", ni->nick);	
+		#if defined (IRC_SVSNICK)
+			 send_cmd(NULL, "SVSNICK %s", ni->nick);
+			  #else
+			      send_cmd(NULL, "RENAME %s", ni->nick);
+			    #endif
+			
 		#endif	
 #if defined(SOPORTE_JOOMLA15)
  MYSQL *conn;
@@ -2604,21 +2670,43 @@ static void do_patrocina(User *u)
 		    break;
 	    }
 	    if (services_patrocinas[i] == ni) {
+	      
+	        #if defined (IRC_SVSNICK)
+		notice_lang(s_OperServ, u, OPER_PREOP_EXISTS, ni->nick);
+		#else
 		notice_lang(s_OperServ, u, OPER_PATROCINA_EXISTS, ni->nick);
+		#endif
 	    } else if (i < MAX_SERVPATROCINAS) {
 		services_patrocinas[i] = ni;
-		notice_lang(s_OperServ, u, OPER_PATROCINA_ADDED, ni->nick);
-		canaladmins(s_OperServ, "12%s añade a 12%s como PATROCINADOR", u->nick, ni->nick);
+		
+		#if defined (IRC_SVSNICK)
+		   notice_lang(s_OperServ, u, OPER_PREOP_ADDED, ni->nick);
+		  canaladmins(s_OperServ, "12%s añade a 12%s como PREOPERADOR", u->nick, ni->nick);
+		#else
+		  notice_lang(s_OperServ, u, OPER_PATROCINA_ADDED, ni->nick);
+		 canaladmins(s_OperServ, "12%s añade a 12%s como PATROCINADOR", u->nick, ni->nick);
+		#endif
+		
                 #if defined(IRC_PATCHS_P09)
 		do_write_bdd(ni->nick, 3, "kp"); /*-->En este parche,es modo +p de Patrocinador*/
 		#else
-	    	do_write_bdd(ni->nick, 3, ""); /*-->No lo añado a la tabla o*/
+		#if defined (IRC_SVSNICK)
+		  do_write_bdd(ni->nick, 3, "p");
+		#else
+		 do_write_bdd(ni->nick, 3, ""); /*-->No lo añado a la tabla o*/
+		#endif
+	    	
 		#endif
 		do_write_bdd(ni->nick, 25, "");
                          char pat[BUFSIZE];
                          snprintf(pat, sizeof(pat), "%s%s.%s", PatrocinaColor,ni->nick,PatrocinaHost);
                          ni->vhost=sstrdup(pat);
-		send_cmd(NULL, "RENAME %s", ni->nick);
+			 #if defined (IRC_SVSNICK)
+			send_cmd(NULL, "SVSNICK %s", ni->nick);
+			  #else
+			      send_cmd(NULL, "RENAME %s", ni->nick);
+			    #endif
+		
 		#if defined(SOPORTE_JOOMLA15)
  MYSQL *conn;
  MYSQL_RES *res;
@@ -2663,7 +2751,11 @@ canaladmins(s_OperServ, "Añadido como 10Autor de la web",ni->nick);
 	    if (readonly)
 		notice_lang(s_OperServ, u, READ_ONLY_MODE);
 	} else {
-	    syntax_error(s_OperServ, u, "PATROCINA", OPER_PATROCINA_ADD_SYNTAX);
+	   #if defined (IRC_SVSNICK)
+	    syntax_error(s_OperServ, u, "PREOP", OPER_PATROCINA_ADD_SYNTAX);
+	  #else
+	     syntax_error(s_OperServ, u, "PATROCINA", OPER_PATROCINA_ADD_SYNTAX);
+	  #endif
 	}
 
     } else if (stricmp(cmd, "DEL") == 0) {
@@ -2683,13 +2775,23 @@ canaladmins(s_OperServ, "Añadido como 10Autor de la web",ni->nick);
 	    }
 	    if (i < MAX_SERVPATROCINAS) {
 		services_patrocinas[i] = NULL;
+		#if defined (IRC_SVSNICK)
+		notice_lang(s_OperServ, u, OPER_PREOP_REMOVED, ni->nick);
+		canaladmins(s_OperServ, "12%s borra a 12%s como PREOPERADOR", u->nick, ni->nick);
+		 #else	
 		notice_lang(s_OperServ, u, OPER_PATROCINA_REMOVED, ni->nick);
 		canaladmins(s_OperServ, "12%s borra a 12%s como PATROCINADOR", u->nick, ni->nick);
+		#endif
 		#if defined(IRC_UNDERNET_P09)
 		do_write_bdd(ni->nick, 3, "");
 		do_write_bdd(ni->nick, 2, "");
 		ni->vhost=NULL;
-		send_cmd(NULL, "RENAME %s", ni->nick);	
+		#if defined (IRC_SVSNICK)
+			send_cmd(NULL, "SVSNICK %s", ni->nick);
+			  #else
+			     send_cmd(NULL, "RENAME %s", ni->nick);
+			    #endif
+			
 		#endif	
 	#if defined(SOPORTE_JOOMLA15)
  MYSQL *conn;
@@ -2733,14 +2835,27 @@ canaladmins(s_OperServ, "Borrado como 10Autor de la web",ni->nick);
 		if (readonly)
 		    notice_lang(s_OperServ, u, READ_ONLY_MODE);
 	    } else {
+	      
+	       #if defined (IRC_SVSNICK)
+		notice_lang(s_OperServ, u, OPER_PREOP_NOT_FOUND, ni->nick);
+		#else
 		notice_lang(s_OperServ, u, OPER_PATROCINA_NOT_FOUND, ni->nick);
+		#endif
 	    }
 	} else {
+	    #if defined (IRC_SVSNICK)
+	    syntax_error(s_OperServ, u, "PREOP", OPER_PREOP_DEL_SYNTAX);
+	    #else
 	    syntax_error(s_OperServ, u, "PATROCINA", OPER_PATROCINA_DEL_SYNTAX);
+	    #endif
 	}
 
     } else if (stricmp(cmd, "LIST") == 0) {
+       #if defined (IRC_SVSNICK)
+	notice_lang(s_OperServ, u, OPER_PREOP_LIST_HEADER);
+	#else
 	notice_lang(s_OperServ, u, OPER_PATROCINA_LIST_HEADER);
+	#endif
 	for (i = 0; i < MAX_SERVPATROCINAS; i++) {
 	    if (services_patrocinas[i])
 #if defined(IRC_UNDERNET_P10)
@@ -2751,7 +2866,12 @@ canaladmins(s_OperServ, "Borrado como 10Autor de la web",ni->nick);
 	}
 
     } else {
+      
+        #if defined (IRC_SVSNICK)
+	syntax_error(s_OperServ, u, "PREOP", OPER_PREOP_SYNTAX);
+	#else
 	syntax_error(s_OperServ, u, "PATROCINA", OPER_PATROCINA_SYNTAX);
+	#endif
     }
 }
 
@@ -2992,7 +3112,7 @@ OperHostold =OperHost;
 if (!PatrocinaHostold)
 PatrocinaHostold ="";
 if (strcmp(PatrocinaHost, PatrocinaHostold) != 0) {
- canaladmins(s_OperServ, "12PatrocinaHost Cambiando 4%s a 2%s",PatrocinaHostold,PatrocinaHost);
+ canaladmins(s_OperServ, "12PatrocinaHost/PreopHost Cambiando 4%s a 2%s",PatrocinaHostold,PatrocinaHost);
 PatrocinaHostold =PatrocinaHost;
 }
 if (!s_NickServold)

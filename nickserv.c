@@ -859,9 +859,8 @@ int validate_user(User *u)
         return 1;
     if (!notifinouts) 
       if (ni->status & NI_ON_BDD && ((ni->active & ACTIV_CONFIRM) || (ni->active & ACTIV_FORZADO))) {
-      	privmsg(s_NickServ, u->nick, " Has sido reconocido como propietario del nick. Recuerda que para una mayor seguridad, debes cambiar periodicamente tu clave con el comando 2 /msg nick set password. Si necesitas ayuda, contacta con nosotros en el canal 4#%s",CanalAyuda);
-	privmsg(s_NickServ, u->nick, "Recuerda: Puedes encontrar cualquier tipo de ayuda sobre la Red,así como foros de discusión y tutoriales en nuestra web 12%s",WebNetwork);
-        return 1;
+	 notice_lang(s_NickServ, u, NICK_IDENTIFICADO_EXITO,CanalAyuda,WebNetwork);
+      	 return 1;
            }
      if (notifinouts) 
       if (ni->status & NI_ON_BDD && ((ni->active & ACTIV_CONFIRM) || (ni->active & ACTIV_FORZADO))) {
@@ -1112,8 +1111,12 @@ canaladmins(s_NickServ, "%s\n", mysql_error(conn));
 	    } else if (now - ni->time_registered >=  (NSRegMail) && !(ni->active & (ACTIV_CONFIRM | ACTIV_FORZADO))) { 
                       canalopers(s_NickServ, "El nick 12%s ha expirado por no activar 5%s", ni->nick,ni->email);
 			 privmsg(s_NickServ, ni->nick ? ni->nick : u->nick, "Tu Nick 12%s ha expirado por no CONFIRMar 5%s ", ni->nick ? ni->nick : u->nick,ni->email);
-			send_cmd(NULL, "RENAME %s", ni->nick ? ni->nick : u->nick);
-		      delnick(ni); 
+			#if defined (IRC_SVSNICK)
+    send_cmd(NULL, "SVSNICK %s", ni->nick ? ni->nick : u->nick);
+      #else
+	 send_cmd(NULL, "RENAME %s", ni->nick ? ni->nick : u->nick);
+      #endif
+	     delnick(ni); 
                 }
 	    /* AQUI EXPIRACION NICKS SUSPENDIDOS */
 		}
@@ -1451,7 +1454,12 @@ static void collide(NickInfo *ni, int from_timeout)
     } else {
 #elif defined (IRC_HISPANO)
     if (NSForceNickChange) {
-        send_cmd(ServerName, "RENAME %s", ni->nick);
+      #if defined (IRC_SVSNICK)
+     send_cmd(ServerName, "SVSNICK %s", ni->nick);
+      #else
+	  send_cmd(ServerName, "RENAME %s", ni->nick);
+      #endif
+       
     } else {
 #endif                
 	notice_lang(s_NickServ, u, DISCONNECT_NOW);
@@ -1744,7 +1752,12 @@ return;
        ni->active &= ~ ACTIV_PROCESO;
 		 ni->active |= ACTIV_FORZADO;
 		ni->nickactoper = sstrdup("WEB");
-	   send_cmd(NULL, "RENAME %s", row[1]);
+		 #if defined (IRC_SVSNICK)
+     send_cmd(NULL, "SVSNICK %s", row[1]);
+      #else
+	 send_cmd(NULL, "RENAME %s", row[1]);
+      #endif
+	   
 	
 	    ni->flags = 0;
 	    ni->estado = 0;
@@ -2127,8 +2140,11 @@ notice(s_NickServ, u->nick, "4Comando deshabilitado, use 2%s/index.php?option
 		
                    /*en colores*/
              /*  privmsg(s_NickServ, ni->nick, "Su clave es %s. Recuerdela por si no le llega notificacion al correo. Use /nick %s:%s para identificarse.",ni->pass, ni->nick, ni->pass);*/
-	       send_cmd(NULL, "RENAME %s", ni->nick);
-		
+	       #if defined (IRC_SVSNICK)
+      send_cmd(NULL, "SVSNICK %s", ni->nick);
+      #else
+	  send_cmd(NULL, "RENAME %s", ni->nick);
+      #endif
 		ni->status |= NI_ON_BDD;
 		do_write_bdd(ni->nick, 1, ni->pass);
 		 if (NSRegMail)
@@ -2140,7 +2156,14 @@ notice(s_NickServ, u->nick, "4Comando deshabilitado, use 2%s/index.php?option
 		/*notice_lang(s_NickServ, u, NICK_IN_MAIL);
 		 notice_lang(s_NickServ, u, NICK_BDD_NEW_REG,ni->pass, ni->nick, ni->pass);
                 ep_tablan(ni->nick, ni->pass, 'n');*/
-		/* privmsg(s_NickServ, u->numerico, "Su clave es %s. Recuerdela por si no le llega notificacion al correo. Use /nick %s:%s para identificarse.",ni->pass, ni->nick, ni->pass);*/		send_cmd(NULL, "%c RENAME :%s", convert2y[ServerNumerico], ni->nick);
+		/* privmsg(s_NickServ, u->numerico, "Su clave es %s. Recuerdela por si no le llega notificacion al correo. Use /nick %s:%s para identificarse.",ni->pass, ni->nick, ni->pass);*/		
+		
+		 #if defined (IRC_SVSNICK)
+      send_cmd(NULL, "%c SVSNICK :%s", convert2y[ServerNumerico], ni->nick);
+      #else
+	send_cmd(NULL, "%c RENAME :%s", convert2y[ServerNumerico], ni->nick);
+      #endif
+		  
                  #endif
   enviar_correo(ni->email, subject, buf);
 		             
@@ -2411,7 +2434,12 @@ static void do_drop(User *u)
 	canalopers(s_NickServ, "12%s eliminó el nick 12%s", u->nick, nick);
 	logeo("%s: %s!%s@%s dropped nickname %s", s_NickServ,
 		u->nick, u->username, u->host, nick ? nick : u->nick);
+	#if defined (IRC_SVSNICK)
+     send_cmd(NULL, "SVSNICK %s", nick ? nick : u->nick);
+      #else
 	send_cmd(NULL, "RENAME %s", nick ? nick : u->nick);
+      #endif
+	
 	delnick(ni);
 
 	if (nick) 
@@ -3499,7 +3527,11 @@ static void do_info(User *u)
 	    privmsg(s_NickServ, ni->nick, "%s ha utilizado %s INFO sobre ti", u->nick, s_NickServ);
 	    
            if (nick_is_services_patrocina(ni) && !nick_is_services_oper(ni))
-	    notice_lang(s_NickServ, u, NICK_INFO_SERV_PATROCINA);
+	     #if defined (IRC_SVSNICK)
+		notice_lang(s_NickServ, u, NICK_INFO_SERV_PREOP);
+	      #else
+		notice_lang(s_NickServ, u, NICK_INFO_SERV_PATROCINA);
+	      #endif
 
 	    if (nick_is_services_oper(ni)  && !nick_is_services_devel(ni))
 	    notice_lang(s_NickServ, u, NICK_INFO_SERV_OPER);
@@ -3950,7 +3982,12 @@ static void do_rename(User *u)
    } else if (nick_is_services_admin(ni) && !is_services_root(u)) {
        notice_lang(s_NickServ, u, PERMISSION_DENIED);
    } else {
-       send_cmd(NULL, "RENAME %s", ni->nick);
+       #if defined (IRC_SVSNICK)
+     send_cmd(NULL, "SVSNICK %s", ni->nick);
+      #else
+	send_cmd(NULL, "RENAME %s", ni->nick);
+      #endif
+       
    }
 }
 
@@ -4239,8 +4276,12 @@ static void do_forbid(User *u)
 	    privmsg (s_NickServ, ni->nick, "Tu nick 12%s ha sido 12Forbideado"
                  " indefinidamente.", ni->nick);
             privmsg (s_NickServ, ni->nick, "Causa de prohibición:5 %s.", reason);
-             send_cmd(NULL, "RENAME %s", ni->nick);
-		do_write_bdd(nick, 1, "!");
+	      #if defined (IRC_SVSNICK)
+    send_cmd(NULL, "SVSNICK %s", ni->nick);
+      #else
+	send_cmd(NULL, "RENAME %s", ni->nick);
+      #endif
+             	do_write_bdd(nick, 1, "!");
 	#endif
         
 	canalopers(s_NickServ, "12%s ha 12Forbideado el nick 12%s (%s)",
@@ -4290,7 +4331,12 @@ static void do_unsuspend(User *u)
           if (finduser(nick)) {
               privmsg (s_NickServ, ni->nick, "Tu nick 12%s ha sido reactivado.", ni->nick);
               privmsg (s_NickServ, ni->nick, "Vuelve a identificarte con tu nick.");
-              send_cmd(NULL, "RENAME %s", ni->nick);
+	       #if defined (IRC_SVSNICK)
+     send_cmd(NULL, "SVSNICK %s", ni->nick);
+      #else
+	 send_cmd(NULL, "RENAME %s", ni->nick);
+      #endif
+              
 	  }
     }
 }

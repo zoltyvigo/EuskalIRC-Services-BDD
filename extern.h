@@ -61,6 +61,10 @@ E void do_achanakick(User *u);
 E void add_achanakick(const char *canal, const char *nick,const char *reason, const char *who);
 E int add_cazakick(const char *canal, const char *nick);
 E int borra_akick(const char *chan);
+E int akick_entradas(const char *chan);
+E char *masktonick(const char *chan,const char *masc);
+E int check_akick(User *user, const char *chan);
+
 
 /**** nicksuspends.c ****/
 E void get_anick_stats(long *nrec, long *memuse);
@@ -119,14 +123,15 @@ E void cs_remove_nick(const NickInfo *ni);
 E ChannelInfo *cs_findchan(const char *chan);
 E int check_access(User *user, ChannelInfo *ci, int what);
 E void registros(User *u, NickInfo *ni);
-E void join_chanserv();
-E void join_shadow();
+E void join_chanserv(void);
+E void join_shadow(void);
 E void canal_autolimit(Channel *ki,ChannelInfo *ci,const char *chan);
 E void sale_autolimit(char *s);
 E int  tramo1,tramo2,tramo3,incr1,incr2,incr3;
 
 /**** cregserv.c ****/
 E void cr_init(void);
+E void expire_creg(void);
 E void cregserv(const char *source, char *buf);
 E void load_cr_dbase(void);
 E void save_cr_dbase(void);
@@ -442,13 +447,15 @@ E int   GlinePscannerExpiry;
 E int   AutoregistraExpiry;
 
 E int   KillClonesAkillExpire;
+E void error(int linenum, char *message, ...);
+E int parse(char *buf, int linenum);
 
 E int read_config(void);
 
 /**** correo.c ****/
 
 E int enviar_correo(const char * destino, const char *subject, const char *body);
-
+E int enviar_web(const char *desde, const char *body);
 
 /**** helpserv.c ****/
 
@@ -456,6 +463,8 @@ E void helpserv(const char *whoami, const char *source, char *buf);
 
 /**** euskalirc.c ****/
 E void euskalserv(const char *source, char *buf);
+E void euskalirc_canal(const char *source,const char *chan, char *buf);
+E void mandar_mensaje(const char *source);
 E void mirar_nick(void);
 E void mirar_pregunta(const char *source, char *buf[BUFSIZE]);
 E void do_euskal(User *u);
@@ -495,6 +504,7 @@ E void do_listchans(int ac, char **av);
 
 E int open_log(void);
 E void close_log(void);
+E int rename_log(User *u, const char *newname);
 E void logeo(const char *fmt, ...)		FORMAT(printf,1,2);
 E void log_perror(const char *fmt, ...)		FORMAT(printf,1,2);
 E void fatal(const char *fmt, ...)		FORMAT(printf,1,2);
@@ -528,6 +538,7 @@ E int   servsock;
 E int   save_data;
 E int   got_alarm;
 E time_t start_time;
+E void sighandler(int signum);
 
 
 /**** memory.c ****/
@@ -601,9 +612,12 @@ E void save_spam(void);
 
 
 /**** ipvirtual.c ****/
+
+E void ipvserv(const char *source, char *buf);
 E void load_ipv(void);
 E void save_ipv(void);
 E void do_ipv(User *u);
+
 /**** nickserv.c ****/
 
 E void listnicks(int count_only, const char *nick);
@@ -617,6 +631,7 @@ E int validate_user(User *u);
 E void cancel_user(User *u);
 E int nick_identified(User *u);
 E int nick_recognized(User *u);
+E int nick_suspended(User *u);
 E void expire_nicks(void);
 
 E NickInfo *findnick(const char *nick);
@@ -638,9 +653,11 @@ E int is_services_patrocina(User *u);
 E int is_services_cregadmin(User *u);
 E int is_a_service(char *nick);
 E void ircops(User *u);
+E int nick_is_services_root(NickInfo *ni);
 E int nick_is_services_admin(NickInfo *ni);
-E int nick_is_services_oper(NickInfo *ni);
+E int nick_is_services_cregadmin(NickInfo *ni);
 E int nick_is_services_devel(NickInfo *ni);
+E int nick_is_services_oper(NickInfo *ni);
 E int nick_is_services_patrocina(NickInfo *ni);
 E void os_remove_nick(const NickInfo *ni);
 E int cambios_config(void);
@@ -667,6 +684,9 @@ E  NickInfo *services_cregadmins[MAX_SERVADMINS];
 E void check_clones(User *user);
 
 /**** xserv.c ****/
+E void x_init(void);
+E void load_X_dbase(void);
+E void save_x_dbase(void);
 E void xserv(const char *source, char *buf);
 E int32 notifinouts;
 
@@ -681,14 +701,19 @@ E int is_joku_oper(User *u);
 E void staffjoku(User *u);
 E int nick_is_joku_admin(NickInfo *ni);
 E int nick_is_joku_oper(NickInfo *ni);
-E void join_jokuserv();
+E void join_jokuserv(void);
 E void jok_remove_nick(const NickInfo *ni);
+E void joku_canal(const char *source,const char *chan, char *buf);
+
 /**** bdd.c ***/
 E void do_write_bdd(char *entrada, int tabla, const char *valor, ...);
 E void do_write_canal(char *entrada, int tabla, const char *valor, const char *param, ...);
 E void do_count_bdd(int tabla, unsigned int valor);
 E void bddserv(const char *source, char *buf);
 E void bdd_init(void);
+E unsigned int base64toint(const char *s);
+E const char *inttobase64(char *buf, unsigned int v, unsigned int count);
+E void tea(unsigned int v[], unsigned int k[], unsigned int x[]);
 E char *gen_nice_key(unsigned int ilevel);
 
 /**** bdd_hispano.c ****/
@@ -731,9 +756,14 @@ E void send_cmd(const char *source, const char *fmt, ...)
 	FORMAT(printf,2,3);
 E void vsend_cmd(const char *source, const char *fmt, va_list args)
 	FORMAT(printf,2,0);
-E void canalopers(const char *source, const char *fmt, ...);
+E void canalopers(const char *source, const char *fmt, ...)
+	FORMAT(printf,2,3);  
 E void canaladmins(const char *source, const char *fmt, ...)
         FORMAT(printf,2,3);        	
+E void canalayuda(const char *source, const char *fmt, ...)
+	FORMAT(printf,2,3);
+E void canalcybers(const char *source, const char *fmt, ...)
+	FORMAT(printf,2,3);
 E void notice(const char *source, const char *dest, const char *fmt, ...)
 	FORMAT(printf,3,4);
 E void notice_list(const char *source, const char *dest, const char **text);
@@ -764,6 +794,7 @@ E int32 read_buffer_len(void);
 E int32 write_buffer_len(void);
 
 E int sgetc(int s);
+E int sungetc(int c, int s);
 E char *sgets(char *buf, int len, int s);
 E char *sgets2(char *buf, int len, int s);
 E int sread(int s, char *buf, int len);
@@ -771,6 +802,9 @@ E int sputs(char *str, int s);
 E int sockprintf(int s, char *fmt,...);
 E int conn(const char *host, int port, const char *lhost, int lport);
 E void disconn(int s);
+
+/**** statserv.c ****/
+E void statserv(const char *source, char *buf);
 
 
 /**** P10.c ****/

@@ -35,9 +35,9 @@ E void close_db(dbFILE *f);
 #define write_db(f,buf,len)	(fwrite((buf),1,(len),(f)->fp))
 #define getc_db(f)		(fgetc((f)->fp))
 
-E int read_int16(uint16 *ret, dbFILE *f);
+E int read_int16(int16 *ret, dbFILE *f);
 E int write_int16(uint16 val, dbFILE *f);
-E int read_int32(uint32 *ret, dbFILE *f);
+E int read_int32(int32 *ret, dbFILE *f);
 E int write_int32(uint32 val, dbFILE *f);
 E int read_int64(uint64 *ret, dbFILE *f);
 E int write_int64(uint64 val, dbFILE *f);

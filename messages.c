@@ -616,7 +616,7 @@ static void m_user(char *source, int ac, char **av)
 
 /*************************************************************************/
 
-void m_version(char *source, int ac, char **av)
+static void m_version(char *source, int ac, char **av)
 {
     if (source)
 	send_cmd(ServerName, "351 %s %s ~ %s :-- %s", source, PNAME, ServerName, version_build);
@@ -624,7 +624,7 @@ void m_version(char *source, int ac, char **av)
 
 /*************************************************************************/
 
-void m_whois(char *source, int ac, char **av)
+static void m_whois(char *source, int ac, char **av)
 {
     const char *clientdesc;
 

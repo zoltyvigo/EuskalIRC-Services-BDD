@@ -30,7 +30,9 @@ static void do_ipv_list(User *u);
 static void do_ipv_usar(User *u);
 static void do_credits (User *u);
 static void do_activarhost (User *u);
+static void do_borrarhost (User *u);
 static void do_cambia_vhost (User *u);
+static void do_anular_vhost (User *u);
 static void do_help (User *u);
 static void do_set(User *u);
 
@@ -43,7 +45,9 @@ static void do_set_vhost(User *u, NickInfo *ni, char *param);
 static Command cmds[] = {
     { "CREDITS",    do_credits,    NULL,  -1,                   -1,-1,-1,-1 },
     { "ACTIVAR",	    do_activarhost,	   is_services_admin,   IPV_HELP_ACTIVAR,   -1,-1,-1,-1 },
+     { "BORRA",	    do_borrarhost,	   is_services_admin,   IPV_HELP_BORRA,   -1,-1,-1,-1 },
      { "CAMBIAR",	    do_cambia_vhost,	   NULL,   IPV_HELP_CAMBIAR,   -1,-1,-1,-1 },
+     { "ANULA",	    do_anular_vhost,	   NULL,   IPV_HELP_ANULAR,   -1,-1,-1,-1 },
     { "CREDITOS",   do_credits,    NULL,  -1,                   -1,-1,-1,-1 },        
     { "HELP",       do_help,       NULL,  -1,                   -1,-1,-1,-1 },
     { "AYUDA",      do_help,       NULL,  -1,                   -1,-1,-1,-1 },
@@ -638,6 +642,49 @@ privmsg(s_IpVirtual, u->nick, "Hora exacta: %s", timebuf);
 
 
 }
+static void do_anular_vhost(User *u)
+{
+    time_t oraingoa = time(NULL);
+    struct tm *tm;
+    char timebuf[32];
+    NickInfo *ni;
+
+if (!(ni = findnick(u->nick))) {
+	notice_lang(s_IpVirtual, u, NICK_X_NOT_REGISTERED, u->nick);
+	return;
+}
+
+
+if (oraingoa < ni->time_vhost)
+{
+tm = localtime(&ni->time_vhost);
+
+strftime_lang(timebuf, sizeof(timebuf), u, STRFTIME_DATE_TIME_FORMAT, tm);
+#if defined(IRC_UNDERNET_P10)
+privmsg(s_IpVirtual, u->numerico, "Solamente se admite un cambio cada 6h. Podras cambiar el vhost a la hora: %s", timebuf);
+#else
+privmsg(s_IpVirtual, u->nick, "Solamente se admite un cambio cada 6h. Podras cambiar el vhost a la hora: %s", timebuf);
+#endif
+return;
+}
+#if defined(IRC_UNDERNET_P09)
+   #if defined (IRC_SVSNICK)
+do_write_bdd(u->nick, 2, "");
+#else
+do_write_bdd(u->nick, 4, "");
+#endif
+ni->vhost=NULL;
+#endif
+notice_lang(s_IpVirtual, u, IPV_ACTIVAR_UNSET, u->nick);;
+canaladmins(s_IpVirtual, "2 %s 5 Desactiva Su VHOST ", u->nick);
+#if defined(IRC_UNDERNET_P10)
+privmsg(s_IpVirtual, u->numerico, "Vhost eliminada.");
+#else
+privmsg(s_IpVirtual, u->nick, "Vhost eliminada.");
+#endif
+		return;
+
+}
 
 void do_activarhost(User *u)
 {
@@ -677,6 +724,32 @@ void do_activarhost(User *u)
     #endif
     notice_lang(s_IpVirtual, u, IPV_ACTIVAR_SET, nick, mask);
 }
+
+void do_borrarhost(User *u)
+{
+    char *nick = strtok(NULL, " ");
+  
+    NickInfo *ni;
+    
+    if (!nick) {
+    	syntax_error(s_IpVirtual, u, "BORRA", IPV_BORRA_SYNTAX);
+    	return;
+    } else if (!(ni = findnick(nick))) {
+	notice_lang(s_IpVirtual, u, NICK_X_NOT_REGISTERED, nick);
+	return;
+    } else  if (!(ni->status & NI_ON_BDD)) {
+        notice_lang(s_IpVirtual, u, NICK_MUST_BE_ON_BDD);
+	return;
+    }
+    
+      #if defined(IRC_UNDERNET_P09)
+    	do_write_bdd(nick, 2, "");
+        ni->vhost=NULL;
+	#endif
+	notice_lang(s_IpVirtual, u, IPV_ACTIVAR_UNSET, nick);
+	return;
+}
+
 /*************************************************************************/
 /*********************** OperServ command functions **********************/
 /*************************************************************************/
@@ -693,12 +766,15 @@ static void do_credits(User *u)
 
 static void do_help(User *u)
 {
-    const char *cmd = strtok(NULL, "");
-
+    char *cmd = strtok(NULL, "");
+    
     if (!cmd) {
-	notice_help(s_IpVirtual, u, IPV_HELP);
+        notice_help(s_IpVirtual, u,IPV_HELP,Net);
+        
+    if (is_services_admin(u))
+        notice_help(s_IpVirtual, u, IPV_SERVADMIN_HELP);
     } else {
-	help_cmd(s_IpVirtual, u, cmds, cmd);
+        help_cmd(s_IpVirtual, u, cmds, cmd);
     }
 }
 /*************************************************************************/

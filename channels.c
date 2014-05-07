@@ -169,7 +169,8 @@ void send_helperchan_users(const char *source)
     /*User *user;*/
     char ayu[BUFSIZE];
      snprintf(ayu, sizeof(ayu), "#%s", CanalOpers);
-    Channel *c = ayu ? findchan(ayu) : NULL;
+    /*Channel *c = ayu ? findchan(ayu) : NULL;*/
+Channel *c = findchan(ayu);
     /*struct c_userlist *u;*/
 User *u2 = finduser(source);
 NickInfo *ni;

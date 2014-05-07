@@ -3797,19 +3797,31 @@ MEMO_SERVADMIN_HELP_INFO
 #	                     El Primer numero es para activar,el segundo entre [] para eliminar
 #	                     de la lista. (En Desarrollo)
 IPV_HELP
-	Comandos de 4%S:
+	    1Comandos de    3%S:
+	    
+	    12CAMBIAR  Activa Tu Ip Virtual Personalizada
+	    12ANULA      Anula tu IP Virtual
+	    12HELP         La Ayuda del Comando    
+	    
+	    1FIN de la AYUDA de   3%S	    
+IPV_SERVADMIN_HELP
 	
-	    12CAMBIAR      Activa Tu Ip Virtual Personalizada
-
-	    12ACTIVAR      Activa la Ip Virtual Personalizada Con Colores (Solo Admins)
-	    12SET          Activa  IpVirtual  de otros semi-personalizada (Solo Admins)
-	    12HELP         La Ayuda del Comando
-
+	2Los siguientes comandos están disponibles
+	2para los 4Administradores de servicios:
+	
+	12ACTIVAR    Activa la Ip Virtual Personalizada Con Colores ó
+		la elimina, en caso de que no introduzcamos [mascara]
+	12BORRA      Elimina completamente la ip virtual de un usuario.
+	12SET           Activa  IpVirtual  de otros semi-personalizada 	
 IPV_HELP_ACTIVAR
-	Sintaxis: 12ACTIVAR [mascara]
+	Sintaxis: 12ACTIVAR <nick> [mascara]
 	
 	Modifica la máscara virtual de un usuario (por tabla V) que esté +r, ó
-	la elimina, en caso de que introduzcamos [mascara]
+	la elimina, en caso de que no introduzcamos [mascara]
+IPV_HELP_BORRA
+	Sintaxis: 12BORRA <nick>
+	
+	Elimina completamente la ip virtual de un usuario.
 IPV_HELP_CAMBIAR
 	Sintaxis: 12CAMBIAR [mascara]
 	
@@ -3817,11 +3829,16 @@ IPV_HELP_CAMBIAR
 	la elimina, en caso de que introduzcamos la palabra 5OFF como [mascara]
 	donde la [mascara] es <la.nueva.ip.virtual>
 	
-
+IPV_HELP_ANULAR
+	Sintaxis: 12ANULAR
+	
+	Anula su propia máscara virtual de usuario 
+	
 
 IPV_ACTIVAR_SYNTAX
 	ACTIVAR <nick> [máscara]
-	
+IPV_BORRA_SYNTAX	
+	BORRA  <nick>
 IPV_ACTIVAR_UNSET
 	ACTIVACION VHOST para 12%s deshabilitada
 	
@@ -4659,7 +4676,7 @@ OPER_HELP_VHOST
 	Sintaxis: 12VHOST <nick> [mascara]
 	
 	Modifica la máscara virtual de un usuario (por tabla V) que esté +r, ó
-	la elimina, en caso de que no introduzcamos [mascara]
+  la elimina, en caso de que no introduzcamos [mascara]
 
 OPER_HELP_KILL
 	Sintaxis: 12KILL <nick> [mensaje]

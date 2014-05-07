@@ -291,7 +291,7 @@ void close_db(dbFILE *f)
  */
 
 
-int read_int16(uint16 *ret, dbFILE *f)
+int read_int16(int16 *ret, dbFILE *f)
 {
     int c1, c2;
 
@@ -311,7 +311,7 @@ int write_int16(uint16 val, dbFILE *f)
 }
 
 
-int read_int32(uint32 *ret, dbFILE *f)
+int read_int32(int32 *ret, dbFILE *f)
 {
     int c1, c2, c3, c4;
 

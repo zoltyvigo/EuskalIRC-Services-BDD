@@ -124,7 +124,7 @@ void cr_init(void)
 }                                                                                                                                            
 
 /****************CUANDO EXPIRAN LOS CANALES*************************/
-void expire_creg()
+void expire_creg(void)
 {
   CregInfo *cr, *next;
   int i;

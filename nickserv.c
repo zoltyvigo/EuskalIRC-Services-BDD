@@ -642,7 +642,8 @@ void load_ns_dbase(void)
                     ni->time_motivo = tmp32;
                     SAFE(read_int32(&tmp32, f));
                     ni->time_expiresuspend = tmp32;
-		    
+		     SAFE(read_int32(&tmp32, f));
+                    ni-> time_vhost = tmp32;
                     SAFE(read_string(&ni->forbidby, f));
                     SAFE(read_string(&ni->forbidreason, f));
                 } else {
@@ -653,6 +654,7 @@ void load_ns_dbase(void)
 		       ni->motivo = NULL;
                     ni->time_suspend = 0;
 		     ni->time_motivo = 0;
+		     ni->time_vhost = 0;
                     ni->time_expiresuspend = 0;
 		    
                     ni->forbidby = NULL;
@@ -798,6 +800,7 @@ void save_ns_dbase(void)
             SAFE(write_int32(ni->time_suspend, f));
 	  SAFE(write_int32(ni->time_motivo, f));
             SAFE(write_int32(ni->time_expiresuspend, f));
+	     SAFE(write_int32(ni->time_vhost, f));
 	
             SAFE(write_string(ni->forbidby, f));
             SAFE(write_string(ni->forbidreason, f));                                                              
@@ -1008,7 +1011,7 @@ int nick_recognized(User *u)
 
 /* Nick suspendido. */
 
-int nick_suspendied(User *u)
+int nick_suspended(User *u)
 {
     return u->real_ni && (u->real_ni->status & NS_SUSPENDED);
 }
@@ -3859,7 +3862,7 @@ static void do_status(User *u)
            notice_lang(s_NickServ, u, NICK_STATUS_OFFLINE, nick);
        else if (!(findnick(nick)))
            notice_lang(s_NickServ, u, NICK_STATUS_NOT_REGISTRED, nick);
-       else if (nick_suspendied(u2))
+       else if (nick_suspended(u2))
            notice_lang(s_NickServ, u, NICK_STATUS_SUSPENDED, nick);
        
        /*else if (nick_recognized(u2))
@@ -4177,6 +4180,7 @@ static void do_suspend(User *u)
         ni->suspendby = sstrdup(u->nick);
         ni->suspendreason = sstrdup(reason);
         ni->time_suspend = time(NULL);
+	ni->time_vhost = time(NULL);
         ni->time_expiresuspend = expires;
         ni->status |= NS_SUSPENDED;
         ni->status &= ~NS_IDENTIFIED;
@@ -4316,6 +4320,7 @@ static void do_unsuspend(User *u)
           free(ni->suspendby);
           free(ni->suspendreason);
           ni->time_suspend = 0;
+	  ni->time_vhost = 0;
           ni->time_expiresuspend = 0;
 	  canalopers(s_NickServ, "12%s ha reactivado el nick 12%s", u->nick, nick);
 
